@@ -26,14 +26,9 @@ void Batch::add(Quad& quad)
         indices[i] = quad.m_indices[i] + (m_indices.size() / 6) * 4;
     }
 
-    // Normalise the colors
-    
-
     m_positions.insert(m_positions.end(), std::begin(quad.m_positions), std::end(quad.m_positions));
     m_colors.insert(m_colors.end(), std::begin(quad.m_colors), std::end(quad.m_colors));
     m_indices.insert(m_indices.end(), std::begin(indices), std::end(indices));
-
-    std::cout << m_colors.size() << "\n";
 
     m_vertexArray.bind();
 

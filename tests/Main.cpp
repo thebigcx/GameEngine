@@ -1,8 +1,8 @@
 #include "../src/Window.h"
 
-#include "../src/Batch.h"
-#include "../src/Quad.h"
-#include "../src/Shader.h"
+#include "../src/renderer/Batch.h"
+#include "../src/renderer/Quad.h"
+#include "../src/renderer/Shader.h"
 #include "../src/util/maths/MathGL.h"
 
 int main()

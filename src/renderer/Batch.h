@@ -3,10 +3,9 @@
 #include <vector>
 
 #include "Quad.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
+#include "Buffer.h"
 #include "VertexArray.h"
-#include "util/Color.h"
+#include "../util/Color.h"
 
 class Batch
 {

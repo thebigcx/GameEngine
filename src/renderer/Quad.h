@@ -2,8 +2,8 @@
 
 #include <cstdint>
 
-#include "util/maths/Vector2.h"
-#include "util/Color.h"
+#include "../util/maths/Vector2.h"
+#include "../util/Color.h"
 
 class Quad
 {
