@@ -1,4 +1,4 @@
-#include "Window.h"
+#include "FGL/Window.h"
 
 Window::Window(int width, int height, std::string title)
 {

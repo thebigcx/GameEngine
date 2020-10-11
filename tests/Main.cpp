@@ -1,9 +1,4 @@
-#include "Window.h"
-
-#include "renderer/Batch.h"
-#include "renderer/Quad.h"
-#include "renderer/Shader.h"
-#include "util/maths/MathGL.h"
+#include <FGL/FGL.h>
 
 int main()
 {

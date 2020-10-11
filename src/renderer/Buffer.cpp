@@ -1,4 +1,4 @@
-#include "renderer/Buffer.h"
+#include "FGL/renderer/Buffer.h"
 
 #include <GL/glew.h>
 

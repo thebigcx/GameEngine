@@ -3,6 +3,7 @@ project(FGL)                         # Create project 'FGL'
 set(CMAKE_CXX_STANDARD 20)           # Set the C++ standard VERSION
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin) # Set the binary output directory
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ../lib) # Set the library output directory
 
 # Compile the library files
 file(GLOB SOURCES CONFIGURE_DEPENDS

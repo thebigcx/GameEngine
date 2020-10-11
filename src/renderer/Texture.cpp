@@ -1,6 +1,6 @@
-#include "renderer/Texture.h"
+#include "FGL/renderer/Texture.h"
 
-#include "../Image.h"
+#include "FGL/Image.h"
 
 #include <iostream>
 

@@ -1,4 +1,4 @@
-#include "renderer/Quad.h"
+#include "FGL/renderer/Quad.h"
 
 Quad::Quad(const Vector2f& position, const Vector2f& size, const Color& color)
 : m_position(position)

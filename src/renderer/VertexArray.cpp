@@ -1,4 +1,4 @@
-#include "renderer/VertexArray.h"
+#include "FGL/renderer/VertexArray.h"
 
 VertexArray::VertexArray()
 {

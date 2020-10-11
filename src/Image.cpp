@@ -1,4 +1,4 @@
-#include "Image.h"
+#include "FGL/Image.h"
 
 #include <stb_image/stb_image.h>
 
