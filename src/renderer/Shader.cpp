@@ -1,4 +1,4 @@
-#include "Shader.h"
+#include "renderer/Shader.h"
 
 Shader::Shader(std::string vertexPath, std::string fragmentPath)
 {

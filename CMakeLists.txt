@@ -26,6 +26,7 @@ tests/Main.cpp
 
 # Set the include directory
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include/vendor)
 
 # Compile the static library
 add_library(FGL STATIC ${SOURCES})

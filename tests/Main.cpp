@@ -1,9 +1,9 @@
-#include "../src/Window.h"
+#include "Window.h"
 
-#include "../src/renderer/Batch.h"
-#include "../src/renderer/Quad.h"
-#include "../src/renderer/Shader.h"
-#include "../src/util/maths/MathGL.h"
+#include "renderer/Batch.h"
+#include "renderer/Quad.h"
+#include "renderer/Shader.h"
+#include "util/maths/MathGL.h"
 
 int main()
 {
