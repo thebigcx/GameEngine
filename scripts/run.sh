@@ -1,3 +1,3 @@
 #!/bin/bash
 
-bin/Fast-Game-Library
+bin/Library_Test
