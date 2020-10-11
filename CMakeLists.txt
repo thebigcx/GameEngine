@@ -25,20 +25,22 @@ file(GLOB TEST_SOURCES CONFIGURE_DEPENDS
 tests/Main.cpp
 )
 
-# Set the include directory
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/include/vendor)
-
 # Compile the static library
 add_library(FGL STATIC ${SOURCES})
 
 # Link the OpenGL libraries
 target_link_libraries(FGL glfw GL X11 pthread Xrandr Xi dl GLEW openal)
 
-
+# Set the include directory
+target_include_directories(FGL PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(FGL PUBLIC ${CMAKE_SOURCE_DIR}/include/vendor)
 
 # Build the test executable
 add_executable(Library_Test ${TEST_SOURCES})
+
+# Set the include directory
+target_include_directories(Library_Test PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(Library_Test PUBLIC ${CMAKE_SOURCE_DIR}/include/vendor)
 
 # Statically link the game library
 target_link_libraries(Library_Test FGL)
