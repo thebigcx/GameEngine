@@ -6,6 +6,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
+#include "util/Color.h"
 
 class Batch
 {
@@ -17,12 +18,15 @@ public:
     void render();
 
 private:
-    //unsigned int m_vao;
-
     VertexArray m_vertexArray;
+
     VertexBuffer m_positionBuf;
+    VertexBuffer m_colorBuf;
+
     IndexBuffer m_indexBuf;
 
-    std::vector<float> m_positions;
+    std::vector<Vector2f> m_positions;
+    std::vector<Color>    m_colors;
+
     std::vector<unsigned int> m_indices;
 };

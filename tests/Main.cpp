@@ -9,17 +9,25 @@ int main()
 {
     Window window(1280, 720, "Hello, Fast Game Library!");
 
+    window.setIcon("res/icon.jpg");
+
     Shader shader("shaders/default.vert", "shaders/default.frag");
     shader.bind();
+
     glm::mat4 projection = glm::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
     shader.setUniform("projection", projection);
-    glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(100.f, 100.f, 1.f));
-    shader.setUniform("model", model);
+
+    glm::mat4 transform = glm::mat4(1.f);
+    shader.setUniform("transform", transform);
 
     Batch batch;
     
-    Quad quad(Vector2f(100, 100));
+    Quad quad(Vector2f(100, 100), Vector2f(100, 100), Color(1, 0, 0, 1));
+    Quad quad1(Vector2f(300, 100), Vector2f(100, 100), Color(0, 1, 0, 1));
+    Quad quad2(Vector2f(500, 100), Vector2f(100, 100), Color(0, 0, 1, 1));
     batch.add(quad);
+    batch.add(quad1);
+    batch.add(quad2);
 
     while (window.isOpen())
     {

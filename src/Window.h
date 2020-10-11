@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include "Image.h"
+
 class Window
 {
 public:
@@ -23,6 +25,19 @@ public:
     bool isKeyPressed(int key);
 
     void close();
+
+    void setTitle(const std::string& title);
+
+    void setIcon(const std::string& iconPath);
+    void setIcon(const Image& image);
+
+    void setSize(const Vector2u& size);
+
+    void minimize();
+    void maximize();
+    void restore();
+
+    void setOpacity(float opacity);
 
 private:
     GLFWwindow* m_window;

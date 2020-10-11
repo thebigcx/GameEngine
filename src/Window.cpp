@@ -73,3 +73,49 @@ void Window::pollEvents()
 {
     glfwPollEvents();
 }
+
+void Window::setIcon(const std::string& iconPath)
+{
+    Image image;
+    image.loadFile(iconPath);
+    setIcon(image);
+}
+
+void Window::setIcon(const Image& image)
+{
+    GLFWimage icon;
+    icon.pixels = image.getPixels();
+    icon.width = image.getSize().x;
+    icon.height = image.getSize().y;
+    glfwSetWindowIcon(m_window, 1, &icon);
+}
+
+void Window::setTitle(const std::string& title)
+{
+    glfwSetWindowTitle(m_window, title.c_str());
+}
+
+void Window::setSize(const Vector2u& size)
+{
+    glfwSetWindowSize(m_window, size.x, size.y);
+}
+
+void Window::minimize()
+{
+    glfwIconifyWindow(m_window);
+}
+
+void Window::maximize()
+{
+    glfwMaximizeWindow(m_window);
+}
+
+void Window::restore()
+{
+    glfwRestoreWindow(m_window);
+}
+
+void Window::setOpacity(float opacity)
+{
+    glfwSetWindowOpacity(m_window, opacity);
+}

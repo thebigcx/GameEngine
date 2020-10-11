@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin) # Set the binrary output directory
 
 # Compile all files
 file(GLOB SOURCES CONFIGURE_DEPENDS
-src/util/stb_image/stb_image.cpp
+src/vendor/stb_image/stb_image.cpp
 
 src/Window.cpp
 src/Quad.cpp
@@ -15,6 +15,7 @@ src/Shader.cpp
 src/VertexBuffer.cpp
 src/IndexBuffer.cpp
 src/VertexArray.cpp
+src/Image.cpp
 
 tests/Main.cpp
 )
