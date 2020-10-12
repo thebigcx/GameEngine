@@ -1,6 +1,17 @@
 #include "FGL/renderer/Shader.h"
 
-Shader::Shader(std::string vertexPath, std::string fragmentPath)
+Shader::Shader(const std::string& vsPath, const std::string& fsPath)
+{
+    auto source = parseShader(vsPath, fsPath);
+    bool success = compileShader(source);
+}
+
+Shader::~Shader()
+{
+    glDeleteProgram(m_id);
+}
+
+ShaderSource Shader::parseShader(const std::string& vsPath, const std::string& fsPath)
 {
     std::string vertSource;
     std::string fragSource;
@@ -10,8 +21,8 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
     try
     {
         // Open files
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
+        vShaderFile.open(vsPath);
+        fShaderFile.open(fsPath);
 
         std::stringstream vShaderStream, fShaderStream;
 
@@ -29,11 +40,16 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
     }
     catch (std::ifstream::failure e)
     {
-        printf("Failed to read shader source.\n");
+        std::cout << "Failed to read shader source: " << e.what() << "\n";
     }
 
-    const char* vShaderCode = vertSource.c_str();
-    const char* fShaderCode = fragSource.c_str();
+    return { vertSource, fragSource };
+}
+
+bool Shader::compileShader(const ShaderSource& source)
+{
+    const char* vShaderCode = source.vertex.c_str();
+    const char* fShaderCode = source.fragment.c_str();
 
     unsigned int vertex, fragment;
     int success;
@@ -73,14 +89,16 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath)
     if (!success)
     {
         glGetProgramInfoLog(m_id, 512, nullptr, infoLog);
-        std::cout << "Failed to link shaders program.\n" << infoLog << std::endl;
+        std::cout << "Failed to link shader program.\n" << infoLog << std::endl;
     }
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+
+    return success;
 }
 
-void Shader::bind()
+void Shader::bind() const
 {
     glUseProgram(m_id);
 }

@@ -21,19 +21,19 @@ Batch::Batch()
 void Batch::add(const Quad& quad)
 {
     // Add an offset to the indices
-    int indices[6];
-    std::memcpy(indices, quad.m_indices, sizeof(quad.m_indices));
+    int indices[quad.m_indices.size()];
+    std::memcpy(indices, quad.m_indices.data(), sizeof(quad.m_indices));
 
-    for (int j = 0 ; j < 6 ; j++)
+    for (int j = 0 ; j < quad.m_indices.size() ; j++)
     {
-        indices[j] += m_quads.size() * 4;
+        indices[j] += m_quads.size() * Quad::getVertexCount();
     }
 
     m_indices.insert(m_indices.end(), std::begin(indices), std::end(indices));
 
     m_quads.push_back(&quad);
 
-    m_vertexBuffer.allocate(sizeof(Vertex) * m_quads.size() * 1000);
+    m_vertexBuffer.allocate(sizeof(Vertex) * m_quads.size() * Quad::getVertexCount());
 
     m_indexBuf.update(&m_indices[0], m_indices.size());
 }
@@ -44,7 +44,6 @@ void Batch::update()
 
     std::vector<Vertex> vertices;
     
-    // TODO: refactor! performance heavy!
     for (auto quad : m_quads)
     {
         auto i = &quad - &m_quads[0];

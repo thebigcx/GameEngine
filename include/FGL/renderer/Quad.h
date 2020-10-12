@@ -6,13 +6,14 @@
 #include "../util/maths/Vector2.h"
 #include "../util/Color.h"
 #include "Vertex.h"
+#include "../Transformable.h"
 
-class Quad
+class Quad : public Transformable
 {
 public:
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
 
-    const Vector2f& getPosition() const
+    inline const Vector2f& getPosition() const
     {
         return m_position;
     }
@@ -21,14 +22,14 @@ public:
 
     std::array<Vertex, 4> getVertices() const;
 
+    static inline int getVertexCount() { return 4; }
+
     friend class Batch;
 
 private:
-    Vector2f m_position;
-    Vector2f m_size;
     Color m_color;
 
-    static inline const unsigned int m_indices[] = {
+    static inline const std::array<unsigned int, 6> m_indices = {
         0, 1, 2,
         0, 2, 3
     };

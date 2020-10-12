@@ -11,11 +11,18 @@
 #include <sstream>
 #include <iostream>
 
+struct ShaderSource
+{
+    std::string vertex;
+    std::string fragment;
+};
+
 class Shader {
     public:
-        Shader(std::string vertexPath, std::string fragmentPath);
+        Shader(const std::string& vsPath, const std::string& fsPath);
+        ~Shader();
 
-        void bind();
+        void bind() const;
 
         void setUniform(std::string p_name, int p_value);
         void setUniform(std::string p_name, bool p_value);
@@ -26,4 +33,8 @@ class Shader {
 
     private:
         unsigned int m_id;
+
+        static ShaderSource parseShader(const std::string& vsPath, const std::string& fsPath);
+
+        bool compileShader(const ShaderSource& source);
 };
