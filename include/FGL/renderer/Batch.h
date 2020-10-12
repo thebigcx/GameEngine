@@ -16,6 +16,8 @@ public:
 
     void render();
 
+    void update();
+
 private:
     VertexArray m_vertexArray;
 
@@ -28,4 +30,6 @@ private:
     std::vector<Color>    m_colors;
 
     std::vector<unsigned int> m_indices;
+
+    std::vector<Quad> m_quads;
 };

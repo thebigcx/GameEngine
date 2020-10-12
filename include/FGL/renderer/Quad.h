@@ -1,9 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 
 #include "../util/maths/Vector2.h"
 #include "../util/Color.h"
+#include "Vertex.h"
 
 class Quad
 {
@@ -15,11 +17,14 @@ public:
         return m_position;
     }
 
+    std::array<Vertex, 4> getVertices();
+
     friend class Batch;
 
 private:
     Vector2f m_position;
     Vector2f m_size;
+    Color m_color;
 
     static inline const unsigned int m_indices[] = {
         0, 1, 2,

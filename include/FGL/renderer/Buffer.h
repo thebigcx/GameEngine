@@ -12,6 +12,8 @@ public:
 
     void bind() const;
 
+    void allocate(size_t size);
+
 private:
     unsigned int m_id;
 };

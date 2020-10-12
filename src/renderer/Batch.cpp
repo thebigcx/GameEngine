@@ -1,8 +1,10 @@
 #include "FGL/renderer/Batch.h"
+#include "FGL/util/Timer.h"
 
 #include <GL/glew.h>
 
 #include <iostream>
+#include <cstring>
 
 Batch::Batch()
 {
@@ -21,25 +23,57 @@ void Batch::add(Quad& quad)
 {
     // Add an offset to the indices
     int indices[6];
-    for (int i = 0 ; i < 6 ; i++)
+    std::memcpy(indices, quad.m_indices, sizeof(quad.m_indices));
+
+    for (int j = 0 ; j < 6 ; j++)
     {
-        indices[i] = quad.m_indices[i] + (m_indices.size() / 6) * 4;
+        indices[j] += m_quads.size() * 4;
     }
 
-    m_positions.insert(m_positions.end(), std::begin(quad.m_positions), std::end(quad.m_positions));
-    m_colors.insert(m_colors.end(), std::begin(quad.m_colors), std::end(quad.m_colors));
     m_indices.insert(m_indices.end(), std::begin(indices), std::end(indices));
 
+    m_quads.push_back(quad);
+
+    m_positionBuf.allocate(sizeof(float) * m_quads.size() * 8);
+    m_colorBuf.allocate(sizeof(float) * m_quads.size() * 16);
+
+    m_indexBuf.update(&m_indices[0], m_indices.size());
+}
+
+void Batch::update()
+{
     m_vertexArray.bind();
 
-    m_positionBuf.update(&m_positions[0].x, sizeof(float) * m_positions.size() * 2);
-    m_colorBuf.update(&m_colors[0].r, sizeof(float) * m_colors.size() * 4);
-    m_indexBuf.update(&m_indices[0], m_indices.size());
+    std::vector<Vector2f> positions;
+    std::vector<Color> colors;
+    
+    // TODO: refactor! performance heavy!
+    for (auto& quad : m_quads)
+    {
+        auto i = &quad - &m_quads[0];
+        auto vertices = quad.getVertices();
+
+        std::array<Vector2f, 4> vPositions;
+        std::array<Color, 4>    vColors;
+        for (int j = 0 ; j < vertices.size() ; j++)
+        {
+            vPositions[j] = vertices[j].position;
+            vColors[j] = vertices[j].color;
+        }
+
+        positions.insert(positions.end(), vPositions.begin(), vPositions.end());
+        colors.insert(colors.end(), vColors.begin(), vColors.end());
+    }
+
+    m_positionBuf.update(&positions[0].x, sizeof(float) * positions.size() * 2);
+    m_colorBuf.update(&colors[0].r, sizeof(float) * colors.size() * 4);
 }
 
 void Batch::render()
 {
-    m_vertexArray.bind();
+    {
+        update();
+    }
 
     glDrawElements(GL_TRIANGLES, m_indexBuf.getCount(), GL_UNSIGNED_INT, 0);
 }
