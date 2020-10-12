@@ -19,10 +19,12 @@ int main()
     
     Quad quad(Vector2f(100, 100), Vector2f(100, 100), Color(1, 0, 0, 1));
     Quad quad1(Vector2f(300, 100), Vector2f(100, 100), Color(0, 1, 0, 1));
-    Quad quad2(Vector2f(500, 100), Vector2f(100, 100), Color(0, 0, 1, 1));
+    Quad quad2(Vector2f(500, 100), Vector2f(100, 100), Color(0, 1, 1, 1));
+    Quad quad3(Vector2f(700, 100), Vector2f(100, 100), Color(1, 1, 0, 1));
     batch.add(quad);
     batch.add(quad1);
     batch.add(quad2);
+    batch.add(quad3);
 
     while (window.isOpen())
     {
@@ -34,6 +36,8 @@ int main()
         }
 
         window.clear();
+
+        quad.move(Vector2f(3, 0));
 
         batch.render();
 

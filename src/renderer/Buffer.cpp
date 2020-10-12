@@ -17,7 +17,6 @@ void VertexBuffer::update(const void* data, size_t size)
     bind();
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
-    //glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
 }
 
 void VertexBuffer::allocate(size_t size)

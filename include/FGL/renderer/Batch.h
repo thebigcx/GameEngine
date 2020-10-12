@@ -12,7 +12,7 @@ class Batch
 public:
     Batch();
 
-    void add(Quad& quad);
+    void add(const Quad& quad);
 
     void render();
 
@@ -21,8 +21,8 @@ public:
 private:
     VertexArray m_vertexArray;
 
-    VertexBuffer m_positionBuf;
-    VertexBuffer m_colorBuf;
+    VertexBuffer m_vertexBuffer;
+    //VertexBuffer m_colorBuf;
 
     IndexBuffer m_indexBuf;
 
@@ -31,5 +31,5 @@ private:
 
     std::vector<unsigned int> m_indices;
 
-    std::vector<Quad> m_quads;
+    std::vector<const Quad*> m_quads;
 };

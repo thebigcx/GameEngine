@@ -12,12 +12,14 @@ class Quad
 public:
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
 
-    const Vector2f& getPosition()
+    const Vector2f& getPosition() const
     {
         return m_position;
     }
 
-    std::array<Vertex, 4> getVertices();
+    void move(Vector2f direction);
+
+    std::array<Vertex, 4> getVertices() const;
 
     friend class Batch;
 
