@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <unordered_map>
 
 struct ShaderSource
 {
@@ -17,24 +18,37 @@ struct ShaderSource
     std::string fragment;
 };
 
-class Shader {
-    public:
-        Shader(const std::string& vsPath, const std::string& fsPath);
-        ~Shader();
+struct Uniform
+{
+    std::string name;
+    size_t size;
+    GLenum type;
+    int location;
+};
 
-        void bind() const;
+class Shader
+{
+public:
+    Shader();
+    ~Shader();
 
-        void setUniform(std::string p_name, int p_value);
-        void setUniform(std::string p_name, bool p_value);
-        void setUniform(std::string p_name, float p_value);
-        void setUniform(std::string p_name, glm::mat4 p_value);
+    void create(const std::string& vsPath, const std::string& fsPath);
 
-        unsigned int getId() const;
+    void bind() const;
 
-    private:
-        unsigned int m_id;
+    void setUniform(std::string name, int value);
+    void setUniform(std::string name, bool value);
+    void setUniform(std::string name, float value);
+    void setUniform(std::string name, const glm::mat4& value);
 
-        static ShaderSource parseShader(const std::string& vsPath, const std::string& fsPath);
+    unsigned int getId() const;
 
-        bool compileShader(const ShaderSource& source);
+private:
+    unsigned int m_id;
+
+    static ShaderSource parseShader(const std::string& vsPath, const std::string& fsPath);
+
+    bool compileShader(const ShaderSource& source);
+
+    std::unordered_map<std::string, Uniform> m_uniforms;
 };

@@ -1,9 +1,37 @@
 #include "FGL/renderer/Shader.h"
 
-Shader::Shader(const std::string& vsPath, const std::string& fsPath)
+#include "FGL/util/Timer.h"
+
+Shader::Shader()
+{
+
+}
+
+void Shader::create(const std::string& vsPath, const std::string& fsPath)
 {
     auto source = parseShader(vsPath, fsPath);
     bool success = compileShader(source);
+
+    // Find all uniforms
+    int i;
+    int count;
+    int size;
+    GLenum type;
+    const GLsizei bufSize = 16;
+    GLchar name[bufSize];
+    GLsizei length;
+
+    glGetProgramiv(m_id, GL_ACTIVE_ATTRIBUTES, &count);
+
+    for (i = 0 ; i < count ; i++)
+    {
+        glGetActiveUniform(m_id, (GLuint)i, bufSize, &length, &size, &type, name);
+
+        Uniform uniform;
+        uniform = { name, (size_t)size, type, i };
+
+        m_uniforms.insert(std::make_pair(std::string(name), uniform));
+    }
 }
 
 Shader::~Shader()
@@ -103,24 +131,24 @@ void Shader::bind() const
     glUseProgram(m_id);
 }
 
-void Shader::setUniform(std::string p_name, int p_value)
+void Shader::setUniform(std::string name, int value)
 {
-    glUniform1i(glGetUniformLocation(m_id, p_name.c_str()), p_value);
+    glUniform1i(m_uniforms[name].location, value);
 }
 
-void Shader::setUniform(std::string p_name, bool p_value)
+void Shader::setUniform(std::string name, bool value)
 {
-    glUniform1i(glGetUniformLocation(m_id, p_name.c_str()), (int)p_value);
+    glUniform1i(m_uniforms[name].location, (int)value);
 }
 
-void Shader::setUniform(std::string p_name, float p_value)
+void Shader::setUniform(std::string name, float value)
 {
-    glUniform1f(glGetUniformLocation(m_id, p_name.c_str()), p_value);
+    glUniform1f(m_uniforms[name].location, value);
 }
 
-void Shader::setUniform(std::string p_name, glm::mat4 p_value)
+void Shader::setUniform(std::string name, const glm::mat4& value)
 {
-    glUniformMatrix4fv(glGetUniformLocation(m_id, p_name.c_str()), 1, GL_FALSE, glm::value_ptr(p_value));
+    glUniformMatrix4fv(m_uniforms[name].location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 unsigned int Shader::getId() const

@@ -6,7 +6,8 @@ int main()
 
     window.setIcon("res/icon.jpg");
 
-    Shader shader("shaders/default.vert", "shaders/default.frag");
+    Shader shader;
+    shader.create("shaders/default.vert", "shaders/default.frag");
     shader.bind();
 
     glm::mat4 projection = glm::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
@@ -38,6 +39,7 @@ int main()
         window.clear();
 
         quad.move(Vector2f(3, 0));
+        quad1.move(Vector2f(0, 3));
 
         batch.render();
 
