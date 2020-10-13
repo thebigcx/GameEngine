@@ -11,25 +11,30 @@ Batch::Batch()
     m_vertexArray.bind();
 
     m_vertexBuffer.bind();
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texCoord));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(2);
+
+    
 }
 
 void Batch::add(const Quad& quad)
 {
     // Add an offset to the indices
-    int indices[quad.m_indices.size()];
-    std::memcpy(indices, quad.m_indices.data(), sizeof(quad.m_indices));
+    int indices[quad.getIndices().size()];
+    std::memcpy(indices, quad.getIndices().data(), sizeof(quad.getIndices()));
 
-    for (int j = 0 ; j < quad.m_indices.size() ; j++)
+    for (int j = 0 ; j < quad.getIndices().size() ; j++)
     {
         indices[j] += m_quads.size() * Quad::getVertexCount();
     }
 
-    m_indices.insert(m_indices.end(), std::begin(indices), std::end(indices));
+    m_indices.insert(m_indices.end(), &indices[0], &indices[sizeof(indices)]);
 
     m_quads.push_back(&quad);
 

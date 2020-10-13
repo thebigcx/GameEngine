@@ -4,6 +4,7 @@
 #include <array>
 
 #include "../util/maths/Vector2.h"
+#include "../util/maths/Rect.h"
 #include "../util/Color.h"
 #include "Vertex.h"
 #include "../Transformable.h"
@@ -13,18 +14,18 @@ class Quad : public Transformable
 public:
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
 
-    inline const Vector2f& getPosition() const
-    {
-        return m_position;
-    }
-
     void move(Vector2f direction);
 
     std::array<Vertex, 4> getVertices() const;
 
     static inline int getVertexCount() { return 4; }
 
-    friend class Batch;
+    void setTextureRect(const FloatRect& rect);
+
+    static inline const std::array<unsigned int, 6> getIndices()
+    {
+        return m_indices;
+    }
 
 private:
     Color m_color;
@@ -34,6 +35,5 @@ private:
         0, 2, 3
     };
 
-    Vector2f m_positions[4];
-    Color m_colors[4];
+    FloatRect m_texRect;
 };

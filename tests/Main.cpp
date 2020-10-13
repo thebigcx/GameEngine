@@ -2,6 +2,8 @@
 
 int main()
 {
+    Math::Random::initSeed();
+
     Window window(1280, 720, "Hello, Fast Game Library!");
 
     window.setIcon("res/icon.jpg");
@@ -9,6 +11,10 @@ int main()
     Shader shader;
     shader.create("shaders/default.vert", "shaders/default.frag");
     shader.bind();
+
+    Texture texture;
+    texture.loadFile("res/terrain.png");
+    texture.bind();
 
     glm::mat4 projection = glm::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
     shader.setUniform("projection", projection);
@@ -18,14 +24,11 @@ int main()
 
     Batch batch;
     
-    Quad quad(Vector2f(100, 100), Vector2f(100, 100), Color(1, 0, 0, 1));
-    Quad quad1(Vector2f(300, 100), Vector2f(100, 100), Color(0, 1, 0, 1));
-    Quad quad2(Vector2f(500, 100), Vector2f(100, 100), Color(0, 1, 1, 1));
-    Quad quad3(Vector2f(700, 100), Vector2f(100, 100), Color(1, 1, 0, 1));
+    Quad quad(Vector2f(100, 100), Vector2f(1000, 1000), Color(1, 1, 1, 1));
     batch.add(quad);
-    batch.add(quad1);
-    batch.add(quad2);
-    batch.add(quad3);
+
+    quad.setTextureRect(FloatRect(15.f / 16.f, 0, 1.f / 16.f, 1.f / 16.f));
+    quad.setOrigin(Vector2f(1, 1));
 
     while (window.isOpen())
     {
@@ -38,8 +41,7 @@ int main()
 
         window.clear();
 
-        quad.move(Vector2f(3, 0));
-        quad1.move(Vector2f(0, 3));
+        quad.rotate(1);
 
         batch.render();
 

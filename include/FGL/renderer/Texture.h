@@ -23,6 +23,8 @@ public:
     void setRepeated(bool repeated = true);
     bool isRepeated() const;
 
+    void setVerticalFlip(bool flip = true);
+
     Vector2u getSize() const;
 
 private:
@@ -31,6 +33,7 @@ private:
     bool m_smooth = false;
     bool m_repeated = false;
     bool m_mipmapped = false;
+    bool m_flipped = true;
 
     Vector2u m_size;
 };

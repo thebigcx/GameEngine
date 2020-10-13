@@ -6,5 +6,6 @@
 struct Vertex
 {
     Vector2f position;
+    Vector2f texCoord;
     Color color;
 };
