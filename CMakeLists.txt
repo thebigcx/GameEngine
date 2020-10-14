@@ -20,6 +20,7 @@ src/Image.cpp
 src/renderer/Buffer.cpp
 src/renderer/Texture.cpp
 src/renderer/Sprite.cpp
+src/renderer/FrameBuffer.cpp
 )
 
 # Compile the tests

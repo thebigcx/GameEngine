@@ -1,12 +1,36 @@
 #include <FGL/FGL.h>
 
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 int main()
 {
     Math::Random::initSeed();
 
     Window window(1280, 720, "Hello, Fast Game Library!");
 
+    glEnable              ( GL_DEBUG_OUTPUT );
+    glDebugMessageCallback( MessageCallback, 0 );
+
     window.setIcon("res/icon.jpg");
+
+    //FrameBuffer frameBuffer;
+    //frameBuffer.create();
+    //frameBuffer.bind();
+
+    Shader framebufferShader;
+    framebufferShader.create("shaders/framebuffer.vert", "shaders/framebuffer.frag");
 
     Shader shader;
     shader.create("shaders/default.vert", "shaders/default.frag");
@@ -30,6 +54,10 @@ int main()
     quad.setTextureRect(FloatRect(15.f / 16.f, 0, 1.f / 16.f, 1.f / 16.f));
     quad.setOrigin(Vector2f(1, 1));
 
+    glDisable(GL_DEPTH_TEST);
+
+    
+
     while (window.isOpen())
     {
         window.pollEvents();
@@ -41,9 +69,13 @@ int main()
 
         window.clear();
 
+        shader.bind();
+
         quad.rotate(1);
 
         batch.render();
+
+        //frameBuffer.render(framebufferShader);
 
         window.display();
     }
