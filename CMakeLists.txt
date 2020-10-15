@@ -20,12 +20,13 @@ src/Image.cpp
 src/renderer/Buffer.cpp
 src/renderer/Texture.cpp
 src/renderer/Sprite.cpp
-src/renderer/FrameBuffer.cpp
+src/renderer/Framebuffer.cpp
+src/renderer/Renderer.cpp
 )
 
 # Compile the tests
 file(GLOB TEST_SOURCES CONFIGURE_DEPENDS
-tests/Main.cpp
+tests/MultipleWindows.cpp
 )
 
 # Compile the static library

@@ -23,13 +23,9 @@ void Shader::create(const std::string& vsPath, const std::string& fsPath)
 
     glGetProgramiv(m_id, GL_ACTIVE_ATTRIBUTES, &count);
 
-    std::cout << count << "\n\n";
-
     for (i = 0 ; i < count ; i++)
     {
         glGetActiveUniform(m_id, (GLuint)i, bufSize, &length, &size, &type, name);
-
-        std::cout << name << "\n\n";
 
         Uniform uniform;
         uniform = { name, (size_t)size, type, i };

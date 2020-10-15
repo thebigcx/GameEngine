@@ -25,13 +25,6 @@ int main()
 
     window.setIcon("res/icon.jpg");
 
-    //FrameBuffer frameBuffer;
-    //frameBuffer.create();
-    //frameBuffer.bind();
-
-    Shader framebufferShader;
-    framebufferShader.create("shaders/framebuffer.vert", "shaders/framebuffer.frag");
-
     Shader shader;
     shader.create("shaders/default.vert", "shaders/default.frag");
     shader.bind();
@@ -52,7 +45,7 @@ int main()
     batch.add(quad);
 
     quad.setTextureRect(FloatRect(15.f / 16.f, 0, 1.f / 16.f, 1.f / 16.f));
-    quad.setOrigin(Vector2f(1, 1));
+    quad.setOrigin(Vector2f(100, 100));
 
     glDisable(GL_DEPTH_TEST);
 
@@ -67,7 +60,7 @@ int main()
             window.close();
         }
 
-        window.clear();
+        Renderer::clear(Color(0, 0, 0, 1));
 
         shader.bind();
 
@@ -75,9 +68,7 @@ int main()
 
         batch.render();
 
-        //frameBuffer.render(framebufferShader);
-
-        window.display();
+        Renderer::display();
     }
 
     return 0;

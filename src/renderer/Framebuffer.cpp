@@ -1,20 +1,20 @@
-#include "FGL/renderer/FrameBuffer.h"
+#include "FGL/renderer/Framebuffer.h"
 
 #include <GL/glew.h>
 
 #include <iostream>
 
-FrameBuffer::FrameBuffer()
+Framebuffer::Framebuffer()
 {
     
 }
 
-FrameBuffer::~FrameBuffer()
+Framebuffer::~Framebuffer()
 {
     glDeleteFramebuffers(1, &m_id);
 }
 
-void FrameBuffer::create()
+void Framebuffer::create()
 {
     glGenFramebuffers(1, &m_id);
     glBindFramebuffer(GL_FRAMEBUFFER, m_id);
@@ -55,7 +55,7 @@ void FrameBuffer::create()
     glEnableVertexAttribArray(1);
 }
 
-void FrameBuffer::render(Shader& shader)
+void Framebuffer::render(Shader& shader)
 {
     unbind();
 
@@ -69,16 +69,14 @@ void FrameBuffer::render(Shader& shader)
     glBindTexture(GL_TEXTURE_2D, m_textureId);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    bind();
 }
 
-void FrameBuffer::bind() const
+void Framebuffer::bind() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 }
 
-void FrameBuffer::unbind() const
+void Framebuffer::unbind() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

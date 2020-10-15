@@ -19,7 +19,7 @@ public:
 
     void clear();
 
-    void display();
+    void display() const;
     void pollEvents();
 
     bool isKeyPressed(int key);
@@ -27,6 +27,8 @@ public:
     void close();
 
     void setTitle(const std::string& title);
+
+    void makeCurrentContext() const;
 
     void setIcon(const std::string& iconPath);
     void setIcon(const Image& image);

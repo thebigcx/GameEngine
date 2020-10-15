@@ -5,11 +5,11 @@
 #include "Shader.h"
 #include "Buffer.h"
 
-class FrameBuffer
+class Framebuffer
 {
 public:
-    FrameBuffer();
-    ~FrameBuffer();
+    Framebuffer();
+    ~Framebuffer();
 
     void create();
 

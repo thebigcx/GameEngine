@@ -14,4 +14,5 @@
 #include "util/Timer.h"
 #include "renderer/Vertex.h"
 #include "util/maths/Math.h"
-#include "renderer/FrameBuffer.h"
+#include "renderer/Framebuffer.h"
+#include "renderer/Renderer.h"

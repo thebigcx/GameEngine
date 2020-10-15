@@ -31,7 +31,6 @@ Window::Window(int width, int height, std::string title)
 Window::~Window()
 {
     glfwDestroyWindow(m_window);
-    glfwTerminate();
 }
 
 void Window::setActive()
@@ -51,7 +50,7 @@ bool Window::isOpen()
 
 void Window::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 bool Window::isKeyPressed(int key)
@@ -64,7 +63,7 @@ void Window::close()
     glfwSetWindowShouldClose(m_window, true);
 }
 
-void Window::display()
+void Window::display() const
 {
     glfwSwapBuffers(m_window);
 }
@@ -118,4 +117,9 @@ void Window::restore()
 void Window::setOpacity(float opacity)
 {
     glfwSetWindowOpacity(m_window, opacity);
+}
+
+void Window::makeCurrentContext() const
+{
+    glfwMakeContextCurrent(m_window);
 }
