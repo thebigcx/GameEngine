@@ -29,7 +29,7 @@ public:
 
     void setCurrent(bool current = true)
     {
-        auto window = Application::get().getActiveWindow().getId();
+        auto window = Application::get().getWindow().getId();
         if (current)
         {
             glfwSetCursor(window, m_cursor);

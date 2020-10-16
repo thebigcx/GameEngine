@@ -18,7 +18,7 @@ public:
 
     static Vector2i getPosition()
     {
-        auto window = Application::get().getActiveWindow().getId();
+        auto window = Application::get().getWindow().getId();
         double x, y;
         glfwGetCursorPos(window, &x, &y);
         return Vector2i(x, y);
@@ -26,7 +26,7 @@ public:
     
     static bool isButtonPressed(Button button)
     {
-        auto window = Application::get().getActiveWindow().getId();
+        auto window = Application::get().getWindow().getId();
 
         return glfwGetMouseButton(window, button) == GLFW_PRESS;
     }

@@ -5,15 +5,9 @@ int main()
     Math::Random::initSeed();
 
     Application application;
-    Window window(1280, 720, "Hello, Fast Game Library!");
-    Renderer::setContext(window);
-    Application::get().setActiveWindow(window);
+    auto& window = Application::get().getWindow();
 
-    Cursor cursor;
-    cursor.createNativeCursor(Cursor::NativeCursor::IBeam);
-    cursor.setCurrent(true);
-
-    Logger::init();
+    Logger::out(FileReader::readFile("test.txt"));
 
     window.setIcon("res/icon.jpg");
 
@@ -50,7 +44,7 @@ int main()
 
         if (Mouse::isButtonPressed(Mouse::Button::Left))
         {
-            Logger::log("Left Mouse Button pressed!");
+            Logger::out("Left Mouse Button pressed!");
         }
 
         Renderer::clear(Color(0, 0, 0, 1));

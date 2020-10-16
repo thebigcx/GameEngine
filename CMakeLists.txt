@@ -24,6 +24,8 @@ src/renderer/Renderer.cpp
 src/core/Logger.cpp
 src/core/Application.cpp
 src/core/Window.cpp
+src/io/FileReader.cpp
+src/io/FileWriter.cpp
 )
 
 # Compile the tests

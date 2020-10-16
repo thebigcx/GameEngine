@@ -2,6 +2,7 @@
 
 #include "Window.h"
 
+// Singleton
 class Application
 {
 public:
@@ -11,12 +12,10 @@ public:
     
     static Application& get();
 
-    void setActiveWindow(Window& window);
-
-    const Window& getActiveWindow() const;
+    Window& getWindow();
 
 private:
     static Application* m_instance;
 
-    Window* m_window;
+    Window m_window;
 };

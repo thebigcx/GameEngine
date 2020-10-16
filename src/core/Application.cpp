@@ -5,26 +5,23 @@
 Application* Application::m_instance = nullptr;
 
 Application::Application()
+: m_window(1280, 720, "Hello, Fast Game Library!")
 {
     m_instance = this;
+    Logger::init();
 }
 
 Application& Application::get()
 {
     if (m_instance == nullptr)
     {
-        Logger::log("Application instance is undefined!");
+        Logger::err("Application instance is undefined!");
     }
 
     return *m_instance;
 }
 
-void Application::setActiveWindow(Window& window)
+Window& Application::getWindow()
 {
-    m_window = &window;
-}
-
-const Window& Application::getActiveWindow() const
-{
-    return *m_window;
+    return m_window;
 }

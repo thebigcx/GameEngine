@@ -1,4 +1,5 @@
 #include "FGL/renderer/Renderer.h"
+#include "FGL/core/Application.h"
 
 #include <GL/glew.h>
 
@@ -20,10 +21,8 @@ void Renderer::clear(const Color& color)
 
 void Renderer::display()
 {
-    if (m_currentContext != nullptr)
-    {
-        m_currentContext->display();
-    }
+    auto& window = Application::get().getWindow();
+    window.display();
 }
 
 void Renderer::renderBatch(const Batch& batch)

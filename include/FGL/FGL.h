@@ -21,3 +21,5 @@
 #include "core/Keyboard.h"
 #include "core/Mouse.h"
 #include "core/Cursor.h"
+#include "io/FileWriter.h"
+#include "io/FileReader.h"
