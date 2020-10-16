@@ -30,8 +30,15 @@ void VertexArray::addVertexBuffer(const VertexBuffer& buffer)
                               GL_FALSE, 
                               buffer.getLayout().getStride(), 
                               (const void*)buffer.getLayout()[i].offset);
-                              
+
         glEnableVertexAttribArray(m_attribCount);
         i++;
     }
+}
+
+void VertexArray::setIndexBuffer(const IndexBuffer& buffer)
+{
+    bind();
+
+    buffer.bind();
 }

@@ -13,6 +13,7 @@ public:
     void bind() const;
 
     void addVertexBuffer(const VertexBuffer& buffer);
+    void setIndexBuffer(const IndexBuffer& buffer);
 
 private:
     unsigned int m_id;

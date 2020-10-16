@@ -6,6 +6,8 @@ class Application
 {
 public:
     Application();
+
+    void run();
     
     static Application& get();
 

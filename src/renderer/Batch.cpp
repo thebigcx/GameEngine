@@ -17,9 +17,9 @@ Batch::Batch()
     };
 
     m_vertexBuffer.setLayout(layout);
-    m_vertexArray.addVertexBuffer(m_vertexBuffer);
 
-    
+    m_vertexArray.addVertexBuffer(m_vertexBuffer);
+    m_vertexArray.setIndexBuffer(m_indexBuf);
 }
 
 void Batch::add(const Quad& quad)
