@@ -20,3 +20,4 @@
 #include "core/Application.h"
 #include "core/Keyboard.h"
 #include "core/Mouse.h"
+#include "core/Cursor.h"

@@ -24,7 +24,13 @@ void VertexArray::addVertexBuffer(const VertexBuffer& buffer)
     int i = 0;
     for (m_attribCount ; m_attribCount < buffer.getLayout().size() ; m_attribCount++)
     {
-        glVertexAttribPointer(m_attribCount, buffer.getLayout()[i].componentCount(), GL_FLOAT, GL_FALSE, buffer.getLayout().getStride(), (const void*)buffer.getLayout()[i].offset);
+        glVertexAttribPointer(m_attribCount, 
+                              buffer.getLayout()[i].componentCount(), 
+                              buffer.getLayout()[i].getOpenGLType(), 
+                              GL_FALSE, 
+                              buffer.getLayout().getStride(), 
+                              (const void*)buffer.getLayout()[i].offset);
+                              
         glEnableVertexAttribArray(m_attribCount);
         i++;
     }

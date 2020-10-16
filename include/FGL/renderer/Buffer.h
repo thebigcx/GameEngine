@@ -13,7 +13,7 @@ struct BufferElement
         : type(type), name(name)
     {
         // TODO: add support for other types besides floats
-        size = componentCount() * sizeof(float);
+        size = dataTypeSize();
     }
 
     int componentCount() const
@@ -31,6 +31,36 @@ struct BufferElement
             case Shader::DataType::Vec3i:   return 3;
             case Shader::DataType::Color:   return 4;
             default:                        return 0;
+        }
+    }
+
+    size_t dataTypeSize()
+    {
+        size_t size = 0;
+        
+        if (getOpenGLType() == GL_FLOAT)
+            size = sizeof(float);
+        else if (getOpenGLType() == GL_INT)
+            size = sizeof(int);
+
+        return componentCount() * size;
+    }
+
+    GLenum getOpenGLType() const
+    {
+        switch (type)
+        {
+            case Shader::DataType::Float:   
+            case Shader::DataType::Vec2f:
+            case Shader::DataType::Vec3f:
+            case Shader::DataType::Mat3f:
+            case Shader::DataType::Mat4f:
+            case Shader::DataType::Color:   return GL_FLOAT;
+            case Shader::DataType::Boolean:
+            case Shader::DataType::Integer:
+            case Shader::DataType::Vec2i:
+            case Shader::DataType::Vec3i:   return GL_INT;
+            default:                        return GL_FLOAT;
         }
     }
 

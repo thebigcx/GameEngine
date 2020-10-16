@@ -14,8 +14,6 @@ public:
 
     void add(const Quad& quad);
 
-    void render();
-
     void update();
 
     // For Renderer class

@@ -9,6 +9,10 @@ int main()
     Renderer::setContext(window);
     Application::get().setActiveWindow(window);
 
+    Cursor cursor;
+    cursor.createNativeCursor(Cursor::NativeCursor::IBeam);
+    cursor.setCurrent(true);
+
     Logger::init();
 
     window.setIcon("res/icon.jpg");
@@ -42,6 +46,11 @@ int main()
         if (window.isKeyPressed(GLFW_KEY_ESCAPE))
         {
             window.close();
+        }
+
+        if (Mouse::isButtonPressed(Mouse::Button::Left))
+        {
+            Logger::log("Left Mouse Button pressed!");
         }
 
         Renderer::clear(Color(0, 0, 0, 1));
