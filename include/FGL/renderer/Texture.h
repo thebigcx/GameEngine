@@ -6,6 +6,7 @@
 #include <string>
 
 #include "../util/maths/Vector2.h"
+#include "../Image.h"
 
 class Texture {
 public:
@@ -15,6 +16,9 @@ public:
 
     void bind() const;
 
+    void create(int width, int height);
+
+    bool loadImage(const Image& image);
     bool loadFile(const std::string& file);
 
     void setSmooth(bool smooth = true);

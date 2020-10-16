@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+#include "Buffer.h"
+
 class VertexArray
 {
 public:
@@ -10,6 +12,10 @@ public:
 
     void bind() const;
 
+    void addVertexBuffer(const VertexBuffer& buffer);
+
 private:
     unsigned int m_id;
+
+    int m_attribCount = 0;
 };

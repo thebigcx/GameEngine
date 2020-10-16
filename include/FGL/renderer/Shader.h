@@ -43,6 +43,20 @@ public:
 
     unsigned int getId() const;
 
+    enum DataType
+    {
+        Float,
+        Vec2f,
+        Vec3f,
+        Mat3f,
+        Mat4f,
+        Boolean,
+        Integer,
+        Vec2i,
+        Vec3i,
+        Color
+    };
+
 private:
     unsigned int m_id;
 

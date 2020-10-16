@@ -22,6 +22,11 @@ bool Texture::loadFile(const std::string& file)
     image.setVerticalFlip(m_flipped);
     image.loadFile(file);
 
+    return loadImage(image);
+}
+
+bool Texture::loadImage(const Image& image)
+{
     if (image.getPixels())
     {
         glTexImage2D(GL_TEXTURE_2D,      // Type of texture
@@ -41,7 +46,7 @@ bool Texture::loadFile(const std::string& file)
     }
     else
     {
-        std::cout << "Could not load texture at: " << file << "\n";
+        std::cout << "Image is corrupted or contains unknown formatted data!\n";
         return false;
     }
 
@@ -49,6 +54,13 @@ bool Texture::loadFile(const std::string& file)
     m_size.y = image.getSize().y;
 
     return true;
+}
+
+void Texture::create(int width, int height)
+{
+    glBindTexture(GL_TEXTURE_2D, m_id);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 }
 
 void Texture::setSmooth(bool smooth)

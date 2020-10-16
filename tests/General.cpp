@@ -44,7 +44,6 @@ int main()
             window.close();
         }
 
-        Logger::log(Mouse::getPosition().str());
         Renderer::clear(Color(0, 0, 0, 1));
 
         shader.bind();

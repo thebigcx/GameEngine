@@ -10,7 +10,7 @@ Batch::Batch()
 {
     m_vertexArray.bind();
 
-    m_vertexBuffer.bind();
+    /*m_vertexBuffer.bind();
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
     glEnableVertexAttribArray(0);
 
@@ -18,7 +18,15 @@ Batch::Batch()
     glEnableVertexAttribArray(1);
 
     glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
-    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(2);*/
+    BufferLayout layout = {
+        { Shader::DataType::Vec2f, "aPos" },
+        { Shader::DataType::Vec2f, "aTexCoord" },
+        { Shader::DataType::Color, "aColor" }
+    };
+
+    m_vertexBuffer.setLayout(layout);
+    m_vertexArray.addVertexBuffer(m_vertexBuffer);
 
     
 }
@@ -38,7 +46,7 @@ void Batch::add(const Quad& quad)
 
     m_quads.push_back(&quad);
 
-    m_vertexBuffer.allocate(sizeof(Vertex) * m_quads.size() * Quad::getVertexCount());
+    m_vertexBuffer.create(sizeof(Vertex) * m_quads.size() * Quad::getVertexCount());
 
     m_indexBuf.update(&m_indices[0], m_indices.size());
 }
