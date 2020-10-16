@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 template <typename T>
 class Vector2
 {
@@ -68,6 +70,11 @@ public:
         x = x / vec.x;
         y = y / vec.y;
         return *this;
+    }
+
+    std::string str() const
+    {
+        return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
     }
 
     T x, y;

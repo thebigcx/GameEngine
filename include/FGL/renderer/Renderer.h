@@ -1,7 +1,14 @@
 #pragma once
 
-#include "../Window.h"
+#include "../core/Window.h"
 #include "../util/Color.h"
+#include "Batch.h"
+#include "Shader.h"
+
+struct RenderData
+{
+    Shader shader;
+};
 
 class Renderer
 {
@@ -13,6 +20,10 @@ class Renderer
 
         static void setContext(const Window& window);
 
+        static void renderBatch(const Batch& batch);
+
     private:
         static const Window* m_currentContext;
+
+        static RenderData m_data;
 };

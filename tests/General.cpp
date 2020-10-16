@@ -1,27 +1,15 @@
 #include <FGL/FGL.h>
 
-void GLAPIENTRY
-MessageCallback( GLenum source,
-                 GLenum type,
-                 GLuint id,
-                 GLenum severity,
-                 GLsizei length,
-                 const GLchar* message,
-                 const void* userParam )
-{
-  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, severity, message );
-}
-
 int main()
 {
     Math::Random::initSeed();
 
+    Application application;
     Window window(1280, 720, "Hello, Fast Game Library!");
+    Renderer::setContext(window);
+    Application::get().setActiveWindow(window);
 
-    glEnable              ( GL_DEBUG_OUTPUT );
-    glDebugMessageCallback( MessageCallback, 0 );
+    Logger::init();
 
     window.setIcon("res/icon.jpg");
 
@@ -47,10 +35,6 @@ int main()
     quad.setTextureRect(FloatRect(15.f / 16.f, 0, 1.f / 16.f, 1.f / 16.f));
     quad.setOrigin(Vector2f(100, 100));
 
-    glDisable(GL_DEPTH_TEST);
-
-    
-
     while (window.isOpen())
     {
         window.pollEvents();
@@ -60,13 +44,15 @@ int main()
             window.close();
         }
 
+        Logger::log(Mouse::getPosition().str());
         Renderer::clear(Color(0, 0, 0, 1));
 
         shader.bind();
 
         quad.rotate(1);
 
-        batch.render();
+        batch.update();
+        Renderer::renderBatch(batch);
 
         Renderer::display();
     }

@@ -3,6 +3,14 @@
 #include <GL/glew.h>
 
 const Window* Renderer::m_currentContext = nullptr;
+RenderData Renderer::m_data;
+
+void Renderer::init()
+{
+    glDisable(GL_DEPTH_TEST);
+
+    m_data.shader.create("shaders/default.vert", "shaders/default.frag");
+}
 
 void Renderer::clear(const Color& color)
 {
@@ -16,6 +24,13 @@ void Renderer::display()
     {
         m_currentContext->display();
     }
+}
+
+void Renderer::renderBatch(const Batch& batch)
+{
+    batch.getVertexArray().bind();
+
+    glDrawElements(GL_TRIANGLES, batch.getIndexBuffer().getCount(), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::setContext(const Window& window)

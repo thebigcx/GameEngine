@@ -18,11 +18,21 @@ public:
 
     void update();
 
+    // For Renderer class
+    const IndexBuffer& getIndexBuffer() const
+    {
+        return m_indexBuf;
+    }
+
+    const VertexArray& getVertexArray() const
+    {
+        return m_vertexArray;
+    }
+
 private:
     VertexArray m_vertexArray;
 
     VertexBuffer m_vertexBuffer;
-    //VertexBuffer m_colorBuf;
 
     IndexBuffer m_indexBuf;
 

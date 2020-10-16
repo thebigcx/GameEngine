@@ -11,7 +11,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ../lib) # Set the library output directory
 file(GLOB SOURCES CONFIGURE_DEPENDS
 src/vendor/stb_image/stb_image.cpp
 
-src/Window.cpp
 src/renderer/Quad.cpp
 src/renderer/Batch.cpp
 src/renderer/Shader.cpp
@@ -22,11 +21,14 @@ src/renderer/Texture.cpp
 src/renderer/Sprite.cpp
 src/renderer/Framebuffer.cpp
 src/renderer/Renderer.cpp
+src/core/Logger.cpp
+src/core/Application.cpp
+src/core/Window.cpp
 )
 
 # Compile the tests
 file(GLOB TEST_SOURCES CONFIGURE_DEPENDS
-tests/MultipleWindows.cpp
+tests/General.cpp
 )
 
 # Compile the static library

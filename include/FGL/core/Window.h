@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "Image.h"
+#include "../Image.h"
 
 class Window
 {
@@ -23,6 +23,11 @@ public:
     void pollEvents();
 
     bool isKeyPressed(int key);
+
+    GLFWwindow* getId() const
+    {
+        return m_window;
+    }
 
     void close();
 
