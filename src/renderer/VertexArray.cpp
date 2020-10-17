@@ -41,4 +41,6 @@ void VertexArray::setIndexBuffer(const IndexBuffer& buffer)
     bind();
 
     buffer.bind();
+
+    m_pIndexBuffer = &buffer;
 }

@@ -23,7 +23,7 @@ std::array<Vertex, 4> Quad::getVertices() const
 
     Vertex a;
 
-    auto pos = glm::vec4(0) * transform;
+    auto pos = transform * glm::vec4(0, 0, 0, 1);
     a.position = Vector2f(pos.x, pos.y);
 
     a.color = m_color;
@@ -31,7 +31,7 @@ std::array<Vertex, 4> Quad::getVertices() const
 
     Vertex b;
 
-    pos = glm::vec4(1, 0, 0, 0) * transform;
+    pos = transform * glm::vec4(1, 0, 0, 1);
     b.position = Vector2f(pos.x, pos.y);
 
     b.color = m_color;
@@ -39,7 +39,7 @@ std::array<Vertex, 4> Quad::getVertices() const
 
     Vertex c;
 
-    pos = glm::vec4(1, 1, 0, 0) * transform;
+    pos = transform * glm::vec4(1, 1, 0, 1);
     c.position = Vector2f(pos.x, pos.y);
 
     c.color = m_color;
@@ -47,7 +47,7 @@ std::array<Vertex, 4> Quad::getVertices() const
 
     Vertex d;
 
-    pos = glm::vec4(0, 1, 0, 0) * transform;
+    pos = transform * glm::vec4(0, 1, 0, 1);
     d.position = Vector2f(pos.x, pos.y);
     d.color = m_color;
 

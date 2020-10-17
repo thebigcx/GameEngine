@@ -6,7 +6,8 @@
 #include <iostream>
 #include <cstring>
 
-Batch::Batch()
+Batch::Batch(const Shader& shader)
+: m_pShader(&shader)
 {
     m_vertexArray.bind();
 

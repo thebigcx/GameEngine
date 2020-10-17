@@ -27,9 +27,20 @@ void Renderer::display()
 
 void Renderer::renderBatch(const Batch& batch)
 {
+    batch.getShader()->bind();
+
     batch.getVertexArray().bind();
 
-    glDrawElements(GL_TRIANGLES, batch.getIndexBuffer().getCount(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, batch.getIndexBuffer().getCount(), batch.getIndexBuffer().getIndexType(), 0);
+}
+
+void Renderer::renderIndexed(const VertexArray& array, Shader& shader, const glm::mat4& transform)
+{
+    shader.bind();
+    shader.setUniform("transform", transform);
+    array.bind();
+
+    glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);
 }
 
 void Renderer::setContext(const Window& window)

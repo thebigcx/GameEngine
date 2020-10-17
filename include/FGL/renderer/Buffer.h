@@ -159,8 +159,15 @@ public:
         return m_count;
     }
 
+    inline GLenum getIndexType() const
+    {
+        return m_indexType;
+    }
+
 private:
     unsigned int m_id;
 
     unsigned int m_count;
+
+    const GLenum m_indexType = GL_UNSIGNED_INT;
 };

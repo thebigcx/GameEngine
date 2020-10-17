@@ -39,6 +39,18 @@ Shader::~Shader()
     glDeleteProgram(m_id);
 }
 
+Shader::Shader(const Shader& shader)
+{
+    m_id = shader.getId();
+}
+
+Shader::Shader(Shader&& shader)
+{
+    m_id = shader.m_id;
+    shader.m_id = 0;
+    m_uniforms = shader.m_uniforms;
+}
+
 ShaderSource Shader::parseShader(const std::string& vsPath, const std::string& fsPath)
 {
     std::string vertSource;
@@ -128,7 +140,10 @@ bool Shader::compileShader(const ShaderSource& source)
 
 void Shader::bind() const
 {
-    glUseProgram(m_id);
+    if (m_id != 0)
+    {
+        glUseProgram(m_id);
+    }
 }
 
 void Shader::setUniform(std::string name, int value)

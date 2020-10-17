@@ -24,30 +24,57 @@ public:
         y = v;
     }
 
-    Vector2<T> operator+(const Vector2<T> vec)
+    Vector2<T> operator+(const Vector2<T> vec) const
     {
         return Vector2<T>(x + vec.x, y + vec.y);
     }
 
-    Vector2<T> operator-(const Vector2<T> vec)
+    Vector2<T> operator+(const T& num) const
+    {
+        return Vector2<T>(x + num, y + num);
+    }
+
+    Vector2<T> operator-(const Vector2<T> vec) const
     {
         return Vector2<T>(x - vec.x, y - vec.y);
     }
 
-    Vector2<T> operator*(const Vector2<T> vec)
+    Vector2<T> operator-(const T& num) const
+    {
+        return Vector2<T>(x - num, y - num);
+    }
+
+    Vector2<T> operator*(const Vector2<T> vec) const
     {
         return Vector2<T>(x * vec.x, y * vec.y);
     }
 
-    Vector2<T> operator/(const Vector2<T> vec)
+    Vector2<T> operator*(const T& scl) const
+    {
+        return Vector2<T>(x * scl, y * scl);
+    }
+
+    Vector2<T> operator/(const Vector2<T> vec) const
     {
         return Vector2<T>(x / vec.x, y / vec.y);
+    }
+
+    Vector2<T> operator/(const T& scl) const
+    {
+        return Vector2<T>(x / scl, y / scl);
     }
 
     Vector2<T>& operator+=(const Vector2<T> vec)
     {
         x = x + vec.x;
         y = y + vec.y;
+        return *this;
+    }
+
+    Vector2<T>& operator+=(const T& num)
+    {
+        x = x + num;
+        y = y + num;
         return *this;
     }
 
@@ -58,6 +85,13 @@ public:
         return *this;
     }
 
+    Vector2<T>& operator-=(const T& num)
+    {
+        x = x - num;
+        y = y - num;
+        return *this;
+    }
+
     Vector2<T>& operator*=(const Vector2<T> vec)
     {
         x = x * vec.x;
@@ -65,10 +99,24 @@ public:
         return *this;
     }
 
+    Vector2<T>& operator*=(const T& scl)
+    {
+        x = x * scl;
+        y = y * scl;
+        return *this;
+    }
+
     Vector2<T>& operator/=(const Vector2<T> vec)
     {
         x = x / vec.x;
         y = y / vec.y;
+        return *this;
+    }
+
+    Vector2<T>& operator/=(const T& scl)
+    {
+        x = x / scl;
+        y = y / scl;
         return *this;
     }
 

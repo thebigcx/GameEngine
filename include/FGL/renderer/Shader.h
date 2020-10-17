@@ -32,6 +32,9 @@ public:
     Shader();
     ~Shader();
 
+    Shader(const Shader& shader);
+    Shader(Shader&& shader);
+
     void create(const std::string& vsPath, const std::string& fsPath);
 
     void bind() const;

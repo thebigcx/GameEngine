@@ -8,7 +8,7 @@ out vec2 TexCoord;
 out vec4 Color;
 
 uniform mat4 projection;
-uniform mat4 transform;
+uniform mat4 transform = mat4(1.f);
 
 void main()
 {

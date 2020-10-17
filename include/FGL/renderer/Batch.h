@@ -10,21 +10,26 @@
 class Batch
 {
 public:
-    Batch();
+    Batch(const Shader& shader);
 
     void add(const Quad& quad);
 
     void update();
 
     // For Renderer class
-    const IndexBuffer& getIndexBuffer() const
+    inline const IndexBuffer& getIndexBuffer() const
     {
         return m_indexBuf;
     }
 
-    const VertexArray& getVertexArray() const
+    inline const VertexArray& getVertexArray() const
     {
         return m_vertexArray;
+    }
+
+    inline const Shader* getShader() const
+    {
+        return m_pShader;
     }
 
 private:
@@ -40,4 +45,6 @@ private:
     std::vector<unsigned int> m_indices;
 
     std::vector<const Quad*> m_quads;
+
+    const Shader* m_pShader;
 };

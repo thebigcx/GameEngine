@@ -23,3 +23,4 @@
 #include "core/Cursor.h"
 #include "io/FileWriter.h"
 #include "io/FileReader.h"
+#include "renderer/ShaderLibrary.h"

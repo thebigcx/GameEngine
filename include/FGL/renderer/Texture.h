@@ -14,6 +14,8 @@ public:
 
     ~Texture();
 
+    Texture(Texture&& texture);
+
     void bind() const;
 
     void create(int width, int height);

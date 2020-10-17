@@ -1,7 +1,5 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
-
 #include "../util/maths/Vector2.h"
 #include "Application.h"
 #include "Logger.h"
@@ -16,18 +14,12 @@ public:
         Middle = GLFW_MOUSE_BUTTON_MIDDLE
     };
 
-    static Vector2i getPosition()
-    {
-        auto window = Application::get().getWindow().getId();
-        double x, y;
-        glfwGetCursorPos(window, &x, &y);
-        return Vector2i(x, y);
-    }
+    static Vector2i getPosition();
     
-    static bool isButtonPressed(Button button)
-    {
-        auto window = Application::get().getWindow().getId();
+    static bool isButtonPressed(Button button);
 
-        return glfwGetMouseButton(window, button) == GLFW_PRESS;
-    }
+    friend class Window;
+
+private:
+    static Vector2i m_position;
 };

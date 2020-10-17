@@ -9,6 +9,6 @@ class Keyboard
 public:
     static bool isKeyPressed(int key)
     {
-        return glfwGetKey(Application::get().getWindow().getId(), key) == GLFW_PRESS;
+        return glfwGetKey(Application::get().getWindow().getNative(), key) == GLFW_PRESS;
     }
 };

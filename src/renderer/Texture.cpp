@@ -14,6 +14,17 @@ Texture::~Texture()
     glDeleteTextures(1, &m_id);
 }
 
+Texture::Texture(Texture&& texture)
+{
+    texture.m_id = m_id;
+    m_id = 0;
+    texture.m_flipped = m_flipped;
+    texture.m_mipmapped = m_mipmapped;
+    texture.m_size = m_size;
+    texture.m_smooth = m_smooth;
+    texture.m_repeated = m_repeated;
+}
+
 bool Texture::loadFile(const std::string& file)
 {
     glBindTexture(GL_TEXTURE_2D, m_id);

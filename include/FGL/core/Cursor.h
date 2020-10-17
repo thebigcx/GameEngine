@@ -29,14 +29,14 @@ public:
 
     void setCurrent(bool current = true)
     {
-        auto window = Application::get().getWindow().getId();
+        auto& window = Application::get().getWindow();
         if (current)
         {
-            glfwSetCursor(window, m_cursor);
+            glfwSetCursor(window.getNative(), m_cursor);
         }
         else
         {
-            glfwSetCursor(window, nullptr);
+            glfwSetCursor(window.getNative(), nullptr);
         }
     }
 

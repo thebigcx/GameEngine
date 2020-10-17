@@ -1,4 +1,5 @@
 #include "FGL/core/Window.h"
+#include "FGL/core/Mouse.h"
 
 Window::Window(int width, int height, std::string title)
 {
@@ -43,6 +44,13 @@ void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height
     glViewport(0, 0, width, height);
 }
 
+Vector2i Window::getSize() const
+{
+    int width, height;
+    glfwGetWindowSize(m_window, &width, &height);
+    return Vector2i(width, height);
+}
+
 bool Window::isOpen()
 {
     return !glfwWindowShouldClose(m_window);
@@ -70,7 +78,7 @@ void Window::display() const
 
 void Window::pollEvents()
 {
-    glfwPollEvents();
+    glfwWaitEvents();
 }
 
 void Window::setIcon(const std::string& iconPath)

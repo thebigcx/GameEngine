@@ -26,6 +26,8 @@ src/core/Application.cpp
 src/core/Window.cpp
 src/io/FileReader.cpp
 src/io/FileWriter.cpp
+src/renderer/ShaderLibrary.cpp
+src/core/Mouse.cpp
 )
 
 # Compile the tests

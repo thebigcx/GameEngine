@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "util/maths/Vector2.h"
+#include "core/Logger.h"
 
 class Transformable
 {
@@ -77,9 +78,9 @@ public:
         // Translate
         matrix = glm::translate(matrix, glm::vec3(pos.x, pos.y, 0));
         // Rotate (with respect to origin)
-        matrix = glm::translate(matrix, glm::vec3(m_origin.x * m_size.x, m_origin.y * m_size.y, 0.f));
+        matrix = glm::translate(matrix, glm::vec3(m_origin.x, m_origin.y, 0.f));
         matrix = glm::rotate(matrix, glm::radians((float)m_rotation), glm::vec3(0.f, 0.f, 1.f));
-        matrix = glm::translate(matrix, glm::vec3(-m_origin.x * m_size.x, -m_origin.y * m_size.y, 0.f));
+        matrix = glm::translate(matrix, glm::vec3(-m_origin.x, -m_origin.y, 0.f));
 
         // Scale
         matrix = glm::scale(matrix, glm::vec3(scalar.x, scalar.y, 1));

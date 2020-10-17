@@ -26,10 +26,12 @@ public:
 
     bool isKeyPressed(int key);
 
-    GLFWwindow* getId() const
+    inline GLFWwindow* getNative() const
     {
         return m_window;
     }
+
+    Vector2i getSize() const;
 
     void close();
 
@@ -52,4 +54,5 @@ private:
     GLFWwindow* m_window;
 
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 };
