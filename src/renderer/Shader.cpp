@@ -7,6 +7,11 @@ Shader::Shader()
 
 }
 
+Shader::Shader(const std::string& vsPath, const std::string& fsPath)
+{
+    create(vsPath, fsPath);
+}
+
 void Shader::create(const std::string& vsPath, const std::string& fsPath)
 {
     auto source = parseShader(vsPath, fsPath);

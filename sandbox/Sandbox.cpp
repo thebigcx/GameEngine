@@ -11,18 +11,20 @@ int main()
 
     window.setIcon("res/icon.jpg");
 
-    Shader textureShader;
-    textureShader.create("shaders/texture.vert", "shaders/texture.frag");
+    {
+        Shader textureShader;
+        textureShader.create("shaders/texture.vert", "shaders/texture.frag");
 
-    ShaderLibrary::add("texture", textureShader);
-    ShaderLibrary::get("texture").bind();
+        ShaderLibrary::add("texture", textureShader);
+        ShaderLibrary::get("texture").bind();
+    }
 
     Texture texture;
     texture.loadFile("res/terrain.png");
     texture.bind();
 
     glm::mat4 projection = glm::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
-    textureShader.setUniform("projection", projection);
+    ShaderLibrary::get("texture").setUniform("projection", projection);
 
     Batch batch(ShaderLibrary::get("texture"));
     
