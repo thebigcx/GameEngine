@@ -7,6 +7,11 @@ int main()
     Application application;
     auto& window = Application::get().getWindow();
 
+    SoundManager::init();
+
+    SoundBuffer buffer = SoundBuffer::loadWAV("res/beat_2.wav");
+    Source source; source.create();
+
     window.setIcon("res/icon.jpg");
 
     Shader textureShader;
@@ -26,9 +31,10 @@ int main()
     
     Quad quad(Vector2f(100, 100), Vector2f(100, 100), Color(1, 1, 1, 1));
     batch.add(quad);
+    std::vector<Quad> quads;
 
     quad.setTextureRect(FloatRect(15.f / 16.f, 0, 1.f / 16.f, 1.f / 16.f));
-    quad.setOrigin(quad.getSize() / 2.f);
+    quad.setOrigin(quad.getSize() / 2.f);    
 
     while (window.isOpen())
     {
@@ -39,15 +45,21 @@ int main()
             window.close();
         }
 
+        SoundManager::playFromSource(buffer, source);
+
         Renderer::clear(Color(0, 0, 0, 1));
 
-        quad.setPosition(Vector2f(Mouse::getPosition().x - quad.getSize().x / 2, Mouse::getPosition().y - quad.getSize().y / 2));
+        
 
         batch.update();
         Renderer::renderBatch(batch);
 
         Renderer::display();
     }
+
+    source.destroy();
+    buffer.destroy();
+    SoundManager::cleanUp();
 
     return 0;
 }

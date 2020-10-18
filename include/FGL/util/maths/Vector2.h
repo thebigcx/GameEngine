@@ -66,8 +66,7 @@ public:
 
     Vector2<T>& operator+=(const Vector2<T> vec)
     {
-        x = x + vec.x;
-        y = y + vec.y;
+        *this = *this + vec;
         return *this;
     }
 
@@ -80,8 +79,7 @@ public:
 
     Vector2<T>& operator-=(const Vector2<T> vec)
     {
-        x = x - vec.x;
-        y = y - vec.y;
+        *this = *this - vec;
         return *this;
     }
 
@@ -94,8 +92,7 @@ public:
 
     Vector2<T>& operator*=(const Vector2<T> vec)
     {
-        x = x * vec.x;
-        y = y * vec.y;
+        *this = *this * vec;
         return *this;
     }
 
@@ -108,8 +105,7 @@ public:
 
     Vector2<T>& operator/=(const Vector2<T> vec)
     {
-        x = x / vec.x;
-        y = y / vec.y;
+        *this = *this / vec;
         return *this;
     }
 

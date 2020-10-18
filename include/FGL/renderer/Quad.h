@@ -22,6 +22,8 @@ public:
 
     void setTextureRect(const FloatRect& rect);
 
+    void setColor(const Color& color);
+
     static inline const std::array<unsigned int, 6> getIndices()
     {
         return m_indices;

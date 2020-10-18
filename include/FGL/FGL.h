@@ -24,3 +24,5 @@
 #include "io/FileWriter.h"
 #include "io/FileReader.h"
 #include "renderer/ShaderLibrary.h"
+#include "audio/SoundManager.h"
+#include "audio/Source.h"

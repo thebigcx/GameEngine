@@ -28,6 +28,11 @@ src/io/FileReader.cpp
 src/io/FileWriter.cpp
 src/renderer/ShaderLibrary.cpp
 src/core/Mouse.cpp
+src/audio/SoundManager.cpp
+src/audio/Source.cpp
+src/audio/SoundBuffer.cpp
+src/audio/SoundListener.cpp
+src/vendor/dr_wav.c
 )
 
 # Compile the tests

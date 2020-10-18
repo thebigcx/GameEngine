@@ -60,3 +60,8 @@ void Quad::setTextureRect(const FloatRect& rect)
 {
     m_texRect = rect;
 }
+
+void Quad::setColor(const Color& color)
+{
+    m_color = color;
+}

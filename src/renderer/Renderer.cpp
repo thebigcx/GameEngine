@@ -15,7 +15,7 @@ void Renderer::init()
 
 void Renderer::clear(const Color& color)
 {
-    glClearColor(color.r / 255, color.g / 255, color.b / 255, color.a / 255);
+    glClearColor(color.r, color.g, color.b, color.a);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
