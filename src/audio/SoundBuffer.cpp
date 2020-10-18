@@ -17,7 +17,24 @@ SoundBuffer::SoundBuffer(unsigned int id)
     
 }
 
-SoundBuffer SoundBuffer::loadWAV(const std::string& path)
+void SoundBuffer::load(FileType type, const std::string& path)
+{
+    if (m_id != 0)
+    {
+        destroy();
+    }
+
+    if (type == FileType::WAV)
+    {
+        m_id = loadWAV(path);
+    }
+    else if (type == FileType::MP3)
+    {
+        m_id = loadMP3(path);
+    }
+}
+
+unsigned int SoundBuffer::loadWAV(const std::string& path)
 {
     unsigned int buffer;
     alGenBuffers(1, &buffer);
@@ -38,10 +55,10 @@ SoundBuffer SoundBuffer::loadWAV(const std::string& path)
 
     drwav_uninit(&wav);
     
-    return SoundBuffer(buffer);
+    return buffer;
 }
 
-SoundBuffer SoundBuffer::loadMP3(const std::string& path)
+unsigned int SoundBuffer::loadMP3(const std::string& path)
 {
     unsigned int buffer;
     alGenBuffers(1, &buffer);
@@ -54,8 +71,6 @@ SoundBuffer SoundBuffer::loadMP3(const std::string& path)
         return 0;
     }
 
-    Logger::out(mp3.currentPCMFrame);
-
     drmp3_uint64 frameCount;
     drmp3_get_mp3_and_pcm_frame_count(&mp3, nullptr, &frameCount);
 
@@ -67,7 +82,7 @@ SoundBuffer SoundBuffer::loadMP3(const std::string& path)
 
     drmp3_uninit(&mp3);
     
-    return SoundBuffer(buffer);
+    return buffer;
 }
 
 void SoundBuffer::destroy()
@@ -81,5 +96,5 @@ void SoundBuffer::destroy()
 SoundBuffer::~SoundBuffer()
 {
     // TODO: fix
-    //destroy();
+    destroy();
 }

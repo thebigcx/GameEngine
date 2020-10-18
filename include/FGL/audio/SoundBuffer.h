@@ -6,12 +6,20 @@
 class SoundBuffer
 {
 public:
+    enum FileType
+    {
+        WAV,
+        MP3
+    };
+
     SoundBuffer();
     ~SoundBuffer();
 
+    void load(FileType type, const std::string& path);
+
     // 16-bit bitdepth
-    static SoundBuffer loadWAV(const std::string& path);
-    static SoundBuffer loadMP3(const std::string& path);
+    static unsigned int loadWAV(const std::string& path);
+    static unsigned int loadMP3(const std::string& path);
 
     void destroy();
 

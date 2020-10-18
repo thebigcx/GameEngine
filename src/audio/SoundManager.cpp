@@ -32,8 +32,11 @@ void SoundManager::play2D(const std::string& path)
 
     if (extension == "wav")
     {
-        m_buffer2D.destroy();
-        m_buffer2D = SoundBuffer::loadWAV(path);
+        m_buffer2D.load(SoundBuffer::FileType::WAV, path);
+    }
+    else if (extension == "mp3")
+    {
+        m_buffer2D.load(SoundBuffer::FileType::MP3, path);
     }
     else
     {

@@ -5,9 +5,8 @@ int main()
     Application application;
     auto& window = Application::get().getWindow();
 
-    //SoundBuffer buffer = SoundBuffer::loadWAV("res/beat_2.wav");
-
-    SoundBuffer buffer = SoundBuffer::loadMP3("res/beat.mp3");
+    SoundBuffer buffer;
+    buffer.load(SoundBuffer::FileType::MP3, "res/beat.mp3");
     Source source; source.create();
 
     window.setIcon("res/icon.jpg");
@@ -29,7 +28,6 @@ int main()
     
     Quad quad(Vector2f(100, 100), Vector2f(100, 100), Color(1, 1, 1, 1));
     batch.add(quad);
-    std::vector<Quad> quads;
 
     quad.setTextureRect(FloatRect(15.f / 16.f, 0, 1.f / 16.f, 1.f / 16.f));
     quad.setOrigin(quad.getSize() / 2.f);    
