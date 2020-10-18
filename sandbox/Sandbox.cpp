@@ -2,14 +2,12 @@
 
 int main()
 {
-    Math::Random::initSeed();
-
     Application application;
     auto& window = Application::get().getWindow();
 
-    SoundManager::init();
+    //SoundBuffer buffer = SoundBuffer::loadWAV("res/beat_2.wav");
 
-    SoundBuffer buffer = SoundBuffer::loadWAV("res/beat_2.wav");
+    SoundBuffer buffer = SoundBuffer::loadMP3("res/beat.mp3");
     Source source; source.create();
 
     window.setIcon("res/icon.jpg");
@@ -49,7 +47,22 @@ int main()
 
         Renderer::clear(Color(0, 0, 0, 1));
 
-        
+        if (Keyboard::isKeyPressed(GLFW_KEY_A))
+        {
+            quad.move(Vector2f(-10, 0));
+        }
+        if (Keyboard::isKeyPressed(GLFW_KEY_D))
+        {
+            quad.move(Vector2f(10, 0));
+        }
+        if (Keyboard::isKeyPressed(GLFW_KEY_W))
+        {
+            quad.move(Vector2f(0, 10));
+        }
+        if (Keyboard::isKeyPressed(GLFW_KEY_S))
+        {
+            quad.move(Vector2f(0, -10));
+        }
 
         batch.update();
         Renderer::renderBatch(batch);

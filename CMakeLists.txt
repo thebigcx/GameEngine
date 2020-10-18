@@ -2,42 +2,18 @@ cmake_minimum_required(VERSION 3.13) # Minimum CMake version
 project(FGL)                         # Create project 'FGL'
 set(CMAKE_CXX_STANDARD 20)           # Set the C++ standard VERSION
 
+# Compiler optimisations
 set(CMAKE_CXX_FLAGS "-O3")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin) # Set the binary output directory
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ../lib) # Set the library output directory
 
-# Compile the library files
-file(GLOB SOURCES CONFIGURE_DEPENDS
-src/vendor/stb_image/stb_image.cpp
-
-src/renderer/Quad.cpp
-src/renderer/Batch.cpp
-src/renderer/Shader.cpp
-src/renderer/VertexArray.cpp
-src/Image.cpp
-src/renderer/Buffer.cpp
-src/renderer/Texture.cpp
-src/renderer/Sprite.cpp
-src/renderer/Framebuffer.cpp
-src/renderer/Renderer.cpp
-src/core/Logger.cpp
-src/core/Application.cpp
-src/core/Window.cpp
-src/io/FileReader.cpp
-src/io/FileWriter.cpp
-src/renderer/ShaderLibrary.cpp
-src/core/Mouse.cpp
-src/audio/SoundManager.cpp
-src/audio/Source.cpp
-src/audio/SoundBuffer.cpp
-src/audio/SoundListener.cpp
-src/vendor/dr_wav.c
-)
+# Compile all .c and .cpp files
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp src/*.c)
 
 # Compile the tests
 file(GLOB TEST_SOURCES CONFIGURE_DEPENDS
-tests/General.cpp
+sandbox/Sandbox.cpp
 )
 
 # Compile the static library

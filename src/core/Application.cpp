@@ -1,6 +1,8 @@
-#include "FGL/core/Application.h"
+#include <FGL/core/Application.h>
 
-#include "FGL/core/Logger.h"
+#include <FGL/core/Logger.h>
+#include <FGL/audio/SoundManager.h>
+#include <FGL/util/maths/Math.h>
 
 Application* Application::m_instance = nullptr;
 
@@ -8,7 +10,12 @@ Application::Application()
 : m_window(1280, 720, "Hello, Fast Game Library!")
 {
     m_instance = this;
+
+    Math::Random::initSeed();
+
     Logger::init();
+
+    SoundManager::init();
 }
 
 Application& Application::get()

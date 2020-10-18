@@ -11,6 +11,7 @@ public:
 
     // 16-bit bitdepth
     static SoundBuffer loadWAV(const std::string& path);
+    static SoundBuffer loadMP3(const std::string& path);
 
     void destroy();
 

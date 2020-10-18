@@ -1,6 +1,5 @@
 #include <FGL/audio/SoundManager.h>
 
-#include <vendor/dr_wav.h>
 #include <FGL/core/Logger.h>
 #include <FGL/audio/SoundListener.h>
 
