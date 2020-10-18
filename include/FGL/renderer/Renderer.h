@@ -15,8 +15,10 @@ class Renderer
     public:
         static void init();
 
-        static void clear(const Color& color);
-        static void display();
+        static void startRender();
+        static void finishRender();
+
+        static void setClearColor(const Color& color);
 
         static void setContext(const Window& window);
 

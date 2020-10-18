@@ -13,16 +13,20 @@ void Renderer::init()
     m_data.shader.create("shaders/default.vert", "shaders/default.frag");
 }
 
-void Renderer::clear(const Color& color)
+void Renderer::startRender()
 {
-    glClearColor(color.r, color.g, color.b, color.a);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Renderer::display()
+void Renderer::finishRender()
 {
     auto& window = Application::get().getWindow();
-    window.display();
+    glfwSwapBuffers(window.getNative());
+}
+
+void Renderer::setClearColor(const Color& color)
+{
+    glClearColor(color.r, color.g, color.b, color.a);
 }
 
 void Renderer::renderBatch(const Batch& batch)

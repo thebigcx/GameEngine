@@ -14,6 +14,8 @@ public:
 
     Window& getWindow();
 
+    void onWindowResize(int width, int height);
+
 private:
     static Application* m_instance;
 

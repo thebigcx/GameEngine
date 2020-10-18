@@ -32,42 +32,43 @@ int main()
     batch.add(quad);
 
     quad.setTextureRect(FloatRect(15.f / 16.f, 0, 1.f / 16.f, 1.f / 16.f));
-    quad.setOrigin(quad.getSize() / 2.f);    
+    quad.setOrigin(quad.getSize() / 2.f);
 
     while (window.isOpen())
     {
         window.pollEvents();
 
-        if (window.isKeyPressed(GLFW_KEY_ESCAPE))
+        if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
         {
             window.close();
         }
 
-        SoundManager::playFromSource(buffer, source);
+        //SoundManager::playFromSource(buffer, source);
+        SoundManager::play2D(buffer);
 
-        Renderer::clear(Color(0, 0, 0, 1));
-
-        if (Keyboard::isKeyPressed(GLFW_KEY_A))
+        if (Keyboard::isKeyPressed(Keyboard::Key::A))
         {
             quad.move(Vector2f(-10, 0));
         }
-        if (Keyboard::isKeyPressed(GLFW_KEY_D))
+        if (Keyboard::isKeyPressed(Keyboard::Key::D))
         {
             quad.move(Vector2f(10, 0));
         }
-        if (Keyboard::isKeyPressed(GLFW_KEY_W))
+        if (Keyboard::isKeyPressed(Keyboard::Key::W))
         {
             quad.move(Vector2f(0, 10));
         }
-        if (Keyboard::isKeyPressed(GLFW_KEY_S))
+        if (Keyboard::isKeyPressed(Keyboard::Key::S))
         {
             quad.move(Vector2f(0, -10));
         }
 
+        Renderer::startRender();
+
         batch.update();
         Renderer::renderBatch(batch);
 
-        Renderer::display();
+        Renderer::finishRender();
     }
 
     source.destroy();
@@ -76,3 +77,4 @@ int main()
 
     return 0;
 }
+

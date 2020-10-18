@@ -12,19 +12,12 @@ class Window
 public:
     Window() {}
 
-    Window(int width, int height, std::string title);
+    Window(int width, int height, const std::string& title);
     ~Window();
-
-    void setActive();
 
     bool isOpen();
 
-    void clear();
-
-    void display() const;
     void pollEvents();
-
-    bool isKeyPressed(int key);
 
     inline GLFWwindow* getNative() const
     {

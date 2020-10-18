@@ -28,6 +28,13 @@ Application& Application::get()
     return *m_instance;
 }
 
+void Application::onWindowResize(int width, int height)
+{
+    glViewport(0, 0, width, height);
+
+    
+}
+
 Window& Application::getWindow()
 {
     return m_window;
