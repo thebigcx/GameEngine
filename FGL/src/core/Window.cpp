@@ -52,7 +52,7 @@ void Window::close()
 
 void Window::pollEvents()
 {
-    glfwWaitEvents();
+    glfwPollEvents();
 }
 
 void Window::setIcon(const std::string& iconPath)
@@ -99,9 +99,4 @@ void Window::restore()
 void Window::setOpacity(float opacity)
 {
     glfwSetWindowOpacity(m_window, opacity);
-}
-
-void Window::makeCurrentContext() const
-{
-    glfwMakeContextCurrent(m_window);
 }

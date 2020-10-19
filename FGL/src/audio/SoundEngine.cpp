@@ -1,15 +1,15 @@
-#include <audio/SoundManager.h>
+#include <audio/SoundEngine.h>
 
 #include <core/Logger.h>
 #include <audio/SoundListener.h>
 
-ALCdevice* SoundManager::m_device;
-ALCcontext* SoundManager::m_context;
+ALCdevice* SoundEngine::m_device;
+ALCcontext* SoundEngine::m_context;
 
-Source SoundManager::m_source2D;
-SoundBuffer SoundManager::m_buffer2D;
+SoundSource SoundEngine::m_source2D;
+SoundBuffer SoundEngine::m_buffer2D;
 
-void SoundManager::init()
+void SoundEngine::init()
 {
     m_device = alcOpenDevice(nullptr);
     m_context = alcCreateContext(m_device, nullptr);
@@ -20,12 +20,12 @@ void SoundManager::init()
     SoundListener::getInstance().updateALData();
 }
 
-void SoundManager::play2D(const SoundBuffer& buffer, bool loop)
+void SoundEngine::play2D(const SoundBuffer& buffer, bool loop)
 {
     playFromSource(buffer, m_source2D, loop);
 }
 
-void SoundManager::play2D(const std::string& path, bool loop)
+void SoundEngine::play2D(const std::string& path, bool loop)
 {
     // Get file extension
     std::string extension = (path.substr(path.find_last_of(".") + 1));
@@ -47,7 +47,7 @@ void SoundManager::play2D(const std::string& path, bool loop)
     play2D(m_buffer2D, loop);
 }
 
-void SoundManager::playFromSource(const SoundBuffer& buffer, const Source& source, bool loop)
+void SoundEngine::playFromSource(const SoundBuffer& buffer, const SoundSource& source, bool loop)
 {
     if (source.isPlaying())
     {
@@ -59,7 +59,7 @@ void SoundManager::playFromSource(const SoundBuffer& buffer, const Source& sourc
     alSourcePlay(source.m_id);
 }
 
-void SoundManager::cleanUp()
+void SoundEngine::cleanUp()
 {
     m_source2D.destroy();
 

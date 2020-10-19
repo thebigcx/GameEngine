@@ -3,11 +3,11 @@
 #include <cstdint>
 #include <array>
 
-#include "../util/maths/Vector2.h"
-#include "../util/maths/Rect.h"
-#include "../util/Color.h"
-#include "Vertex.h"
-#include "../Transformable.h"
+#include <util/maths/Vector2.h>
+#include <util/maths/Rect.h>
+#include <util/Color.h>
+#include <renderer/Vertex.h>
+#include <renderer/Transformable.h>
 
 class Quad : public Transformable
 {

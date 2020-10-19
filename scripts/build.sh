@@ -13,7 +13,7 @@ make
 cd ..
 mkdir bin/sandbox/res
 mkdir bin/shaders
-cp res/* bin/res
+cp sandbox/res/* bin/sandbox/res
 cp shaders/* bin/shaders
 
 echo "Built target in ./bin/"

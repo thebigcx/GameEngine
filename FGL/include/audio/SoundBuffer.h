@@ -23,8 +23,8 @@ public:
 
     void destroy();
 
-    friend class Source;
-    friend class SoundManager;
+    friend class SoundSource;
+    friend class SoundEngine;
 
 private:
     unsigned int m_id = 0;

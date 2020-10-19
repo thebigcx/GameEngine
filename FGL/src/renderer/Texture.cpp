@@ -1,6 +1,6 @@
-#include "renderer/Texture.h"
+#include <renderer/Texture.h>
 
-#include "Image.h"
+#include <util/Image.h>
 
 #include <iostream>
 

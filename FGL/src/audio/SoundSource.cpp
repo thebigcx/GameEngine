@@ -1,16 +1,16 @@
-#include <audio/Source.h>
+#include <audio/SoundSource.h>
 
-Source::Source()
+SoundSource::SoundSource()
 {
     
 }
 
-Source::~Source()
+SoundSource::~SoundSource()
 {
     destroy();
 }
 
-void Source::create()
+void SoundSource::create()
 {
     alGenSources(1, &m_id);
     alSourcef(m_id, AL_GAIN, 1);
@@ -18,12 +18,12 @@ void Source::create()
     alSource3f(m_id, AL_POSITION, 0, 0, 0);
 }
 
-void Source::destroy()
+void SoundSource::destroy()
 {
     alDeleteSources(1, &m_id);
 }
 
-bool Source::isPlaying() const
+bool SoundSource::isPlaying() const
 {
     ALenum state;
     alGetSourcei(m_id, AL_SOURCE_STATE, &state);

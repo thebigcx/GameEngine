@@ -11,12 +11,16 @@ Sandbox::Sandbox()
     ShaderLibrary::get("texture").bind();
 
     m_texture.loadFile("sandbox/res/terrain.png");
-    m_texture.bind();
 
     glm::mat4 projection = glm::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
     ShaderLibrary::get("texture").setUniform("projection", projection);
 
-    m_batch.create(ShaderLibrary::get("texture"));
+    m_soundBuffer.load(SoundBuffer::FileType::MP3, "sandbox/res/beat.mp3");
+    m_soundSource.create();
+    SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
+
+    m_states = RenderStates::createStates(m_texture, ShaderLibrary::get("texture"), glm::mat4(1.f));
+    m_batch.create(m_states);
     m_batch.add(m_quad);
     m_quad = Quad(Vector2f(100, 100), Vector2f(100, 100), Color(1, 1, 1, 1));
 }

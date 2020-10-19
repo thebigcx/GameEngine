@@ -1,7 +1,7 @@
 #include <core/Application.h>
 
 #include <core/Logger.h>
-#include <audio/SoundManager.h>
+#include <audio/SoundEngine.h>
 #include <util/maths/Math.h>
 #include <core/Keyboard.h>
 #include <events/EventDispatcher.h>
@@ -17,7 +17,7 @@ Application::Application()
 
     Logger::init();
 
-    SoundManager::init();
+    SoundEngine::init();
 
     EventDispatcher::setupCallbacks();
 }

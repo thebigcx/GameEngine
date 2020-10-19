@@ -5,8 +5,8 @@
 
 #include <string>
 
-#include "../util/maths/Vector2.h"
-#include "../Image.h"
+#include <util/maths/Vector2.h>
+#include <util/Image.h>
 
 class Texture {
 public:

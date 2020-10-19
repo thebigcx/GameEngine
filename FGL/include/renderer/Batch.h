@@ -2,19 +2,20 @@
 
 #include <vector>
 
-#include "Quad.h"
-#include "Buffer.h"
-#include "VertexArray.h"
-#include "../util/Color.h"
+#include <renderer/Quad.h>
+#include <renderer/Buffer.h>
+#include <renderer/VertexArray.h>
+#include <util/Color.h>
+#include <renderer/RenderStates.h>
 
 class Batch
 {
 public:
     Batch() {}
 
-    Batch(const Shader& shader);
+    Batch(RenderStates states);
 
-    void create(const Shader& shader);
+    void create(RenderStates states);
 
     void add(const Quad& quad);
 
@@ -31,9 +32,9 @@ public:
         return m_vertexArray;
     }
 
-    inline const Shader* getShader() const
+    inline RenderStates getStates() const
     {
-        return m_pShader;
+        return m_states;
     }
 
 private:
@@ -50,5 +51,5 @@ private:
 
     std::vector<const Quad*> m_quads;
 
-    const Shader* m_pShader;
+    RenderStates m_states;
 };

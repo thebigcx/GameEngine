@@ -6,14 +6,14 @@
 #include <iostream>
 #include <cstring>
 
-Batch::Batch(const Shader& shader)
+Batch::Batch(RenderStates states)
 {
-    create(shader);
+    create(states);
 }
 
-void Batch::create(const Shader& shader)
+void Batch::create(RenderStates states)
 {
-    m_pShader = &shader;
+    m_states = states;
     m_vertexArray.bind();
 
     BufferLayout layout = {

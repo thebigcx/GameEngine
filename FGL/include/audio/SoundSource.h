@@ -5,11 +5,11 @@
 
 #include "SoundBuffer.h"
 
-class Source
+class SoundSource
 {
 public:
-    Source();
-    ~Source();
+    SoundSource();
+    ~SoundSource();
 
     void create();
 
@@ -17,7 +17,7 @@ public:
 
     bool isPlaying() const;
 
-    friend class SoundManager;
+    friend class SoundEngine;
 
 private:
     unsigned int m_id;

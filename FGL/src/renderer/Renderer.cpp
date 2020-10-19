@@ -3,7 +3,6 @@
 
 #include <GL/glew.h>
 
-const Window* Renderer::m_currentContext = nullptr;
 RenderData Renderer::m_data;
 
 void Renderer::init()
@@ -31,11 +30,14 @@ void Renderer::setClearColor(const Color& color)
 
 void Renderer::renderBatch(const Batch& batch)
 {
-    batch.getShader()->bind();
+    batch.getStates().bind();
 
     batch.getVertexArray().bind();
 
-    glDrawElements(GL_TRIANGLES, batch.getIndexBuffer().getCount(), batch.getIndexBuffer().getIndexType(), 0);
+    int count = batch.getIndexBuffer().getCount();
+    GLenum type = batch.getIndexBuffer().getIndexType();
+
+    glDrawElements(GL_TRIANGLES, count, type, 0);
 }
 
 void Renderer::renderIndexed(const VertexArray& array, Shader& shader, const glm::mat4& transform)
@@ -45,10 +47,4 @@ void Renderer::renderIndexed(const VertexArray& array, Shader& shader, const glm
     array.bind();
 
     glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);
-}
-
-void Renderer::setContext(const Window& window)
-{
-    window.makeCurrentContext();
-    m_currentContext = &window;
 }

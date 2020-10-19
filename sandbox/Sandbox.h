@@ -16,4 +16,9 @@ private:
 
     Batch m_batch;
     Quad m_quad;
+
+    SoundBuffer m_soundBuffer;
+    SoundSource m_soundSource;
+
+    RenderStates m_states;
 };
