@@ -7,7 +7,7 @@
 
 struct RenderData
 {
-    Shader shader;
+    uint64_t drawCalls;
 };
 
 class Renderer
@@ -22,7 +22,7 @@ class Renderer
 
         static void renderBatch(const Batch& batch);
 
-        static void renderIndexed(const VertexArray& array, Shader& shader, const glm::mat4& transform);
+        static void renderIndexed(const VertexArray& array, RenderStates states);
 
     private:
         static RenderData m_data;

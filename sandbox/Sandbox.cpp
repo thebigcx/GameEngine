@@ -23,6 +23,7 @@ Sandbox::Sandbox()
     m_batch.create(m_states);
     m_batch.add(m_quad);
     m_quad = Quad(Vector2f(100, 100), Vector2f(100, 100), Color(1, 1, 1, 1));
+    m_quad.setTextureRect(FloatRect(15/16, 15/16, 1/16, 1/16));
 }
 
 Application* createApplication()

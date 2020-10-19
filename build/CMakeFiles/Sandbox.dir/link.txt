@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3   CMakeFiles/Sandbox.dir/sandbox/Sandbox.cpp.o  -o ../bin/Sandbox  ../lib/libFGL.a -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lGLEW -lopenal 

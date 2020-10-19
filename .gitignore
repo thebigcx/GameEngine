@@ -1,0 +1,11 @@
+# Executables
+bin
+
+# Files generated at compile time
+build
+
+res
+
+.vscode
+
+lib

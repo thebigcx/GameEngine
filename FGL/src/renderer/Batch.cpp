@@ -56,7 +56,6 @@ void Batch::update()
     
     for (auto quad : m_quads)
     {
-        auto i = &quad - &m_quads[0];
         auto qVertices = quad->getVertices();
 
         vertices.insert(vertices.end(), qVertices.begin(), qVertices.end());

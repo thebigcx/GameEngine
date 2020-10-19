@@ -31,4 +31,5 @@ public:
     Texture* texture;
     Shader* shader;
     glm::mat4 transform;
+    GLenum blendFunc = GL_ZERO;
 };

@@ -8,8 +8,6 @@ RenderData Renderer::m_data;
 void Renderer::init()
 {
     glDisable(GL_DEPTH_TEST);
-
-    m_data.shader.create("shaders/default.vert", "shaders/default.frag");
 }
 
 void Renderer::startRender()
@@ -38,13 +36,15 @@ void Renderer::renderBatch(const Batch& batch)
     GLenum type = batch.getIndexBuffer().getIndexType();
 
     glDrawElements(GL_TRIANGLES, count, type, 0);
+    m_data.drawCalls++;
 }
 
-void Renderer::renderIndexed(const VertexArray& array, Shader& shader, const glm::mat4& transform)
+void Renderer::renderIndexed(const VertexArray& array, RenderStates states)
 {
-    shader.bind();
-    shader.setUniform("transform", transform);
+    states.bind();
+    states.shader->setUniform("transform", states.transform);
     array.bind();
 
     glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);
+    m_data.drawCalls++;
 }
