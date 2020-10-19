@@ -1,6 +1,6 @@
 #pragma once
 
-#include <FGL/core/Application.h>
+#include <core/Application.h>
 
 #include "Sandbox.h"
 

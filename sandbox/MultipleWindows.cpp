@@ -1,4 +1,4 @@
-#include <FGL/FGL.h>
+#include <FGL.h>
 
 int main()
 {

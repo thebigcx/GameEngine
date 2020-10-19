@@ -1,4 +1,4 @@
-#include <FGL/FGL.h>
+#include <FGL.h>
 
 #include "SandboxApp.h"
 
@@ -10,7 +10,7 @@ Sandbox::Sandbox()
     ShaderLibrary::add("texture", textureShader);
     ShaderLibrary::get("texture").bind();
 
-    m_texture.loadFile("res/terrain.png");
+    m_texture.loadFile("sandbox/res/terrain.png");
     m_texture.bind();
 
     glm::mat4 projection = glm::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);

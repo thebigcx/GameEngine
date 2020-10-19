@@ -1,3 +1,3 @@
 #!/bin/bash
 
-bin/Library_Test
+bin/Sandbox

@@ -11,7 +11,7 @@ make
 
 # Copy resources to the direcory with the executable
 cd ..
-mkdir bin/res
+mkdir bin/sandbox/res
 mkdir bin/shaders
 cp res/* bin/res
 cp shaders/* bin/shaders

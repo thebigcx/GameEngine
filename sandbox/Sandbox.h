@@ -1,7 +1,7 @@
 #pragma once
 
-#include <FGL/core/Layer.h>
-#include <FGL/renderer/Texture.h>
+#include <core/Layer.h>
+#include <renderer/Texture.h>
 
 class Sandbox : public Layer
 {
