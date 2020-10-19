@@ -10,7 +10,11 @@
 class Batch
 {
 public:
+    Batch() {}
+
     Batch(const Shader& shader);
+
+    void create(const Shader& shader);
 
     void add(const Quad& quad);
 

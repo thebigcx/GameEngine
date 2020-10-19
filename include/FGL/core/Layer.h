@@ -3,7 +3,7 @@
 class Layer
 {
 public:
-    Layer();
+    Layer() {};
     virtual ~Layer() = default;
 
     virtual void update() = 0;

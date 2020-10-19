@@ -7,8 +7,13 @@
 #include <cstring>
 
 Batch::Batch(const Shader& shader)
-: m_pShader(&shader)
 {
+    create(shader);
+}
+
+void Batch::create(const Shader& shader)
+{
+    m_pShader = &shader;
     m_vertexArray.bind();
 
     BufferLayout layout = {

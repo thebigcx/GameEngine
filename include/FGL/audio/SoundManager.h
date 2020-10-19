@@ -17,10 +17,10 @@ public:
     static void cleanUp();
     static void destroy();
 
-    static void play2D(const SoundBuffer& buffer);
-    static void play2D(const std::string& path);
+    static void play2D(const SoundBuffer& buffer, bool loop);
+    static void play2D(const std::string& path, bool loop);
 
-    static void playFromSource(const SoundBuffer& buffer, const Source& source);
+    static void playFromSource(const SoundBuffer& buffer, const Source& source, bool loop);
 
 private:
     static ALCdevice* m_device;

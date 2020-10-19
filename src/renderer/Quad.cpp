@@ -3,6 +3,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+Quad::Quad()
+{
+    
+}
+
 Quad::Quad(const Vector2f& position, const Vector2f& size, const Color& color)
 : m_color(color)
 {

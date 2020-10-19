@@ -20,12 +20,12 @@ void SoundManager::init()
     SoundListener::getInstance().updateALData();
 }
 
-void SoundManager::play2D(const SoundBuffer& buffer)
+void SoundManager::play2D(const SoundBuffer& buffer, bool loop)
 {
-    playFromSource(buffer, m_source2D);
+    playFromSource(buffer, m_source2D, loop);
 }
 
-void SoundManager::play2D(const std::string& path)
+void SoundManager::play2D(const std::string& path, bool loop)
 {
     // Get file extension
     std::string extension = (path.substr(path.find_last_of(".") + 1));
@@ -44,10 +44,10 @@ void SoundManager::play2D(const std::string& path)
         return;
     }
 
-    play2D(m_buffer2D);
+    play2D(m_buffer2D, loop);
 }
 
-void SoundManager::playFromSource(const SoundBuffer& buffer, const Source& source)
+void SoundManager::playFromSource(const SoundBuffer& buffer, const Source& source, bool loop)
 {
     if (source.isPlaying())
     {
@@ -55,6 +55,7 @@ void SoundManager::playFromSource(const SoundBuffer& buffer, const Source& sourc
     }
 
     alSourcei(source.m_id, AL_BUFFER, buffer.m_id);
+    alSourcei(source.m_id, AL_LOOPING, (int)loop);
     alSourcePlay(source.m_id);
 }
 

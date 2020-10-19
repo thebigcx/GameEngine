@@ -3,6 +3,7 @@
 #include <FGL/core/Logger.h>
 #include <FGL/audio/SoundManager.h>
 #include <FGL/util/maths/Math.h>
+#include <FGL/core/Keyboard.h>
 
 Application* Application::m_instance = nullptr;
 
@@ -16,6 +17,29 @@ Application::Application()
     Logger::init();
 
     SoundManager::init();
+}
+
+void Application::run()
+{
+    while (m_window.isOpen())
+    {
+        m_window.pollEvents();
+
+        if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+        {
+            m_window.close();
+        }
+
+        for (auto layer : m_layers)
+        {
+            layer->update();
+        }
+    }
+}
+
+void Application::addLayer(Layer* layer)
+{
+    m_layers.push_back(layer);
 }
 
 Application& Application::get()

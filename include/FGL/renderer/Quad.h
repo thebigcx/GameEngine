@@ -12,6 +12,7 @@
 class Quad : public Transformable
 {
 public:
+    Quad();
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
 
     void move(Vector2f direction);
