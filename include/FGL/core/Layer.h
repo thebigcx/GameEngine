@@ -1,5 +1,7 @@
 #pragma once
 
+#include <FGL/events/Event.h>
+
 class Layer
 {
 public:
@@ -7,6 +9,7 @@ public:
     virtual ~Layer() = default;
 
     virtual void update() = 0;
+    virtual void handleEvent(const Event& event) = 0;
 
 protected:
     

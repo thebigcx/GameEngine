@@ -18,7 +18,6 @@ Window::Window(int width, int height, const std::string& title)
     }
 
     glfwSetWindowSizeLimits(m_window, 200, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
-    glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
 
     glfwSwapInterval(1);
 
@@ -32,11 +31,6 @@ Window::Window(int width, int height, const std::string& title)
 Window::~Window()
 {
     glfwDestroyWindow(m_window);
-}
-
-void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    Application::get().onWindowResize(width, height);
 }
 
 Vector2i Window::getSize() const

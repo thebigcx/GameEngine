@@ -52,3 +52,8 @@ void Sandbox::update()
 
     Renderer::finishRender();
 }
+
+void Sandbox::handleEvent(const Event& event)
+{
+    
+}

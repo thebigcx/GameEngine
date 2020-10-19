@@ -4,6 +4,7 @@
 
 #include "Window.h"
 #include "Layer.h"
+#include "../events/EventStack.h"
 
 // Singleton
 class Application
@@ -21,12 +22,19 @@ public:
 
     void onWindowResize(int width, int height);
 
+    inline EventStack& getEventStack()
+    {
+        return m_eventStack;
+    }
+
 private:
     static Application* m_instance;
 
     Window m_window;
 
     std::vector<Layer*> m_layers;
+
+    EventStack m_eventStack;
 };
 
 Application* createApplication();

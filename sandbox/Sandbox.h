@@ -9,6 +9,7 @@ public:
     Sandbox();
 
     void update() override;
+    void handleEvent(const Event& event) override;
 
 private:
     Texture m_texture;

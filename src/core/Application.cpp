@@ -4,6 +4,7 @@
 #include <FGL/audio/SoundManager.h>
 #include <FGL/util/maths/Math.h>
 #include <FGL/core/Keyboard.h>
+#include <FGL/events/EventDispatcher.h>
 
 Application* Application::m_instance = nullptr;
 
@@ -17,6 +18,8 @@ Application::Application()
     Logger::init();
 
     SoundManager::init();
+
+    EventDispatcher::setupCallbacks();
 }
 
 void Application::run()
@@ -24,6 +27,18 @@ void Application::run()
     while (m_window.isOpen())
     {
         m_window.pollEvents();
+        
+        while (!m_eventStack.isEmpty())
+        {
+            auto event = m_eventStack.getEvent();
+
+            for (auto layer : m_layers)
+            {
+                layer->handleEvent(event);
+            }
+
+            m_eventStack.pop();
+        }
 
         if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
         {
@@ -55,8 +70,6 @@ Application& Application::get()
 void Application::onWindowResize(int width, int height)
 {
     glViewport(0, 0, width, height);
-
-    
 }
 
 Window& Application::getWindow()
