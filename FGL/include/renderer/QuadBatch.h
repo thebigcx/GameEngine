@@ -8,18 +8,18 @@
 #include <util/Color.h>
 #include <renderer/RenderStates.h>
 
-class Batch
+class QuadBatch
 {
 public:
-    Batch() {}
+    QuadBatch() {}
 
-    Batch(RenderStates states);
+    QuadBatch(RenderStates states);
+
+    void begin();
+    void flush();
+    void draw(const Quad& quad);
 
     void create(RenderStates states);
-
-    void add(const Quad& quad);
-
-    void update();
 
     // For Renderer class
     inline const IndexBuffer& getIndexBuffer() const
@@ -39,17 +39,13 @@ public:
 
 private:
     VertexArray m_vertexArray;
-
     VertexBuffer m_vertexBuffer;
-
     IndexBuffer m_indexBuf;
 
-    std::vector<Vector2f> m_positions;
-    std::vector<Color>    m_colors;
-
+    std::vector<Vertex> m_vertices;
     std::vector<unsigned int> m_indices;
 
-    std::vector<const Quad*> m_quads;
-
     RenderStates m_states;
+
+    static inline const unsigned int MAX_QUADS = 10000;
 };

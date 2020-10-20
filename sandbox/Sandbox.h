@@ -2,6 +2,7 @@
 
 #include <core/Layer.h>
 #include <renderer/Texture.h>
+#include <renderer/QuadBatch.h>
 
 class Sandbox : public Layer
 {
@@ -14,9 +15,11 @@ public:
 private:
     Texture m_texture;
 
-    Batch m_batch;
+    QuadBatch m_batch;
     Quad m_quad;
 
     SoundBuffer m_soundBuffer;
     SoundSource m_soundSource;
+
+    std::vector<Quad> m_quads;
 };

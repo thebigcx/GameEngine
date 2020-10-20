@@ -1,6 +1,6 @@
 #include <util/Image.h>
 #include <core/Window.h>
-#include <renderer/Batch.h>
+#include <renderer/QuadBatch.h>
 #include <renderer/Buffer.h>
 #include <renderer/Quad.h>
 #include <renderer/Shader.h>

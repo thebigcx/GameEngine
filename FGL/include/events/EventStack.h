@@ -19,7 +19,7 @@ public:
         m_events.pop_back();
     }
 
-    Event getEvent()
+    const Event& getEvent()
     {
         return m_events[m_events.size() - 1];
     }

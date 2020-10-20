@@ -26,19 +26,6 @@ void Renderer::setClearColor(const Color& color)
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void Renderer::renderBatch(const Batch& batch)
-{
-    batch.getStates().bind();
-
-    batch.getVertexArray().bind();
-
-    int count = batch.getIndexBuffer().getCount();
-    GLenum type = batch.getIndexBuffer().getIndexType();
-
-    glDrawElements(GL_TRIANGLES, count, type, 0);
-    m_data.drawCalls++;
-}
-
 void Renderer::renderIndexed(const VertexArray& array, RenderStates states)
 {
     states.bind();
