@@ -19,6 +19,4 @@ private:
 
     SoundBuffer m_soundBuffer;
     SoundSource m_soundSource;
-
-    RenderStates m_states;
 };

@@ -1,4 +1,0 @@
-/home/christian/Desktop/Fast-Game-Library/build/CMakeFiles/edit_cache.dir
-/home/christian/Desktop/Fast-Game-Library/build/CMakeFiles/Sandbox.dir
-/home/christian/Desktop/Fast-Game-Library/build/CMakeFiles/rebuild_cache.dir
-/home/christian/Desktop/Fast-Game-Library/build/CMakeFiles/FGL.dir

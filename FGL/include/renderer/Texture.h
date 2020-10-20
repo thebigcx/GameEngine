@@ -15,6 +15,7 @@ public:
     ~Texture();
 
     Texture(Texture&& texture);
+    Texture(const Texture& texture);
 
     void bind() const;
 

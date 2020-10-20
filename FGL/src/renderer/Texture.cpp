@@ -14,15 +14,25 @@ Texture::~Texture()
     glDeleteTextures(1, &m_id);
 }
 
+Texture::Texture(const Texture& texture)
+{
+    m_id = texture.m_id;
+    m_flipped = texture.m_flipped;
+    m_mipmapped = texture.m_mipmapped;
+    m_size = texture.m_size;
+    m_smooth = texture.m_smooth;
+    m_repeated = texture.m_repeated;
+}
+
 Texture::Texture(Texture&& texture)
 {
-    texture.m_id = m_id;
-    m_id = 0;
-    texture.m_flipped = m_flipped;
-    texture.m_mipmapped = m_mipmapped;
-    texture.m_size = m_size;
-    texture.m_smooth = m_smooth;
-    texture.m_repeated = m_repeated;
+    m_id = texture.m_id;
+    texture.m_id = 0;
+    m_flipped = texture.m_flipped;
+    m_mipmapped = texture.m_mipmapped;
+    m_size = texture.m_size;
+    m_smooth = texture.m_smooth;
+    m_repeated = texture.m_repeated;
 }
 
 bool Texture::loadFile(const std::string& file)

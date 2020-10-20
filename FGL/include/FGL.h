@@ -26,3 +26,4 @@
 #include <renderer/ShaderLibrary.h>
 #include <audio/SoundEngine.h>
 #include <audio/SoundSource.h>
+#include <renderer/AssetManager.h>

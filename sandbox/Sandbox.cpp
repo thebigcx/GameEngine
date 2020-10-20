@@ -12,6 +12,8 @@ Sandbox::Sandbox()
 
     m_texture.loadFile("sandbox/res/terrain.png");
 
+    AssetManager::get().textures.add("texture", m_texture);
+
     glm::mat4 projection = glm::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
     ShaderLibrary::get("texture").setUniform("projection", projection);
 
@@ -19,11 +21,22 @@ Sandbox::Sandbox()
     m_soundSource.create();
     SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
 
-    m_states = RenderStates::createStates(m_texture, ShaderLibrary::get("texture"), glm::mat4(1.f));
-    m_batch.create(m_states);
+    RenderStates states = RenderStates::createStates(AssetManager::get().textures.get("texture"), 
+                                                     ShaderLibrary::get("texture"), 
+                                                     glm::mat4(1.f),
+                                                     BlendMode::Alpha);
+
+    m_batch.create(states);
     m_batch.add(m_quad);
-    m_quad = Quad(Vector2f(100, 100), Vector2f(100, 100), Color(1, 1, 1, 1));
-    m_quad.setTextureRect(FloatRect(15/16, 15/16, 1/16, 1/16));
+    
+    m_quad.setPosition(Vector2f(100, 100));
+    m_quad.setSize(Vector2f(100, 100));
+    m_quad.setColor(Color(1, 1, 1, 1));
+    m_quad.setTextureRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
+
+    Renderer::setClearColor(Color(1, 1, 1, 1));
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Application* createApplication()
