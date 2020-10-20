@@ -16,49 +16,28 @@ Quad::Quad(const Vector2f& position, const Vector2f& size, const Color& color)
     m_texRect = FloatRect(0, 0, 1, 1);
 }
 
-void Quad::move(Vector2f direction)
-{
-    m_position += direction;
-}
-
 std::array<Vertex, 4> Quad::getVertices() const
 {
     // Transform the vertices
     auto transform = getTransform();
+    
+    std::array<Vertex, 4> vertices;
 
-    Vertex a;
+    for (int i = 0 ; i < 4 ; i++)
+    {
+        auto pos = transform * glm::vec4(m_positions[i].x, m_positions[i].y, 0, 1);
+        vertices[i].position = Vector2f(pos.x, pos.y);
 
-    auto pos = transform * glm::vec4(0, 0, 0, 1);
-    a.position = Vector2f(pos.x, pos.y);
+        vertices[i].color = m_color;
+    }
 
-    a.color = m_color;
-    a.texCoord = m_texRect.getPosition();
-
-    Vertex b;
-
-    pos = transform * glm::vec4(1, 0, 0, 1);
-    b.position = Vector2f(pos.x, pos.y);
-
-    b.color = m_color;
-    b.texCoord = Vector2f(m_texRect.x + m_texRect.width, m_texRect.y);
-
-    Vertex c;
-
-    pos = transform * glm::vec4(1, 1, 0, 1);
-    c.position = Vector2f(pos.x, pos.y);
-
-    c.color = m_color;
-    c.texCoord = Vector2f(m_texRect.x + m_texRect.width, m_texRect.y + m_texRect.height);
-
-    Vertex d;
-
-    pos = transform * glm::vec4(0, 1, 0, 1);
-    d.position = Vector2f(pos.x, pos.y);
-    d.color = m_color;
-
-    d.texCoord = Vector2f(m_texRect.x, m_texRect.y + m_texRect.height);
-
-    return { a, b, c, d };
+    // TODO: find a way to incorporate this in for loop
+    vertices[0].texCoord = m_texRect.getPosition();
+    vertices[1].texCoord = Vector2f(m_texRect.x + m_texRect.width, m_texRect.y);
+    vertices[2].texCoord = Vector2f(m_texRect.x + m_texRect.width, m_texRect.y + m_texRect.height);
+    vertices[3].texCoord = Vector2f(m_texRect.x, m_texRect.y + m_texRect.height);
+    
+    return vertices;
 }
 
 void Quad::setTextureRect(const FloatRect& rect)

@@ -15,15 +15,13 @@ public:
     Quad();
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
 
-    void move(Vector2f direction);
+    void setTextureRect(const FloatRect& rect);
+
+    void setColor(const Color& color);
 
     std::array<Vertex, 4> getVertices() const;
 
     static inline int getVertexCount() { return 4; }
-
-    void setTextureRect(const FloatRect& rect);
-
-    void setColor(const Color& color);
 
     static inline const std::array<unsigned int, 6> getIndices()
     {
@@ -36,6 +34,13 @@ private:
     static inline const std::array<unsigned int, 6> m_indices = {
         0, 1, 2,
         0, 2, 3
+    };
+
+    static inline const std::array<Vector2f, 4> m_positions = {
+        Vector2f(0, 0),
+        Vector2f(1, 0),
+        Vector2f(1, 1),
+        Vector2f(0, 1)
     };
 
     FloatRect m_texRect;
