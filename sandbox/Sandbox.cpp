@@ -54,7 +54,7 @@ Application* createApplication()
     return new SandboxApp();
 }
 
-void Sandbox::update()
+void Sandbox::update(float dt)
 {
     const float speed = 5;
     if (Keyboard::isKeyPressed(Keyboard::Key::A))
@@ -73,17 +73,19 @@ void Sandbox::update()
     {
         m_quad.move(Vector2f(0, -speed));
     }
-    Renderer::startRender();
+
+
+    Renderer::startFrame();
     
-    m_batch.begin();
+    m_batch.start();
     for (auto& quad : m_quads)
     {
-        m_batch.draw(quad);
+        m_batch.renderQuad(quad);
     }
-    m_batch.draw(m_quad);
+    m_batch.renderQuad(m_quad);
     m_batch.flush();
 
-    Renderer::finishRender();
+    Renderer::endFrame();
 }
 
 void Sandbox::handleEvent(const Event& event)

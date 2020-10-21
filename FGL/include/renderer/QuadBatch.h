@@ -12,30 +12,18 @@ class QuadBatch
 {
 public:
     QuadBatch() {}
-
     QuadBatch(RenderStates states);
-
-    void begin();
-    void flush();
-    void draw(const Quad& quad);
 
     void create(RenderStates states);
 
+    void start();
+    void renderQuad(const Quad& quad);
+    void flush();
+
     // For Renderer class
-    inline const IndexBuffer& getIndexBuffer() const
-    {
-        return m_indexBuf;
-    }
-
-    inline const VertexArray& getVertexArray() const
-    {
-        return m_vertexArray;
-    }
-
-    inline RenderStates getStates() const
-    {
-        return m_states;
-    }
+    inline const IndexBuffer&  getIndexBuffer() const { return m_indexBuf;    }
+    inline const VertexArray&  getVertexArray() const { return m_vertexArray; }
+    inline const RenderStates& getStates()      const { return m_states;      }
 
 private:
     VertexArray m_vertexArray;

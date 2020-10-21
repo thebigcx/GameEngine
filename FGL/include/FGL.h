@@ -4,7 +4,6 @@
 #include <renderer/Buffer.h>
 #include <renderer/Quad.h>
 #include <renderer/Shader.h>
-#include <renderer/Sprite.h>
 #include <renderer/Texture.h>
 #include <renderer/VertexArray.h>
 #include <util/maths/MathGL.h>

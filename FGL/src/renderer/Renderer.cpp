@@ -2,20 +2,29 @@
 #include "core/Application.h"
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 RenderData Renderer::m_data;
 
 void Renderer::init()
 {
     glDisable(GL_DEPTH_TEST);
+
+    m_data.textureShader.create("shaders/texture.vert", "shaders/texture.frag");
+
+    auto size = Application::get().getWindow().getSize();
+
+    m_data.projectionMatrix = glm::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
+    m_data.textureShader.setUniform("projection", m_data.projectionMatrix);
 }
 
-void Renderer::startRender()
+void Renderer::startFrame()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Renderer::finishRender()
+void Renderer::endFrame()
 {
     auto& window = Application::get().getWindow();
     glfwSwapBuffers(window.getNative());
@@ -26,10 +35,20 @@ void Renderer::setClearColor(const Color& color)
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void Renderer::renderIndexed(const VertexArray& array, RenderStates states)
+void Renderer::render(const VertexArray& array, RenderStates states)
 {
     states.bind();
     states.shader->setUniform("transform", states.transform);
+    array.bind();
+
+    glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);
+    m_data.drawCalls++;
+}
+
+void Renderer::render(const VertexArray& array, const glm::mat4& transform, const Texture& texture)
+{
+    m_data.textureShader.setUniform("transform", transform);
+    texture.bind();
     array.bind();
 
     glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);

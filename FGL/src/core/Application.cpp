@@ -47,7 +47,7 @@ void Application::run()
 
         for (auto layer : m_layers)
         {
-            layer->update();
+            layer->update(1);
         }
     }
 }

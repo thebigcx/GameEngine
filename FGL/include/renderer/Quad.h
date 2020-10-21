@@ -16,20 +16,17 @@ public:
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
 
     void setTextureRect(const FloatRect& rect);
-
     void setColor(const Color& color);
 
     std::array<Vertex, 4> getVertices() const;
 
     static inline int getVertexCount() { return 4; }
-
-    static inline const std::array<unsigned int, 6> getIndices()
-    {
-        return m_indices;
-    }
+    static inline const std::array<unsigned int, 6>& getIndices() { return m_indices; }
 
 private:
     Color m_color;
+
+    FloatRect m_texRect;
 
     static inline const std::array<unsigned int, 6> m_indices = {
         0, 1, 2,
@@ -42,6 +39,4 @@ private:
         Vector2f(1, 1),
         Vector2f(0, 1)
     };
-
-    FloatRect m_texRect;
 };

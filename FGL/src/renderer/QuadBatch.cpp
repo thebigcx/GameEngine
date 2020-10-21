@@ -30,14 +30,14 @@ void QuadBatch::create(RenderStates states)
     m_vertexArray.setIndexBuffer(m_indexBuf);
 }
 
-void QuadBatch::begin()
+void QuadBatch::start()
 {
     m_vertices.clear();
     m_indices.clear();
     m_vertexArray.bind();
 }
 
-void QuadBatch::draw(const Quad& quad)
+void QuadBatch::renderQuad(const Quad& quad)
 {
     if (m_vertices.size() / Quad::getVertexCount() > MAX_QUADS)
     {
@@ -60,5 +60,5 @@ void QuadBatch::flush()
     m_vertexBuffer.update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
     m_indexBuf.update(&m_indices[0], m_indices.size());
 
-    Renderer::renderIndexed(m_vertexArray, m_states);
+    Renderer::render(m_vertexArray, m_states);
 }

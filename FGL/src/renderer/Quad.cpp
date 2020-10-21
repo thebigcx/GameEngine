@@ -28,14 +28,12 @@ std::array<Vertex, 4> Quad::getVertices() const
         auto pos = transform * glm::vec4(m_positions[i].x, m_positions[i].y, 0, 1);
         vertices[i].position = Vector2f(pos.x, pos.y);
 
+        // Change "origin" of texCoord, then scale it
+        vertices[i].texCoord = m_texRect.getPosition();
+        vertices[i].texCoord += m_positions[i] * m_texRect.getSize();
+
         vertices[i].color = m_color;
     }
-
-    // TODO: find a way to incorporate this in for loop
-    vertices[0].texCoord = m_texRect.getPosition();
-    vertices[1].texCoord = Vector2f(m_texRect.x + m_texRect.width, m_texRect.y);
-    vertices[2].texCoord = Vector2f(m_texRect.x + m_texRect.width, m_texRect.y + m_texRect.height);
-    vertices[3].texCoord = Vector2f(m_texRect.x, m_texRect.y + m_texRect.height);
     
     return vertices;
 }

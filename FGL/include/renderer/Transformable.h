@@ -72,8 +72,8 @@ public:
     {
         glm::mat4 matrix(1.f);
 
-        glm::vec2 pos(m_position.x, m_position.y);
-        glm::vec2 scalar(m_size.x, m_size.y);
+        Vector2f pos(m_position.x, m_position.y);
+        Vector2f scalar(m_size.x, m_size.y);
 
         // Translate
         matrix = glm::translate(matrix, glm::vec3(pos.x, pos.y, 0));
