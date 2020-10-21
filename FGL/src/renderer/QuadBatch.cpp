@@ -1,20 +1,21 @@
 #include <renderer/QuadBatch.h>
 #include <util/Timer.h>
 #include <renderer/Renderer.h>
+#include <renderer/ShaderLibrary.h>
 
 #include <GL/glew.h>
 
 #include <iostream>
 #include <cstring>
 
-QuadBatch::QuadBatch(RenderStates states)
+QuadBatch::QuadBatch(Texture& texture)
 {
-    create(states);
+    create(texture);
 }
 
-void QuadBatch::create(RenderStates states)
+void QuadBatch::create(Texture& texture)
 {
-    m_states = states;
+    m_pTexture = &texture;
     m_vertexArray.bind();
 
     BufferLayout layout = {
@@ -60,5 +61,5 @@ void QuadBatch::flush()
     m_vertexBuffer.update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
     m_indexBuf.update(&m_indices[0], m_indices.size());
 
-    Renderer::render(m_vertexArray, m_states);
+    Renderer::render(m_vertexArray, glm::mat4(1.f), *m_pTexture);
 }

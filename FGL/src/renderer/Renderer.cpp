@@ -12,6 +12,7 @@ void Renderer::init()
     glDisable(GL_DEPTH_TEST);
 
     m_data.textureShader.create("shaders/texture.vert", "shaders/texture.frag");
+    m_data.textureShader.bind();
 
     auto size = Application::get().getWindow().getSize();
 
@@ -47,7 +48,9 @@ void Renderer::render(const VertexArray& array, RenderStates states)
 
 void Renderer::render(const VertexArray& array, const glm::mat4& transform, const Texture& texture)
 {
+    m_data.textureShader.bind();
     m_data.textureShader.setUniform("transform", transform);
+    BlendMode::Alpha.bind();
     texture.bind();
     array.bind();
 

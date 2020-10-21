@@ -18,6 +18,11 @@ void VertexArray::bind() const
     glBindVertexArray(m_id);
 }
 
+void VertexArray::unbind() const
+{
+    glBindVertexArray(0);
+}
+
 void VertexArray::addVertexBuffer(const VertexBuffer& buffer)
 {
     buffer.bind();

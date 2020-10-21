@@ -5,6 +5,7 @@
 #include <util/maths/Math.h>
 #include <core/Keyboard.h>
 #include <events/EventDispatcher.h>
+#include <renderer/Renderer.h>
 
 Application* Application::m_instance = nullptr;
 
@@ -20,6 +21,8 @@ Application::Application()
     SoundEngine::init();
 
     EventDispatcher::setupCallbacks();
+
+    Renderer::init();
 }
 
 void Application::run()

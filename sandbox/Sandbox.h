@@ -22,4 +22,5 @@ private:
     SoundSource m_soundSource;
 
     std::vector<Quad> m_quads;
+    std::vector<QuadBatch> m_batches;
 };

@@ -4,29 +4,15 @@
 
 Sandbox::Sandbox()
 {
-    Shader textureShader;
-    textureShader.create("shaders/texture.vert", "shaders/texture.frag");
-
-    ShaderLibrary::add("texture", textureShader);
-    ShaderLibrary::get("texture").bind();
-
     m_texture.loadFile("sandbox/res/terrain.png");
 
     AssetManager::get().textures.add("texture", m_texture);
-
-    glm::mat4 projection = glm::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
-    ShaderLibrary::get("texture").setUniform("projection", projection);
 
     m_soundBuffer.load(SoundBuffer::FileType::MP3, "sandbox/res/beat.mp3");
     m_soundSource.create();
     SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
 
-    RenderStates states = RenderStates::createStates(AssetManager::get().textures.get("texture"), 
-                                                     ShaderLibrary::get("texture"),
-                                                     glm::mat4(1.f),
-                                                     BlendMode::Alpha);
-
-    m_batch.create(states);
+    m_batch.create(AssetManager::get().textures.get("texture"));
 
     m_quad.setPosition(Vector2f(100, 100));
     m_quad.setSize(Vector2f(100, 100));
@@ -76,13 +62,14 @@ void Sandbox::update(float dt)
 
 
     Renderer::startFrame();
-    
+
     m_batch.start();
+
     for (auto& quad : m_quads)
     {
         m_batch.renderQuad(quad);
     }
-    m_batch.renderQuad(m_quad);
+
     m_batch.flush();
 
     Renderer::endFrame();
