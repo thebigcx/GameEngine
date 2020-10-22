@@ -1,5 +1,4 @@
-#include "core/Window.h"
-#include "core/Mouse.h"
+#include <core/Window.h>
 
 Window::Window(int width, int height, const std::string& title)
 {

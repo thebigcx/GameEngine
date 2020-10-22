@@ -8,7 +8,7 @@ Sandbox::Sandbox()
 
     AssetManager::get().textures.add("texture", m_texture);
 
-    m_soundBuffer.load(SoundBuffer::FileType::MP3, "sandbox/res/beat.mp3");
+    m_soundBuffer.load(SoundBuffer::FileType::MP3, "sandbox/res/monkeys.mp3");
     m_soundSource.create();
     SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
 
@@ -17,16 +17,16 @@ Sandbox::Sandbox()
     m_quad.setPosition(Vector2f(100, 100));
     m_quad.setSize(Vector2f(100, 100));
     m_quad.setColor(Color(1, 1, 1, 1));
-    m_quad.setTextureRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
+    m_quad.setTexture2DRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
 
     for (int i = 0; i < 9999; i++)
     {
         Quad quad;
 
-        quad.setPosition(Vector2f(100, 100));
+        quad.setPosition(Vector2f(i, i));
         quad.setSize(Vector2f(100, 100));
         quad.setColor(Color(1, 1, 1, 1));
-        quad.setTextureRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
+        quad.setTexture2DRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
 
         m_quads.push_back(quad);
     }
@@ -40,24 +40,25 @@ Application* createApplication()
     return new SandboxApp();
 }
 
-void Sandbox::update(float dt)
+void Sandbox::update()
 {
-    const float speed = 5;
-    if (Keyboard::isKeyPressed(Keyboard::Key::A))
+    auto dt = Time::getDelta();
+    const float speed = 0.5;
+    if (Input::isKeyPressed(Key::A))
     {
-        m_quad.move(Vector2f(-speed, 0));
+        m_quad.move(Vector2f(-speed * dt, 0));
     }
-    if (Keyboard::isKeyPressed(Keyboard::Key::D))
+    if (Input::isKeyPressed(Key::D))
     {
-        m_quad.move(Vector2f(speed, 0));
+        m_quad.move(Vector2f(speed * dt, 0));
     }
-    if (Keyboard::isKeyPressed(Keyboard::Key::W))
+    if (Input::isKeyPressed(Key::W))
     {
-        m_quad.move(Vector2f(0, speed));
+        m_quad.move(Vector2f(0, speed * dt));
     }
-    if (Keyboard::isKeyPressed(Keyboard::Key::S))
+    if (Input::isKeyPressed(Key::S))
     {
-        m_quad.move(Vector2f(0, -speed));
+        m_quad.move(Vector2f(0, -speed * dt));
     }
 
 
@@ -69,6 +70,7 @@ void Sandbox::update(float dt)
     {
         m_batch.renderQuad(quad);
     }
+    m_batch.renderQuad(m_quad);
 
     m_batch.flush();
 

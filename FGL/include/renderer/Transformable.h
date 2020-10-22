@@ -3,8 +3,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "util/maths/Vector2.h"
-#include "core/Logger.h"
+#include <util/Transform.h>
+#include <util/maths/Vector2.h>
+#include <core/Logger.h>
 
 class Transformable
 {
@@ -13,8 +14,7 @@ public:
 
     virtual ~Transformable() = default;
 
-    void setPosition(Vector2f position)
-    {
+    void setPosition(Vector2f position) {
         m_position = position;
     }
 
@@ -48,44 +48,16 @@ public:
         m_size *= scalar;
     }
 
-    const Vector2f& getPosition() const
+    const Vector2f& getPosition() const { return m_position; }
+    const Vector2f& getSize()     const { return m_size;     }
+    float           getRotation() const { return m_rotation; }
+    const Vector2f& getOrigin()   const { return m_origin;   }
+
+    Transform getTransform() const
     {
-        return m_position;
-    }
-
-    const Vector2f& getSize() const
-    {
-        return m_size;
-    }
-
-    float getRotation() const
-    {
-        return m_rotation;
-    }
-
-    const Vector2f& getOrigin() const
-    {
-        return m_origin;
-    }
-
-    glm::mat4 getTransform() const
-    {
-        glm::mat4 matrix(1.f);
-
-        Vector2f pos(m_position.x, m_position.y);
-        Vector2f scalar(m_size.x, m_size.y);
-
-        // Translate
-        matrix = glm::translate(matrix, glm::vec3(pos.x, pos.y, 0));
-        // Rotate (with respect to origin)
-        matrix = glm::translate(matrix, glm::vec3(m_origin.x, m_origin.y, 0.f));
-        matrix = glm::rotate(matrix, glm::radians((float)m_rotation), glm::vec3(0.f, 0.f, 1.f));
-        matrix = glm::translate(matrix, glm::vec3(-m_origin.x, -m_origin.y, 0.f));
-
-        // Scale
-        matrix = glm::scale(matrix, glm::vec3(scalar.x, scalar.y, 1));
-
-        return matrix;
+        Transform transform(m_position, m_rotation, m_size);
+        transform.rotationOrigin = m_origin;
+        return transform;
     }
 
 protected:

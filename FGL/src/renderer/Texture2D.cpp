@@ -1,20 +1,20 @@
-#include <renderer/Texture.h>
+#include <renderer/Texture2D.h>
 
 #include <util/Image.h>
 
 #include <iostream>
 
-Texture::Texture()
+Texture2D::Texture2D()
 {
     glGenTextures(1, &m_id);
 }
 
-Texture::~Texture()
+Texture2D::~Texture2D()
 {
     glDeleteTextures(1, &m_id);
 }
 
-Texture::Texture(const Texture& texture)
+Texture2D::Texture2D(const Texture2D& texture)
 {
     m_id = texture.m_id;
     m_flipped = texture.m_flipped;
@@ -24,7 +24,7 @@ Texture::Texture(const Texture& texture)
     m_repeated = texture.m_repeated;
 }
 
-Texture::Texture(Texture&& texture)
+Texture2D::Texture2D(Texture2D&& texture)
 {
     m_id = texture.m_id;
     texture.m_id = 0;
@@ -35,7 +35,7 @@ Texture::Texture(Texture&& texture)
     m_repeated = texture.m_repeated;
 }
 
-bool Texture::loadFile(const std::string& file)
+bool Texture2D::loadFile(const std::string& file)
 {
     glBindTexture(GL_TEXTURE_2D, m_id);
 
@@ -46,7 +46,7 @@ bool Texture::loadFile(const std::string& file)
     return loadImage(image);
 }
 
-bool Texture::loadImage(const Image& image)
+bool Texture2D::loadImage(const Image& image)
 {
     if (image.getPixels())
     {
@@ -77,14 +77,14 @@ bool Texture::loadImage(const Image& image)
     return true;
 }
 
-void Texture::create(int width, int height)
+void Texture2D::create(int width, int height)
 {
     glBindTexture(GL_TEXTURE_2D, m_id);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 }
 
-void Texture::setSmooth(bool smooth)
+void Texture2D::setSmooth(bool smooth)
 {
     bind();
 
@@ -96,12 +96,12 @@ void Texture::setSmooth(bool smooth)
     m_smooth = smooth;
 }
 
-bool Texture::isSmooth() const
+bool Texture2D::isSmooth() const
 {
     return m_smooth;
 }
 
-void Texture::setRepeated(bool repeated)
+void Texture2D::setRepeated(bool repeated)
 {
     bind();
 
@@ -113,22 +113,22 @@ void Texture::setRepeated(bool repeated)
     m_repeated = repeated;
 }
 
-bool Texture::isRepeated() const
+bool Texture2D::isRepeated() const
 {
     return m_repeated;
 }
 
-void Texture::setVerticalFlip(bool flip)
+void Texture2D::setVerticalFlip(bool flip)
 {
     m_flipped = flip;
 }
 
-void Texture::bind() const
+void Texture2D::bind() const
 {
     glBindTexture(GL_TEXTURE_2D, m_id);
 }
 
-Vector2u Texture::getSize() const
+Vector2u Texture2D::getSize() const
 {
     return m_size;
 }

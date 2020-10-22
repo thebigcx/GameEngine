@@ -12,9 +12,9 @@ class QuadBatch
 {
 public:
     QuadBatch() {}
-    QuadBatch(Texture& texture);
+    QuadBatch(Texture2D& texture);
 
-    void create(Texture& texture);
+    void create(Texture2D& texture);
 
     void start();
     void renderQuad(const Quad& quad);
@@ -23,7 +23,7 @@ public:
     // For Renderer class
     inline const IndexBuffer&  getIndexBuffer() const { return m_indexBuf;    }
     inline const VertexArray&  getVertexArray() const { return m_vertexArray; }
-    inline const Texture* getTexture()          const { return m_pTexture;    }
+    inline const Texture2D* getTexture()        const { return m_pTexture;    }
 
 private:
     VertexArray m_vertexArray;
@@ -33,7 +33,7 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<unsigned int> m_indices;
 
-    Texture* m_pTexture;
+    Texture2D* m_pTexture;
 
     static inline const unsigned int MAX_QUADS = 10000;
 };

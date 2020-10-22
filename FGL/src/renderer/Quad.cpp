@@ -25,7 +25,7 @@ std::array<Vertex, 4> Quad::getVertices() const
 
     for (int i = 0 ; i < 4 ; i++)
     {
-        auto pos = transform * glm::vec4(m_positions[i].x, m_positions[i].y, 0, 1);
+        auto pos = transform.getMatrix() * glm::vec4(m_positions[i].x, m_positions[i].y, 0, 1);
         vertices[i].position = Vector2f(pos.x, pos.y);
 
         // Change "origin" of texCoord, then scale it
@@ -38,7 +38,7 @@ std::array<Vertex, 4> Quad::getVertices() const
     return vertices;
 }
 
-void Quad::setTextureRect(const FloatRect& rect)
+void Quad::setTexture2DRect(const FloatRect& rect)
 {
     m_texRect = rect;
 }

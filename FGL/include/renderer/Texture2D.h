@@ -8,14 +8,14 @@
 #include <util/maths/Vector2.h>
 #include <util/Image.h>
 
-class Texture {
+class Texture2D {
 public:
-    Texture();
+    Texture2D();
 
-    ~Texture();
+    ~Texture2D();
 
-    Texture(Texture&& texture);
-    Texture(const Texture& texture);
+    Texture2D(Texture2D&& texture);
+    Texture2D(const Texture2D& texture);
 
     void bind() const;
 

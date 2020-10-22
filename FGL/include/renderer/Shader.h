@@ -51,12 +51,12 @@ public:
     enum DataType
     {
         Float,
-        Vec2f,
-        Vec3f,
-        Mat3f,
-        Mat4f,
-        Boolean,
-        Integer,
+        Vec2,
+        Vec3,
+        Mat3,
+        Mat4,
+        Bool,
+        Int,
         Vec2i,
         Vec3i,
         Color

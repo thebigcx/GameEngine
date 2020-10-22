@@ -1,15 +1,7 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
-
-#include "Application.h"
-
-class Keyboard
+enum Key
 {
-public:
-
-    enum Key
-    {
         Unknown = -1,
         Space = 32,
         Apostrophe = 39,
@@ -141,11 +133,4 @@ public:
 
         Menu = 348,
         Last = Menu
-    };
-
-
-    static bool isKeyPressed(Key key)
-    {
-        return glfwGetKey(Application::get().getWindow().getNative(), key) == GLFW_PRESS;
-    }
 };

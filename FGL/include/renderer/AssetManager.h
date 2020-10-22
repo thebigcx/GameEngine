@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 
-#include <renderer/Texture.h>
+#include <renderer/Texture2D.h>
 
 template <typename T>
 class AssetHolder
@@ -52,5 +52,5 @@ public:
         return manager;
     }
 
-    AssetHolder<Texture> textures;
+    AssetHolder<Texture2D> textures;
 };

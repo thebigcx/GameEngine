@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/Texture.h>
+#include <renderer/Texture2D.h>
 #include <renderer/Shader.h>
 #include <renderer/BlendMode.h>
 
@@ -12,7 +12,7 @@ public:
         
     }
 
-    static RenderStates createStates(Texture& texture_, Shader& shader_, const glm::mat4& transform_, BlendMode blendMode_)
+    static RenderStates createStates(Texture2D& texture_, Shader& shader_, const glm::mat4& transform_, BlendMode blendMode_)
     {
         RenderStates states;
         states.texture = &texture_;
@@ -23,7 +23,7 @@ public:
         return states;
     }
 
-    static RenderStates createStates(Texture& texture_, Shader& shader_)
+    static RenderStates createStates(Texture2D& texture_, Shader& shader_)
     {
         RenderStates states;
         states.texture = &texture_;
@@ -41,7 +41,7 @@ public:
         blendMode.bind();
     }
 
-    Texture* texture;
+    Texture2D* texture;
     Shader* shader;
     glm::mat4 transform;
     BlendMode blendMode;

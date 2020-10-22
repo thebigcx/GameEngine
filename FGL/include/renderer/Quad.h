@@ -15,7 +15,7 @@ public:
     Quad();
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
 
-    void setTextureRect(const FloatRect& rect);
+    void setTexture2DRect(const FloatRect& rect);
     void setColor(const Color& color);
 
     std::array<Vertex, 4> getVertices() const;

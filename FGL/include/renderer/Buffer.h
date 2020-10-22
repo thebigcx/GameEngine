@@ -21,12 +21,12 @@ struct BufferElement
         switch (type)
         {
             case Shader::DataType::Float:   return 1;
-            case Shader::DataType::Vec2f:   return 2;
-            case Shader::DataType::Vec3f:   return 3;
-            case Shader::DataType::Mat3f:   return 9;
-            case Shader::DataType::Mat4f:   return 16;
-            case Shader::DataType::Boolean: return 1;
-            case Shader::DataType::Integer: return 1;
+            case Shader::DataType::Vec2:    return 2;
+            case Shader::DataType::Vec3:    return 3;
+            case Shader::DataType::Mat3:    return 9;
+            case Shader::DataType::Mat4:    return 16;
+            case Shader::DataType::Bool:    return 1;
+            case Shader::DataType::Int:     return 1;
             case Shader::DataType::Vec2i:   return 2;
             case Shader::DataType::Vec3i:   return 3;
             case Shader::DataType::Color:   return 4;
@@ -51,13 +51,13 @@ struct BufferElement
         switch (type)
         {
             case Shader::DataType::Float:   
-            case Shader::DataType::Vec2f:
-            case Shader::DataType::Vec3f:
-            case Shader::DataType::Mat3f:
-            case Shader::DataType::Mat4f:
+            case Shader::DataType::Vec2:
+            case Shader::DataType::Vec3:
+            case Shader::DataType::Mat3:
+            case Shader::DataType::Mat4:
             case Shader::DataType::Color:   return GL_FLOAT;
-            case Shader::DataType::Boolean:
-            case Shader::DataType::Integer:
+            case Shader::DataType::Bool:
+            case Shader::DataType::Int:
             case Shader::DataType::Vec2i:
             case Shader::DataType::Vec3i:   return GL_INT;
             default:                        return GL_FLOAT;

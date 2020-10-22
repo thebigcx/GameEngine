@@ -25,7 +25,7 @@ class Renderer
         static void setClearColor(const Color& color);
 
         static void render(const VertexArray& array, RenderStates states);
-        static void render(const VertexArray& array, const glm::mat4& transform, const Texture& texture);
+        static void render(const VertexArray& array, const glm::mat4& transform, const Texture2D& texture);
 
     private:
         static RenderData m_data;

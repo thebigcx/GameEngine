@@ -8,19 +8,19 @@
 #include <iostream>
 #include <cstring>
 
-QuadBatch::QuadBatch(Texture& texture)
+QuadBatch::QuadBatch(Texture2D& texture)
 {
     create(texture);
 }
 
-void QuadBatch::create(Texture& texture)
+void QuadBatch::create(Texture2D& texture)
 {
     m_pTexture = &texture;
     m_vertexArray.bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec2f, "aPos" },
-        { Shader::DataType::Vec2f, "aTexCoord" },
+        { Shader::DataType::Vec2, "aPos" },
+        { Shader::DataType::Vec2, "aTexCoord" },
         { Shader::DataType::Color, "aColor" }
     };
 

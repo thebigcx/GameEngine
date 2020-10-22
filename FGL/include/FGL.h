@@ -4,7 +4,7 @@
 #include <renderer/Buffer.h>
 #include <renderer/Quad.h>
 #include <renderer/Shader.h>
-#include <renderer/Texture.h>
+#include <renderer/Texture2D.h>
 #include <renderer/VertexArray.h>
 #include <util/maths/MathGL.h>
 #include <util/maths/Vector2.h>
@@ -17,8 +17,6 @@
 #include <renderer/Renderer.h>
 #include <core/Logger.h>
 #include <core/Application.h>
-#include <core/Keyboard.h>
-#include <core/Mouse.h>
 #include <core/Cursor.h>
 #include <io/FileWriter.h>
 #include <io/FileReader.h>
@@ -26,3 +24,7 @@
 #include <audio/SoundEngine.h>
 #include <audio/SoundSource.h>
 #include <renderer/AssetManager.h>
+#include <util/Time.h>
+#include <util/Transform.h>
+#include <core/Input.h>
+#include <core/KeyCodes.h>

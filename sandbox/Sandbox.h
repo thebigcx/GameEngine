@@ -1,7 +1,7 @@
 #pragma once
 
 #include <core/Layer.h>
-#include <renderer/Texture.h>
+#include <renderer/Texture2D.h>
 #include <renderer/QuadBatch.h>
 
 class Sandbox : public Layer
@@ -9,11 +9,11 @@ class Sandbox : public Layer
 public:
     Sandbox();
 
-    void update(float dt) override;
+    void update() override;
     void handleEvent(const Event& event) override;
 
 private:
-    Texture m_texture;
+    Texture2D m_texture;
 
     QuadBatch m_batch;
     Quad m_quad;

@@ -20,7 +20,7 @@ sandbox/Sandbox.cpp
 add_library(FGL STATIC ${SOURCES})
 
 # Link the OpenGL libraries
-target_link_libraries(FGL glfw GL X11 pthread Xrandr Xi dl GLEW openal)
+target_link_libraries(FGL GL glfw libGLEW.a openal)
 
 # Set the include directory
 target_include_directories(FGL PUBLIC ${CMAKE_SOURCE_DIR}/FGL/include)
