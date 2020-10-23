@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include <util/maths/Vector2.h>
+#include <util/math/vector/Vector2.h>
 #include <util/Image.h>
 
 class Texture2D {

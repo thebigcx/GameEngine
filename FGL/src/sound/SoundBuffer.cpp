@@ -1,4 +1,4 @@
-#include <audio/SoundBuffer.h>
+#include <sound/SoundBuffer.h>
 
 #include <AL/al.h>
 

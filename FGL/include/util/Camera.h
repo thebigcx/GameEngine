@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <util/maths/Vector2.h>
+#include <util/math/vector/Vector2.h>
 
 class Camera
 {

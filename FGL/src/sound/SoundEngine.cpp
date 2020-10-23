@@ -1,7 +1,7 @@
-#include <audio/SoundEngine.h>
+#include <sound/SoundEngine.h>
 
 #include <core/Logger.h>
-#include <audio/SoundListener.h>
+#include <sound/SoundListener.h>
 
 ALCdevice* SoundEngine::m_device;
 ALCcontext* SoundEngine::m_context;

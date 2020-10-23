@@ -1,6 +1,6 @@
 #pragma once
 
-#include <util/maths/Vector2.h>
+#include <util/math/vector/Vector2.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

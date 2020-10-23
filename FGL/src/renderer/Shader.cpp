@@ -151,22 +151,22 @@ void Shader::bind() const
     }
 }
 
-void Shader::setUniform(std::string name, int value)
+void Shader::setUniform(const std::string& name, int value)
 {
     glUniform1i(m_uniforms[name].location, value);
 }
 
-void Shader::setUniform(std::string name, bool value)
+void Shader::setUniform(const std::string& name, bool value)
 {
     glUniform1i(m_uniforms[name].location, (int)value);
 }
 
-void Shader::setUniform(std::string name, float value)
+void Shader::setUniform(const std::string& name, float value)
 {
     glUniform1f(m_uniforms[name].location, value);
 }
 
-void Shader::setUniform(std::string name, const glm::mat4& value)
+void Shader::setUniform(const std::string& name, const glm::mat4& value)
 {
     glUniformMatrix4fv(m_uniforms[name].location, 1, GL_FALSE, glm::value_ptr(value));
 }

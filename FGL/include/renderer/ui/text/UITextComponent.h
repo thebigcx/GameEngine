@@ -1,14 +1,14 @@
 #pragma once
 
 #include <renderer/ui/text/Font.h>
-#include <renderer/Transformable.h>
+#include <renderer/ui/UIComponent.h>
 #include <util/Color.h>
-#include <util/maths/Vector2.h>
+#include <util/math/vector/Vector2.h>
 
-class Text : public Transformable
+class UITextComponent : public UIComponent
 {
 public:
-    Text(Font& p_font);
+    UITextComponent(Font& p_font);
 
     void setColor(const Color& color);
 

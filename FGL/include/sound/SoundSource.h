@@ -3,7 +3,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
-#include "SoundBuffer.h"
+#include <sound/SoundBuffer.h>
 
 class SoundSource
 {

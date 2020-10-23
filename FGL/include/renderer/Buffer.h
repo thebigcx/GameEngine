@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "Shader.h"
-#include "../core/Logger.h"
+#include <renderer/Shader.h>
+#include <core/Logger.h>
 
 struct BufferElement
 {

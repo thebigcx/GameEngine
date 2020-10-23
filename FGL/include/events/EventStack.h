@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Event.h"
+#include <events/Event.h>
 
 class EventStack
 {

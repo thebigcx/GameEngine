@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "Buffer.h"
+#include <renderer/Buffer.h>
 
 class VertexArray
 {

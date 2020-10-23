@@ -6,13 +6,13 @@
 #include <renderer/Shader.h>
 #include <renderer/Texture2D.h>
 #include <renderer/VertexArray.h>
-#include <util/maths/MathGL.h>
-#include <util/maths/Vector2.h>
+#include <util/math/MathGL.h>
+#include <util/math/vector/Vector2.h>
 #include <renderer/Transformable.h>
 #include <util/Color.h>
 #include <util/Timer.h>
 #include <renderer/Vertex.h>
-#include <util/maths/Math.h>
+#include <util/math/Math.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/Renderer.h>
 #include <core/Logger.h>
@@ -21,8 +21,8 @@
 #include <io/FileWriter.h>
 #include <io/FileReader.h>
 #include <renderer/ShaderLibrary.h>
-#include <audio/SoundEngine.h>
-#include <audio/SoundSource.h>
+#include <sound/SoundEngine.h>
+#include <sound/SoundSource.h>
 #include <renderer/AssetManager.h>
 #include <util/Time.h>
 #include <util/Transform.h>
@@ -30,4 +30,4 @@
 #include <core/KeyCodes.h>
 #include <renderer/ui/text/Font.h>
 #include <renderer/ui/text/Glyph.h>
-#include <renderer/ui/text/Text.h>
+#include <renderer/ui/text/UITextComponent.h>

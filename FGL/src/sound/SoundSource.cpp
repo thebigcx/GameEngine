@@ -1,4 +1,4 @@
-#include <audio/SoundSource.h>
+#include <sound/SoundSource.h>
 
 SoundSource::SoundSource()
 {

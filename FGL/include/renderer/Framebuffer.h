@@ -2,8 +2,8 @@
 
 #include <array>
 
-#include "Shader.h"
-#include "Buffer.h"
+#include <renderer/Shader.h>
+#include <renderer/Buffer.h>
 
 class Framebuffer
 {

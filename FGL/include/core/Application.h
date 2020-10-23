@@ -2,9 +2,9 @@
 
 #include <vector>
 
-#include "Window.h"
-#include "Layer.h"
-#include "../events/EventStack.h"
+#include <core/Window.h>
+#include <core/Layer.h>
+#include <events/EventStack.h>
 
 // Singleton
 class Application

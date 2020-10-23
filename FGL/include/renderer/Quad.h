@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <array>
 
-#include <util/maths/Vector2.h>
-#include <util/maths/Rect.h>
+#include <util/math/vector/Vector2.h>
+#include <util/math/Rect.h>
 #include <util/Color.h>
 #include <renderer/Vertex.h>
 #include <renderer/Transformable.h>
@@ -15,7 +15,7 @@ public:
     Quad();
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
 
-    void setTexture2DRect(const FloatRect& rect);
+    void setTextureRect(const FloatRect& rect);
     void setColor(const Color& color);
 
     std::array<Vertex, 4> getVertices() const;
@@ -30,7 +30,7 @@ private:
 
     static inline const std::array<unsigned int, 6> m_indices = {
         0, 1, 2,
-        0, 2, 3
+        2, 3, 0
     };
 
     static inline const std::array<Vector2f, 4> m_positions = {

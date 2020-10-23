@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../core/Logger.h"
-#include "../util/maths/Vector3.h"
+#include <core/Logger.h>
+#include <util/math/vector/Vector3.h>
 
 class SoundListener
 {

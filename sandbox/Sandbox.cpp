@@ -17,7 +17,7 @@ Sandbox::Sandbox()
     m_quad.setPosition(Vector2f(100, 100));
     m_quad.setSize(Vector2f(100, 100));
     m_quad.setColor(Color(1, 1, 1, 1));
-    m_quad.setTexture2DRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
+    m_quad.setTextureRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
 
     for (int i = 0; i < 999; i++)
     {
@@ -26,7 +26,7 @@ Sandbox::Sandbox()
         quad.setPosition(Vector2f((i % 10)*100, i*10));
         quad.setSize(Vector2f(100, 100));
         quad.setColor(Color(1, 1, 1, 1));
-        quad.setTexture2DRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
+        quad.setTextureRect(FloatRect(15.f / 16.f, 15.f / 16.f , 1.f / 16.f, 1.f / 16.f));
 
         m_quads.push_back(quad);
     }

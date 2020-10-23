@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-#include <audio/SoundBuffer.h>
-#include <audio/SoundSource.h>
+#include <sound/SoundBuffer.h>
+#include <sound/SoundSource.h>
 
 class SoundEngine
 {

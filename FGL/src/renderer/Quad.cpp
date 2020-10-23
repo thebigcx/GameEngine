@@ -38,7 +38,7 @@ std::array<Vertex, 4> Quad::getVertices() const
     return vertices;
 }
 
-void Quad::setTexture2DRect(const FloatRect& rect)
+void Quad::setTextureRect(const FloatRect& rect)
 {
     m_texRect = rect;
 }

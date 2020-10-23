@@ -1,8 +1,8 @@
 #include <core/Application.h>
 
 #include <core/Logger.h>
-#include <audio/SoundEngine.h>
-#include <util/maths/Math.h>
+#include <sound/SoundEngine.h>
+#include <util/math/Math.h>
 #include <core/Input.h>
 #include <events/EventDispatcher.h>
 #include <renderer/Renderer.h>

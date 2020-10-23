@@ -41,24 +41,19 @@ public:
 
     void bind() const;
 
-    void setUniform(std::string name, int value);
-    void setUniform(std::string name, bool value);
-    void setUniform(std::string name, float value);
-    void setUniform(std::string name, const glm::mat4& value);
+    void setUniform(const std::string& name, int value);
+    void setUniform(const std::string& name, bool value);
+    void setUniform(const std::string& name, float value);
+    void setUniform(const std::string& name, const glm::mat4& value);
 
     unsigned int getId() const;
 
     enum DataType
     {
-        Float,
-        Vec2,
-        Vec3,
-        Mat3,
-        Mat4,
-        Bool,
-        Int,
-        Vec2i,
-        Vec3i,
+        Float, Bool, Int,
+        Vec2,  Vec3,
+        Mat3,  Mat4,
+        Vec2i, Vec3i,
         Color
     };
 
