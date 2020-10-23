@@ -43,7 +43,7 @@ void QuadBatch::renderQuad(const Quad& quad)
 {
     if (m_vertices.size() / Quad::getVertexCount() > MAX_QUADS)
     {
-        Logger::err("Too many quads for batch!");
+        Console::err("Too many quads for batch!");
     }
 
     for (int i = 0 ; i < quad.getIndices().size() ; i++)

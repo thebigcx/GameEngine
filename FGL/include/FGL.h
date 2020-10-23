@@ -15,7 +15,7 @@
 #include <util/math/Math.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/Renderer.h>
-#include <core/Logger.h>
+#include <core/Console.h>
 #include <core/Application.h>
 #include <core/Cursor.h>
 #include <io/FileWriter.h>

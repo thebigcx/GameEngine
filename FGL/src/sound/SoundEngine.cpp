@@ -1,6 +1,6 @@
 #include <sound/SoundEngine.h>
 
-#include <core/Logger.h>
+#include <core/Console.h>
 #include <sound/SoundListener.h>
 
 ALCdevice* SoundEngine::m_device;

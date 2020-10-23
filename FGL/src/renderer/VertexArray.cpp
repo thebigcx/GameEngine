@@ -1,7 +1,7 @@
 #include "renderer/VertexArray.h"
 #include "renderer/Vertex.h"
 
-#include "core/Logger.h"
+#include "core/Console.h"
 
 VertexArray::VertexArray()
 {

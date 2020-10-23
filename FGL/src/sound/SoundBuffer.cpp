@@ -4,7 +4,7 @@
 
 #include <vendor/dr_libs/dr_wav.h>
 #include <vendor/dr_libs/dr_mp3.h>
-#include <core/Logger.h>
+#include <core/Console.h>
 
 SoundBuffer::SoundBuffer()
 {
@@ -35,7 +35,7 @@ void SoundBuffer::load(const std::string& path)
     }
     else
     {
-        Logger::out("Unsupported file type: " + extension);
+        Console::out("Unsupported file type: " + extension);
     }
 }
 
@@ -48,7 +48,7 @@ unsigned int SoundBuffer::loadWAV(const std::string& path)
     drwav wav;
     if (!drwav_init_file(&wav, path.c_str(), nullptr))
     {
-        Logger::out("Could not open wave file: " + path);
+        Console::out("Could not open wave file: " + path);
         return 0;
     }
 
@@ -72,7 +72,7 @@ unsigned int SoundBuffer::loadMP3(const std::string& path)
     drmp3 mp3;
     if (!drmp3_init_file(&mp3, path.c_str(), nullptr))
     {
-        Logger::out("Could not open MP3 file: " + path);
+        Console::out("Could not open MP3 file: " + path);
         return 0;
     }
 

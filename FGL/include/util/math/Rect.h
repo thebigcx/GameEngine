@@ -27,14 +27,14 @@ public:
 			   other.y < y + height && other.y + other.height > y;
 	}
 
-	const Vector2<T> getPosition() const
+	Vector2<T> getPosition() const
 	{
-		return Vector2f(x, y);
+		return Vector2<T>(x, y);
 	}
 
 	Vector2<T> getSize() const
 	{
-		return Vector2f(width, height);
+		return Vector2<T>(width, height);
 	}
 
 	Vector2<T> getIntersection(Rect<T> other) const

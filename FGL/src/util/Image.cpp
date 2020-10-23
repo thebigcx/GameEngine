@@ -1,6 +1,6 @@
 #include <util/Image.h>
 
-#include <core/Logger.h>
+#include <core/Console.h>
 
 #include <stb_image/stb_image.h>
 
@@ -24,7 +24,7 @@ void Image::loadFile(const std::string& file)
 
     if (!m_data)
     {
-        Logger::errf("Image does not exist or contains corrupted data: %s", file);
+        Console::errf("Image does not exist or contains corrupted data: %s", file);
     }
 
     m_size.x = width;

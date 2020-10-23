@@ -1,6 +1,6 @@
 #include <core/Application.h>
 
-#include <core/Logger.h>
+#include <core/Console.h>
 #include <sound/SoundEngine.h>
 #include <util/math/Math.h>
 #include <core/Input.h>
@@ -16,7 +16,7 @@ Application::Application()
     m_instance = this;
 
     Math::Random::initSeed();
-    Logger::init();
+    Console::init();
     SoundEngine::init();
     EventDispatcher::setupCallbacks();
     Renderer::init();
@@ -43,11 +43,6 @@ void Application::run()
             m_eventStack.pop();
         }
 
-        if (Input::isKeyPressed(Key::Escape))
-        {
-            m_window.close();
-        }
-
         for (auto layer : m_layers)
         {
             layer->update();
@@ -64,7 +59,7 @@ Application& Application::get()
 {
     if (m_instance == nullptr)
     {
-        Logger::err("Application instance is undefined!");
+        Console::err("Application instance is undefined!");
     }
 
     return *m_instance;

@@ -18,7 +18,7 @@ public:
     {
         if (!exists(name))
         {
-            Logger::errf("Asset does not exist: %s", name);
+            Console::errf("Asset does not exist: %s", name);
         }
 
         return m_assets.at(name);

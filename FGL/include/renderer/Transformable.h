@@ -5,7 +5,7 @@
 
 #include <util/Transform.h>
 #include <util/math/vector/Vector2.h>
-#include <core/Logger.h>
+#include <core/Console.h>
 
 class Transformable
 {
@@ -33,7 +33,7 @@ public:
         m_origin = origin;
     }
 
-    void move(Vector2f direction)
+    void translate(Vector2f direction)
     {
         m_position += direction;
     }

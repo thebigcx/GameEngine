@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <renderer/Shader.h>
-#include <core/Logger.h>
+#include <core/Console.h>
 
 struct BufferElement
 {

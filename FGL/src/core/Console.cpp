@@ -1,4 +1,4 @@
-#include <core/Logger.h>
+#include <core/Console.h>
 
 #include <cstdlib>
 
@@ -9,18 +9,18 @@ void GLAPIENTRY messageCallback(GLenum source, GLenum type, GLuint id, GLenum se
     switch (severity)
     {
         case GL_DEBUG_SEVERITY_HIGH:
-            Logger::errf("[OpenGL Debug HIGH] %s", message);
+            Console::errf("[OpenGL Debug HIGH] %s", message);
             break;
         case GL_DEBUG_SEVERITY_MEDIUM:
-            Logger::outf("[OpenGL Debug MEDIUM] %s", message);
+            Console::outf("[OpenGL Debug MEDIUM] %s", message);
             break;
         case GL_DEBUG_SEVERITY_LOW:
-            Logger::outf("[OpenGL Debug LOW] %s", message);
+            Console::outf("[OpenGL Debug LOW] %s", message);
             break;
     }
 }
 
-void Logger::init()
+void Console::init()
 {
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(messageCallback, 0);

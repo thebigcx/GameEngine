@@ -4,7 +4,7 @@
 #include <ostream>
 #include <cstdarg>
 
-class Logger
+class Console
 {
 public:
     template <typename T>
@@ -34,7 +34,7 @@ public:
         std::cout << "* Runtime error *\n";
         std::cout << what << "\n\n";
 
-        throw std::runtime_error("Error thrown by Logger::err()");
+        throw std::runtime_error("Error thrown by Console::err()");
     }
 
     template <typename ...Args>

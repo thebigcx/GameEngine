@@ -8,15 +8,17 @@
 #include <util/Color.h>
 #include <renderer/Vertex.h>
 #include <renderer/Transformable.h>
+#include <renderer/Texture2D.h>
 
 class Quad : public Transformable
 {
 public:
     Quad();
-    Quad(const Vector2f& position, const Vector2f& size, const Color& color);
+    Quad(const Texture2D& texture, const Vector2f& position, const Vector2f& size, const Color& color);
 
     void setTextureRect(const FloatRect& rect);
     void setColor(const Color& color);
+    void setTexture(const Texture2D& texture);
 
     std::array<Vertex, 4> getVertices() const;
 
@@ -27,6 +29,8 @@ private:
     Color m_color;
 
     FloatRect m_texRect;
+
+    const Texture2D* m_pTexture;
 
     static inline const std::array<unsigned int, 6> m_indices = {
         0, 1, 2,
