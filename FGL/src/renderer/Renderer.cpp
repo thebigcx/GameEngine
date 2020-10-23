@@ -46,6 +46,11 @@ void Renderer::render(const VertexArray& array, RenderStates states)
     m_data.drawCalls++;
 }
 
+void Renderer::render(const VertexArray& array, const Transform& transform, const Texture2D& texture)
+{
+    render(array, transform.getMatrix(), texture);
+}
+
 void Renderer::render(const VertexArray& array, const glm::mat4& transform, const Texture2D& texture)
 {
     m_data.textureShader.bind();

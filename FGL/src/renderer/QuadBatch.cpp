@@ -15,6 +15,7 @@ QuadBatch::QuadBatch(Texture2D& texture)
 
 void QuadBatch::create(Texture2D& texture)
 {
+    m_transform = glm::mat4(1.f);
     m_pTexture = &texture;
     m_vertexArray.bind();
 
@@ -61,5 +62,10 @@ void QuadBatch::flush()
     m_vertexBuffer.update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
     m_indexBuf.update(&m_indices[0], m_indices.size());
 
-    Renderer::render(m_vertexArray, glm::mat4(1.f), *m_pTexture);
+    Renderer::render(m_vertexArray, m_transform, *m_pTexture);
+}
+
+void QuadBatch::setTransformMatrix(const glm::mat4& matrix)
+{
+    m_transform = matrix;
 }

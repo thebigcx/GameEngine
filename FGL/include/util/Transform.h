@@ -7,7 +7,9 @@
 class Transform
 {
 public:
-    Transform() {}
+    Transform() 
+        : scale(1.f)
+    {}
 
     ~Transform() {}
 
@@ -28,7 +30,7 @@ public:
     {}
 
 
-    glm::mat4 getMatrix()
+    glm::mat4 getMatrix() const
     {
         glm::mat4 matrix(1.f);
 
@@ -51,6 +53,8 @@ public:
     float rotation;
     Vector2f rotationOrigin;
     Vector2f scale;
+
+    static Transform None;
 
 private:
     glm::mat4 m_matrix;

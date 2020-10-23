@@ -13,8 +13,6 @@ public:
     void handleEvent(const Event& event) override;
 
 private:
-    Texture2D m_texture;
-
     QuadBatch m_batch;
     Quad m_quad;
 
@@ -23,4 +21,6 @@ private:
 
     std::vector<Quad> m_quads;
     std::vector<QuadBatch> m_batches;
+
+    Camera m_camera;
 };

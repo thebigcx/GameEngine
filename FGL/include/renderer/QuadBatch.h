@@ -7,6 +7,7 @@
 #include <renderer/VertexArray.h>
 #include <util/Color.h>
 #include <renderer/RenderStates.h>
+#include <util/Camera.h>
 
 class QuadBatch
 {
@@ -16,6 +17,7 @@ public:
 
     void create(Texture2D& texture);
 
+    void setTransformMatrix(const glm::mat4& transform);
     void start();
     void renderQuad(const Quad& quad);
     void flush();
@@ -23,7 +25,7 @@ public:
     // For Renderer class
     inline const IndexBuffer&  getIndexBuffer() const { return m_indexBuf;    }
     inline const VertexArray&  getVertexArray() const { return m_vertexArray; }
-    inline const Texture2D* getTexture()        const { return m_pTexture;    }
+    inline const Texture2D*    getTexture()     const { return m_pTexture;    }
 
 private:
     VertexArray m_vertexArray;
@@ -34,6 +36,8 @@ private:
     std::vector<unsigned int> m_indices;
 
     Texture2D* m_pTexture;
+
+    glm::mat4 m_transform;
 
     static inline const unsigned int MAX_QUADS = 10000;
 };

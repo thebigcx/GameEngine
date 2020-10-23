@@ -27,22 +27,7 @@ void SoundEngine::play2D(const SoundBuffer& buffer, bool loop)
 
 void SoundEngine::play2D(const std::string& path, bool loop)
 {
-    // Get file extension
-    std::string extension = (path.substr(path.find_last_of(".") + 1));
-
-    if (extension == "wav")
-    {
-        m_buffer2D.load(SoundBuffer::FileType::WAV, path);
-    }
-    else if (extension == "mp3")
-    {
-        m_buffer2D.load(SoundBuffer::FileType::MP3, path);
-    }
-    else
-    {
-        Logger::out("Unsupported sound file type: " + extension);
-        return;
-    }
+    m_buffer2D.load(path);
 
     play2D(m_buffer2D, loop);
 }

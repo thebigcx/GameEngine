@@ -17,20 +17,25 @@ SoundBuffer::SoundBuffer(unsigned int id)
     
 }
 
-void SoundBuffer::load(FileType type, const std::string& path)
+void SoundBuffer::load(const std::string& path)
 {
     if (m_id != 0)
     {
         destroy();
     }
 
-    if (type == FileType::WAV)
+    auto extension = path.substr(path.find_last_of(".") + 1);
+    if (extension == "wav")
     {
         m_id = loadWAV(path);
     }
-    else if (type == FileType::MP3)
+    else if (extension == "mp3")
     {
         m_id = loadMP3(path);
+    }
+    else
+    {
+        Logger::out("Unsupported file type: " + extension);
     }
 }
 

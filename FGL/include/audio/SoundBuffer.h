@@ -15,7 +15,7 @@ public:
     SoundBuffer();
     ~SoundBuffer();
 
-    void load(FileType type, const std::string& path);
+    void load(const std::string& path);
 
     // 16-bit bitdepth
     static unsigned int loadWAV(const std::string& path);
