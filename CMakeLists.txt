@@ -25,6 +25,7 @@ target_link_libraries(FGL GL glfw libGLEW.a openal)
 # Set the include directory
 target_include_directories(FGL PUBLIC ${CMAKE_SOURCE_DIR}/FGL/include)
 target_include_directories(FGL PUBLIC ${CMAKE_SOURCE_DIR}/FGL/include/vendor)
+target_include_directories(FGL PUBLIC ${CMAKE_SOURCE_DIR}/FGL/include/vendor/freetype2)
 
 # Build the test executable
 add_executable(Sandbox ${TEST_SOURCES})
