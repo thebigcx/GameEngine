@@ -28,4 +28,6 @@ private:
     UITextComponent m_text;
 
     Camera m_camera;
+
+    Vector2f ssss;
 };

@@ -22,6 +22,23 @@ bool TrueTypeFont::loadFile(const std::string& path)
 
     FT_Set_Pixel_Sizes(m_face, 0, 48);
 
+    FT_GlyphSlot g = m_face->glyph;
+    int w = 0;
+    int h = 0;
+    for (int i = 32; i < 255; i++)
+    {
+        if (FT_Load_Char(m_face, i, FT_LOAD_RENDER))
+        {
+
+        }
+
+        w += g->bitmap.width;
+        h = std::max(h, (int)g->bitmap.rows);
+    }
+
+    //m_atlasSize.x = w;
+    //m_atlasSize.y = h;
+
     m_size = 48;
 
     // Load the character glyphs

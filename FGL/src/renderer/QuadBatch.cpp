@@ -57,7 +57,11 @@ void QuadBatch::start()
 
 void QuadBatch::renderQuad(const Texture2D& texture, const Quad& quad)
 {
-    if (m_pLastTexture == nullptr || texture.getId() != m_pLastTexture->getId())
+    if (m_pLastTexture == nullptr)
+    {
+        swapTexture(texture);
+    }
+    else if (texture.getId() != m_pLastTexture->getId())
     {
         swapTexture(texture);
     }

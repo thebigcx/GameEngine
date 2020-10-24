@@ -22,7 +22,7 @@ public:
     inline const std::string& getString() const { return m_string; };
 
 private:
-    TrueTypeFont* m_pFont;
+    TrueTypeFont* m_pFont = nullptr;
 
     std::string m_string = "";
 

@@ -37,4 +37,6 @@ private:
     Glyph loadGlyph(char character) const;
 
     int m_size = 0;
+
+    //Vector2f m_atlasSize;
 };

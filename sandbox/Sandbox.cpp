@@ -8,11 +8,11 @@ Sandbox::Sandbox()
     texture.loadFile("sandbox/res/terrain.png");
     AssetManager::get().textures.add("texture", texture);
 
-    m_font.loadFile("sandbox/res/Chicken_Quiche.ttf");
+    m_font.loadFile("sandbox/res/minecraftia.ttf");
 
     m_text.setFont(m_font);
     m_text.setString("Hello, world!");
-    m_text.setColor(Color(1, 1, 1, 1));
+    //m_text.setColor(Color(1, 1, 1, 1));
     m_text.setSize(Vector2f(48, 48));
 
     m_mesh.create();
@@ -76,12 +76,13 @@ void Sandbox::update()
     {
         m_batch.renderQuad(AssetManager::get().textures.get("texture"), quad);
     }
-
+    
     m_batch.flush();
 
     m_mesh.renderText(m_text);
 
     Renderer::endFrame();
+    
 }
 
 void Sandbox::handleEvent(const Event& event)
