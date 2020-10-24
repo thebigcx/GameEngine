@@ -5,12 +5,14 @@
 Sandbox::Sandbox()
 {
     Texture2D texture;
-    texture.loadFile("sandbox/res/terrain.png");
+    texture.loadFile("sandbox/assets/terrain.png");
     AssetManager::get().textures.add("texture", texture);
 
-    m_soundBuffer.load("sandbox/res/monkeys.mp3");
+    m_soundBuffer.load("sandbox/assets/monkeys.mp3");
     m_soundSource.create();
     SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
+
+    font.load("sandbox/assets/minecraftia.ttf");
 
     for (int i = 0; i < 999; i++)
     {

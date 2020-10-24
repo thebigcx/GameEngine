@@ -1,6 +1,6 @@
 #include <renderer/ui/text/UITextComponent.h>
 
-UITextComponent::UITextComponent(Font& p_font)
+UITextComponent::UITextComponent(TrueTypeFont& p_font)
 : m_pFont(&p_font)
 {
 
@@ -16,7 +16,7 @@ void UITextComponent::setString(const std::string& string)
     m_string = string;
 }
 
-void UITextComponent::setFont(Font& font)
+void UITextComponent::setFont(TrueTypeFont& font)
 {
     m_pFont = &font;
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <util/math/vector/Vector2.h>
+
 class UIComponent
 {
 public:
