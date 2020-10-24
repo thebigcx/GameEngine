@@ -8,7 +8,7 @@
 class UITextComponent : public UIComponent
 {
 public:
-    UITextComponent(Font& p_font);
+    UITextComponent();
 
     void setColor(const Color& color);
 
@@ -17,7 +17,7 @@ public:
     void setFont(Font& font);
 
     inline const Color& getColor() const { return m_color; };
-    inline const Font* getFont()   const { return m_pFont; };
+    inline Font* getFont() { return m_pFont; };
 
     inline const std::string& getString() const { return m_string; };
 

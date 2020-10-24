@@ -12,6 +12,8 @@
 #include <iostream>
 #include <unordered_map>
 
+#include <util/Color.h>
+
 struct ShaderSource
 {
     std::string vertex;
@@ -24,6 +26,15 @@ struct Uniform
     size_t size;
     GLenum type;
     int location;
+};
+
+enum ShaderDataType
+{
+    Float, Bool, Int,
+    Vec2,  Vec3,
+    Mat3,  Mat4,
+    Vec2i, Vec3i,
+    Color_
 };
 
 class Shader
@@ -45,17 +56,9 @@ public:
     void setUniform(const std::string& name, bool value);
     void setUniform(const std::string& name, float value);
     void setUniform(const std::string& name, const glm::mat4& value);
+    void setUniform(const std::string& name, const Color& color);
 
     unsigned int getId() const;
-
-    enum DataType
-    {
-        Float, Bool, Int,
-        Vec2,  Vec3,
-        Mat3,  Mat4,
-        Vec2i, Vec3i,
-        Color
-    };
 
 private:
     unsigned int m_id;

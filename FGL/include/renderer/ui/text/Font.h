@@ -23,7 +23,7 @@ public:
         return m_characters;
     }
 
-    int getSize()
+    int getSize() const
     {
         return m_size;
     }

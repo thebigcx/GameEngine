@@ -18,6 +18,10 @@ void Renderer::init()
 
     data.projectionMatrix = glm::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
     data.textureShader.setUniform("projection", data.projectionMatrix);
+
+    data.fontShader.create("shaders/text.vert", "shaders/text.frag");
+    data.fontShader.bind();
+    data.fontShader.setUniform("projection", data.projectionMatrix);
 }
 
 void Renderer::startFrame()

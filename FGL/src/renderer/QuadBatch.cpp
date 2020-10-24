@@ -36,9 +36,9 @@ void QuadBatch::create(int size)
     m_vertexArray.bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec2,  "aPos"      },
-        { Shader::DataType::Vec2,  "aTexCoord" },
-        { Shader::DataType::Color, "aColor"    }
+        { ShaderDataType::Vec2,  "aPos"      },
+        { ShaderDataType::Vec2,  "aTexCoord" },
+        { ShaderDataType::Color_, "aColor"    }
     };
 
     m_vertexBuffer.setLayout(layout);

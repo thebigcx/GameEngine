@@ -1,7 +1,6 @@
 #include <renderer/ui/text/UITextComponent.h>
 
-UITextComponent::UITextComponent(Font& p_font)
-: m_pFont(&p_font)
+UITextComponent::UITextComponent()
 {
 
 }

@@ -8,6 +8,15 @@ Sandbox::Sandbox()
     texture.loadFile("sandbox/res/terrain.png");
     AssetManager::get().textures.add("texture", texture);
 
+    m_font.loadFile("sandbox/res/Chicken_Quiche.ttf");
+
+    m_text.setFont(m_font);
+    m_text.setString("Hello, world!");
+    m_text.setColor(Color(1, 1, 1, 1));
+    m_text.setSize(Vector2f(48, 48));
+
+    m_mesh.create();
+
     m_soundBuffer.load("sandbox/res/monkeys.mp3");
     m_soundSource.create();
     SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
@@ -69,6 +78,8 @@ void Sandbox::update()
     }
 
     m_batch.flush();
+
+    m_mesh.renderText(m_text);
 
     Renderer::endFrame();
 }

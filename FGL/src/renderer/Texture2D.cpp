@@ -1,6 +1,7 @@
 #include <renderer/Texture2D.h>
 
 #include <util/Image.h>
+#include <util/Timer.h>
 
 #include <iostream>
 

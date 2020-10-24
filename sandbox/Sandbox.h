@@ -23,5 +23,9 @@ private:
     std::vector<Quad> m_quads;
     std::vector<QuadBatch> m_batches;
 
+    TextMesh m_mesh;
+    Font m_font;
+    UITextComponent m_text;
+
     Camera m_camera;
 };
