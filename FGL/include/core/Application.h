@@ -13,19 +13,18 @@ public:
     Application();
 
     void run();
-
     void addLayer(Layer* layer);
-    
-    static Application& get();
+    void onWindowResize(int width, int height);
+    void quit();
 
     Window& getWindow();
-
-    void onWindowResize(int width, int height);
-
+    
     inline EventStack& getEventStack()
     {
         return m_eventStack;
     }
+
+    static Application& get();
 
 private:
     static Application* m_instance;

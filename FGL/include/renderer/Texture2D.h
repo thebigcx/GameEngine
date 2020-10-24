@@ -34,6 +34,8 @@ public:
 
     Vector2u getSize() const;
 
+    inline int getId() const { return m_id; }
+
 private:
     unsigned int m_id;
 

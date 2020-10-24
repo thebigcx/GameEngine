@@ -28,7 +28,10 @@ class Renderer
         static void render(const VertexArray& array, RenderStates states);
         static void render(const VertexArray& array, const Transform& transform, const Texture2D& texture);
         static void render(const VertexArray& array, const glm::mat4& transform, const Texture2D& texture);
+        static void render(const VertexArray& array, const glm::mat4& transform, const Texture2D& texture, Shader& shader);
+
+        static RenderData data;
 
     private:
-        static RenderData m_data;
+        
 };

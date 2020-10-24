@@ -3,6 +3,8 @@
 #include <core/Layer.h>
 #include <renderer/Texture2D.h>
 #include <renderer/QuadBatch.h>
+#include <sound/SoundSource.h>
+#include <sound/SoundBuffer.h>
 
 class Sandbox : public Layer
 {
@@ -14,7 +16,6 @@ public:
 
 private:
     QuadBatch m_batch;
-    Quad m_quad;
 
     SoundBuffer m_soundBuffer;
     SoundSource m_soundSource;

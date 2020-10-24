@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include <renderer/Quad.h>
 #include <renderer/Buffer.h>
@@ -12,20 +13,25 @@
 class QuadBatch
 {
 public:
-    QuadBatch() {}
-    QuadBatch(Texture2D& texture);
+    QuadBatch();
+    QuadBatch(int size, Shader& shader);
 
-    void create(Texture2D& texture);
+    void create(int size);
+
+    static std::shared_ptr<QuadBatch> createBatch();
 
     void setTransformMatrix(const glm::mat4& transform);
     void start();
-    void renderQuad(const Quad& quad);
+    void renderQuad(const Texture2D& texture, const Quad& quad);
+    void renderQuad(const Texture2D& texture, const Vector2f& position, const Vector2f& size);
+    void renderQuad(const Texture2D& texture, const Vector2f& position, const Vector2f& size, const FloatRect& texRect);
     void flush();
 
+    void swapTexture(const Texture2D& texture);
+
     // For Renderer class
-    inline const IndexBuffer&  getIndexBuffer() const { return m_indexBuf;    }
-    inline const VertexArray&  getVertexArray() const { return m_vertexArray; }
-    inline const Texture2D*    getTexture()     const { return m_pTexture;    }
+    inline const IndexBuffer& getIndexBuffer() const { return m_indexBuf;    }
+    inline const VertexArray& getVertexArray() const { return m_vertexArray; }
 
 private:
     VertexArray m_vertexArray;
@@ -35,9 +41,10 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<unsigned int> m_indices;
 
-    Texture2D* m_pTexture;
+    const Texture2D* m_pLastTexture;
+    Shader* m_pShader;
 
     glm::mat4 m_transform;
 
-    static inline const unsigned int MAX_QUADS = 10000;
+    static inline const uint32_t MAX_QUADS = 10000;
 };

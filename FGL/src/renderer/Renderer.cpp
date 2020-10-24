@@ -5,19 +5,19 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-RenderData Renderer::m_data;
+RenderData Renderer::data;
 
 void Renderer::init()
 {
     glDisable(GL_DEPTH_TEST);
 
-    m_data.textureShader.create("shaders/texture.vert", "shaders/texture.frag");
-    m_data.textureShader.bind();
+    data.textureShader.create("shaders/texture.vert", "shaders/texture.frag");
+    data.textureShader.bind();
 
     auto size = Application::get().getWindow().getSize();
 
-    m_data.projectionMatrix = glm::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
-    m_data.textureShader.setUniform("projection", m_data.projectionMatrix);
+    data.projectionMatrix = glm::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
+    data.textureShader.setUniform("projection", data.projectionMatrix);
 }
 
 void Renderer::startFrame()
@@ -43,7 +43,7 @@ void Renderer::render(const VertexArray& array, RenderStates states)
     array.bind();
 
     glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);
-    m_data.drawCalls++;
+    data.drawCalls++;
 }
 
 void Renderer::render(const VertexArray& array, const Transform& transform, const Texture2D& texture)
@@ -53,12 +53,17 @@ void Renderer::render(const VertexArray& array, const Transform& transform, cons
 
 void Renderer::render(const VertexArray& array, const glm::mat4& transform, const Texture2D& texture)
 {
-    m_data.textureShader.bind();
-    m_data.textureShader.setUniform("transform", transform);
+    render(array, transform, texture, data.textureShader);
+}
+
+void Renderer::render(const VertexArray& array, const glm::mat4& transform, const Texture2D& texture, Shader& shader)
+{
+    shader.bind();
+    shader.setUniform("transform", transform);
     BlendMode::Alpha.bind();
     texture.bind();
     array.bind();
 
     glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);
-    m_data.drawCalls++;
+    data.drawCalls++;
 }

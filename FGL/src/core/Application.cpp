@@ -11,7 +11,7 @@
 Application* Application::m_instance = nullptr;
 
 Application::Application()
-: m_window(1280, 720, "Hello, Fast Game Library!")
+: m_window(1280, 720, "Application")
 {
     m_instance = this;
 
@@ -48,6 +48,11 @@ void Application::run()
             layer->update();
         }
     }
+}
+
+void Application::quit()
+{
+    m_window.close();
 }
 
 void Application::addLayer(Layer* layer)
