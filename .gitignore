@@ -2,10 +2,7 @@
 bin
 
 # Files generated at compile time
-build
+obj
 
-res
 
 .vscode
-
-lib
