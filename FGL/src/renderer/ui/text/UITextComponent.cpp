@@ -15,7 +15,7 @@ void UITextComponent::setString(const std::string& string)
     m_string = string;
 }
 
-void UITextComponent::setFont(Font& font)
+void UITextComponent::setFont(TrueTypeFont& font)
 {
     m_pFont = &font;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/ui/text/Font.h>
+#include <renderer/ui/text/TrueTypeFont.h>
 #include <renderer/ui/UIComponent.h>
 #include <util/Color.h>
 #include <util/math/vector/Vector2.h>
@@ -14,15 +14,15 @@ public:
 
     void setString(const std::string& string);
 
-    void setFont(Font& font);
+    void setFont(TrueTypeFont& font);
 
     inline const Color& getColor() const { return m_color; };
-    inline Font* getFont() { return m_pFont; };
+    inline TrueTypeFont* getFont() { return m_pFont; };
 
     inline const std::string& getString() const { return m_string; };
 
 private:
-    Font* m_pFont;
+    TrueTypeFont* m_pFont;
 
     std::string m_string = "";
 

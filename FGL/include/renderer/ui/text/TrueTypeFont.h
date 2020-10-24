@@ -11,10 +11,10 @@
 
 #include <renderer/ui/text/Glyph.h>
 
-class Font
+class TrueTypeFont
 {
 public:
-    Font();
+    TrueTypeFont();
 
     bool loadFile(const std::string& path);
 

@@ -24,7 +24,7 @@ private:
     std::vector<QuadBatch> m_batches;
 
     TextMesh m_mesh;
-    Font m_font;
+    TrueTypeFont m_font;
     UITextComponent m_text;
 
     Camera m_camera;

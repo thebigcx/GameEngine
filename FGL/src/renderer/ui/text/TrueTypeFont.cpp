@@ -1,11 +1,11 @@
-#include <renderer/ui/text/Font.h>
+#include <renderer/ui/text/TrueTypeFont.h>
 
-Font::Font()
+TrueTypeFont::TrueTypeFont()
 {
 
 }
 
-bool Font::loadFile(const std::string& path)
+bool TrueTypeFont::loadFile(const std::string& path)
 {
     // Initialise FreeType
     if (FT_Init_FreeType(&m_ft))
@@ -16,7 +16,7 @@ bool Font::loadFile(const std::string& path)
 
     if (FT_New_Face(m_ft, path.c_str(), 0, &m_face))
     {
-        std::cout << "Unable to load font.\n";
+        std::cout << "Unable to load TrueTypeFont.\n";
         return false;
     }
 
@@ -37,8 +37,9 @@ bool Font::loadFile(const std::string& path)
     return true;
 }
 
-Glyph Font::loadGlyph(char character) const
+Glyph TrueTypeFont::loadGlyph(char character) const
 {
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     if (FT_Load_Char(m_face, character, FT_LOAD_RENDER))
     {
         std::cout << "Unable to load glyph.\n";

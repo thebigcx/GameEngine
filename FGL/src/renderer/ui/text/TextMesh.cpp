@@ -22,10 +22,10 @@ void TextMesh::create()
     m_vertexArray.setIndexBuffer(m_indexBuffer);
 
     float vertices[] = {
-        0.f, 0.f, 0.f, 0.f,
-        1.f, 0.f, 1.f, 0.f,
-        1.f, 1.f, 1.f, 1.f,
-        0.f, 1.f, 0.f, 1.f
+        1.f, 1.f, 1.f, 0.f,
+        0.f, 1.f, 0.f, 0.f,
+        0.f, 0.f, 0.f, 1.f,
+        1.f, 0.f, 1.f, 1.f
     };
 
     unsigned int indices[] = {

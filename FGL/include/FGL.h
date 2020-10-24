@@ -28,7 +28,7 @@
 #include <util/Transform.h>
 #include <core/Input.h>
 #include <core/KeyCodes.h>
-#include <renderer/ui/text/Font.h>
+#include <renderer/ui/text/TrueTypeFont.h>
 #include <renderer/ui/text/Glyph.h>
 #include <renderer/ui/text/UITextComponent.h>
 #include <renderer/ui/text/TextMesh.h>
