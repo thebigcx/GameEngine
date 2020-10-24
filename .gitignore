@@ -6,3 +6,6 @@ obj
 
 
 .vscode
+
+*.make
+Makefile
