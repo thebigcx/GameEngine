@@ -30,6 +30,7 @@ void Shader::create(const std::string& vsPath, const std::string& fsPath)
 
     for (i = 0 ; i < count ; i++)
     {
+        std::cout << i << "\n";
         glGetActiveUniform(m_id, (GLuint)i, bufSize, &length, &size, &type, name);
 
         Uniform uniform;

@@ -20,7 +20,8 @@ private:
     SoundBuffer m_soundBuffer;
     SoundSource m_soundSource;
 
-    TrueTypeFont font;
+    TrueTypeFont m_font;
+    TextMesh m_mesh;
 
     std::vector<Quad> m_quads;
     std::vector<QuadBatch> m_batches;

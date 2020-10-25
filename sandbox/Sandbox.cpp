@@ -12,7 +12,8 @@ Sandbox::Sandbox()
     m_soundSource.create();
     SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
 
-    font.load("sandbox/assets/minecraftia.ttf");
+    m_font.load("sandbox/assets/minecraftia.ttf");
+    m_mesh.create();
 
     for (int i = 0; i < 999; i++)
     {
@@ -71,6 +72,8 @@ void Sandbox::update()
     }
 
     m_batch.flush();
+
+    m_mesh.renderText("Hello!", m_font);
 
     Renderer::endFrame();
 }

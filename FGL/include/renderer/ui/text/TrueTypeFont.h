@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <unordered_map>
 
 #include <util/math/vector/Vector2.h>
 
@@ -23,6 +23,10 @@ public:
 
     void load(const std::string& path);
 
+    inline std::unordered_map<char, Glyph>& getGlyphs() { return m_glyphs; }
+    inline const Vector2f& getAtlasSize() const { return m_atlasSize; }
+    inline unsigned int getTextureAtlas() const { return m_texture; }
+
 private:
     FT_Library m_library;
     FT_Face m_face;
@@ -31,5 +35,5 @@ private:
 
     unsigned int m_texture;
 
-    std::array<Glyph, 256> m_glyphs;
+    std::unordered_map<char, Glyph> m_glyphs;
 };
