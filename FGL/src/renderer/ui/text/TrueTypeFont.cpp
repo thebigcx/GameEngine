@@ -12,27 +12,30 @@ TrueTypeFont::TrueTypeFont()
 
 void TrueTypeFont::load(const std::string& path)
 {
-    if (FT_Init_FreeType(&m_library))
+    FT_Library library;
+    FT_Face face;
+
+    if (FT_Init_FreeType(&library))
     {
         Console::err("Could not initialise FreeType.");
         return;
     }
 
-    if (FT_New_Face(m_library, path.c_str(), 0, &m_face))
+    if (FT_New_Face(library, path.c_str(), 0, &face))
     {
         Console::err("Could not create font face (check file path).");
         return;
     }
 
-    FT_Set_Pixel_Sizes(m_face, 0, 48);  
+    FT_Set_Pixel_Sizes(face, 0, 48);  
 
-    FT_GlyphSlot g = m_face->glyph;
+    FT_GlyphSlot g = face->glyph;
     int w = 0;
     int h = 0;
 
     for (int i = 32; i < 255; i++)
     {
-        if (FT_Load_Char(m_face, i, FT_LOAD_RENDER))
+        if (FT_Load_Char(face, i, FT_LOAD_RENDER))
         {
             Console::err("Could not load character: " + static_cast<char>(i));
         }
@@ -53,7 +56,7 @@ void TrueTypeFont::load(const std::string& path)
     int x = 0;
     for (int i = 32; i < 255; i++)
     {
-        if (FT_Load_Char(m_face, i, FT_LOAD_RENDER))
+        if (FT_Load_Char(face, i, FT_LOAD_RENDER))
         {
             continue;
         }
@@ -79,4 +82,7 @@ void TrueTypeFont::load(const std::string& path)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    FT_Done_Face(face);
+    FT_Done_FreeType(library);
 }

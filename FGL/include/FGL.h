@@ -30,4 +30,3 @@
 #include <core/KeyCodes.h>
 #include <renderer/ui/text/TrueTypeFont.h>
 #include <renderer/ui/text/TextMesh.h>
-#include <renderer/ui/text/UITextComponent.h>

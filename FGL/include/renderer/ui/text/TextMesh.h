@@ -18,7 +18,7 @@ public:
     TextMesh();
 
     void create();
-    void renderText(const std::string& text, TrueTypeFont& font);
+    void renderText(const std::string& text, const TrueTypeFont& font);
 
 private:
     VertexBuffer m_vertexBuffer;

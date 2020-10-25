@@ -13,6 +13,8 @@ Sandbox::Sandbox()
     SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
 
     m_font.load("sandbox/assets/minecraftia.ttf");
+    m_text.setFont(m_font);
+    m_text.setString("Hello!");
     m_mesh.create();
 
     for (int i = 0; i < 999; i++)
@@ -73,7 +75,7 @@ void Sandbox::update()
 
     m_batch.flush();
 
-    m_mesh.renderText("pUrPlE", m_font);
+    m_mesh.renderText(m_text.getString(), *m_text.getFont());
 
     Renderer::endFrame();
 }

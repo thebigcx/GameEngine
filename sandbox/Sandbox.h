@@ -3,6 +3,7 @@
 #include <core/Layer.h>
 #include <renderer/Texture2D.h>
 #include <renderer/QuadBatch.h>
+#include <renderer/ui/text/Text.h>
 #include <sound/SoundSource.h>
 #include <sound/SoundBuffer.h>
 
@@ -20,11 +21,11 @@ private:
     SoundBuffer m_soundBuffer;
     SoundSource m_soundSource;
 
-    TrueTypeFont m_font;
     TextMesh m_mesh;
+    TrueTypeFont m_font;
+    Text m_text;
 
     std::vector<Quad> m_quads;
-    std::vector<QuadBatch> m_batches;
 
     Camera m_camera;
 };

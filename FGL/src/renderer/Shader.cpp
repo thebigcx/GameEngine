@@ -39,8 +39,6 @@ void Shader::create(const std::string& vsPath, const std::string& fsPath)
         uniform = { (size_t)size, type, i };
 
         m_uniforms.insert(std::make_pair(std::string(name), uniform));
-
-        std::cout << i << ", " << name << "\n";
     }
 }
 

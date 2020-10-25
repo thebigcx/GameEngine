@@ -47,7 +47,7 @@ void TextMesh::create()
     m_indexBuffer.update(indices, 60);
 }
 
-void TextMesh::renderText(const std::string& text, TrueTypeFont& font)
+void TextMesh::renderText(const std::string& text, const TrueTypeFont& font)
 {
     int x = 100;
     int y = 0;
@@ -67,7 +67,7 @@ void TextMesh::renderText(const std::string& text, TrueTypeFont& font)
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); c++)
     {
-        auto& ch = font.getGlyphs()[*c];
+        auto& ch = font.getGlyphs().at(*c);
 
         Vector2f pos(x + ch.pos.x, -y - ch.pos.y);
         Vector2f size(ch.size.x, ch.size.y);
