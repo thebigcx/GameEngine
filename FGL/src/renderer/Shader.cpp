@@ -1,6 +1,7 @@
-#include "renderer/Shader.h"
+#include <vector>
 
-#include "util/Timer.h"
+#include <renderer/Shader.h>
+#include <util/Timer.h>
 
 Shader::Shader()
 {
@@ -16,6 +17,8 @@ void Shader::create(const std::string& vsPath, const std::string& fsPath)
 {
     auto source = parseShader(vsPath, fsPath);
     bool success = compileShader(source);
+
+    bind();
 
     // Find all uniforms
     int i;
@@ -33,9 +36,11 @@ void Shader::create(const std::string& vsPath, const std::string& fsPath)
         glGetActiveUniform(m_id, (GLuint)i, bufSize, &length, &size, &type, name);
 
         Uniform uniform;
-        uniform = { name, (size_t)size, type, i };
+        uniform = { (size_t)size, type, i };
 
         m_uniforms.insert(std::make_pair(std::string(name), uniform));
+
+        std::cout << i << ", " << name << "\n";
     }
 }
 
@@ -169,6 +174,12 @@ void Shader::setUniform(const std::string& name, float value)
 void Shader::setUniform(const std::string& name, const glm::mat4& value)
 {
     glUniformMatrix4fv(m_uniforms[name].location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void Shader::setUniform(const std::string& name, const Vector4f& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform4f(location, value.x, value.y, value.z, value.w);
 }
 
 unsigned int Shader::getId() const

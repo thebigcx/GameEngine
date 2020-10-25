@@ -73,7 +73,7 @@ void Sandbox::update()
 
     m_batch.flush();
 
-    m_mesh.renderText("Hello!", m_font);
+    m_mesh.renderText("pUrPlE", m_font);
 
     Renderer::endFrame();
 }

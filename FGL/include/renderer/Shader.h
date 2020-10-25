@@ -12,6 +12,8 @@
 #include <iostream>
 #include <unordered_map>
 
+#include <util/math/vector/Vector4.h>
+
 struct ShaderSource
 {
     std::string vertex;
@@ -20,7 +22,6 @@ struct ShaderSource
 
 struct Uniform
 {
-    std::string name;
     size_t size;
     GLenum type;
     int location;
@@ -45,6 +46,7 @@ public:
     void setUniform(const std::string& name, bool value);
     void setUniform(const std::string& name, float value);
     void setUniform(const std::string& name, const glm::mat4& value);
+    void setUniform(const std::string& name, const Vector4f& value);
 
     unsigned int getId() const;
 

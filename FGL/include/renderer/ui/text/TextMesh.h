@@ -6,6 +6,12 @@
 #include <renderer/VertexArray.h>
 #include <renderer/ui/text/TrueTypeFont.h>
 
+struct GlyphVertex
+{
+    Vector2f pos;
+    Vector2f texCoord;
+};
+
 class TextMesh
 {
 public:
