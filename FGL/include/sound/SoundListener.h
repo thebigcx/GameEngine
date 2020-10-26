@@ -1,39 +1,26 @@
 #pragma once
 
-#include <core/Console.h>
-#include <util/math/vector/Vector3.h>
-
 class SoundListener
 {
+private:
+    struct vec3
+    {
+        float x, y, z;
+    };
+
 public:
     SoundListener() {};
 
-    void updateALData();
+    inline vec3 getPosition() const { return m_position; }
+    inline vec3 getVelocity() const { return m_velocity; }
 
-    inline Vector3f getPosition() const
-    {
-        return m_position;
-    }
-
-    inline Vector3f getVelocity() const
-    {
-        return m_velocity;
-    }
-
-    inline void setPosition(const Vector3f position)
-    {
-        m_position = position;
-    }
-
-    inline void setVelocity(const Vector3f velocity)
-    {
-        m_velocity = velocity;
-    }
+    void setPosition(float x, float y, float z);
+    void setVelocity(float x, float y, float z);
 
     static SoundListener getInstance();
 
 private:
-    Vector3f m_position;
-    Vector3f m_velocity;
+    vec3 m_position;
+    vec3 m_velocity;
 
 };

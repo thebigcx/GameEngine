@@ -14,19 +14,13 @@ class SoundEngine
 public:
     static void init();
 
-    static void cleanUp();
     static void destroy();
 
-    static void play2D(const SoundBuffer& buffer, bool loop);
-    static void play2D(const std::string& path, bool loop);
-
-    static void playFromSource(const SoundBuffer& buffer, const SoundSource& source, bool loop);
+    static void play(const SoundSource& source, bool loop);
 
 private:
+    static SoundEngine m_instance;
+
     static ALCdevice* m_device;
     static ALCcontext* m_context;
-
-    // For on-the-fly sound playback
-    static SoundSource m_source2D;
-    static SoundBuffer m_buffer2D;
 };

@@ -8,9 +8,8 @@ Sandbox::Sandbox()
     texture.loadFile("sandbox/assets/terrain.png");
     Assets::add<Texture2D>("texture", texture);
 
-    m_soundBuffer.load("sandbox/assets/monkeys.mp3");
-    m_soundSource.create();
-    SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
+    m_soundSource = SoundSource::loadFile("sandbox/assets/monkeys.mp3");
+    SoundEngine::play(*m_soundSource, true);
 
     m_font = TrueTypeFont::create("sandbox/assets/minecraftia.ttf");
     m_text.setFont(*m_font);

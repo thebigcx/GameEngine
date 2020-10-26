@@ -6,12 +6,6 @@
 class SoundBuffer
 {
 public:
-    enum FileType
-    {
-        WAV,
-        MP3
-    };
-
     SoundBuffer();
     ~SoundBuffer();
 

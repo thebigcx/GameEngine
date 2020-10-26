@@ -18,8 +18,7 @@ public:
 private:
     QuadBatch m_batch;
 
-    SoundBuffer m_soundBuffer;
-    SoundSource m_soundSource;
+    std::shared_ptr<SoundSource> m_soundSource;
 
     TextMesh m_mesh;
     Shared<TrueTypeFont> m_font;
