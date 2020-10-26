@@ -1,17 +1,17 @@
-#include <FGL.h>
+#include <Engine.h>
 
 #include "SandboxApp.h"
 
 Sandbox::Sandbox()
 {
     Texture2D texture;
-    texture.loadFile("sandbox/assets/terrain.png");
+    texture.loadFile("Sandbox/assets/terrain.png");
     Assets::add<Texture2D>("texture", texture);
 
-    m_soundSource = SoundSource::loadFile("sandbox/assets/monkeys.mp3");
+    m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
     SoundEngine::play(*m_soundSource, true);
 
-    m_font = TrueTypeFont::create("sandbox/assets/minecraftia.ttf");
+    m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf");
     m_text.setFont(*m_font);
     m_text.setString("Minecraftia!");
     m_text.setColor(Color(1, 1, 0, 1));
