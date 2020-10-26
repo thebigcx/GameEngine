@@ -6,22 +6,23 @@ Sandbox::Sandbox()
 {
     Texture2D texture;
     texture.loadFile("sandbox/assets/terrain.png");
-    AssetManager::get().textures.add("texture", texture);
+    Assets::add<Texture2D>("texture", texture);
 
     m_soundBuffer.load("sandbox/assets/monkeys.mp3");
     m_soundSource.create();
     SoundEngine::playFromSource(m_soundBuffer, m_soundSource, true);
 
-    m_font.load("sandbox/assets/minecraftia.ttf");
-    m_text.setFont(m_font);
-    m_text.setString("Hello!");
+    m_font = TrueTypeFont::create("sandbox/assets/minecraftia.ttf");
+    m_text.setFont(*m_font);
+    m_text.setString("Minecraftia!");
+    m_text.setColor(Color(1, 1, 0, 1));
     m_mesh.create();
 
     for (int i = 0; i < 999; i++)
     {
         Quad quad;
 
-        quad.setPosition(Vector2f((i % 10)*100, i*10));
+        quad.setPosition(Vector2f((i % 10)*100, i * 10));
         quad.setSize(Vector2f(100, 100));
         quad.setColor(Color(1, 1, 1, 1));
         quad.setTextureRect(FloatRect(32.f, 32.f, 16.f, 16.f));
@@ -70,12 +71,12 @@ void Sandbox::update()
 
     for (auto& quad : m_quads)
     {
-        m_batch.renderQuad(AssetManager::get().textures.get("texture"), quad);
+        m_batch.renderQuad(Assets::get<Texture2D>("texture"), quad);
     }
 
     m_batch.flush();
 
-    m_mesh.renderText(m_text.getString(), *m_text.getFont());
+    m_mesh.renderText(m_text);
 
     Renderer::endFrame();
 }

@@ -42,6 +42,11 @@ void Shader::create(const std::string& vsPath, const std::string& fsPath)
     }
 }
 
+Shared<Shader> Shader::createShader(const std::string& vsPath, const std::string& fsPath)
+{
+    return createShared<Shader>(vsPath, fsPath);
+}
+
 Shader::~Shader()
 {
     glDeleteProgram(m_id);
@@ -154,30 +159,45 @@ void Shader::bind() const
     }
 }
 
+void Shader::unbind() const
+{
+    glUseProgram(0);
+}
+
 void Shader::setUniform(const std::string& name, int value)
 {
-    glUniform1i(m_uniforms[name].location, value);
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform1i(location, value);
 }
 
 void Shader::setUniform(const std::string& name, bool value)
 {
-    glUniform1i(m_uniforms[name].location, (int)value);
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform1i(location, (int)value);
 }
 
 void Shader::setUniform(const std::string& name, float value)
 {
-    glUniform1f(m_uniforms[name].location, value);
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform1f(location, value);
 }
 
 void Shader::setUniform(const std::string& name, const glm::mat4& value)
 {
-    glUniformMatrix4fv(m_uniforms[name].location, 1, GL_FALSE, glm::value_ptr(value));
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 void Shader::setUniform(const std::string& name, const Vector4f& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform4f(location, value.x, value.y, value.z, value.w);
+}
+
+void Shader::setUniform(const std::string& name, const Color& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform4f(location, value.r, value.g, value.b, value.a);
 }
 
 unsigned int Shader::getId() const

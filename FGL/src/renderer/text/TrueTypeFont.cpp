@@ -2,12 +2,19 @@
 
 #include <GL/glew.h>
 
-#include <renderer/ui/text/TrueTypeFont.h>
+#include <renderer/text/TrueTypeFont.h>
 #include <core/Console.h>
 
 TrueTypeFont::TrueTypeFont()
 {
     
+}
+
+Shared<TrueTypeFont> TrueTypeFont::create(const std::string& path)
+{
+    auto ptr = createShared<TrueTypeFont>();
+    ptr->load(path);
+    return ptr;
 }
 
 void TrueTypeFont::load(const std::string& path)
@@ -27,7 +34,7 @@ void TrueTypeFont::load(const std::string& path)
         return;
     }
 
-    FT_Set_Pixel_Sizes(face, 0, 48);  
+    FT_Set_Pixel_Sizes(face, 0, FONT_SIZE);
 
     FT_GlyphSlot g = face->glyph;
     int w = 0;

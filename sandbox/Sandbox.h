@@ -3,7 +3,7 @@
 #include <core/Layer.h>
 #include <renderer/Texture2D.h>
 #include <renderer/QuadBatch.h>
-#include <renderer/ui/text/Text.h>
+#include <renderer/text/Text.h>
 #include <sound/SoundSource.h>
 #include <sound/SoundBuffer.h>
 
@@ -22,7 +22,7 @@ private:
     SoundSource m_soundSource;
 
     TextMesh m_mesh;
-    TrueTypeFont m_font;
+    Shared<TrueTypeFont> m_font;
     Text m_text;
 
     std::vector<Quad> m_quads;

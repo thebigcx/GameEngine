@@ -23,10 +23,10 @@
 #include <renderer/ShaderLibrary.h>
 #include <sound/SoundEngine.h>
 #include <sound/SoundSource.h>
-#include <renderer/AssetManager.h>
+#include <renderer/Assets.h>
 #include <util/Time.h>
 #include <util/Transform.h>
 #include <core/Input.h>
 #include <core/KeyCodes.h>
-#include <renderer/ui/text/TrueTypeFont.h>
-#include <renderer/ui/text/TextMesh.h>
+#include <renderer/text/TrueTypeFont.h>
+#include <renderer/text/TextMesh.h>

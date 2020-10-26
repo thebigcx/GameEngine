@@ -13,6 +13,8 @@
 #include <unordered_map>
 
 #include <util/math/vector/Vector4.h>
+#include <util/Color.h>
+#include <core/Core.h>
 
 struct ShaderSource
 {
@@ -40,17 +42,21 @@ public:
 
     void create(const std::string& vsPath, const std::string& fsPath);
 
+    static Shared<Shader> createShader(const std::string& vsPath, const std::string& fsPath);
+
     void bind() const;
+    void unbind() const;
 
     void setUniform(const std::string& name, int value);
     void setUniform(const std::string& name, bool value);
     void setUniform(const std::string& name, float value);
     void setUniform(const std::string& name, const glm::mat4& value);
     void setUniform(const std::string& name, const Vector4f& value);
+    void setUniform(const std::string& name, const Color& value);
 
     unsigned int getId() const;
 
-    enum DataType
+    enum class DataType
     {
         Float, Bool, Int,
         Vec2,  Vec3,

@@ -1,7 +1,5 @@
 #include <renderer/Quad.h>
 
-#include <renderer/AssetManager.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
