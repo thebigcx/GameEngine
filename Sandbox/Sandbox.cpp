@@ -11,11 +11,7 @@ Sandbox::Sandbox()
     m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
     SoundEngine::play(*m_soundSource, true);
 
-    m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf");
-    m_text.setFont(*m_font);
-    m_text.setString("Minecraftia!");
-    m_text.setColor(Color(1, 1, 0, 1));
-    m_mesh.create();
+    m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
     for (int i = 0; i < 999; i++)
     {
@@ -75,7 +71,7 @@ void Sandbox::update()
 
     m_batch.flush();
 
-    m_mesh.renderText(m_text);
+    Renderer::renderText("Hello, world!", *m_font, Vector2f(500, 500), Vector2f(96, 96), Color(1, 0, 0, 1));
 
     Renderer::endFrame();
 }

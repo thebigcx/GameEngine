@@ -10,15 +10,17 @@ TrueTypeFont::TrueTypeFont()
     
 }
 
-Shared<TrueTypeFont> TrueTypeFont::create(const std::string& path)
+Shared<TrueTypeFont> TrueTypeFont::create(const std::string& path, int characterSize)
 {
     auto ptr = createShared<TrueTypeFont>();
-    ptr->load(path);
+    ptr->load(path, characterSize);
     return ptr;
 }
 
-void TrueTypeFont::load(const std::string& path)
+void TrueTypeFont::load(const std::string& path, int characterSize)
 {
+    m_characterSize = characterSize;
+
     FT_Library library;
     FT_Face face;
 
@@ -34,7 +36,7 @@ void TrueTypeFont::load(const std::string& path)
         return;
     }
 
-    FT_Set_Pixel_Sizes(face, 0, FONT_SIZE);
+    FT_Set_Pixel_Sizes(face, 0, characterSize);
 
     FT_GlyphSlot g = face->glyph;
     int w = 0;

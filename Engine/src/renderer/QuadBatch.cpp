@@ -131,8 +131,7 @@ void QuadBatch::flush()
     m_vertexBuffer.update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
     m_indexBuf.update(&m_indices[0], m_indices.size());
 
-    //Renderer::render(m_vertexArray, m_transform, *m_pLastTexture);
-    Renderer::render(m_vertexArray, m_transform, *m_pLastTexture, *m_pShader);
+    Renderer::renderArray(m_vertexArray, m_transform, *m_pLastTexture, *m_pShader);
 }
 
 void QuadBatch::setTransformMatrix(const glm::mat4& matrix)

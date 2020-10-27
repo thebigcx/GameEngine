@@ -19,13 +19,13 @@ public:
     TextMesh();
 
     void create();
-    void renderText(const std::string& text, const TrueTypeFont& font, const Color& color, const Vector2f& size);
-    void renderText(const Text& text);
+
+    VertexBuffer vertexBuffer;
+    IndexBuffer indexBuffer;
+    VertexArray vertexArray;
+
+    static Shader shader;
 
 private:
-    VertexBuffer m_vertexBuffer;
-    IndexBuffer m_indexBuffer;
-    VertexArray m_vertexArray;
-
-    static Shader m_shader;
+    
 };
