@@ -13,7 +13,6 @@ Quad::Quad(const Vector2f& position, const Vector2f& size)
 {
     m_position = position;
     m_size = size;
-    m_texRect = FloatRect(0, 0, 1, 1);
 }
 
 Quad::Quad(const Vector2f& position, const Vector2f& size, const Color& color)
@@ -21,7 +20,6 @@ Quad::Quad(const Vector2f& position, const Vector2f& size, const Color& color)
 {
     m_position = position;
     m_size = size;
-    m_texRect = FloatRect(0, 0, 1, 1);
 }
 
 Quad::Quad(const FloatRect& rect)
@@ -29,7 +27,12 @@ Quad::Quad(const FloatRect& rect)
 {
     m_position = rect.getPosition();
     m_size = rect.getSize();
-    m_texRect = FloatRect(0, 0, 1, 1);
+}
+
+Quad::Quad(float x, float y, float width, float height)
+{
+    m_position = Vector2f(x, y);
+    m_size = Vector2f(width, height);
 }
 
 void Quad::setTextureRect(const FloatRect& rect)

@@ -12,7 +12,7 @@ constexpr Shared<T> createShared(Args&& ... args)
 }
 
 template<typename T>
-using Unique = std::shared_ptr<T>;
+using Unique = std::unique_ptr<T>;
 
 template<typename T, typename ... Args>
 constexpr Unique<T> createUnique(Args&& ... args)

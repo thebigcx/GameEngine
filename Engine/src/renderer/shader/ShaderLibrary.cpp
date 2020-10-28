@@ -1,4 +1,4 @@
-#include "renderer/ShaderLibrary.h"
+#include <renderer/shader/ShaderLibrary.h>
 
 std::unordered_map<std::string, Shader> ShaderLibrary::m_shaders;
 

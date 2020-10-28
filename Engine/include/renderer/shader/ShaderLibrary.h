@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <renderer/Shader.h>
+#include <renderer/shader/Shader.h>
 
 class ShaderLibrary
 {

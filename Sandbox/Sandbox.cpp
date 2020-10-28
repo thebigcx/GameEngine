@@ -15,10 +15,8 @@ Sandbox::Sandbox()
 
     for (int i = 0; i < 999; i++)
     {
-        Quad quad;
+        Quad quad((i % 10) * 100, i * 10, 100, 100);
 
-        quad.setPosition(Vector2f((i % 10)*100, i * 10));
-        quad.setSize(Vector2f(100, 100));
         quad.setColor(Color(1, 1, 1, 1));
         quad.setTextureRect(FloatRect(32.f, 32.f, 16.f, 16.f));
 

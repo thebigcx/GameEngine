@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include <renderer/Shader.h>
+#include <renderer/shader/Shader.h>
 #include <renderer/Buffer.h>
 
 class Framebuffer

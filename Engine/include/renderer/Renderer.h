@@ -2,7 +2,7 @@
 
 #include <core/Window.h>
 #include <util/Color.h>
-#include <renderer/Shader.h>
+#include <renderer/shader/Shader.h>
 #include <renderer/VertexArray.h>
 #include <renderer/RenderStates.h>
 #include <util/Transform.h>
@@ -12,7 +12,8 @@ struct RenderData
 {
     uint64_t drawCalls;
     glm::mat4 projectionMatrix;
-    Shader textureShader;
+    Shared<Shader> textureShader;
+    Shared<Shader> textShader;
     BlendMode blendMode = BlendMode::Alpha;
 };
 

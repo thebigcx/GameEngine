@@ -3,7 +3,7 @@
 #include <renderer/QuadBatch.h>
 #include <renderer/Buffer.h>
 #include <renderer/Quad.h>
-#include <renderer/Shader.h>
+#include <renderer/shader/Shader.h>
 #include <renderer/Texture2D.h>
 #include <renderer/VertexArray.h>
 #include <util/math/MathGL.h>
@@ -20,7 +20,7 @@
 #include <core/Cursor.h>
 #include <io/FileWriter.h>
 #include <io/FileReader.h>
-#include <renderer/ShaderLibrary.h>
+#include <renderer/shader/ShaderLibrary.h>
 #include <sound/SoundEngine.h>
 #include <sound/SoundSource.h>
 #include <renderer/Assets.h>

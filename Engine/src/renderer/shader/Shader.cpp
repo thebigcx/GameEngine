@@ -1,6 +1,6 @@
 #include <vector>
 
-#include <renderer/Shader.h>
+#include <renderer/shader/Shader.h>
 #include <util/Timer.h>
 
 Shader::Shader()
@@ -8,7 +8,7 @@ Shader::Shader()
 
 }
 
-Shader::Shader(const std::string& vsPath, const std::string& fsPath)
+/*Shader::Shader(const std::string& vsPath, const std::string& fsPath)
 {
     create(vsPath, fsPath);
 }
@@ -40,11 +40,26 @@ void Shader::create(const std::string& vsPath, const std::string& fsPath)
 
         m_uniforms.insert(std::make_pair(std::string(name), uniform));
     }
+}*/
+
+Shared<Shader> Shader::createFromFile(const std::string& vsPath, const std::string& fsPath)
+{
+    auto shader = createShared<Shader>();
+
+    ShaderSource source = parseShader(vsPath, fsPath);
+    shader->compileShader(source);
+
+    return shader;
 }
 
-Shared<Shader> Shader::createShader(const std::string& vsPath, const std::string& fsPath)
+Shared<Shader> Shader::createFromSource(const std::string& vsSource, const std::string& fsSource)
 {
-    return createShared<Shader>(vsPath, fsPath);
+    auto shader = createShared<Shader>();
+
+    ShaderSource source = { vsSource, fsSource };
+    shader->compileShader(source);
+    
+    return shader;
 }
 
 Shader::~Shader()

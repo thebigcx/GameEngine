@@ -1,11 +1,9 @@
 #include <renderer/text/TextMesh.h>
 
-#include <renderer/Shader.h>
+#include <renderer/shader/Shader.h>
 #include <util/math/vector/Vector2.h>
 #include <util/math/vector/Vector4.h>
 #include <renderer/Renderer.h>
-
-Shader TextMesh::shader;
 
 TextMesh::TextMesh()
 {
@@ -14,10 +12,6 @@ TextMesh::TextMesh()
 
 void TextMesh::create()
 {
-    shader.create("shaders/text.vert", "shaders/text.frag");
-    shader.bind();
-    shader.setUniform("projection", Renderer::data.projectionMatrix);
-
     vertexArray.bind();
 
     BufferLayout layout = {

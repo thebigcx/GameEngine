@@ -35,14 +35,15 @@ public:
     Shader();
     ~Shader();
 
-    Shader(const std::string& vsPath, const std::string& fsPath);
+    //Shader(const std::string& vsPath, const std::string& fsPath);
 
     Shader(const Shader& shader);
     Shader(Shader&& shader);
 
-    void create(const std::string& vsPath, const std::string& fsPath);
+    //void create(const std::string& vsPath, const std::string& fsPath);
 
-    static Shared<Shader> createShader(const std::string& vsPath, const std::string& fsPath);
+    static Shared<Shader> createFromFile(const std::string& vsPath, const std::string& fsPath);
+    static Shared<Shader> createFromSource(const std::string& vsSource, const std::string& fsSource);
 
     void bind() const;
     void unbind() const;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <renderer/Texture2D.h>
-#include <renderer/Shader.h>
+#include <renderer/shader/Shader.h>
 #include <renderer/BlendMode.h>
 
 class RenderStates

@@ -24,8 +24,6 @@ public:
     IndexBuffer indexBuffer;
     VertexArray vertexArray;
 
-    static Shader shader;
-
 private:
     
 };

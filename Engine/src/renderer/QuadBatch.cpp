@@ -1,7 +1,7 @@
 #include <renderer/QuadBatch.h>
 #include <util/Timer.h>
 #include <renderer/Renderer.h>
-#include <renderer/ShaderLibrary.h>
+#include <renderer/shader/ShaderLibrary.h>
 
 #include <GL/glew.h>
 
@@ -10,7 +10,7 @@
 
 QuadBatch::QuadBatch()
 {
-    m_pShader = &(Renderer::data.textureShader);
+    m_pShader = Renderer::data.textureShader.get();
     create(MAX_QUADS);
 }
 

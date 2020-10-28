@@ -17,6 +17,7 @@ public:
     Quad(const Vector2f& position, const Vector2f& size);
     Quad(const Vector2f& position, const Vector2f& size, const Color& color);
     Quad(const FloatRect& rect);
+    Quad(float x, float y, float width, float height);
 
     void setTextureRect(const FloatRect& rect);
     void setColor(const Color& color);

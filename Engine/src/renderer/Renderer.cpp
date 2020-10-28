@@ -12,13 +12,18 @@ void Renderer::init()
 {
     glDisable(GL_DEPTH_TEST);
 
-    data.textureShader.create("shaders/texture.vert", "shaders/texture.frag");
-    data.textureShader.bind();
+    data.textureShader = createShared<Shader>();
+    data.textureShader = Shader::createFromFile("shaders/texture.vert", "shaders/texture.frag");
+    data.textureShader->bind();
 
     auto size = Application::get().getWindow().getSize();
 
     data.projectionMatrix = glm::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
-    data.textureShader.setUniform("projection", data.projectionMatrix);
+    data.textureShader->setUniform("projection", data.projectionMatrix);
+
+    data.textShader = Shader::createFromFile("shaders/text.vert", "shaders/text.frag");
+    data.textShader->bind();
+    data.textShader->setUniform("projection", Renderer::data.projectionMatrix);
 
     m_textMesh = createUnique<TextMesh>();
     m_textMesh->create();
@@ -57,7 +62,7 @@ void Renderer::renderArray(const VertexArray& array, const Transform& transform,
 
 void Renderer::renderArray(const VertexArray& array, const glm::mat4& transform, const Texture2D& texture)
 {
-    renderArray(array, transform, texture, data.textureShader);
+    renderArray(array, transform, texture, *data.textureShader);
 }
 
 void Renderer::renderArray(const VertexArray& array, const glm::mat4& transform, const Texture2D& texture, Shader& shader)
@@ -100,9 +105,9 @@ void Renderer::renderText(const std::string& text, const TrueTypeFont& font, con
     GlyphVertex coords[4 * text.size()];
 
     // Set render states
-    m_textMesh->shader.bind();
-    m_textMesh->shader.setUniform("transform", glm::mat4(1.f));
-    m_textMesh->shader.setUniform("textColor", color);
+    data.textShader->bind();
+    data.textShader->setUniform("transform", glm::mat4(1.f));
+    data.textShader->setUniform("textColor", color);
     m_textMesh->vertexArray.bind();
     glBindTexture(GL_TEXTURE_2D, font.getTextureAtlas());
 
@@ -117,15 +122,13 @@ void Renderer::renderText(const std::string& text, const TrueTypeFont& font, con
         auto& ch = font.getGlyphs().at(*c);
 
         Vector2f pos(x + ch.pos.x * scale.x, -y - ch.pos.y * scale.y);
-        Vector2f size(ch.size.x * scale.x, ch.size.y * scale.y);
+        Vector2f size = ch.size * scale;
 
         x += ch.advance.x * scale.x;
         y += ch.advance.y * scale.y;
 
         if (!size.x || !size.y)
-        {
             continue;
-        }
 
         coords[n++] = { Vector2f(pos.x,          -pos.y),          Vector2f(ch.texOffset,                                     0) };
         coords[n++] = { Vector2f(pos.x + size.x, -pos.y),          Vector2f(ch.texOffset + ch.size.x / font.getAtlasSize().x, 0) };
