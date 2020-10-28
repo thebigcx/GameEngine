@@ -35,12 +35,7 @@ public:
     Shader();
     ~Shader();
 
-    //Shader(const std::string& vsPath, const std::string& fsPath);
-
     Shader(const Shader& shader);
-    Shader(Shader&& shader);
-
-    //void create(const std::string& vsPath, const std::string& fsPath);
 
     static Shared<Shader> createFromFile(const std::string& vsPath, const std::string& fsPath);
     static Shared<Shader> createFromSource(const std::string& vsSource, const std::string& fsSource);
@@ -67,11 +62,9 @@ public:
     };
 
 private:
-    unsigned int m_id;
+    unsigned int m_id = 0;
 
     static ShaderSource parseShader(const std::string& vsPath, const std::string& fsPath);
 
     bool compileShader(const ShaderSource& source);
-
-    std::unordered_map<std::string, Uniform> m_uniforms;
 };

@@ -14,11 +14,9 @@ class QuadBatch
 {
 public:
     QuadBatch();
-    QuadBatch(int size, Shader& shader);
 
-    void create(int size);
-
-    static std::shared_ptr<QuadBatch> createBatch();
+    static Shared<QuadBatch> create(int size = MAX_QUADS);
+    static Shared<QuadBatch> create(Shader& shader, int size = MAX_QUADS);
 
     void setTransformMatrix(const glm::mat4& transform);
     void start();
@@ -47,4 +45,6 @@ private:
     glm::mat4 m_transform;
 
     static inline const uint32_t MAX_QUADS = 10000;
+
+    void createBatch(int size);
 };

@@ -12,7 +12,6 @@ void Renderer::init()
 {
     glDisable(GL_DEPTH_TEST);
 
-    data.textureShader = createShared<Shader>();
     data.textureShader = Shader::createFromFile("shaders/texture.vert", "shaders/texture.frag");
     data.textureShader->bind();
 

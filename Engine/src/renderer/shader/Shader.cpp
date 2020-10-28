@@ -8,40 +8,6 @@ Shader::Shader()
 
 }
 
-/*Shader::Shader(const std::string& vsPath, const std::string& fsPath)
-{
-    create(vsPath, fsPath);
-}
-
-void Shader::create(const std::string& vsPath, const std::string& fsPath)
-{
-    auto source = parseShader(vsPath, fsPath);
-    bool success = compileShader(source);
-
-    bind();
-
-    // Find all uniforms
-    int i;
-    int count;
-    int size;
-    GLenum type;
-    const GLsizei bufSize = 16;
-    GLchar name[bufSize];
-    GLsizei length;
-
-    glGetProgramiv(m_id, GL_ACTIVE_ATTRIBUTES, &count);
-
-    for (i = 0 ; i < count ; i++)
-    {
-        glGetActiveUniform(m_id, (GLuint)i, bufSize, &length, &size, &type, name);
-
-        Uniform uniform;
-        uniform = { (size_t)size, type, i };
-
-        m_uniforms.insert(std::make_pair(std::string(name), uniform));
-    }
-}*/
-
 Shared<Shader> Shader::createFromFile(const std::string& vsPath, const std::string& fsPath)
 {
     auto shader = createShared<Shader>();
@@ -64,19 +30,15 @@ Shared<Shader> Shader::createFromSource(const std::string& vsSource, const std::
 
 Shader::~Shader()
 {
-    glDeleteProgram(m_id);
+    if (m_id != 0)
+    {
+        glDeleteProgram(m_id);
+    }
 }
 
 Shader::Shader(const Shader& shader)
 {
     m_id = shader.getId();
-}
-
-Shader::Shader(Shader&& shader)
-{
-    m_id = shader.m_id;
-    shader.m_id = 0;
-    m_uniforms = shader.m_uniforms;
 }
 
 ShaderSource Shader::parseShader(const std::string& vsPath, const std::string& fsPath)

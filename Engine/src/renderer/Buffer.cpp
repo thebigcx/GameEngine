@@ -4,7 +4,7 @@
 
 VertexBuffer::VertexBuffer()
 {
-    glGenBuffers(1, &m_id);
+    glCreateBuffers(1, &m_id);
 }
 
 VertexBuffer::~VertexBuffer()
@@ -45,7 +45,7 @@ const BufferLayout& VertexBuffer::getLayout() const
 
 IndexBuffer::IndexBuffer()
 {
-    glGenBuffers(1, &m_id);
+    glCreateBuffers(1, &m_id);
 }
 
 IndexBuffer::~IndexBuffer()

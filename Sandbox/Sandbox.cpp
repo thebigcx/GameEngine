@@ -4,12 +4,13 @@
 
 Sandbox::Sandbox()
 {
-    Texture2D texture;
-    texture.loadFile("Sandbox/assets/terrain.png");
-    Assets::add<Texture2D>("texture", texture);
+    Shared<Texture2D> texture = Texture2D::create("Sandbox/assets/terrain.png");
+    Assets::add<Texture2D>("texture", *texture);
 
     m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
     SoundEngine::play(*m_soundSource, true);
+
+    m_batch = QuadBatch::create();
 
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
@@ -59,15 +60,15 @@ void Sandbox::update()
 
     Renderer::startFrame();
 
-    m_batch.setTransformMatrix(m_camera.getViewMatrix());
-    m_batch.start();
+    m_batch->setTransformMatrix(m_camera.getViewMatrix());
+    m_batch->start();
 
     for (auto& quad : m_quads)
     {
-        m_batch.renderQuad(Assets::get<Texture2D>("texture"), quad);
+        m_batch->renderQuad(Assets::get<Texture2D>("texture"), quad);
     }
 
-    m_batch.flush();
+    m_batch->flush();
 
     Renderer::renderText("Hello, world!", *m_font, Vector2f(500, 500), Vector2f(96, 96), Color(1, 0, 0, 1));
 

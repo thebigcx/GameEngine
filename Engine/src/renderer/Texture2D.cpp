@@ -4,88 +4,92 @@
 
 #include <iostream>
 
-Texture2D::Texture2D()
-{
-    glGenTextures(1, &m_id);
-}
-
 Texture2D::~Texture2D()
 {
     glDeleteTextures(1, &m_id);
-}
-
-Texture2D::Texture2D(const Texture2D& texture)
-{
-    m_id = texture.m_id;
-    m_flipped = texture.m_flipped;
-    m_mipmapped = texture.m_mipmapped;
-    m_size = texture.m_size;
-    m_smooth = texture.m_smooth;
-    m_repeated = texture.m_repeated;
 }
 
 Texture2D::Texture2D(Texture2D&& texture)
 {
     m_id = texture.m_id;
     texture.m_id = 0;
-    m_flipped = texture.m_flipped;
     m_mipmapped = texture.m_mipmapped;
     m_size = texture.m_size;
     m_smooth = texture.m_smooth;
     m_repeated = texture.m_repeated;
 }
 
-bool Texture2D::loadFile(const std::string& file)
+Shared<Texture2D> Texture2D::create(const std::string& file)
 {
-    glBindTexture(GL_TEXTURE_2D, m_id);
+    auto texture = createShared<Texture2D>();
+    glCreateTextures(GL_TEXTURE_2D, 1, &(texture->m_id));
+    texture->bind();
 
     Image image;
-    image.setVerticalFlip(m_flipped);
+    image.setVerticalFlip(true);
     image.loadFile(file);
 
-    return loadImage(image);
-}
-
-bool Texture2D::loadImage(const Image& image)
-{
     if (image.getPixels())
     {
-        glTexImage2D(GL_TEXTURE_2D,      // Type of texture
-                     0,                  // Level of detail (0 default)
-                     GL_RGBA,            // Format of texture
-                     image.getSize().x,  // Height
-                     image.getSize().y,  // Width
-                     0,                  // Border (must be 0)
-                     GL_RGBA,            // Format of image
-                     GL_UNSIGNED_BYTE,   // Type of pixel data (uint8_t)
-                     image.getPixels()); // Pixel data
+        GLenum internalFormat, dataFormat;
+        if (image.getChannels() == 4)
+        {
+            internalFormat = GL_RGBA8;
+            dataFormat = GL_RGBA;
+        }
+        else if (image.getChannels() == 3)
+        {
+            internalFormat = GL_RGB8;
+            dataFormat = GL_RGB;
+        }
+        texture->m_internalFormat = internalFormat;
+        texture->m_dataFormat = dataFormat;
 
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glTextureStorage2D(texture->m_id, 1, internalFormat, image.getSize().x, image.getSize().y);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTextureParameteri(texture->m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTextureParameteri(texture->m_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        m_mipmapped = true;
+        glTextureParameteri(texture->m_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(texture->m_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        glTextureSubImage2D(texture->m_id,
+                     0,
+                     0,
+                     0,
+                     image.getSize().x,
+                     image.getSize().y,
+                     dataFormat,
+                     GL_UNSIGNED_BYTE,
+                     image.getPixels());
+
+        glGenerateTextureMipmap(texture->m_id);
+
+        texture->m_mipmapped = true;
     }
     else
     {
         std::cout << "Image is corrupted or contains unknown formatted data!\n";
-        return false;
     }
 
-    m_size.x = image.getSize().x;
-    m_size.y = image.getSize().y;
+    texture->m_size.x = image.getSize().x;
+    texture->m_size.y = image.getSize().y;
 
-    return true;
+    return texture;
 }
 
-void Texture2D::create(int width, int height)
+Shared<Texture2D> Texture2D::create(int width, int height)
 {
-    glBindTexture(GL_TEXTURE_2D, m_id);
+    auto texture = createShared<Texture2D>();
+    glCreateTextures(GL_TEXTURE_2D, 1, &(texture->m_id));
+    texture->bind();
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    texture->m_internalFormat = GL_RGBA8;
+    texture->m_dataFormat = GL_RGBA;
+
+    glTextureStorage2D(texture->m_id, 1, GL_RGBA8, width, height);
+
+    return texture;
 }
 
 void Texture2D::setSmooth(bool smooth)
@@ -122,17 +126,12 @@ bool Texture2D::isRepeated() const
     return m_repeated;
 }
 
-void Texture2D::setVerticalFlip(bool flip)
-{
-    m_flipped = flip;
-}
-
 void Texture2D::bind() const
 {
-    glBindTexture(GL_TEXTURE_2D, m_id);
+    glBindTextureUnit(0, m_id);
 }
 
-Vector2u Texture2D::getSize() const
+Vector2f Texture2D::getSize() const
 {
     return m_size;
 }

@@ -16,11 +16,11 @@ Image::~Image()
 
 void Image::loadFile(const std::string& file)
 {
-    int width, height, nrChannels;
+    int width, height, channels;
 
     stbi_set_flip_vertically_on_load(m_flipped);
 
-    m_data = stbi_load(file.c_str(), &width, &height, &nrChannels, 4);
+    m_data = stbi_load(file.c_str(), &width, &height, &channels, 4);
 
     if (!m_data)
     {
@@ -29,6 +29,7 @@ void Image::loadFile(const std::string& file)
 
     m_size.x = width;
     m_size.y = height;
+    m_channels = channels;
 }
 
 unsigned char* Image::getPixels() const
@@ -44,4 +45,9 @@ const Vector2u& Image::getSize() const
 void Image::setVerticalFlip(bool flip)
 {
     m_flipped = flip;
+}
+
+int Image::getChannels() const
+{
+    return m_channels;
 }

@@ -7,22 +7,20 @@
 
 #include <util/math/vector/Vector2.h>
 #include <util/Image.h>
+#include <core/Core.h>
 
 class Texture2D {
 public:
-    Texture2D();
+    Texture2D() {}
 
     ~Texture2D();
 
     Texture2D(Texture2D&& texture);
-    Texture2D(const Texture2D& texture);
+
+    static Shared<Texture2D> create(const std::string& file);
+    static Shared<Texture2D> create(int width, int height);
 
     void bind() const;
-
-    void create(int width, int height);
-
-    bool loadImage(const Image& image);
-    bool loadFile(const std::string& file);
 
     void setSmooth(bool smooth = true);
     bool isSmooth() const;
@@ -30,9 +28,7 @@ public:
     void setRepeated(bool repeated = true);
     bool isRepeated() const;
 
-    void setVerticalFlip(bool flip = true);
-
-    Vector2u getSize() const;
+    Vector2f getSize() const;
 
     inline int getId() const { return m_id; }
 
@@ -42,7 +38,8 @@ private:
     bool m_smooth = false;
     bool m_repeated = false;
     bool m_mipmapped = false;
-    bool m_flipped = true;
+    GLenum m_internalFormat;
+    GLenum m_dataFormat;
 
-    Vector2u m_size;
+    Vector2f m_size;
 };

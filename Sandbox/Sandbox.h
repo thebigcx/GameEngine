@@ -16,10 +16,8 @@ public:
     void handleEvent(const Event& event) override;
 
 private:
-    QuadBatch m_batch;
-
+    Shared<QuadBatch> m_batch;
     Shared<SoundSource> m_soundSource;
-
     Shared<TrueTypeFont> m_font;
 
     std::vector<Quad> m_quads;

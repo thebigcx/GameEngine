@@ -5,6 +5,8 @@ project "GameEngine"
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Engine"
     objdir "%{wks.location}/obj/%{cfg.buildcfg}/Engine"
 
+    buildoptions "-g"
+
     files {
         "src/**.cpp", "src/**.c",
         "include/**.h", "include/**.hpp"

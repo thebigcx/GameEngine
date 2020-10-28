@@ -1,11 +1,11 @@
-#include "renderer/VertexArray.h"
-#include "renderer/Vertex.h"
+#include <renderer/VertexArray.h>
+#include <renderer/Vertex.h>
 
-#include "core/Console.h"
+#include <core/Console.h>
 
 VertexArray::VertexArray()
 {
-    glGenVertexArrays(1, &m_id);
+    glCreateVertexArrays(1, &m_id);
 }
 
 VertexArray::~VertexArray()
@@ -25,6 +25,7 @@ void VertexArray::unbind() const
 
 void VertexArray::addVertexBuffer(const VertexBuffer& buffer)
 {
+    bind();
     buffer.bind();
     int i = 0;
     for (m_attribCount ; m_attribCount < buffer.getLayout().size() ; m_attribCount++)

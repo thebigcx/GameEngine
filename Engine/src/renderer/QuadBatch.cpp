@@ -10,22 +10,26 @@
 
 QuadBatch::QuadBatch()
 {
-    m_pShader = Renderer::data.textureShader.get();
-    create(MAX_QUADS);
+    
 }
 
-QuadBatch::QuadBatch(int size, Shader& shader)
+Shared<QuadBatch> QuadBatch::create(int size)
 {
-    m_pShader = &shader;
-    create(size);
+    auto batch = createShared<QuadBatch>();
+    batch->m_pShader = Renderer::data.textureShader.get();
+    batch->createBatch(size);
+    return batch;
 }
 
-std::shared_ptr<QuadBatch> QuadBatch::createBatch()
+Shared<QuadBatch> QuadBatch::create(Shader& shader, int size)
 {
-    return std::make_shared<QuadBatch>();
+    auto batch = createShared<QuadBatch>();
+    batch->m_pShader = &shader;
+    batch->createBatch(size);
+    return batch;
 }
 
-void QuadBatch::create(int size)
+void QuadBatch::createBatch(int size)
 {
     if (size > MAX_QUADS)
     {

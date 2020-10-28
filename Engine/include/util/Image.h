@@ -17,10 +17,14 @@ class Image {
 
         void setVerticalFlip(bool flip = true);
 
+        int getChannels() const;
+
     private:
         unsigned char* m_data;
 
         Vector2u m_size;
 
         bool m_flipped = false;
+
+        int m_channels = 0;
 };
