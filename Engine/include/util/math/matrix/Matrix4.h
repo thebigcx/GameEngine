@@ -85,6 +85,21 @@ public:
         operator*(mat);
     }
 
+    static Matrix<4, 4, float> createOrthoProjection(float left, float right, float bottom, float top, float near, float far)
+    {
+        Matrix<4, 4, float> mat(1.f);
+
+        mat.m_cells[0][0] = 2 / (right - left);
+        mat.m_cells[1][1] = 2 / (top - bottom);
+        mat.m_cells[2][2] = -2 / (far - near);
+
+        mat.m_cells[3][0] = -(right + left) / (right - left);
+        mat.m_cells[3][1] = -(top + bottom) / (top - bottom);
+        mat.m_cells[3][2] = -(far + near) / (far - near);
+
+        return mat;
+    }
+
     const T* buffer() const
     {
         return &m_cells[0][0];
@@ -97,7 +112,7 @@ public:
         {
             for (int y = 0 ; y < 4 ; y++)
             {
-                s.append(std::to_string(m_cells[x][y]));
+                s.append(std::to_string(m_cells[y][x]));
                 s.append(", ");
             }
             s.append("\n");

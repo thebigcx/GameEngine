@@ -2,8 +2,6 @@
 
 #include "SandboxApp.h"
 
-#include <glm/gtx/string_cast.hpp>
-
 Sandbox::Sandbox()
 {
     Shared<Texture2D> texture = Texture2D::create("Sandbox/assets/terrain.png");

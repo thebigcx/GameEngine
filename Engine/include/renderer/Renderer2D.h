@@ -11,7 +11,7 @@
 struct RenderData
 {
     uint64_t drawCalls;
-    glm::mat4 projectionMatrix;
+    Matrix4f projectionMatrix;
     Shared<Shader> textureShader;
     Shared<Shader> textShader;
     BlendMode blendMode = BlendMode::Alpha;
