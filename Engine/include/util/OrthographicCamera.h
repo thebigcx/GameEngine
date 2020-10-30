@@ -1,7 +1,7 @@
 #pragma once
 
-#include <util/math/vector/Vector2.h>
-#include <util/math/matrix/Matrix4.h>
+#include <math/vector/Vector2.h>
+#include <math/matrix/Matrix4.h>
 
 class OrthographicCamera
 {

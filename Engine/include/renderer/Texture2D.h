@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include <util/math/vector/Vector2.h>
+#include <math/vector/Vector2.h>
 #include <util/Image.h>
 #include <core/Core.h>
 

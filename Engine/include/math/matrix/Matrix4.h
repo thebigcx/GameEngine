@@ -1,7 +1,9 @@
 #pragma once
 
-#include <util/math/vector/Vector3.h>
-#include <util/math/vector/Vector4.h>
+#include <cmath>
+
+#include <math/vector/Vector3.h>
+#include <math/vector/Vector4.h>
 
 template<int width, int height, typename T>
 class Matrix;

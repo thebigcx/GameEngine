@@ -2,7 +2,7 @@
 
 #include <core/Console.h>
 #include <sound/SoundEngine.h>
-#include <util/math/Math.h>
+#include <math/Math.h>
 #include <core/Input.h>
 #include <events/EventDispatcher.h>
 #include <renderer/Renderer2D.h>

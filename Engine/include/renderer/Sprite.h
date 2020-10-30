@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <array>
 
-#include <util/math/vector/Vector2.h>
-#include <util/math/Rect.h>
+#include <math/vector/Vector2.h>
+#include <math/Rect.h>
 #include <util/Color.h>
 #include <renderer/Vertex.h>
 #include <renderer/Transformable.h>

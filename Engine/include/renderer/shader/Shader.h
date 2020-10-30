@@ -8,8 +8,8 @@
 #include <iostream>
 #include <unordered_map>
 
-#include <util/math/vector/Vector4.h>
-#include <util/math/matrix/Matrix4.h>
+#include <math/vector/Vector4.h>
+#include <math/matrix/Matrix4.h>
 #include <util/Color.h>
 #include <core/Core.h>
 

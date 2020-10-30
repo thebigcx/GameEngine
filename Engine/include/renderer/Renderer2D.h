@@ -6,7 +6,8 @@
 #include <renderer/VertexArray.h>
 #include <renderer/RenderStates.h>
 #include <util/Transform.h>
-#include <renderer/text/TextMesh.h>
+#include <renderer/text/TrueTypeFont.h>
+#include <renderer/Mesh.h>
 
 struct RenderData
 {
@@ -38,6 +39,6 @@ public:
     static RenderData data;
 
 private:
-    static Unique<TextMesh> m_textMesh;
+    static Shared<Mesh> m_textMesh;
         
 };

@@ -1,10 +1,11 @@
 #include <renderer/Renderer2D.h>
 #include <core/Application.h>
+#include <renderer/MeshFactory.h>
 
 #include <GL/glew.h>
 
 RenderData Renderer2D::data;
-Unique<TextMesh> Renderer2D::m_textMesh;
+Shared<Mesh> Renderer2D::m_textMesh;
 
 void Renderer2D::init()
 {
@@ -22,8 +23,9 @@ void Renderer2D::init()
     data.textShader->bind();
     data.textShader->setUniform("projection", data.projectionMatrix);
 
-    m_textMesh = createUnique<TextMesh>();
-    m_textMesh->create();
+    //m_textMesh = createUnique<TextMesh>();
+    //m_textMesh->create();
+    m_textMesh = MeshFactory::createTextMesh();
 }
 
 void Renderer2D::startFrame()
@@ -81,6 +83,12 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
 
 void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Vector2f& size, const Color& color)
 {
+    struct GlyphVertex
+    {
+        Vector2f position;
+        Vector2f texCoord;
+    };
+
     Vector2f scale = size / font.getCharacterSize();
     std::vector<unsigned int> indices;
 

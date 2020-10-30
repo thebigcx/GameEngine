@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-#include <util/math/vector/Vector3.h>
+#include <math/vector/Vector3.h>
 
 template<int length, typename T>
 class Vector;

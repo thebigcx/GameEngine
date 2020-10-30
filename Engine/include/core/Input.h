@@ -2,7 +2,7 @@
 
 #include <core/KeyCodes.h>
 #include <core/Application.h>
-#include <util/math/vector/Vector2.h>
+#include <math/vector/Vector2.h>
 
 #include <GLFW/glfw3.h>
 

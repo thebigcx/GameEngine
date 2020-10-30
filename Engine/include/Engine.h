@@ -6,13 +6,12 @@
 #include <renderer/shader/Shader.h>
 #include <renderer/Texture2D.h>
 #include <renderer/VertexArray.h>
-#include <util/math/MathGL.h>
-#include <util/math/vector/Vector2.h>
+#include <math/vector/Vector2.h>
 #include <renderer/Transformable.h>
 #include <util/Color.h>
 #include <util/Timer.h>
 #include <renderer/Vertex.h>
-#include <util/math/Math.h>
+#include <math/Math.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/Renderer2D.h>
 #include <core/Console.h>
@@ -30,6 +29,7 @@
 #include <core/Input.h>
 #include <core/KeyCodes.h>
 #include <renderer/text/TrueTypeFont.h>
-#include <renderer/text/TextMesh.h>
-#include <util/math/matrix/Matrix4.h>
-#include <util/math/matrix/Matrix3.h>
+#include <renderer/Mesh.h>
+#include <renderer/MeshFactory.h>
+#include <math/matrix/Matrix4.h>
+#include <math/matrix/Matrix3.h>

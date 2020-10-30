@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <memory>
 
-#include <util/math/vector/Vector2.h>
+#include <math/vector/Vector2.h>
 #include <core/Core.h>
 
 #include <ft2build.h>
