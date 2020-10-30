@@ -1,3 +1,3 @@
 #!/bin/bash
 
-bin/Debug/sandbox/Sandbox
+bin/Debug/Sandbox/Sandbox

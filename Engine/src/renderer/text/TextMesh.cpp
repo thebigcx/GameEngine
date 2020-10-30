@@ -3,7 +3,6 @@
 #include <renderer/shader/Shader.h>
 #include <util/math/vector/Vector2.h>
 #include <util/math/vector/Vector4.h>
-#include <renderer/Renderer.h>
 
 TextMesh::TextMesh()
 {

@@ -1,8 +1,8 @@
 #include <util/Image.h>
 #include <core/Window.h>
-#include <renderer/QuadBatch.h>
+#include <renderer/SpriteBatch.h>
 #include <renderer/Buffer.h>
-#include <renderer/Quad.h>
+#include <renderer/Sprite.h>
 #include <renderer/shader/Shader.h>
 #include <renderer/Texture2D.h>
 #include <renderer/VertexArray.h>
@@ -14,7 +14,7 @@
 #include <renderer/Vertex.h>
 #include <util/math/Math.h>
 #include <renderer/Framebuffer.h>
-#include <renderer/Renderer.h>
+#include <renderer/Renderer2D.h>
 #include <core/Console.h>
 #include <core/Application.h>
 #include <core/Cursor.h>
@@ -23,6 +23,7 @@
 #include <renderer/shader/ShaderLibrary.h>
 #include <sound/SoundEngine.h>
 #include <sound/SoundSource.h>
+#include <util/OrthographicCamera.h>
 #include <renderer/Assets.h>
 #include <util/Time.h>
 #include <util/Transform.h>
@@ -30,3 +31,5 @@
 #include <core/KeyCodes.h>
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/text/TextMesh.h>
+#include <util/math/matrix/Matrix4.h>
+#include <util/math/matrix/Matrix3.h>

@@ -4,11 +4,14 @@
 
 #include <util/math/vector/Vector3.h>
 
+template<int length, typename T>
+class Vector;
+
 template <typename T>
-class Vector4
+class Vector<4, T>
 {
 public:
-    Vector4()
+    Vector<4, T>()
     {
         x = 0;
         y = 0;
@@ -16,7 +19,7 @@ public:
         w = 0;
     }
 
-    Vector4(T x, T y, T z, T w)
+    Vector<4, T>(T x, T y, T z, T w)
     {
         this->x = x;
         this->y = y;
@@ -24,7 +27,7 @@ public:
         this->w = w;
     }
 
-    Vector4(T v, T w)
+    Vector<4, T>(T v, T w)
     {
         x = v;
         y = v;
@@ -32,7 +35,7 @@ public:
         w = w;
     }
 
-    Vector4(Vector3<T> vec, T w)
+    Vector<4, T>(Vector<3, T> vec, T w)
     {
         this->x = vec.x;
         this->y = vec.y;
@@ -40,92 +43,104 @@ public:
         this->w = w;
     }
 
-    Vector4<T> operator+(const Vector4<T> vec) const
+    Vector<4, T> operator+(const Vector<4, T> vec) const
     {
-        return Vector4<T>(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
+        return Vector<4, T>(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
     }
 
-    Vector4<T> operator+(const T& num) const
+    Vector<4, T> operator+(const T& num) const
     {
-        return Vector4<T>(x + num, y + num, z + num, w + num);
+        return Vector<4, T>(x + num, y + num, z + num, w + num);
     }
 
-    Vector4<T> operator-(const Vector4<T> vec) const
+    Vector<4, T> operator-(const Vector<4, T> vec) const
     {
-        return Vector4<T>(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
+        return Vector<4, T>(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
     }
 
-    Vector4<T> operator-(const T& num) const
+    Vector<4, T> operator-(const T& num) const
     {
-        return Vector4<T>(x - num, y - num, z - num, w - num);
+        return Vector<4, T>(x - num, y - num, z - num, w - num);
     }
 
-    Vector4<T> operator*(const Vector4<T> vec) const
+    Vector<4, T> operator*(const Vector<4, T> vec) const
     {
-        return Vector4<T>(x * vec.x, y * vec.y, z * vec.z, w * vec.w);
+        return Vector<4, T>(x * vec.x, y * vec.y, z * vec.z, w * vec.w);
     }
 
-    Vector4<T> operator*(const T& scl) const
+    Vector<4, T> operator*(const T& scl) const
     {
-        return Vector4<T>(x * scl, y * scl, z * scl, w * scl);
+        return Vector<4, T>(x * scl, y * scl, z * scl, w * scl);
     }
 
-    Vector4<T> operator/(const Vector4<T> vec) const
+    Vector<4, T> operator/(const Vector<4, T> vec) const
     {
-        return Vector4<T>(x / vec.x, y / vec.y, z / vec.z, w / vec.w);
+        return Vector<4, T>(x / vec.x, y / vec.y, z / vec.z, w / vec.w);
     }
 
-    Vector4<T> operator/(const T& scl) const
+    Vector<4, T> operator/(const T& scl) const
     {
-        return Vector4<T>(x / scl, y / scl, z / scl, w / scl);
+        return Vector<4, T>(x / scl, y / scl, z / scl, w / scl);
     }
 
-    Vector4<T>& operator+=(const Vector4<T> vec)
+    Vector<4, T>& operator+=(const Vector<4, T> vec)
     {
         *this = *this + vec;
         return *this;
     }
 
-    Vector4<T>& operator+=(const T& num)
+    Vector<4, T>& operator+=(const T& num)
     {
         *this = *this + num;
         return *this;
     }
 
-    Vector4<T>& operator-=(const Vector4<T> vec)
+    Vector<4, T>& operator-=(const Vector<4, T> vec)
     {
         *this = *this - vec;
         return *this;
     }
 
-    Vector4<T>& operator-=(const T& num)
+    Vector<4, T>& operator-=(const T& num)
     {
         *this = *this - num;
         return *this;
     }
 
-    Vector4<T>& operator*=(const Vector4<T> vec)
+    Vector<4, T>& operator*=(const Vector<4, T> vec)
     {
         *this = *this * vec;
         return *this;
     }
 
-    Vector4<T>& operator*=(const T& scl)
+    Vector<4, T>& operator*=(const T& scl)
     {
         *this = *this * scl;
         return *this;
     }
 
-    Vector4<T>& operator/=(const Vector4<T> vec)
+    Vector<4, T>& operator/=(const Vector<4, T> vec)
     {
         *this = *this / vec;
         return *this;
     }
 
-    Vector4<T>& operator/=(const T& scl)
+    Vector<4, T>& operator/=(const T& scl)
     {
         *this = *this / scl;
         return *this;
+    }
+
+    T& operator[](int index)
+    {
+        switch (index)
+        {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            case 3: return w;
+            default: return (T)0;
+        }
     }
 
     std::string str() const
@@ -136,8 +151,8 @@ public:
     T x, y, z, w;
 };
 
-typedef Vector4<float>        Vector4f;
-typedef Vector4<int>          Vector4i;
-typedef Vector4<long>         Vector4l;
-typedef Vector4<double>       Vector4d;
-typedef Vector4<unsigned int> Vector4u;
+typedef Vector<4, float>        Vector4f;
+typedef Vector<4, int>          Vector4i;
+typedef Vector<4, long>         Vector4l;
+typedef Vector<4, double>       Vector4d;
+typedef Vector<4, unsigned int> Vector4u;

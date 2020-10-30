@@ -177,6 +177,12 @@ void Shader::setUniform(const std::string& name, const Color& value)
     glUniform4f(location, value.r, value.g, value.b, value.a);
 }
 
+void Shader::setUniform(const std::string& name, const Matrix4f& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniformMatrix4fv(location, 1, GL_FALSE, value.buffer());
+}
+
 unsigned int Shader::getId() const
 {
     return m_id;

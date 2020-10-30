@@ -2,6 +2,8 @@
 
 #include "SandboxApp.h"
 
+#include <glm/gtx/string_cast.hpp>
+
 Sandbox::Sandbox()
 {
     Shared<Texture2D> texture = Texture2D::create("Sandbox/assets/terrain.png");
@@ -10,21 +12,21 @@ Sandbox::Sandbox()
     m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
     SoundEngine::play(*m_soundSource, true);
 
-    m_batch = QuadBatch::create();
+    m_batch = SpriteBatch::create();
 
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
     for (int i = 0; i < 999; i++)
     {
-        Quad quad((i % 10) * 100, i * 10, 100, 100);
+        Sprite sprite((i % 10) * 100, i * 10, 100, 100);
 
-        quad.setColor(Color(1, 1, 1, 1));
-        quad.setTextureRect(FloatRect(32.f, 32.f, 16.f, 16.f));
+        sprite.setColor(Color(1, 1, 1, 1));
+        sprite.setTextureRect(FloatRect(32.f, 32.f, 16.f, 16.f));
 
-        m_quads.push_back(quad);
+        m_sprites.push_back(sprite);
     }
 
-    Renderer::setClearColor(Color(0, 0, 0, 1));
+    Renderer2D::setClearColor(Color(0, 0, 0, 1));
 }
 
 Application* createApplication()
@@ -36,43 +38,39 @@ void Sandbox::update()
 {
     auto dt = Time::getDelta();
     const float speed = 0.5;
+
     if (Input::isKeyPressed(Key::A))
-    {
         m_camera.translate(Vector2f(-speed * dt, 0));
-    }
+
     if (Input::isKeyPressed(Key::D))
-    {
         m_camera.translate(Vector2f(speed * dt, 0));
-    }
+
     if (Input::isKeyPressed(Key::W))
-    {
         m_camera.translate(Vector2f(0, speed * dt));
-    }
+
     if (Input::isKeyPressed(Key::S))
-    {
         m_camera.translate(Vector2f(0, -speed * dt));
-    }
 
     if (Input::isKeyPressed(Key::Escape))
     {
         Application::get().quit();
     }
 
-    Renderer::startFrame();
+    Renderer2D::startFrame();
 
     m_batch->setTransformMatrix(m_camera.getViewMatrix());
     m_batch->start();
 
-    for (auto& quad : m_quads)
+    for (auto& sprite : m_sprites)
     {
-        m_batch->renderQuad(Assets::get<Texture2D>("texture"), quad);
+        m_batch->renderSprite(Assets::get<Texture2D>("texture"), sprite);
     }
 
     m_batch->flush();
 
-    Renderer::renderText("Hello, world!", *m_font, Vector2f(500, 500), Vector2f(96, 96), Color(1, 0, 0, 1));
+    Renderer2D::renderText("Hello, world!", *m_font, Vector2f(500, 500), Vector2f(80, 80), Color(1, 0, 0, 1));
 
-    Renderer::endFrame();
+    Renderer2D::endFrame();
 }
 
 void Sandbox::handleEvent(const Event& event)

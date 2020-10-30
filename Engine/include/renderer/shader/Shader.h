@@ -13,6 +13,7 @@
 #include <unordered_map>
 
 #include <util/math/vector/Vector4.h>
+#include <util/math/matrix/Matrix4.h>
 #include <util/Color.h>
 #include <core/Core.h>
 
@@ -49,6 +50,7 @@ public:
     void setUniform(const std::string& name, const glm::mat4& value);
     void setUniform(const std::string& name, const Vector4f& value);
     void setUniform(const std::string& name, const Color& value);
+    void setUniform(const std::string& name, const Matrix4f& value);
 
     unsigned int getId() const;
 

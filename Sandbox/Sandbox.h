@@ -2,7 +2,7 @@
 
 #include <core/Layer.h>
 #include <renderer/Texture2D.h>
-#include <renderer/QuadBatch.h>
+#include <renderer/SpriteBatch.h>
 #include <renderer/text/Text.h>
 #include <sound/SoundSource.h>
 #include <sound/SoundBuffer.h>
@@ -16,11 +16,11 @@ public:
     void handleEvent(const Event& event) override;
 
 private:
-    Shared<QuadBatch> m_batch;
+    Shared<SpriteBatch> m_batch;
     Shared<SoundSource> m_soundSource;
     Shared<TrueTypeFont> m_font;
 
-    std::vector<Quad> m_quads;
+    std::vector<Sprite> m_sprites;
 
-    Camera m_camera;
+    OrthographicCamera m_camera;
 };

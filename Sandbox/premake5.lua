@@ -2,8 +2,8 @@ project "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
     cppdialect "C++17"
-    targetdir "%{wks.location}/bin/%{cfg.buildcfg}/sandbox"
-    objdir "%{wks.location}/obj/%{cfg.buildcfg}/sandbox"
+    targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Sandbox"
+    objdir "%{wks.location}/obj/%{cfg.buildcfg}/Sandbox"
 	files {
 		"**.cpp",
 		"**.h"

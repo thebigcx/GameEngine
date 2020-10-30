@@ -5,7 +5,7 @@
 #include <util/math/Math.h>
 #include <core/Input.h>
 #include <events/EventDispatcher.h>
-#include <renderer/Renderer.h>
+#include <renderer/Renderer2D.h>
 #include <util/Time.h>
 
 Application* Application::m_instance = nullptr;
@@ -19,7 +19,7 @@ Application::Application()
     Console::init();
     SoundEngine::init();
     EventDispatcher::setupCallbacks();
-    Renderer::init();
+    Renderer2D::init();
     Time::init();
 }
 

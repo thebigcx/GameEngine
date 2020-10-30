@@ -1,8 +1,13 @@
 #pragma once
 
+#include <iostream>
+
 #include <util/math/vector/Vector2.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <util/math/matrix/Matrix4.h>
+#include <util/math/Math.h>
 
 class Transform
 {
@@ -29,24 +34,19 @@ public:
         : position(position_), scale(scale_)
     {}
 
-
-    glm::mat4 getMatrix() const
+    Matrix4f getMatrix() const
     {
-        glm::mat4 matrix(1.f);
+        Matrix4f mat(1.f);
 
-        Vector2f pos(position.x, position.y);
-        Vector2f scalar(scale.x, scale.y);
+        mat.translate(Vector3f(position, 0));
+        
+        mat.translate(Vector3f(rotationOrigin.x, rotationOrigin.y, 0.f));
+        mat.rotate(asRadians(rotation), Vector3f(0, 0, 1));
+        mat.translate(Vector3f(-rotationOrigin.x, -rotationOrigin.y, 0.f));
 
-        // Translate
-        matrix = glm::translate(matrix, glm::vec3(pos.x, pos.y, 0));
-        // Rotate (with respect to origin)
-        matrix = glm::translate(matrix, glm::vec3(rotationOrigin.x, rotationOrigin.y, 0.f));
-        matrix = glm::rotate(matrix, glm::radians((float)rotation), glm::vec3(0.f, 0.f, 1.f));
-        matrix = glm::translate(matrix, glm::vec3(-rotationOrigin.x, -rotationOrigin.y, 0.f));
+        mat.scale(Vector3f(scale, 1));
 
-        // Scale
-        matrix = glm::scale(matrix, glm::vec3(scalar.x, scalar.y, 1));
-        return matrix;
+        return mat;
     }
 
     Vector2f position;
@@ -57,5 +57,6 @@ public:
     static Transform None;
 
 private:
-    glm::mat4 m_matrix;
+    //glm::mat4 m_matrix;
+    Matrix4f m_matrix;
 };
