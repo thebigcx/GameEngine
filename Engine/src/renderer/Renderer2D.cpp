@@ -2,9 +2,6 @@
 #include <core/Application.h>
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
 
 RenderData Renderer2D::data;
 Unique<TextMesh> Renderer2D::m_textMesh;
@@ -18,15 +15,8 @@ void Renderer2D::init()
 
     auto size = Application::get().getWindow().getSize();
 
-    //data.projectionMatrix = glm::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
     data.projectionMatrix = Matrix4f::createOrthoProjection(0.f, size.x, 0.f, size.y, -1.f, 1.f);
     data.textureShader->setUniform("projection", data.projectionMatrix);
-
-    auto mat1 = glm::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
-    auto mat2 = Matrix4f::createOrthoProjection(0.f, size.x, 0.f, size.y, -1.f, 1.f);
-
-    std::cout << mat2.str() << "\n";
-    std::cout << glm::to_string(mat1) << "\n";
 
     data.textShader = Shader::createFromFile("shaders/text.vert", "shaders/text.frag");
     data.textShader->bind();
@@ -113,7 +103,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
 
     // Set render states
     data.textShader->bind();
-    data.textShader->setUniform("transform", glm::mat4(1.f));
+    data.textShader->setUniform("transform", Matrix4f(1.f));
     data.textShader->setUniform("textColor", color);
     m_textMesh->vertexArray.bind();
     glBindTexture(GL_TEXTURE_2D, font.getTextureAtlas());

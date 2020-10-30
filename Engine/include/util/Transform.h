@@ -3,9 +3,6 @@
 #include <iostream>
 
 #include <util/math/vector/Vector2.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <util/math/matrix/Matrix4.h>
 #include <util/math/Math.h>
 
@@ -57,6 +54,5 @@ public:
     static Transform None;
 
 private:
-    //glm::mat4 m_matrix;
     Matrix4f m_matrix;
 };

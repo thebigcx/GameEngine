@@ -1,8 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <util/Transform.h>
 #include <util/math/vector/Vector2.h>
 #include <core/Console.h>

@@ -2,10 +2,6 @@
 
 #include <GL/glew.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -47,7 +43,6 @@ public:
     void setUniform(const std::string& name, int value);
     void setUniform(const std::string& name, bool value);
     void setUniform(const std::string& name, float value);
-    void setUniform(const std::string& name, const glm::mat4& value);
     void setUniform(const std::string& name, const Vector4f& value);
     void setUniform(const std::string& name, const Color& value);
     void setUniform(const std::string& name, const Matrix4f& value);

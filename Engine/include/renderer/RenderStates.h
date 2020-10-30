@@ -12,7 +12,7 @@ public:
         
     }
 
-    static RenderStates createStates(Texture2D& texture_, Shader& shader_, const glm::mat4& transform_, BlendMode blendMode_)
+    static RenderStates createStates(Texture2D& texture_, Shader& shader_, const Matrix4f& transform_, BlendMode blendMode_)
     {
         RenderStates states;
         states.texture = &texture_;
@@ -28,7 +28,7 @@ public:
         RenderStates states;
         states.texture = &texture_;
         states.shader = &shader_;
-        states.transform = glm::mat4(1.f);
+        states.transform = Matrix4f(1.f);
 
         return states;
     }
@@ -43,6 +43,6 @@ public:
 
     Texture2D* texture;
     Shader* shader;
-    glm::mat4 transform;
+    Matrix4f transform;
     BlendMode blendMode;
 };
