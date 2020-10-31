@@ -6,5 +6,5 @@
 class MeshFactory
 {
 public:
-    static Shared<Mesh> createTextMesh();
+    static Shared<Mesh> textMesh();
 };

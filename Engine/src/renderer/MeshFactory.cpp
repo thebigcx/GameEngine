@@ -1,6 +1,6 @@
 #include <renderer/MeshFactory.h>
 
-Shared<Mesh> MeshFactory::createTextMesh()
+Shared<Mesh> MeshFactory::textMesh()
 {
     auto text = createShared<Mesh>();
     
@@ -11,7 +11,7 @@ Shared<Mesh> MeshFactory::createTextMesh()
         { Shader::DataType::Vec2, "aTexCoord" }
     };
 
-    text->vertexBuffer.create(sizeof(float) * 1000);
+    text->vertexBuffer.create(sizeof(float) * 4 * 200);
     text->vertexBuffer.setLayout(layout);
     text->vertexArray.addVertexBuffer(text->vertexBuffer);
     text->vertexArray.setIndexBuffer(text->indexBuffer);

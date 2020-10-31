@@ -3,7 +3,6 @@
 #include <core/Layer.h>
 #include <renderer/Texture2D.h>
 #include <renderer/SpriteBatch.h>
-#include <renderer/text/Text.h>
 #include <sound/SoundSource.h>
 #include <sound/SoundBuffer.h>
 

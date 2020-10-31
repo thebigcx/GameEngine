@@ -1,6 +1,7 @@
 #include <renderer/Renderer2D.h>
 #include <core/Application.h>
 #include <renderer/MeshFactory.h>
+#include <renderer/shader/ShaderFactory.h>
 
 #include <GL/glew.h>
 
@@ -11,21 +12,19 @@ void Renderer2D::init()
 {
     glDisable(GL_DEPTH_TEST);
 
-    data.textureShader = Shader::createFromFile("shaders/texture.vert", "shaders/texture.frag");
-    data.textureShader->bind();
-
     auto size = Application::get().getWindow().getSize();
 
     data.projectionMatrix = Matrix4f::createOrthoProjection(0.f, size.x, 0.f, size.y, -1.f, 1.f);
+
+    data.textureShader = ShaderFactory::textureShader();
+    data.textureShader->bind();
     data.textureShader->setUniform("projection", data.projectionMatrix);
 
-    data.textShader = Shader::createFromFile("shaders/text.vert", "shaders/text.frag");
+    data.textShader = ShaderFactory::textShader();
     data.textShader->bind();
     data.textShader->setUniform("projection", data.projectionMatrix);
 
-    //m_textMesh = createUnique<TextMesh>();
-    //m_textMesh->create();
-    m_textMesh = MeshFactory::createTextMesh();
+    m_textMesh = MeshFactory::textMesh();
 }
 
 void Renderer2D::startFrame()

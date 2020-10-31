@@ -1,7 +1,7 @@
 #include <renderer/SpriteBatch.h>
 #include <util/Timer.h>
 #include <renderer/Renderer2D.h>
-#include <renderer/shader/ShaderLibrary.h>
+#include <renderer/shader/ShaderFactory.h>
 
 #include <GL/glew.h>
 
@@ -15,12 +15,20 @@ SpriteBatch::SpriteBatch()
 
 Shared<SpriteBatch> SpriteBatch::create(int size)
 {
+    if (Renderer2D::data.textureShader == nullptr)
+    {
+        return create(*(ShaderFactory::textureShader()), size);
+    }
     return create(*(Renderer2D::data.textureShader), size);
 }
 
 Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
 {
     auto batch = createShared<SpriteBatch>();
+    if (batch == nullptr)
+    {
+        Console::err("Batch creation failed.");
+    }
 
     batch->m_pShader = &shader;
     
@@ -56,7 +64,11 @@ void SpriteBatch::start()
 
 void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
 {
-    if (m_pLastTexture == nullptr || texture.getId() != m_pLastTexture->getId())
+    if (m_pLastTexture == nullptr)
+    {
+        swapTexture(texture);
+    }
+    else if (texture.getId() != m_pLastTexture->getId())
     {
         swapTexture(texture);
     }
@@ -75,7 +87,7 @@ void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
     
     std::array<Vertex, 4> vertices;
 
-    // Populate the vertices array with the quad's vertices
+    // Populate the vertices array with the sprite's vertices
     for (int i = 0 ; i < 4 ; i++)
     {
         auto pos = transform.getMatrix() * Vector4f(Sprite::positions[i].x, Sprite::positions[i].y, 0, 1);
@@ -122,7 +134,7 @@ void SpriteBatch::swapTexture(const Texture2D& texture)
 
 void SpriteBatch::flush()
 {
-    if (m_vertices.size() == 0)
+    if (m_vertices.size() == 0 || m_pLastTexture == nullptr || m_pShader == nullptr)
     {
         return;
     }

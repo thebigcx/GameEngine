@@ -19,7 +19,6 @@
 #include <core/Cursor.h>
 #include <io/FileWriter.h>
 #include <io/FileReader.h>
-#include <renderer/shader/ShaderLibrary.h>
 #include <sound/SoundEngine.h>
 #include <sound/SoundSource.h>
 #include <util/OrthographicCamera.h>
