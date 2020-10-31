@@ -11,6 +11,20 @@
 
 class Texture2D {
 public:
+    enum class Parameter
+    {
+        MinFilter = GL_TEXTURE_MIN_FILTER,
+        MagFilter = GL_TEXTURE_MAG_FILTER,
+        WrapS = GL_TEXTURE_WRAP_S,
+        WrapT = GL_TEXTURE_WRAP_T
+    };
+
+    enum class Value
+    {
+        Nearest = GL_NEAREST,
+        ClampToEdge = GL_CLAMP_TO_EDGE
+    };
+
     Texture2D() {}
 
     ~Texture2D();
@@ -18,15 +32,13 @@ public:
     Texture2D(Texture2D&& texture);
 
     static Shared<Texture2D> create(const std::string& file);
-    static Shared<Texture2D> create(int width, int height);
+    static Shared<Texture2D> create(int width, int height, GLenum dataFormat = GL_RGBA8);
 
-    void bind() const;
+    void updatePixels(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA);
+    void setParameter(Parameter parameter, Value value);
 
-    void setSmooth(bool smooth = true);
-    bool isSmooth() const;
-
-    void setRepeated(bool repeated = true);
-    bool isRepeated() const;
+    void bind(int slot = 0) const;
+    void unbind(int slot = 0) const;
 
     Vector2f getSize() const;
 
@@ -35,8 +47,6 @@ public:
 private:
     unsigned int m_id;
 
-    bool m_smooth = false;
-    bool m_repeated = false;
     bool m_mipmapped = false;
     GLenum m_internalFormat;
     GLenum m_dataFormat;

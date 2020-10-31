@@ -56,11 +56,8 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
     m_atlasSize.x = w;
     m_atlasSize.y = h;
 
-    glGenTextures(1, &m_texture);
-    glBindTexture(GL_TEXTURE_2D, m_texture);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_atlasSize.x, m_atlasSize.y, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+    m_texture = Texture2D::create(m_atlasSize.x, m_atlasSize.y);
 
     int x = 0;
     for (int i = 32; i < 255; i++)
@@ -70,7 +67,7 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
             continue;
         }
 
-        glTexSubImage2D(GL_TEXTURE_2D, 0, x, 0, g->bitmap.width, g->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+        m_texture->updatePixels(x, 0, g->bitmap.width, g->bitmap.rows, g->bitmap.buffer, GL_RED);
 
         m_glyphs[i].advance.x = g->advance.x >> 6;
         m_glyphs[i].advance.y = g->advance.y >> 6;
@@ -86,11 +83,11 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
         x += g->bitmap.width;
     }
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    m_texture->setParameter(Texture2D::Parameter::WrapS, Texture2D::Value::ClampToEdge);
+    m_texture->setParameter(Texture2D::Parameter::WrapT, Texture2D::Value::ClampToEdge);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    m_texture->setParameter(Texture2D::Parameter::MinFilter, Texture2D::Value::Nearest);
+    m_texture->setParameter(Texture2D::Parameter::MagFilter, Texture2D::Value::Nearest);
 
     FT_Done_Face(face);
     FT_Done_FreeType(library);

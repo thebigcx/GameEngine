@@ -50,5 +50,8 @@ public:
 	T x, y, width, height;
 };
 
-typedef Rect<int> IntRect;
-typedef Rect<float> FloatRect;
+typedef Rect<int>          IntRect;
+typedef Rect<float>        FloatRect;
+typedef Rect<double>       DoubleRect;
+typedef Rect<long>         LongRect;
+typedef Rect<unsigned int> UnsignedRect;

@@ -39,6 +39,38 @@ public:
         this->z = z;
     }
 
+    Vector<3, T>& normalise()
+    {
+        *this = Vector<3, T>::normalise(*this);
+        return *this;
+    }
+
+    Vector<3, T> cross(const Vector<3, T>& other)
+    {
+        return Vector<3, T>::cross(*this, other);
+        
+    }
+
+    float mag() const
+    {
+        return sqrt(x * x + y * y + z * z);
+    }
+
+    static Vector<3, T> normalise(const Vector<3, T>& vec)
+    {
+        return Vector<3, T>(vec.x / vec.mag(), vec.y / vec.mag(), vec.z / vec.mag());
+    }
+
+    static Vector<3, T> cross(const Vector<3, T>& first, const Vector<3, T>& second)
+    {
+        return Vector<3, T>(first.y * second.z - first.z * second.y, first.z + second.x - first.x * second.z, first.x * second.y - first.y * second.x);
+    }
+
+    static float dot(const Vector<3, T>& first, const Vector<3, T>& second)
+    {
+        return first.x * second.x + first.y * second.y + first.z * second.z;
+    }
+
     Vector<3, T> operator+(const Vector<3, T> vec) const
     {
         return Vector<3, T>(x + vec.x, y + vec.y, z + vec.z);

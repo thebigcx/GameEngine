@@ -15,8 +15,6 @@ Texture2D::Texture2D(Texture2D&& texture)
     texture.m_id = 0;
     m_mipmapped = texture.m_mipmapped;
     m_size = texture.m_size;
-    m_smooth = texture.m_smooth;
-    m_repeated = texture.m_repeated;
 }
 
 Shared<Texture2D> Texture2D::create(const std::string& file)
@@ -78,57 +76,38 @@ Shared<Texture2D> Texture2D::create(const std::string& file)
     return texture;
 }
 
-Shared<Texture2D> Texture2D::create(int width, int height)
+Shared<Texture2D> Texture2D::create(int width, int height, GLenum dataFormat)
 {
     auto texture = createShared<Texture2D>();
     glCreateTextures(GL_TEXTURE_2D, 1, &(texture->m_id));
     texture->bind();
 
-    texture->m_internalFormat = GL_RGBA8;
-    texture->m_dataFormat = GL_RGBA;
+    texture->m_internalFormat = dataFormat;
+    texture->m_dataFormat = dataFormat;
 
-    glTextureStorage2D(texture->m_id, 1, GL_RGBA8, width, height);
+    glTextureStorage2D(texture->m_id, 1, dataFormat, width, height);
 
     return texture;
 }
 
-void Texture2D::setSmooth(bool smooth)
+void Texture2D::updatePixels(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat)
 {
-    bind();
-
-    auto filter = smooth ? GL_LINEAR : GL_NEAREST;
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-
-    m_smooth = smooth;
+    glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
 }
 
-bool Texture2D::isSmooth() const
+void Texture2D::setParameter(Parameter parameter, Value value)
 {
-    return m_smooth;
+    glTextureParameteri(m_id, (GLenum)parameter, (GLenum)value);
 }
 
-void Texture2D::setRepeated(bool repeated)
+void Texture2D::bind(int slot) const
 {
-    bind();
-
-    auto repeat = repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE;
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeat);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeat);
-
-    m_repeated = repeated;
+    glBindTextureUnit(slot, m_id);
 }
 
-bool Texture2D::isRepeated() const
+void Texture2D::unbind(int slot) const
 {
-    return m_repeated;
-}
-
-void Texture2D::bind() const
-{
-    glBindTextureUnit(0, m_id);
+    glBindTextureUnit(slot, 0);
 }
 
 Vector2f Texture2D::getSize() const

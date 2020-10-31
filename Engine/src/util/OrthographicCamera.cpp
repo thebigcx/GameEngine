@@ -1,5 +1,10 @@
 #include <util/OrthographicCamera.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <iostream>
+
 OrthographicCamera::OrthographicCamera(const Vector2f& position)
     : m_position(position)
 {
@@ -18,8 +23,5 @@ void OrthographicCamera::translate(const Vector2f& vec)
 
 Matrix4f OrthographicCamera::getViewMatrix() const
 {
-    Matrix4f mat(1.f);
-    mat.translate(Vector3f(-m_position.x, -m_position.y, 0));
-
-    return mat;
+    return Matrix4f::createOrthoCamera(Vector3f(m_position, -1));
 }

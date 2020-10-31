@@ -20,6 +20,7 @@ private:
     Shared<TrueTypeFont> m_font;
     
     Shared<Animation> m_animation;
+    float rot = 0;
 
     std::vector<Sprite> m_sprites;
 

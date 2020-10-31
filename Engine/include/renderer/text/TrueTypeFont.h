@@ -5,6 +5,7 @@
 
 #include <math/vector/Vector2.h>
 #include <core/Core.h>
+#include <renderer/Texture2D.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -29,13 +30,13 @@ public:
 
     inline const std::unordered_map<char, Glyph>& getGlyphs() const { return m_glyphs; }
     inline const Vector2f& getAtlasSize() const { return m_atlasSize; }
-    inline unsigned int getTextureAtlas() const { return m_texture; }
+    inline Shared<Texture2D> getTextureAtlas() const { return m_texture; }
     inline int getCharacterSize() const { return m_characterSize; }
 
 private:
     Vector2f m_atlasSize;
 
-    unsigned int m_texture;
+    Shared<Texture2D> m_texture;
     int m_characterSize = 0;
 
     std::unordered_map<char, Glyph> m_glyphs;

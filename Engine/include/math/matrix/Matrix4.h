@@ -1,9 +1,11 @@
 #pragma once
 
 #include <cmath>
+#include <iostream>
 
 #include <math/vector/Vector3.h>
 #include <math/vector/Vector4.h>
+#include <math/Math.h>
 
 template<int width, int height, typename T>
 class Matrix;
@@ -44,11 +46,12 @@ public:
     }
 
     // 4x4 matrix encapsulated vec3's
-    void translate(const Vector<3, T>& vector)
+    Matrix<4, 4, T>& translate(const Vector<3, T>& vector)
     {
         m_cells[3][0] += vector.x * m_cells[0][0];
         m_cells[3][1] += vector.y * m_cells[1][1];
         m_cells[3][2] += vector.z * m_cells[2][2];
+        return *this;
     }
 
     void scale(const Vector<3, T>& scalar)
@@ -60,31 +63,26 @@ public:
 
     void rotate(T angle, const Vector<3, T>& axis)
     {
-        Matrix<4, 4, T> mat;
+        float r = asRadians(angle);
+        float c = cos(angle);
+        float s = sin(angle);
+        float omc = 1.f - c;
 
-        if (axis.z == 1)
-        {
-            m_cells[0][0] = cos(angle);
-            m_cells[1][0] = -sin(angle);
-            m_cells[0][1] = sin(angle);
-            m_cells[1][1] = cos(angle);
-        }
-        else if (axis.x == 1)
-        {
-            m_cells[1][1] = cos(angle);
-            m_cells[2][1] = -sin(angle);
-            m_cells[1][2] = sin(angle);
-            m_cells[2][2] = cos(angle);
-        }
-        else if (axis.y == 1)
-        {
-            m_cells[0][0] = cos(angle);
-            m_cells[2][0] = sin(angle);
-            m_cells[0][2] = -sin(angle);
-            m_cells[2][2] = cos(angle);
-        }
+        float x = axis.x;
+        float y = axis.y;
+        float z = axis.z;
 
-        operator*(mat);
+        m_cells[0][0] = x * x * omc + c;
+        m_cells[0][1] = y * x * omc + z * s;
+        m_cells[0][2] = x * z * omc - y * s;
+
+        m_cells[1][0] = x * y * omc - z * s;
+        m_cells[1][1] = y * y * omc + c;
+        m_cells[1][2] = y * z * omc + x * s;
+
+        m_cells[2][0] = x * z * omc + y * s;
+        m_cells[2][1] = y * z * omc - x * s;
+        m_cells[2][2] = z * z * omc + c;
     }
 
     static Matrix<4, 4, float> createOrthoProjection(float left, float right, float bottom, float top, float near, float far)
@@ -100,6 +98,36 @@ public:
         mat.m_cells[3][2] = -(far + near) / (far - near);
 
         return mat;
+    }
+
+    static Matrix<4, 4, T> createOrthoCamera(const Vector3f& pos)
+    {
+        Matrix<4, 4, T> result(1.f);
+
+        Vector3f object(pos.x, pos.y, pos.z + 1);
+        Vector3f up(0, 1, 0);
+
+        Vector3f f = Vector3f::normalise(object - pos);
+        Vector3f s = Vector3f::normalise(Vector3f::cross(up, f));
+        Vector3f u = Vector3f::normalise(up);
+
+        result.m_cells[0][0] = s.x;
+        result.m_cells[1][0] = s.y;
+        result.m_cells[2][0] = s.z;
+
+        result.m_cells[0][1] = u.x;
+        result.m_cells[1][1] = u.y;
+        result.m_cells[2][1] = u.z;
+
+        result.m_cells[0][2] = f.x;
+        result.m_cells[1][2] = f.y;
+        result.m_cells[2][2] = f.z;
+
+        result.m_cells[3][0] = -Vector3f::dot(s, pos);
+        result.m_cells[3][1] = -Vector3f::dot(u, pos);
+        result.m_cells[3][2] = -Vector3f::dot(f, pos);
+
+        return result;
     }
 
     const T* buffer() const

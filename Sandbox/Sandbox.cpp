@@ -61,6 +61,8 @@ void Sandbox::update()
         Application::get().quit();
     }
 
+    rot++;
+
     Renderer2D::startFrame();
 
     m_sprites[0].setTextureRect(m_animation->getCurrentFrame());
@@ -71,6 +73,7 @@ void Sandbox::update()
 
     for (auto& sprite : m_sprites)
     {
+        //sprite.setRotation(rot);
         m_batch->renderSprite(Assets::get<Texture2D>("texture"), sprite);
     }
 
