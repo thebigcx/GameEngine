@@ -25,6 +25,13 @@ Sandbox::Sandbox()
     }
 
     Renderer2D::setClearColor(Color(0, 0, 0, 1));
+
+    m_animation = Animation::create(Assets::get<Texture2D>("texture"));
+    m_animation->setFrames({ 
+        FloatRect(32, 32, 16, 16), 
+        FloatRect(48, 32, 16, 16) 
+    });
+    m_animation->setFrameInterval(100.f);
 }
 
 Application* createApplication()
@@ -55,6 +62,9 @@ void Sandbox::update()
     }
 
     Renderer2D::startFrame();
+
+    m_sprites[0].setTextureRect(m_animation->getCurrentFrame());
+    m_animation->update();
 
     m_batch->setTransformMatrix(m_camera.getViewMatrix());
     m_batch->start();

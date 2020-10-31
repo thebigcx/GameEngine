@@ -147,3 +147,8 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
 
     BlendMode::Alpha.unbind();
 }
+
+void Renderer2D::render(IRenderable2D& renderable)
+{
+    renderable.render();
+}

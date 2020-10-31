@@ -8,6 +8,7 @@
 #include <util/Transform.h>
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Mesh.h>
+#include <renderer/IRenderable2D.h>
 
 struct RenderData
 {
@@ -35,6 +36,8 @@ public:
 
     static void renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Color& color = Color(0, 0, 0, 0));
     static void renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Vector2f& size, const Color& color = Color(0, 0, 0, 0));
+
+    static void render(IRenderable2D& renderable);
 
     static RenderData data;
 

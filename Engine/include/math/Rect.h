@@ -1,5 +1,7 @@
 #pragma once
 
+#include <math/vector/Vector2.h>
+
 template <typename T>
 class Rect
 {

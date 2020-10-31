@@ -32,3 +32,4 @@
 #include <renderer/MeshFactory.h>
 #include <math/matrix/Matrix4.h>
 #include <math/matrix/Matrix3.h>
+#include <renderer/Animation.h>

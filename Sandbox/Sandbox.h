@@ -18,6 +18,8 @@ private:
     Shared<SpriteBatch> m_batch;
     Shared<SoundSource> m_soundSource;
     Shared<TrueTypeFont> m_font;
+    
+    Shared<Animation> m_animation;
 
     std::vector<Sprite> m_sprites;
 
