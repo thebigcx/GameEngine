@@ -39,7 +39,7 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<unsigned int> m_indices;
 
-    const Texture2D* m_pLastTexture;
+    const Texture2D* m_pLastTexture = nullptr;
     Shader* m_pShader;
 
     Matrix4f m_transform;

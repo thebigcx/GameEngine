@@ -64,13 +64,17 @@ void SpriteBatch::start()
 
 void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
 {
+    // TODO: figure out why this used to cause segfault
     if (m_pLastTexture == nullptr)
     {
-        swapTexture(texture);
+        m_pLastTexture = &texture;
     }
-    else if (texture.getId() != m_pLastTexture->getId())
+    else if (m_pLastTexture != nullptr)
     {
-        swapTexture(texture);
+        if (texture.getId() != m_pLastTexture->getId())
+        {
+            swapTexture(texture);
+        }
     }
 
     if (m_vertices.size() / Sprite::getVertexCount() > MAX_SPRITES)

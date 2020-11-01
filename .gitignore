@@ -4,8 +4,12 @@ bin
 # Files generated at compile time
 obj
 
-
+# VS-Code workspace
 .vscode
 
+# Makefiles
 *.make
 Makefile
+
+# Core dumps
+core

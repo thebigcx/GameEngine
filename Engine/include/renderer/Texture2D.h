@@ -9,7 +9,8 @@
 #include <util/Image.h>
 #include <core/Core.h>
 
-class Texture2D {
+class Texture2D
+{
 public:
     enum class Parameter
     {
@@ -42,10 +43,13 @@ public:
 
     Vector2f getSize() const;
 
-    inline int getId() const { return m_id; }
+    inline unsigned int getId() const
+    {
+        return m_id;
+    }
 
 private:
-    unsigned int m_id;
+    unsigned int m_id = 0;
 
     bool m_mipmapped = false;
     GLenum m_internalFormat;

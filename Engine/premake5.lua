@@ -2,6 +2,7 @@ project "GameEngine"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
+    buildoptions "-g"
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Engine"
     objdir "%{wks.location}/obj/%{cfg.buildcfg}/Engine"
 
@@ -24,4 +25,5 @@ project "GameEngine"
         "freetype"
     }
 
-    optimize "On"
+    --optimize "On"
+    symbols "On"

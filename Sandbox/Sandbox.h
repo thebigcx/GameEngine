@@ -5,6 +5,8 @@
 #include <renderer/SpriteBatch.h>
 #include <sound/SoundSource.h>
 #include <sound/SoundBuffer.h>
+#include <renderer/text/TrueTypeFont.h>
+#include <renderer/Animation.h>
 
 class Sandbox : public Layer
 {

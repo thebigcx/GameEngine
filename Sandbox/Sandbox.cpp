@@ -1,6 +1,6 @@
 #include <Engine.h>
 
-#include "SandboxApp.h"
+#include "Sandbox.h"
 
 Sandbox::Sandbox()
 {
@@ -32,11 +32,6 @@ Sandbox::Sandbox()
         FloatRect(48, 32, 16, 16) 
     });
     m_animation->setFrameInterval(100.f);
-}
-
-Application* createApplication()
-{
-    return new SandboxApp();
 }
 
 void Sandbox::update()
