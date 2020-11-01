@@ -23,5 +23,5 @@ void OrthographicCamera::translate(const Vector2f& vec)
 
 Matrix4f OrthographicCamera::getViewMatrix() const
 {
-    return Matrix4f::createOrthoCamera(Vector3f(m_position, -1));
+    return Matrix4f::createOrthoView(Vector3f(m_position, -1));
 }

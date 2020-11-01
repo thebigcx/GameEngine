@@ -56,17 +56,16 @@ void Window::pollEvents()
 
 void Window::setIcon(const std::string& iconPath)
 {
-    Image image;
-    image.loadFile(iconPath);
-    setIcon(image);
+    auto image = ImageLoader::loadImage(iconPath);
+    setIcon(*image);
 }
 
 void Window::setIcon(const Image& image)
 {
     GLFWimage icon;
-    icon.pixels = image.getPixels();
-    icon.width = image.getSize().x;
-    icon.height = image.getSize().y;
+    icon.pixels = image.data;
+    icon.width = image.size.x;
+    icon.height = image.size.y;
     glfwSetWindowIcon(m_window, 1, &icon);
 }
 

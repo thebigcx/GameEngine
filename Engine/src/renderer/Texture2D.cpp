@@ -23,19 +23,17 @@ Shared<Texture2D> Texture2D::create(const std::string& file)
     glCreateTextures(GL_TEXTURE_2D, 1, &(texture->m_id));
     texture->bind();
 
-    Image image;
-    image.setVerticalFlip(true);
-    image.loadFile(file);
+    auto image = ImageLoader::loadOpenGLImage(file);
 
-    if (image.getPixels())
+    if (image->data)
     {
         GLenum internalFormat, dataFormat;
-        if (image.getChannels() == 4)
+        if (image->channels == 4)
         {
             internalFormat = GL_RGBA8;
             dataFormat = GL_RGBA;
         }
-        else if (image.getChannels() == 3)
+        else if (image->channels == 3)
         {
             internalFormat = GL_RGB8;
             dataFormat = GL_RGB;
@@ -43,7 +41,7 @@ Shared<Texture2D> Texture2D::create(const std::string& file)
         texture->m_internalFormat = internalFormat;
         texture->m_dataFormat = dataFormat;
 
-        glTextureStorage2D(texture->m_id, 1, internalFormat, image.getSize().x, image.getSize().y);
+        glTextureStorage2D(texture->m_id, 1, internalFormat, image->size.x, image->size.y);
 
         glTextureParameteri(texture->m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTextureParameteri(texture->m_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
@@ -55,11 +53,11 @@ Shared<Texture2D> Texture2D::create(const std::string& file)
                      0,
                      0,
                      0,
-                     image.getSize().x,
-                     image.getSize().y,
+                     image->size.x,
+                     image->size.y,
                      dataFormat,
                      GL_UNSIGNED_BYTE,
-                     image.getPixels());
+                     image->data);
 
         glGenerateTextureMipmap(texture->m_id);
 
@@ -70,8 +68,8 @@ Shared<Texture2D> Texture2D::create(const std::string& file)
         std::cout << "Image is corrupted or contains unknown formatted data!\n";
     }
 
-    texture->m_size.x = image.getSize().x;
-    texture->m_size.y = image.getSize().y;
+    texture->m_size.x = image->size.x;
+    texture->m_size.y = image->size.y;
 
     return texture;
 }

@@ -100,7 +100,7 @@ public:
         return mat;
     }
 
-    static Matrix<4, 4, T> createOrthoCamera(const Vector3f& pos)
+    static Matrix<4, 4, T> createOrthoView(const Vector3f& pos)
     {
         Matrix<4, 4, T> result(1.f);
 

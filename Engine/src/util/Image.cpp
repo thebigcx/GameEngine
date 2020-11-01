@@ -4,50 +4,34 @@
 
 #include <stb_image/stb_image.h>
 
-Image::Image()
-{
-
-}
-
 Image::~Image()
 {
-    stbi_image_free(m_data);
+    stbi_image_free(data);
 }
 
-void Image::loadFile(const std::string& file)
+Shared<Image> ImageLoader::loadImage(const std::string& file)
 {
+    auto image = createShared<Image>();
+
     int width, height, channels;
 
-    stbi_set_flip_vertically_on_load(m_flipped);
+    image->data = stbi_load(file.c_str(), &width, &height, &channels, 4);
 
-    m_data = stbi_load(file.c_str(), &width, &height, &channels, 4);
-
-    if (!m_data)
+    if (!image->data)
     {
         Console::errf("Image does not exist or contains corrupted data: %s", file);
     }
 
-    m_size.x = width;
-    m_size.y = height;
-    m_channels = channels;
+    image->size.x = width;
+    image->size.y = height;
+    image->channels = channels;
+
+    return image;
 }
 
-unsigned char* Image::getPixels() const
+Shared<Image> ImageLoader::loadOpenGLImage(const std::string& file)
 {
-    return m_data;
-}
+    stbi_set_flip_vertically_on_load(true);
 
-const Vector2u& Image::getSize() const
-{
-    return m_size;
-}
-
-void Image::setVerticalFlip(bool flip)
-{
-    m_flipped = flip;
-}
-
-int Image::getChannels() const
-{
-    return m_channels;
+    return loadImage(file);
 }
