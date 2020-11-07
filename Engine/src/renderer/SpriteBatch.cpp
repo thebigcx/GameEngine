@@ -92,7 +92,7 @@ void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
     // Populate the vertices array with the sprite's vertices
     for (int i = 0 ; i < 4 ; i++)
     {
-        auto pos = transform.getMatrix() * Vector4f(Sprite::positions[i].x, Sprite::positions[i].y, 0, 1);
+        auto pos = transform.matrix() * Vector4f(Sprite::positions[i].x, Sprite::positions[i].y, 0, 1);
         vertices[i].position = Vector2f(pos.x, pos.y);
 
         // Change "origin" of texCoord, then scale it

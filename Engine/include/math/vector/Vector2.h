@@ -2,10 +2,9 @@
 
 #include <ostream>
 
-template<int length, typename T>
-class Vector;
+#include <math/vector/Vector.h>
 
-template <typename T>
+template<typename T>
 class Vector<2, T>
 {
 public:

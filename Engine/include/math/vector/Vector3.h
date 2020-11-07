@@ -2,12 +2,10 @@
 
 #include <ostream>
 
+#include <math/vector/Vector.h>
 #include <math/vector/Vector2.h>
 
-template<int length, typename T>
-class Vector;
-
-template <typename T>
+template<typename T>
 class Vector<3, T>
 {
 public:
@@ -31,10 +29,9 @@ public:
     {
     }
 
-    Vector<3, T>& normalize()
+    void normalize()
     {
         *this = Vector<3, T>::normalize(*this);
-        return *this;
     }
 
     Vector<3, T> cross(const Vector<3, T>& other)

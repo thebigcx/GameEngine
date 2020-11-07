@@ -2,7 +2,7 @@
 
 #include <math/vector/Vector2.h>
 
-template <typename T>
+template<typename T>
 class Rect
 {
 public:
@@ -48,6 +48,16 @@ public:
 		amount.x = abs(other.x - x + width);
 		amount.y = abs(other.y - y + height);
 		return amount;
+	}
+
+	bool operator==(const Rect<T>& rect)
+	{
+		return x == rect.x && y == rect.y && width == rect.width && height == rect.height;
+	}
+
+	bool operator!=(const Rect<T>& rect)
+	{
+		return !operator==(rect);
 	}
 
 	T x, y, width, height;

@@ -11,7 +11,8 @@ public:
 
     virtual ~Transformable() = default;
 
-    void setPosition(Vector2f position) {
+    void setPosition(Vector2f position)
+    {
         m_position = position;
     }
 
@@ -52,9 +53,7 @@ public:
 
     Transform getTransform() const
     {
-        Transform transform(m_position, m_rotation, m_size);
-        transform.rotationOrigin = m_origin;
-        return transform;
+        return Transform(m_position, m_rotation, m_size, m_origin);
     }
 
 protected:

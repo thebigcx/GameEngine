@@ -2,12 +2,10 @@
 
 #include <ostream>
 
+#include <math/vector/Vector.h>
 #include <math/vector/Vector3.h>
 
-template<int length, typename T>
-class Vector;
-
-template <typename T>
+template<typename T>
 class Vector<4, T>
 {
 public:

@@ -55,7 +55,7 @@ void Renderer2D::renderArray(const VertexArray& array, RenderStates states)
 
 void Renderer2D::renderArray(const VertexArray& array, const Transform& transform, const Texture2D& texture)
 {
-    renderArray(array, transform.getMatrix(), texture);
+    renderArray(array, transform.matrix(), texture);
 }
 
 void Renderer2D::renderArray(const VertexArray& array, const Matrix4f& transform, const Texture2D& texture)
