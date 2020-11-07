@@ -165,9 +165,9 @@ public:
     }
 
 private:
-    unsigned int m_id;
+    unsigned int m_id = 0;
 
-    unsigned int m_count;
+    unsigned int m_count = 0;
 
     const GLenum m_indexType = GL_UNSIGNED_INT;
 };

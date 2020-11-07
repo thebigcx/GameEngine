@@ -12,35 +12,23 @@ class Vector<4, T>
 {
 public:
     Vector<4, T>()
+        : x(0), y(0), z(0), w(0)
     {
-        x = 0;
-        y = 0;
-        z = 0;
-        w = 0;
     }
 
     Vector<4, T>(T x, T y, T z, T w)
+        : x(x), y(y), z(z), w(w)
     {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-        this->w = w;
     }
 
     Vector<4, T>(T v, T w)
+        : x(v), y(v), z(v), w(w)
     {
-        x = v;
-        y = v;
-        z = v;
-        w = w;
     }
 
-    Vector<4, T>(Vector<3, T> vec, T w)
+    Vector<4, T>(const Vector<3, T>& vec, T w)
+        : x(vec.x), y(vec.y), z(vec.z), w(w)
     {
-        this->x = vec.x;
-        this->y = vec.y;
-        this->z = vec.z;
-        this->w = w;
     }
 
     Vector<4, T> operator+(const Vector<4, T> vec) const

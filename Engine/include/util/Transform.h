@@ -38,7 +38,7 @@ public:
         mat.translate(Vector3f(position, 0));
         
         mat.translate(Vector3f(rotationOrigin.x, rotationOrigin.y, 0.f));
-        mat.rotate(asRadians(rotation), Vector3f(0, 0, 1));
+        mat.rotate(Math::asRadians(rotation), Vector3f(0, 0, 1));
         mat.translate(Vector3f(-rotationOrigin.x, -rotationOrigin.y, 0.f));
 
         mat.scale(Vector3f(scale, 1));

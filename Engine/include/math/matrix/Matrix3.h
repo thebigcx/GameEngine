@@ -9,7 +9,7 @@ class Matrix<3, 3, T>
 public:
     Matrix<3, 3, T>()
     {
-
+        clear();
     }
 
     Matrix<3, 3, T>(float val)

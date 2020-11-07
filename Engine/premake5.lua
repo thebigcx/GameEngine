@@ -25,5 +25,4 @@ project "GameEngine"
         "freetype"
     }
 
-    --optimize "On"
-    symbols "On"
+    optimize "On"

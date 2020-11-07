@@ -25,10 +25,8 @@ Shared<SpriteBatch> SpriteBatch::create(int size)
 Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
 {
     auto batch = createShared<SpriteBatch>();
-    if (batch == nullptr)
-    {
-        Console::err("Batch creation failed.");
-    }
+    
+    ENGINE_ASSERT(batch != nullptr, "Batch creation failed.");
 
     batch->m_pShader = &shader;
     
@@ -38,7 +36,7 @@ Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
     }
 
     batch->m_transform = Matrix4f();
-    batch->m_vertexArray.bind();
+    batch->m_mesh.vertexArray.bind();
 
     BufferLayout layout = {
         { Shader::DataType::Vec2,  "aPos"      },
@@ -46,11 +44,11 @@ Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
         { Shader::DataType::Color, "aColor"    }
     };
 
-    batch->m_vertexBuffer.setLayout(layout);
-    batch->m_vertexBuffer.create(sizeof(Vertex) * Sprite::getVertexCount() * size);
+    batch->m_mesh.vertexBuffer.setLayout(layout);
+    batch->m_mesh.vertexBuffer.create(sizeof(Vertex) * Sprite::getVertexCount() * size);
 
-    batch->m_vertexArray.addVertexBuffer(batch->m_vertexBuffer);
-    batch->m_vertexArray.setIndexBuffer(batch->m_indexBuf);
+    batch->m_mesh.vertexArray.addVertexBuffer(batch->m_mesh.vertexBuffer);
+    batch->m_mesh.vertexArray.setIndexBuffer(batch->m_mesh.indexBuffer);
 
     return batch;
 }
@@ -59,7 +57,7 @@ void SpriteBatch::start()
 {
     m_vertices.clear();
     m_indices.clear();
-    m_vertexArray.bind();
+    m_mesh.vertexArray.bind();
 }
 
 void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
@@ -143,10 +141,10 @@ void SpriteBatch::flush()
         return;
     }
 
-    m_vertexBuffer.update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
-    m_indexBuf.update(&m_indices[0], m_indices.size());
+    m_mesh.vertexBuffer.update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
+    m_mesh.indexBuffer.update(&m_indices[0], m_indices.size());
 
-    Renderer2D::renderArray(m_vertexArray, m_transform, *m_pLastTexture, *m_pShader);
+    Renderer2D::renderArray(m_mesh.vertexArray, m_transform, *m_pLastTexture, *m_pShader);
 }
 
 void SpriteBatch::setTransformMatrix(const Matrix4f& matrix)

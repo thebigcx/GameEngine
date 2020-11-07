@@ -63,7 +63,7 @@ public:
 
     void rotate(T angle, const Vector<3, T>& axis)
     {
-        float r = asRadians(angle);
+        float r = Math::asRadians(angle);
         float c = cos(angle);
         float s = sin(angle);
         float omc = 1.f - c;
@@ -107,9 +107,9 @@ public:
         Vector3f object(pos.x, pos.y, pos.z + 1);
         Vector3f up(0, 1, 0);
 
-        Vector3f f = Vector3f::normalise(object - pos);
-        Vector3f s = Vector3f::normalise(Vector3f::cross(up, f));
-        Vector3f u = Vector3f::normalise(up);
+        Vector3f f = Vector3f::normalize(object - pos);
+        Vector3f s = Vector3f::normalize(Vector3f::cross(up, f));
+        Vector3f u = Vector3f::normalize(up);
 
         result.m_cells[0][0] = s.x;
         result.m_cells[1][0] = s.y;

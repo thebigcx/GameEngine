@@ -7,41 +7,39 @@
 namespace Math
 {
 
-    struct Random
+struct Random
+{
+    static void initSeed()
     {
-        static void initSeed()
-        {
-            std::srand(std::time(nullptr));
-        }
-
-        static double generate(int min, int max)
-        {
-            int rand = std::rand();
-            return rand % max + min;
-        }
-    };
-
-    static double map(double value, double istart, double istop, double ostart, double ostop)
-    {
-        return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+        std::srand(std::time(nullptr));
     }
 
-    static double clamp(double value, double min, double max)
+    static double generate(int min, int max)
     {
-        if (value < min)
-        {
-            return min;
-        }
+        int rand = std::rand();
+        return rand % max + min;
+    }
+};
 
-        if (value > max)
-        {
-            return max;
-        }
+static double map(double value, double istart, double istop, double ostart, double ostop)
+{
+    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+}
 
-        return value;
+static double clamp(double value, double min, double max)
+{
+    if (value < min)
+    {
+        return min;
     }
 
-} // namespace Math
+    if (value > max)
+    {
+        return max;
+    }
+
+    return value;
+}
 
 static constexpr double PI = 3.14159265358979323846;
 
@@ -54,3 +52,6 @@ static int asDegrees(double rad)
 {
     return rad * (180 / PI);
 }
+
+} // namespace Math
+

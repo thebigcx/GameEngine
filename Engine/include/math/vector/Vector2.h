@@ -10,21 +10,18 @@ class Vector<2, T>
 {
 public:
     Vector<2, T>()
+        : x(0), y(0)
     {
-        x = 0;
-        y = 0;
     }
 
     Vector<2, T>(T x, T y)
+        : x(x), y(y)
     {
-        this->x = x;
-        this->y = y;
     }
 
     Vector<2, T>(T v)
+        : x(v), y(v)
     {
-        x = v;
-        y = v;
     }
 
     Vector<2, T> operator+(const Vector<2, T> vec) const
@@ -117,6 +114,42 @@ public:
         x = x / scl;
         y = y / scl;
         return *this;
+    }
+    
+    bool operator==(const Vector<2, T>& vec)
+    {
+        return x == vec.x && y == vec.y;
+    }
+
+    bool operator!=(const Vector<2, T>& vec)
+    {
+        return !operator==(vec);
+    }
+
+    float mag()
+    {
+        return sqrt(x * x, y * y);
+    }
+
+    void normalize()
+    {
+        Vector<2, T>::normalize(*this);
+    }
+
+    float dot(const Vector<2, T>& vec)
+    {
+        return Vector<2, T>::dot(*this, vec);
+    }
+
+    static Vector<2, T> normalize(const Vector<2, T>& vec)
+    {
+        float magnitude = 1.f / mag(); // Divide once (save CPU cycles)
+        return Vector<2, T>(vec.x * magnitude, vec.y * magnitude);
+    }
+
+    static float dot(const Vector<2, T>& vec1, const Vector<2, T>& vec2)
+    {
+        return vec1.x * vec2.x + vec1.y * vec2.y;
     }
 
     std::string str() const

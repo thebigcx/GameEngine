@@ -9,6 +9,7 @@
 #include <util/Color.h>
 #include <renderer/RenderStates.h>
 #include <util/OrthographicCamera.h>
+#include <renderer/Mesh.h>
 
 class SpriteBatch
 {
@@ -28,13 +29,10 @@ public:
     void swapTexture(const Texture2D& texture);
 
     // For Renderer class
-    inline const IndexBuffer& getIndexBuffer() const { return m_indexBuf;    }
-    inline const VertexArray& getVertexArray() const { return m_vertexArray; }
+    inline const Mesh& getMesh() const { return m_mesh; }
 
 private:
-    VertexArray m_vertexArray;
-    VertexBuffer m_vertexBuffer;
-    IndexBuffer m_indexBuf;
+    Mesh m_mesh;
 
     std::vector<Vertex> m_vertices;
     std::vector<unsigned int> m_indices;

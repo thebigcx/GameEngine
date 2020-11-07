@@ -2,8 +2,6 @@ project "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	symbols "On"
-	buildoptions "-g"
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Sandbox"
 	objdir "%{wks.location}/obj/%{cfg.buildcfg}/Sandbox"
 	files {
@@ -30,8 +28,7 @@ project "Sandbox"
 		"freetype"
 	}
 	
-	--optimize "On"
-	
+	optimize "On"
 	
 	configuration "Debug"
 	configuration "Release"

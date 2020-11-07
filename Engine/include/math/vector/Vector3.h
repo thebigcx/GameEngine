@@ -12,36 +12,28 @@ class Vector<3, T>
 {
 public:
     Vector<3, T>()
+        : x(0), y(0), z(0)
     {
-        x = 0;
-        y = 0;
-        z = 0;
     }
 
     Vector<3, T>(T x, T y, T z)
+        : x(x), y(y), z(z)
     {
-        this->x = x;
-        this->y = y;
-        this->z = z;
     }
 
     Vector<3, T>(T v)
+        : x(v), y(v), z(v)
     {
-        x = v;
-        y = v;
-        z = v;
     }
 
-    Vector<3, T>(Vector<2, T> vec, T z)
+    Vector<3, T>(const Vector<2, T>& vec, T z)
+        : x(vec.x), y(vec.y), z(z)
     {
-        this->x = vec.x;
-        this->y = vec.y;
-        this->z = z;
     }
 
-    Vector<3, T>& normalise()
+    Vector<3, T>& normalize()
     {
-        *this = Vector<3, T>::normalise(*this);
+        *this = Vector<3, T>::normalize(*this);
         return *this;
     }
 
@@ -56,9 +48,10 @@ public:
         return sqrt(x * x + y * y + z * z);
     }
 
-    static Vector<3, T> normalise(const Vector<3, T>& vec)
+    static Vector<3, T> normalize(const Vector<3, T>& vec)
     {
-        return Vector<3, T>(vec.x / vec.mag(), vec.y / vec.mag(), vec.z / vec.mag());
+        float magnitude = 1.f / vec.mag();
+        return Vector<3, T>(vec.x * magnitude, vec.y * magnitude, vec.z * magnitude);
     }
 
     static Vector<3, T> cross(const Vector<3, T>& first, const Vector<3, T>& second)
@@ -165,6 +158,16 @@ public:
         y /= scl;
         z /= scl;
         return *this;
+    }
+
+    bool operator==(const Vector<3, T>& vec)
+    {
+        return x == vec.x && y == vec.y && z == vec.z;
+    }
+
+    bool operator!=(const Vector<3, T>& vec)
+    {
+        return !operator==(vec);
     }
 
     std::string str() const
