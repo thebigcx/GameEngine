@@ -8,4 +8,5 @@ class ShaderFactory
 public:
     static Shared<Shader> textureShader();
     static Shared<Shader> textShader();
+    static Shared<Shader> framebufferShader();
 };

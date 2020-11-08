@@ -4,76 +4,92 @@
 
 #include <iostream>
 
-Framebuffer::Framebuffer()
-{
-    
-}
-
 Framebuffer::~Framebuffer()
 {
-    glDeleteFramebuffers(1, &m_id);
-}
-
-void Framebuffer::create()
-{
-    glGenFramebuffers(1, &m_id);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_id);
-    glGenTextures(1, &m_textureId);
-    glBindTexture(GL_TEXTURE_2D, m_textureId);
-
-    // TODO: resize screen
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1280, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureId, 0);
-
-    glGenRenderbuffers(1, &m_renderBuf);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuf);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 720);
-
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuf);
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if (m_id != 0)
     {
-        std::cout << "Framebuffer is not complete.\n";
+        glDeleteFramebuffers(1, &m_id);
+        glDeleteTextures(1, &m_colorAttachment);
+        glDeleteTextures(1, &m_depthAttachment);
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    glGenVertexArrays(1, &m_vao);
-    glGenBuffers(1, &m_vertexBuffer);
-    
-    glBindVertexArray(m_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), &m_vertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const void*)(2 * sizeof(float)));
-    glEnableVertexAttribArray(1);
 }
 
-void Framebuffer::render(Shader& shader)
+Shared<Framebuffer> Framebuffer::create(uint32_t width, uint32_t height)
 {
-    unbind();
+    auto framebuffer = createShared<Framebuffer>();
 
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    framebuffer->m_width = width;
+    framebuffer->m_height = height;
 
-    shader.bind();
+    framebuffer->invalidate(width, height);
 
-    glBindVertexArray(m_vao);
+    return framebuffer;
+}
 
-    glBindTexture(GL_TEXTURE_2D, m_textureId);
+void Framebuffer::invalidate(uint32_t width, uint32_t height)
+{
+    if (m_id != 0)
+    {
+        glDeleteFramebuffers(1, &m_id);
+        glDeleteTextures(1, &m_colorAttachment);
+        glDeleteTextures(1, &m_depthAttachment);
+    }
+     
+    // Create and bind the framebuffer
+    glCreateFramebuffers(1, &m_id);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    // Generate and allocate storage for the color attachment of framebuffer
+    glCreateTextures(GL_TEXTURE_2D, 1, &(m_colorAttachment));
+
+    glBindTextureUnit(0, m_colorAttachment);
+    glTextureStorage2D(m_colorAttachment, 1, GL_RGBA8, width, height);
+
+    glTextureParameteri(m_colorAttachment, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(m_colorAttachment, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Attach the color buffer
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorAttachment, 0);
+
+    // Create and allocate storage for depth attachment
+    glCreateTextures(GL_TEXTURE_2D, 1, &(m_depthAttachment));
+
+    glBindTextureUnit(0, m_depthAttachment);
+    glTextureStorage2D(m_depthAttachment, 1, GL_DEPTH24_STENCIL8, width, height);
+
+    // Attach the depth buffer
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachment, 0);
+
+    ENGINE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete.");
+
+    // Make sure to not leave framebuffer bound
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Framebuffer::resize(uint32_t width, uint32_t height)
+{
+    if (width > s_maxSize || height > s_maxSize)
+    {
+        Console::outf("Attempted to resize framebuffer to (%d, %d), which is greater than max size (%d, %d).", width, height, s_maxSize, s_maxSize);
+        return;
+    }
+
+    m_width = width;
+    m_height = height;
+
+    invalidate(width, height);
+}
+
+void Framebuffer::clear(Color c)
+{
+    glClearColor(c.r, c.g, c.b, c.a);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Framebuffer::bind() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+    glViewport(0, 0, m_width, m_height);
 }
 
 void Framebuffer::unbind() const

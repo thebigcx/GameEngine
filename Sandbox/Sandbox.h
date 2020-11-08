@@ -7,6 +7,7 @@
 #include <sound/SoundBuffer.h>
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Animation.h>
+#include <renderer/Framebuffer.h>
 
 class Sandbox : public Layer
 {
@@ -20,6 +21,8 @@ private:
     Shared<SpriteBatch> m_batch;
     Shared<SoundSource> m_soundSource;
     Shared<TrueTypeFont> m_font;
+
+    Shared<Framebuffer> m_framebuffer;
     
     Shared<Animation> m_animation;
     float rot = 0;
@@ -27,4 +30,6 @@ private:
     std::vector<Sprite> m_sprites;
 
     OrthographicCamera m_camera;
+
+
 };

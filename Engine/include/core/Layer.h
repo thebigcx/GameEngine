@@ -8,8 +8,8 @@ public:
     Layer() {};
     virtual ~Layer() = default;
 
-    virtual void update() = 0;
-    virtual void handleEvent(const Event& event) = 0;
+    virtual void update() {};
+    virtual void handleEvent(const Event& event) {};
 
 protected:
     

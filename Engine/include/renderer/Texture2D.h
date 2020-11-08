@@ -48,6 +48,12 @@ public:
         return m_id;
     }
 
+    // TEMP
+    inline void setId(int id)
+    {
+        m_id = id;
+    }
+
 private:
     unsigned int m_id = 0;
 

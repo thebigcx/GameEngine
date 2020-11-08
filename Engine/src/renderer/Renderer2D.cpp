@@ -7,6 +7,8 @@
 
 RenderData Renderer2D::data;
 Shared<Mesh> Renderer2D::m_textMesh;
+Shared<Mesh> Renderer2D::m_framebufferMesh;
+Framebuffer* Renderer2D::m_pTarget = nullptr;
 
 void Renderer2D::init()
 {
@@ -24,12 +26,15 @@ void Renderer2D::init()
     data.textShader->bind();
     data.textShader->setUniform("projection", data.projectionMatrix);
 
+    data.framebufferShader = ShaderFactory::framebufferShader();
+
     m_textMesh = MeshFactory::textMesh();
+    m_framebufferMesh = MeshFactory::quadMesh(-1, -1, 1, 1); // Normalized device coordinates
 }
 
-void Renderer2D::startFrame()
+void Renderer2D::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer2D::endFrame()
@@ -148,7 +153,17 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     BlendMode::Alpha.unbind();
 }
 
+void Renderer2D::renderFramebuffer(const Framebuffer& fbo)
+{
+    glBindTextureUnit(0, fbo.getColorAttachment());
+    data.framebufferShader->bind();
+
+    m_framebufferMesh->vertexArray.bind();
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
 void Renderer2D::render(IRenderable2D& renderable)
 {
     renderable.render();
 }
+

@@ -11,3 +11,9 @@ Shared<Shader> ShaderFactory::textShader()
     auto shader = Shader::createFromFile("shaders/text.vert", "shaders/text.frag");
     return shader;
 }
+
+Shared<Shader> ShaderFactory::framebufferShader()
+{
+    auto shader = Shader::createFromFile("shaders/framebuffer.vert", "shaders/framebuffer.frag");
+    return shader;
+}

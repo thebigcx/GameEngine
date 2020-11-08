@@ -20,4 +20,4 @@ constexpr Unique<T> createUnique(Args&& ... args)
     return std::make_unique<T>(std::forward<Args>(args)...);
 }
 
-#define ENGINE_ASSERT(check, msg) { if (!(check)) { std::cout << "Assertion failed.\n"; } }
+#define ENGINE_ASSERT(check, msg) { if (!(check)) { std::cout << "* Assertion failed! *\n" << "Reason: " << msg << "\n"; } }

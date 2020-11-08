@@ -9,6 +9,7 @@
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Mesh.h>
 #include <renderer/IRenderable2D.h>
+#include <renderer/Framebuffer.h>
 
 struct RenderData
 {
@@ -16,6 +17,7 @@ struct RenderData
     Matrix4f projectionMatrix;
     Shared<Shader> textureShader;
     Shared<Shader> textShader;
+    Shared<Shader> framebufferShader;
     BlendMode blendMode = BlendMode::Alpha;
 };
 
@@ -24,7 +26,7 @@ class Renderer2D
 public:
     static void init();
 
-    static void startFrame();
+    static void clear();
     static void endFrame();
 
     static void setClearColor(const Color& color);
@@ -37,11 +39,16 @@ public:
     static void renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Color& color = Color(0, 0, 0, 0));
     static void renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Vector2f& size, const Color& color = Color(0, 0, 0, 0));
 
+    static void renderFramebuffer(const Framebuffer& fbo);
+
     static void render(IRenderable2D& renderable);
 
     static RenderData data;
 
 private:
     static Shared<Mesh> m_textMesh;
+    static Shared<Mesh> m_framebufferMesh;
+
+    static Framebuffer* m_pTarget;
         
 };

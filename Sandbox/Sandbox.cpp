@@ -9,6 +9,8 @@ Sandbox::Sandbox()
 
     m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
     SoundEngine::play(*m_soundSource, true);
+    
+    m_framebuffer = Framebuffer::create(1280, 720);
 
     m_batch = SpriteBatch::create();
 
@@ -58,7 +60,8 @@ void Sandbox::update()
 
     rot++;
 
-    Renderer2D::startFrame();
+    m_framebuffer->bind();
+    m_framebuffer->clear();
 
     m_sprites[0].setTextureRect(m_animation->getCurrentFrame());
     m_animation->update();
@@ -76,10 +79,19 @@ void Sandbox::update()
 
     Renderer2D::renderText("Hello, world!", *m_font, Vector2f(500, 500), Vector2f(80, 80), Color(1, 0, 0, 1));
 
+    m_framebuffer->unbind();
+
+    Renderer2D::clear();
+
+    Renderer2D::renderFramebuffer(*m_framebuffer);
+
     Renderer2D::endFrame();
 }
 
 void Sandbox::handleEvent(const Event& event)
 {
-    
+    if (event.type() == EventType::WindowResize)
+    {
+        m_framebuffer->resize(event.data().window.width, event.data().window.height);
+    }
 }
