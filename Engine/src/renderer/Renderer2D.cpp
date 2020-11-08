@@ -8,7 +8,6 @@
 RenderData Renderer2D::data;
 Shared<Mesh> Renderer2D::m_textMesh;
 Shared<Mesh> Renderer2D::m_framebufferMesh;
-Framebuffer* Renderer2D::m_pTarget = nullptr;
 
 void Renderer2D::init()
 {
@@ -48,35 +47,15 @@ void Renderer2D::setClearColor(const Color& color)
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void Renderer2D::renderArray(const VertexArray& array, RenderStates states)
-{
-    states.bind();
-    states.shader->setUniform("transform", states.transform);
-    array.bind();
-
-    glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);
-    data.drawCalls++;
-}
-
-void Renderer2D::renderArray(const VertexArray& array, const Transform& transform, const Texture2D& texture)
-{
-    renderArray(array, transform.matrix(), texture);
-}
-
-void Renderer2D::renderArray(const VertexArray& array, const Matrix4f& transform, const Texture2D& texture)
-{
-    renderArray(array, transform, texture, *data.textureShader);
-}
-
-void Renderer2D::renderArray(const VertexArray& array, const Matrix4f& transform, const Texture2D& texture, Shader& shader)
+void Renderer2D::render(const Mesh& mesh, const Matrix4f& transform, const Texture2D& texture, Shader& shader)
 {
     shader.bind();
     shader.setUniform("transform", transform);
-    BlendMode::Alpha.bind();
     texture.bind();
-    array.bind();
 
-    glDrawElements(GL_TRIANGLES, array.getIndexBuffer()->getCount(), array.getIndexBuffer()->getIndexType(), 0);
+    mesh.vertexArray.bind();
+
+    glDrawElements(GL_TRIANGLES, mesh.vertexArray.getIndexBuffer()->getCount(), mesh.vertexArray.getIndexBuffer()->getIndexType(), 0);
     data.drawCalls++;
 }
 

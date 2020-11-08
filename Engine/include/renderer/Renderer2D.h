@@ -31,24 +31,18 @@ public:
 
     static void setClearColor(const Color& color);
 
-    static void renderArray(const VertexArray& array, RenderStates states);
-    static void renderArray(const VertexArray& array, const Transform& transform, const Texture2D& texture);
-    static void renderArray(const VertexArray& array, const Matrix4f& transform, const Texture2D& texture);
-    static void renderArray(const VertexArray& array, const Matrix4f& transform, const Texture2D& texture, Shader& shader);
+    static void render(const Mesh& mesh, const Matrix4f& transform, const Texture2D& texture, Shader& shader);
+    static void render(IRenderable2D& renderable);
 
     static void renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Color& color = Color(0, 0, 0, 0));
     static void renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Vector2f& size, const Color& color = Color(0, 0, 0, 0));
 
     static void renderFramebuffer(const Framebuffer& fbo);
 
-    static void render(IRenderable2D& renderable);
-
     static RenderData data;
 
 private:
     static Shared<Mesh> m_textMesh;
     static Shared<Mesh> m_framebufferMesh;
-
-    static Framebuffer* m_pTarget;
         
 };

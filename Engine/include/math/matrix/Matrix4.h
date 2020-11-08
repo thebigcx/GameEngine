@@ -56,9 +56,9 @@ public:
 
     void scale(const Vector<3, T>& scalar)
     {
-        m_cells[0][0] *= scalar.x;
-        m_cells[1][1] *= scalar.y;
-        m_cells[2][2] *= scalar.z;
+        makeColumn(Vector<4, T>(scalar, 1) * getColumn(0), 0);
+        makeColumn(Vector<4, T>(scalar, 1) * getColumn(1), 1);
+        makeColumn(Vector<4, T>(scalar, 1) * getColumn(2), 2);
     }
 
     void rotate(T angle, const Vector<3, T>& axis)

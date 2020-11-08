@@ -18,7 +18,7 @@ Sandbox::Sandbox()
 
     for (int i = 0; i < 999; i++)
     {
-        Sprite sprite((i % 10) * 100, i * 10, 100, 100);
+        Sprite sprite((i % 10) * 100, (i / 10) * 100, 100, 100);
 
         sprite.setColor(Color(1, 1, 1, 1));
         sprite.setTextureRect(FloatRect(32.f, 32.f, 16.f, 16.f));
@@ -71,7 +71,7 @@ void Sandbox::update()
 
     for (auto& sprite : m_sprites)
     {
-        //sprite.setRotation(rot);
+        sprite.setRotation(rot);
         m_batch->renderSprite(Assets::get<Texture2D>("texture"), sprite);
     }
 

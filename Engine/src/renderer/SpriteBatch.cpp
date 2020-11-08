@@ -144,7 +144,7 @@ void SpriteBatch::flush()
     m_mesh.vertexBuffer.update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
     m_mesh.indexBuffer.update(&m_indices[0], m_indices.size());
 
-    Renderer2D::renderArray(m_mesh.vertexArray, m_transform, *m_pLastTexture, *m_pShader);
+    Renderer2D::render(m_mesh, m_transform, *m_pLastTexture, *m_pShader);
 }
 
 void SpriteBatch::setTransformMatrix(const Matrix4f& matrix)
