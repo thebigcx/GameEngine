@@ -4,12 +4,12 @@
 #include <util/Color.h>
 #include <renderer/shader/Shader.h>
 #include <renderer/VertexArray.h>
-#include <renderer/RenderStates.h>
 #include <util/Transform.h>
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Mesh.h>
 #include <renderer/IRenderable2D.h>
 #include <renderer/Framebuffer.h>
+#include <renderer/BlendMode.h>
 
 struct RenderData
 {

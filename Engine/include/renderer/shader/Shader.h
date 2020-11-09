@@ -51,10 +51,14 @@ public:
 
     enum class DataType
     {
-        Float, Bool, Int,
-        Vec2,  Vec3,
+        Float, Bool, Int, Uint, Double,
+        Vec2,  Vec3, Vec4,
+        iVec2, iVec3, iVec4,
+        dVec2, dVec3, dVec4,
+        uVec2, uVec3, uVec4,
+        bVec2, bVec3, bVec4,
         Mat3,  Mat4,
-        Vec2i, Vec3i,
+        dMat3, dMat4,
         Color
     };
 

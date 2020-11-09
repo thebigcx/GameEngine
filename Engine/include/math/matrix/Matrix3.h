@@ -1,7 +1,6 @@
 #pragma once
 
-template<int width, int height, typename T>
-class Matrix;
+#include <math/matrix/Matrix.h>
 
 template<typename T>
 class Matrix<3, 3, T>

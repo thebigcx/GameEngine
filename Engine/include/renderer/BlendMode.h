@@ -14,6 +14,8 @@ public:
         : m_source(source), m_destination(destination)
     {
         m_blending = true;
+
+        
     }
 
     void bind() const

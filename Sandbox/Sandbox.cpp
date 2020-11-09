@@ -30,8 +30,10 @@ Sandbox::Sandbox()
 
     m_animation = Animation::create(Assets::get<Texture2D>("texture"));
     m_animation->setFrames({ 
-        FloatRect(32, 32, 16, 16), 
-        FloatRect(48, 32, 16, 16) 
+        FloatRect(32, 240, 16, 16), 
+        FloatRect(48, 240, 16, 16),
+        FloatRect(64, 240, 16, 16),
+        FloatRect(80, 240, 16, 16)
     });
     m_animation->setFrameInterval(100.f);
 }
@@ -61,7 +63,7 @@ void Sandbox::update()
     rot++;
 
     m_framebuffer->bind();
-    m_framebuffer->clear();
+    m_framebuffer->clear(0, 0, 0, 0);
 
     m_sprites[0].setTextureRect(m_animation->getCurrentFrame());
     m_animation->update();

@@ -1,9 +1,6 @@
 #pragma once
 
-#include <array>
-
-#include <renderer/shader/Shader.h>
-#include <renderer/Buffer.h>
+#include <memory>
 
 class Framebuffer
 {
@@ -11,11 +8,11 @@ public:
     Framebuffer() {};
     ~Framebuffer();
 
-    static Shared<Framebuffer> create(uint32_t width, uint32_t height);
+    static std::shared_ptr<Framebuffer> create(uint32_t width, uint32_t height);
 
     void resize(uint32_t width, uint32_t height);
 
-    void clear(Color c = Color(0, 0, 0, 1));
+    void clear(float r = 0, float g = 0, float b = 0, float a = 0);
 
     void bind() const;
     void unbind() const;

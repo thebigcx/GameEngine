@@ -7,7 +7,6 @@
 #include <renderer/Buffer.h>
 #include <renderer/VertexArray.h>
 #include <util/Color.h>
-#include <renderer/RenderStates.h>
 #include <util/OrthographicCamera.h>
 #include <renderer/Mesh.h>
 

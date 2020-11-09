@@ -14,9 +14,9 @@ Framebuffer::~Framebuffer()
     }
 }
 
-Shared<Framebuffer> Framebuffer::create(uint32_t width, uint32_t height)
+std::shared_ptr<Framebuffer> Framebuffer::create(uint32_t width, uint32_t height)
 {
-    auto framebuffer = createShared<Framebuffer>();
+    auto framebuffer = std::make_shared<Framebuffer>();
 
     framebuffer->m_width = width;
     framebuffer->m_height = height;
@@ -60,7 +60,10 @@ void Framebuffer::invalidate(uint32_t width, uint32_t height)
     // Attach the depth buffer
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachment, 0);
 
-    ENGINE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete.");
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        std::cout << "Framebuffer is incomplete.\n";
+    }
 
     // Make sure to not leave framebuffer bound
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -70,7 +73,7 @@ void Framebuffer::resize(uint32_t width, uint32_t height)
 {
     if (width > s_maxSize || height > s_maxSize)
     {
-        Console::outf("Attempted to resize framebuffer to (%d, %d), which is greater than max size (%d, %d).", width, height, s_maxSize, s_maxSize);
+        std::cout << "Attempted to resize framebuffer to (" << width << ", " << height << "), which is greater than max size (" << s_maxSize << ", " << s_maxSize << ").";
         return;
     }
 
@@ -80,9 +83,9 @@ void Framebuffer::resize(uint32_t width, uint32_t height)
     invalidate(width, height);
 }
 
-void Framebuffer::clear(Color c)
+void Framebuffer::clear(float r, float g, float b, float a)
 {
-    glClearColor(c.r, c.g, c.b, c.a);
+    glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

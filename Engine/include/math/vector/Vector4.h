@@ -125,7 +125,19 @@ public:
             case 1: return y;
             case 2: return z;
             case 3: return w;
-            default: return (T)0;
+            default: return x;
+        }
+    }
+
+    T operator[](int index) const
+    {
+        switch (index)
+        {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            case 3: return w;
+            default: return x;
         }
     }
 

@@ -5,14 +5,12 @@
 #include <vector>
 
 #include <renderer/shader/Shader.h>
-#include <core/Console.h>
 
 struct BufferElement
 {
     BufferElement(Shader::DataType type, const std::string& name)
         : type(type), name(name)
     {
-        // TODO: add support for other types besides floats
         size = dataTypeSize();
     }
 
@@ -20,16 +18,40 @@ struct BufferElement
     {
         switch (type)
         {
-            case Shader::DataType::Float:   return 1;
-            case Shader::DataType::Vec2:    return 2;
-            case Shader::DataType::Vec3:    return 3;
-            case Shader::DataType::Mat3:    return 9;
-            case Shader::DataType::Mat4:    return 16;
-            case Shader::DataType::Bool:    return 1;
-            case Shader::DataType::Int:     return 1;
-            case Shader::DataType::Vec2i:   return 2;
-            case Shader::DataType::Vec3i:   return 3;
-            case Shader::DataType::Color:   return 4;
+            using Type = Shader::DataType;
+
+            case Type::Float:
+            case Type::Bool:
+            case Type::Int:
+            case Type::Double:
+            case Type::Uint:    return 1;
+
+            case Type::Vec2:
+            case Type::iVec2:
+            case Type::uVec2:
+            case Type::dVec2:
+            case Type::bVec2:   return 2;
+
+            case Type::Vec3:
+            case Type::iVec3:
+            case Type::uVec3:
+            case Type::dVec3:
+            case Type::bVec3:    return 3;
+
+            case Type::Vec4:
+            case Type::iVec4:
+            case Type::uVec4:
+            case Type::dVec4:
+            case Type::bVec4:    return 4;
+
+            case Type::Mat3:
+            case Type::dMat3:    return 9;
+
+            case Type::Mat4:
+            case Type::dMat4:    return 16;
+            
+            case Type::Color:   return 4;
+
             default:                        return 0;
         }
     }
@@ -50,17 +72,38 @@ struct BufferElement
     {
         switch (type)
         {
-            case Shader::DataType::Float:   
-            case Shader::DataType::Vec2:
-            case Shader::DataType::Vec3:
-            case Shader::DataType::Mat3:
-            case Shader::DataType::Mat4:
-            case Shader::DataType::Color:   return GL_FLOAT;
-            case Shader::DataType::Bool:
-            case Shader::DataType::Int:
-            case Shader::DataType::Vec2i:
-            case Shader::DataType::Vec3i:   return GL_INT;
-            default:                        return GL_FLOAT;
+            using Type = Shader::DataType;
+
+            case Type::Float:
+            case Type::Vec2:
+            case Type::Vec3:
+            case Type::Vec4:
+            case Type::Mat3:
+            case Type::Mat4:
+            case Type::Color:   return GL_FLOAT;
+
+            case Type::Bool:
+            case Type::bVec2:
+            case Type::bVec3:
+            case Type::bVec4:
+            case Type::Int:
+            case Type::iVec2:
+            case Type::iVec3:
+            case Type::iVec4:   return GL_INT;
+
+            case Type::Uint:
+            case Type::uVec2:
+            case Type::uVec3:
+            case Type::uVec4:   return GL_UNSIGNED_INT;
+
+            case Type::Double:
+            case Type::dVec2:
+            case Type::dVec3:
+            case Type::dVec4:
+            case Type::dMat3:
+            case Type::dMat4:   return GL_DOUBLE;
+
+            default:            return GL_FLOAT;
         }
     }
 
