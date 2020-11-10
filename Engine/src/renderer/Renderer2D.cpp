@@ -94,7 +94,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
 
     // Set render states
     data.textShader->bind();
-    data.textShader->setUniform("transform", Matrix4f(1.f));
+    data.textShader->setUniform("transform", Matrix4f::identity());
     data.textShader->setUniform("textColor", color);
     m_textMesh->vertexArray.bind();
     font.getTextureAtlas()->bind();

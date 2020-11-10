@@ -167,6 +167,28 @@ public:
         return !operator==(vec);
     }
 
+    T& operator[](int index)
+    {
+        switch (index)
+        {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default: return x;
+        }
+    }
+
+    T operator[](int index) const
+    {
+        switch (index)
+        {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default: return x;
+        }
+    }
+
     std::string str() const
     {
         return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";

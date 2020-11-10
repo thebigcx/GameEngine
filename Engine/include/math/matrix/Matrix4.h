@@ -164,9 +164,9 @@ public:
         return result;
     }
 
-    const T* buffer() const
+    static const T* buffer(const Matrix<4, 4, T>& mat)
     {
-        return &(m_cells[0].x);
+        return &(mat.m_cells[0].x);
     }
 
     std::string str()
@@ -222,6 +222,11 @@ public:
     }
 
     ColumnType& operator[](int index)
+    {
+        return m_cells[index];
+    }
+
+    ColumnType operator[](int index) const
     {
         return m_cells[index];
     }

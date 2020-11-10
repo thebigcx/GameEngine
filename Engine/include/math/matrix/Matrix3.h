@@ -5,6 +5,9 @@
 template<typename T>
 class Matrix<3, 3, T>
 {
+private:
+    typedef Vector<3, T> ColumnType;
+
 public:
     Matrix<3, 3, T>()
     {
@@ -20,12 +23,16 @@ public:
         }
     }
 
-    void setIdentity()
+    static Matrix<3, 3, T> identity()
     {
+        Matrix<3, 3, T> mat;
+
         for (int i = 0 ; i < 3 ; i++)
         {
-            m_cells[i][i] = 1.f; // Set diagonal to 1's
+            mat[i][i] = 1.f; // Set diagonal to 1's
         }
+
+        return mat;
     }
 
     void clear()
@@ -36,35 +43,61 @@ public:
             m_cells[x][y] = 0.0f;
         }
     }
+    
+    static Matrix<3, 3, T> translate(const Matrix<3, 3, T>& mat, const Vector<2, T>& vector)
+    {
+        Matrix<3, 3, T> result = mat;
+
+        result[2][0] += vector.x * result[0][0];
+        result[2][1] += vector.y * result[1][1];
+
+        return result;
+    }
+
+    static Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& mat, T angle)
+    {
+        Matrix<3, 3, T> result;
+
+        result[0][0] *= cos(angle);
+        result[1][0] *= -sin(angle);
+        result[0][1] *= sin(angle);
+        result[1][1] *= cos(angle);
+
+        return result;
+    }
+
+    static Matrix<3, 3, T> scale(const Matrix<3, 3, T>& mat, const Vector<2, T>& scalar)
+    {
+        Matrix<3, 3, T> matrix = mat;
+
+        matrix[0] *= Vector<3, T>(scalar, 1);
+        matrix[1] *= Vector<3, T>(scalar, 1);
+
+        return matrix;
+    }
 
     // 4x4 matrix encapsulated vec3's
-    void translate(const Vector<2, T>& vector)
+    Matrix<3, 3, T>& translate(const Vector<2, T>& vector)
     {
-        m_cells[2][0] += vector.x * m_cells[0][0];
-        m_cells[2][1] += vector.y * m_cells[1][1];
+        *this = Matrix<3, 3, T>::translate(*this, vector);
+        return *this;
     }
 
-    void scale(const Vector<2, T>& scalar)
+    Matrix<3, 3, T>& scale(const Vector<2, T>& scalar)
     {
-        m_cells[0][0] *= scalar.x;
-        m_cells[1][1] *= scalar.y;
+        *this = Matrix<3, 3, T>::scale(*this, scalar);
+        return *this;
     }
 
-    void rotate(T angle)
+    Matrix<3, 3, T>& rotate(T angle)
     {
-        Matrix<3, 3, T> mat;
-
-        m_cells[0][0] = cos(angle);
-        m_cells[1][0] = -sin(angle);
-        m_cells[0][1] = sin(angle);
-        m_cells[1][1] = cos(angle);
-
-        operator*(mat);
+        *this = Matrix<3, 3, T>::rotate(*this, angle);
+        return *this;
     }
 
-    const T* buffer() const
+    static const T* buffer(const Matrix<3, 3, T>& mat)
     {
-        return &m_cells[0][0];
+        return &(mat[0].x);
     }
 
     std::string str()
@@ -85,29 +118,12 @@ public:
 
     Matrix<3, 3, T> operator*(const Matrix<3, 3, T>& m2)
     {
-        auto& mc = m_cells;
-        auto& m2c = m2.m_cells;
         Matrix<3, 3, T> result;
 
-        // Columns of this
-        Vector3f mCol1 = getColumn(0);
-        Vector3f mCol2 = getColumn(1);
-        Vector3f mCol3 = getColumn(2);
-
-        // Columns of m2
-        Vector3f m2Col1 = m2.getColumn(0);
-        Vector3f m2Col2 = m2.getColumn(1);
-        Vector3f m2Col3 = m2.getColumn(2);
-
         // Multiply them together
-        Vector3f dstCol1 = mCol1 * m2Col1.x + mCol2 * m2Col1.y + mCol3 * m2Col1.z;
-        Vector3f dstCol2 = mCol1 * m2Col2.x + mCol2 * m2Col2.y + mCol3 * m2Col2.z;
-        Vector3f dstCol3 = mCol1 * m2Col3.x + mCol2 * m2Col3.y + mCol3 * m2Col3.z;
-
-        // Add the columns to result
-        result.makeColumn(dstCol1, 0);
-        result.makeColumn(dstCol2, 1);
-        result.makeColumn(dstCol3, 2);
+        result[0] = m_cells[0] * m2[0].x + m_cells[1] * m2[0].y + m_cells[2] * m2[0].z;
+        result[1] = m_cells[0] * m2[1].x + m_cells[1] * m2[1].y + m_cells[2] * m2[1].z;
+        result[2] = m_cells[0] * m2[2].x + m_cells[1] * m2[2].y + m_cells[2] * m2[2].z;
 
         return result;
     }
@@ -123,23 +139,11 @@ public:
         return result;
     }
 
-    Vector<3, T> getColumn(int i) const
-    {
-        return Vector<3, T>(m_cells[i][0], m_cells[i][1], m_cells[i][2]);
-    }
-
     Vector<3, T> getRow(int i) const
     {
         return Vector<3, T>(m_cells[0][i], m_cells[1][i], m_cells[2][i]);
     }
 
-    void makeColumn(const Vector<3, T>& col, int i)
-    {
-        m_cells[i][0] = col.x;
-        m_cells[i][1] = col.y;
-        m_cells[i][2] = col.z;
-    }
-
 private:
-    T m_cells[3][3];
+    ColumnType m_cells[3];
 };
