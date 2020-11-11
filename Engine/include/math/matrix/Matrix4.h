@@ -35,157 +35,13 @@ public:
         }
     }
 
-    static Matrix<4, 4, T> identity()
-    {
-        Matrix<4, 4, T> mat;
-        
-        for (int i = 0 ; i < 4 ; i++)
-        {
-            mat.m_cells[i][i] = 1.f;
-        }
-
-        return mat;
-    }
-
     void clear()
     {
         for (int x = 0 ; x < 4 ; x++)
         for (int y = 0 ; y < 4 ; y++)
         {
-            m_cells[x][y] = 0.0f;
+            m_cells[x][y] = static_cast<T>(0);
         }
-    }
-
-    static Matrix<4, 4, T> translate(const Matrix<4, 4, T>& mat, const Vector<3, T>& vector)
-    {
-        Matrix<4, 4, T> matrix = mat;
-
-        matrix[3][0] += vector.x * matrix[0][0];
-        matrix[3][1] += vector.y * matrix[1][1];
-        matrix[3][2] += vector.z * matrix[2][2];
-
-        return matrix;
-    }
-
-    static Matrix<4, 4, T> scale(const Matrix<4, 4, T>& mat, const Vector<3, T>& scalar)
-    {
-        Matrix<4, 4, T> matrix = mat;
-
-        matrix[0] *= Vector<4, T>(scalar, 1);
-        matrix[1] *= Vector<4, T>(scalar, 1);
-        matrix[2] *= Vector<4, T>(scalar, 1);
-
-        return matrix;
-    }
-
-    static Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& mat, T angle, const Vector<3, T>& axis)
-    {
-        Matrix<4, 4, T> matrix = mat;
-
-        float r = math::asRadians(angle);
-        float c = cos(angle);
-        float s = sin(angle);
-        float omc = 1.f - c;
-
-        float x = axis.x;
-        float y = axis.y;
-        float z = axis.z;
-
-        matrix[0][0] = x * x * omc + c;
-        matrix[0][1] = y * x * omc + z * s;
-        matrix[0][2] = x * z * omc - y * s;
-
-        matrix[1][0] = x * y * omc - z * s;
-        matrix[1][1] = y * y * omc + c;
-        matrix[1][2] = y * z * omc + x * s;
-
-        matrix[2][0] = x * z * omc + y * s;
-        matrix[2][1] = y * z * omc - x * s;
-        matrix[2][2] = z * z * omc + c;
-
-        return matrix;
-    }
-
-    // 4x4 matrix encapsulated vec3's
-    Matrix<4, 4, T>& translate(const Vector<3, T>& vector)
-    {
-        *this = Matrix<4, 4, T>::translate(*this, vector);
-        return *this;
-    }
-
-    Matrix<4, 4, T>& scale(const Vector<3, T>& scalar)
-    {
-        *this = Matrix<4, 4, T>::scale(*this, scalar);
-        return *this;
-    }
-
-    Matrix<4, 4, T>& rotate(T angle, const Vector<3, T>& axis)
-    {
-        *this = Matrix<4, 4, T>::rotate(*this, angle, axis);
-        return *this;
-    }
-
-    static Matrix<4, 4, float> ortho(float left, float right, float bottom, float top, float near, float far)
-    {
-        Matrix<4, 4, float> mat(1.f);
-
-        mat[0][0] = 2 / (right - left);
-        mat[1][1] = 2 / (top - bottom);
-        mat[2][2] = -2 / (far - near);
-
-        mat[3][0] = -(right + left) / (right - left);
-        mat[3][1] = -(top + bottom) / (top - bottom);
-        mat[3][2] = -(far + near) / (far - near);
-
-        return mat;
-    }
-
-    static Matrix<4, 4, float> perspective(T fovy, T aspect, T zNear, T zFar)
-    {
-        Matrix<4, 4, T> result;
-
-        result[0][0] = 1 / (aspect * std::tan(fovy / 2));
-        result[1][1] = 1 / std::tan(fovy / 2);
-        result[2][2] = -(zFar + zNear) / (zFar - zNear);
-        result[2][3] = 1;
-        result[3][2] = -(2 * zFar * zNear) / (zFar - zNear);
-
-        return result;
-    }
-
-    static Matrix<4, 4, T> createOrthoView(const Vector3f& pos)
-    {
-        Matrix<4, 4, T> result(1.f);
-
-        Vector3f object(pos.x, pos.y, pos.z + 1);
-        Vector3f up(0, 1, 0);
-
-        Vector3f f = Vector3f::normalize(object - pos);
-        Vector3f s = Vector3f::normalize(Vector3f::cross(up, f));
-        Vector3f u = Vector3f::normalize(up);
-
-        result[0][0] = s.x;
-        result[1][0] = s.y;
-        result[2][0] = s.z;
-
-        result[0][1] = u.x;
-        result[1][1] = u.y;
-        result[2][1] = u.z;
-
-        result[0][2] = f.x;
-        result[1][2] = f.y;
-        result[2][2] = f.z;
-
-        result[3][0] = -Vector3f::dot(s, pos);
-        result[3][1] = -Vector3f::dot(u, pos);
-        result[3][2] = -Vector3f::dot(f, pos);
-
-        return result;
-    }
-
-    static const T* buffer(const Matrix<4, 4, T>& mat)
-    {
-        return &(mat.m_cells[0].x);
     }
 
     std::string str()
@@ -252,6 +108,8 @@ public:
 
 private:
     ColumnType m_cells[4];
+
+    friend const T* buffer<>(const Matrix<4, 4, T>& mat);
 };
 
 typedef Matrix<4, 4, float>        Matrix4f;

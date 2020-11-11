@@ -2,6 +2,7 @@
 #include <core/Application.h>
 #include <renderer/MeshFactory.h>
 #include <renderer/shader/ShaderFactory.h>
+#include <math/matrix/MatrixTransform.h>
 
 #include <GL/glew.h>
 
@@ -15,7 +16,7 @@ void Renderer2D::init()
 
     auto size = Application::get().getWindow().getSize();
 
-    data.projectionMatrix = math::Matrix4f::ortho(0.f, size.x, 0.f, size.y, -1.f, 1.f);
+    data.projectionMatrix = math::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
     //data.projectionMatrix = math::Matrix4f::perspective(90.f, 1280.f / 720.f, -1.f, 100.f);
 
     data.textureShader = ShaderFactory::textureShader();
@@ -95,7 +96,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
 
     // Set render states
     data.textShader->bind();
-    data.textShader->setUniform("transform", math::Matrix4f::identity());
+    data.textShader->setUniform("transform", math::identity<float>());
     data.textShader->setUniform("textColor", color);
     m_textMesh->vertexArray.bind();
     font.getTextureAtlas()->bind();
