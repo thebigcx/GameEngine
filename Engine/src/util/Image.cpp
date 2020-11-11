@@ -22,8 +22,8 @@ Shared<Image> ImageLoader::loadImage(const std::string& file)
         Console::errf("Image does not exist or contains corrupted data: %s", file);
     }
 
-    image->size.x = width;
-    image->size.y = height;
+    image->width = width;
+    image->height = height;
     image->channels = channels;
 
     return image;

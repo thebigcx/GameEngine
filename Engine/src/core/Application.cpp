@@ -15,7 +15,7 @@ Application::Application()
 {
     m_instance = this;
 
-    Math::Random::initSeed();
+    math::Random::initSeed();
     Console::init();
     SoundEngine::init();
     EventDispatcher::setupCallbacks();

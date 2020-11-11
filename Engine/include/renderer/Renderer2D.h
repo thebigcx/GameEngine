@@ -14,7 +14,7 @@
 struct RenderData
 {
     uint64_t drawCalls;
-    Matrix4f projectionMatrix;
+    math::Matrix4f projectionMatrix;
     Shared<Shader> textureShader;
     Shared<Shader> textShader;
     Shared<Shader> framebufferShader;
@@ -31,11 +31,11 @@ public:
 
     static void setClearColor(const Color& color);
 
-    static void render(const Mesh& mesh, const Matrix4f& transform, const Texture2D& texture, Shader& shader);
+    static void render(const Mesh& mesh, const math::Matrix4f& transform, const Texture2D& texture, Shader& shader);
     static void render(IRenderable2D& renderable);
 
-    static void renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Color& color = Color(0, 0, 0, 0));
-    static void renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Vector2f& size, const Color& color = Color(0, 0, 0, 0));
+    static void renderText(const std::string& text, const TrueTypeFont& font, const math::Vector2f& position, const Color& color = Color(0, 0, 0, 0));
+    static void renderText(const std::string& text, const TrueTypeFont& font, const math::Vector2f& position, const math::Vector2f& size, const Color& color = Color(0, 0, 0, 0));
 
     static void renderFramebuffer(const Framebuffer& fbo);
 

@@ -43,9 +43,9 @@ public:
     void setUniform(const std::string& name, int value);
     void setUniform(const std::string& name, bool value);
     void setUniform(const std::string& name, float value);
-    void setUniform(const std::string& name, const Vector4f& value);
+    void setUniform(const std::string& name, const math::Vector4f& value);
     void setUniform(const std::string& name, const Color& value);
-    void setUniform(const std::string& name, const Matrix4f& value);
+    void setUniform(const std::string& name, const math::Matrix4f& value);
 
     unsigned int getId() const;
 

@@ -41,7 +41,7 @@ public:
     void bind(int slot = 0) const;
     void unbind(int slot = 0) const;
 
-    Vector2f getSize() const;
+    math::Vector2f getSize() const;
 
     inline unsigned int getId() const
     {
@@ -61,5 +61,5 @@ private:
     GLenum m_internalFormat;
     GLenum m_dataFormat;
 
-    Vector2f m_size;
+    math::Vector2f m_size;
 };

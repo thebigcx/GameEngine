@@ -5,7 +5,7 @@
 
 struct Vertex
 {
-    Vector2f position;
-    Vector2f texCoord;
+    math::Vector2f position;
+    math::Vector2f texCoord;
     Color color;
 };

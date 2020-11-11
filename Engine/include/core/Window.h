@@ -24,7 +24,7 @@ public:
         return m_window;
     }
 
-    Vector2i getSize() const;
+    math::Vector2i getSize() const;
 
     void close();
 
@@ -33,7 +33,7 @@ public:
     void setIcon(const std::string& iconPath);
     void setIcon(const Image& image);
 
-    void setSize(const Vector2u& size);
+    void setSize(const math::Vector2u& size);
 
     void minimize();
     void maximize();

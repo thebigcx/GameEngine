@@ -4,7 +4,7 @@
 #include <ctime>
 #include <cstdlib>
 
-namespace Math
+namespace math
 {
 
 struct Random

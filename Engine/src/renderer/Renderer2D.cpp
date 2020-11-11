@@ -15,7 +15,8 @@ void Renderer2D::init()
 
     auto size = Application::get().getWindow().getSize();
 
-    data.projectionMatrix = Matrix4f::createOrthoProjection(0.f, size.x, 0.f, size.y, -1.f, 1.f);
+    data.projectionMatrix = math::Matrix4f::ortho(0.f, size.x, 0.f, size.y, -1.f, 1.f);
+    //data.projectionMatrix = math::Matrix4f::perspective(90.f, 1280.f / 720.f, -1.f, 100.f);
 
     data.textureShader = ShaderFactory::textureShader();
     data.textureShader->bind();
@@ -47,7 +48,7 @@ void Renderer2D::setClearColor(const Color& color)
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void Renderer2D::render(const Mesh& mesh, const Matrix4f& transform, const Texture2D& texture, Shader& shader)
+void Renderer2D::render(const Mesh& mesh, const math::Matrix4f& transform, const Texture2D& texture, Shader& shader)
 {
     shader.bind();
     shader.setUniform("transform", transform);
@@ -59,20 +60,20 @@ void Renderer2D::render(const Mesh& mesh, const Matrix4f& transform, const Textu
     data.drawCalls++;
 }
 
-void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Color& color)
+void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const math::Vector2f& position, const Color& color)
 {
-    renderText(text, font, position, Vector2f(font.getCharacterSize()), color);
+    renderText(text, font, position, math::Vector2f(font.getCharacterSize()), color);
 }
 
-void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const Vector2f& position, const Vector2f& size, const Color& color)
+void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const math::Vector2f& position, const math::Vector2f& size, const Color& color)
 {
     struct GlyphVertex
     {
-        Vector2f position;
-        Vector2f texCoord;
+        math::Vector2f position;
+        math::Vector2f texCoord;
     };
 
-    Vector2f scale = size / font.getCharacterSize();
+    math::Vector2f scale = size / font.getCharacterSize();
     std::vector<unsigned int> indices;
 
     // Set the indices
@@ -94,7 +95,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
 
     // Set render states
     data.textShader->bind();
-    data.textShader->setUniform("transform", Matrix4f::identity());
+    data.textShader->setUniform("transform", math::Matrix4f::identity());
     data.textShader->setUniform("textColor", color);
     m_textMesh->vertexArray.bind();
     font.getTextureAtlas()->bind();
@@ -109,8 +110,8 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     {
         auto& ch = font.getGlyphs().at(*c);
 
-        Vector2f pos(x + ch.pos.x * scale.x, -y - ch.pos.y * scale.y);
-        Vector2f size = ch.size * scale;
+        math::Vector2f pos(x + ch.pos.x * scale.x, -y - ch.pos.y * scale.y);
+        math::Vector2f size = ch.size * scale;
 
         x += ch.advance.x * scale.x;
         y += ch.advance.y * scale.y;
@@ -118,10 +119,10 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
         if (!size.x || !size.y)
             continue;
 
-        coords[n++] = { Vector2f(pos.x,          -pos.y),          Vector2f(ch.texOffset,                                     0) };
-        coords[n++] = { Vector2f(pos.x + size.x, -pos.y),          Vector2f(ch.texOffset + ch.size.x / font.getAtlasSize().x, 0) };
-        coords[n++] = { Vector2f(pos.x + size.x, -pos.y - size.y), Vector2f(ch.texOffset + ch.size.x / font.getAtlasSize().x, ch.size.y / font.getAtlasSize().y) };
-        coords[n++] = { Vector2f(pos.x,          -pos.y - size.y), Vector2f(ch.texOffset,                                     ch.size.y / font.getAtlasSize().y) };
+        coords[n++] = { math::Vector2f(pos.x,          -pos.y),          math::Vector2f(ch.texOffset,                                     0) };
+        coords[n++] = { math::Vector2f(pos.x + size.x, -pos.y),          math::Vector2f(ch.texOffset + ch.size.x / font.getAtlasSize().x, 0) };
+        coords[n++] = { math::Vector2f(pos.x + size.x, -pos.y - size.y), math::Vector2f(ch.texOffset + ch.size.x / font.getAtlasSize().x, ch.size.y / font.getAtlasSize().y) };
+        coords[n++] = { math::Vector2f(pos.x,          -pos.y - size.y), math::Vector2f(ch.texOffset,                                     ch.size.y / font.getAtlasSize().y) };
     }
 
     // Draw the text mesh

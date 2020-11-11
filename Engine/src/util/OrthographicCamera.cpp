@@ -5,23 +5,23 @@
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
 
-OrthographicCamera::OrthographicCamera(const Vector2f& position)
+OrthographicCamera::OrthographicCamera(const math::Vector2f& position)
     : m_position(position)
 {
 
 }
 
-void OrthographicCamera::setPosition(const Vector2f& position)
+void OrthographicCamera::setPosition(const math::Vector2f& position)
 {
     m_position = position;
 }
 
-void OrthographicCamera::translate(const Vector2f& vec)
+void OrthographicCamera::translate(const math::Vector2f& vec)
 {
     m_position += vec;
 }
 
-Matrix4f OrthographicCamera::getViewMatrix() const
+math::Matrix4f OrthographicCamera::getViewMatrix() const
 {
-    return Matrix4f::createOrthoView(Vector3f(m_position, -1));
+    return math::Matrix4f::createOrthoView(math::Vector3f(m_position, -1));
 }

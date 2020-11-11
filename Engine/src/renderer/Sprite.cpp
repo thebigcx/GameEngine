@@ -5,14 +5,14 @@ Sprite::Sprite()
     
 }
 
-Sprite::Sprite(const Vector2f& position, const Vector2f& size)
+Sprite::Sprite(const math::Vector2f& position, const math::Vector2f& size)
 : m_color(Color(1, 1, 1, 1))
 {
     m_position = position;
     m_size = size;
 }
 
-Sprite::Sprite(const Vector2f& position, const Vector2f& size, const Color& color)
+Sprite::Sprite(const math::Vector2f& position, const math::Vector2f& size, const Color& color)
 : m_color(color)
 {
     m_position = position;
@@ -28,8 +28,8 @@ Sprite::Sprite(const FloatRect& rect)
 
 Sprite::Sprite(float x, float y, float width, float height)
 {
-    m_position = Vector2f(x, y);
-    m_size = Vector2f(width, height);
+    m_position = math::Vector2f(x, y);
+    m_size = math::Vector2f(width, height);
 }
 
 void Sprite::setTextureRect(const FloatRect& rect)

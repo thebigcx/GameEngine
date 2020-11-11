@@ -12,9 +12,9 @@
 
 struct Glyph
 {
-    Vector2f advance;
-    Vector2f size;
-    Vector2f pos;
+    math::Vector2f advance;
+    math::Vector2f size;
+    math::Vector2f pos;
 
     float texOffset;
 };
@@ -29,12 +29,12 @@ public:
     static Shared<TrueTypeFont> create(const std::string& path, int characterSize);
 
     inline const std::unordered_map<char, Glyph>& getGlyphs() const { return m_glyphs; }
-    inline const Vector2f& getAtlasSize() const { return m_atlasSize; }
+    inline const math::Vector2f& getAtlasSize() const { return m_atlasSize; }
     inline Shared<Texture2D> getTextureAtlas() const { return m_texture; }
     inline int getCharacterSize() const { return m_characterSize; }
 
 private:
-    Vector2f m_atlasSize;
+    math::Vector2f m_atlasSize;
 
     Shared<Texture2D> m_texture;
     int m_characterSize = 0;

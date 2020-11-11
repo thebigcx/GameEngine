@@ -11,12 +11,12 @@ public:
 
     virtual ~Transformable() = default;
 
-    void setPosition(Vector2f position)
+    void setPosition(math::Vector2f position)
     {
         m_position = position;
     }
 
-    void setSize(Vector2f size)
+    void setSize(math::Vector2f size)
     {
         m_size = size;
     }
@@ -26,12 +26,12 @@ public:
         m_rotation = rotation;
     }
 
-    void setOrigin(Vector2f origin)
+    void setOrigin(math::Vector2f origin)
     {
         m_origin = origin;
     }
 
-    void translate(Vector2f direction)
+    void translate(math::Vector2f direction)
     {
         m_position += direction;
     }
@@ -41,15 +41,15 @@ public:
         m_rotation += rotation;
     }
 
-    void scale(Vector2f scalar)
+    void scale(math::Vector2f scalar)
     {
         m_size *= scalar;
     }
 
-    const Vector2f& getPosition() const { return m_position; }
-    const Vector2f& getSize()     const { return m_size;     }
+    const math::Vector2f& getPosition() const { return m_position; }
+    const math::Vector2f& getSize()     const { return m_size;     }
     float           getRotation() const { return m_rotation; }
-    const Vector2f& getOrigin()   const { return m_origin;   }
+    const math::Vector2f& getOrigin()   const { return m_origin;   }
 
     Transform getTransform() const
     {
@@ -57,8 +57,8 @@ public:
     }
 
 protected:
-    Vector2f m_position;
-    Vector2f m_size;
-    Vector2f m_origin;
+    math::Vector2f m_position;
+    math::Vector2f m_size;
+    math::Vector2f m_origin;
     float m_rotation = 0;
 };

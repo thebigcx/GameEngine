@@ -41,7 +41,7 @@ Shared<Texture2D> Texture2D::create(const std::string& file)
         texture->m_internalFormat = internalFormat;
         texture->m_dataFormat = dataFormat;
 
-        glTextureStorage2D(texture->m_id, 1, internalFormat, image->size.x, image->size.y);
+        glTextureStorage2D(texture->m_id, 1, internalFormat, image->width, image->height);
 
         glTextureParameteri(texture->m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTextureParameteri(texture->m_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
@@ -53,8 +53,8 @@ Shared<Texture2D> Texture2D::create(const std::string& file)
                      0,
                      0,
                      0,
-                     image->size.x,
-                     image->size.y,
+                     image->width,
+                     image->height,
                      dataFormat,
                      GL_UNSIGNED_BYTE,
                      image->data);
@@ -68,8 +68,8 @@ Shared<Texture2D> Texture2D::create(const std::string& file)
         std::cout << "Image is corrupted or contains unknown formatted data!\n";
     }
 
-    texture->m_size.x = image->size.x;
-    texture->m_size.y = image->size.y;
+    texture->m_size.x = image->width;
+    texture->m_size.y = image->height;
 
     return texture;
 }
@@ -108,7 +108,7 @@ void Texture2D::unbind(int slot) const
     glBindTextureUnit(slot, 0);
 }
 
-Vector2f Texture2D::getSize() const
+math::Vector2f Texture2D::getSize() const
 {
     return m_size;
 }

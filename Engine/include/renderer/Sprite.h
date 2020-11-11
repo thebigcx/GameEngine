@@ -14,8 +14,8 @@ class Sprite : public Transformable
 {
 public:
     Sprite();
-    Sprite(const Vector2f& position, const Vector2f& size);
-    Sprite(const Vector2f& position, const Vector2f& size, const Color& color);
+    Sprite(const math::Vector2f& position, const math::Vector2f& size);
+    Sprite(const math::Vector2f& position, const math::Vector2f& size, const Color& color);
     Sprite(const FloatRect& rect);
     Sprite(float x, float y, float width, float height);
 
@@ -32,11 +32,11 @@ public:
         2, 3, 0
     };
 
-    static inline const std::array<Vector2f, 4> positions = {
-        Vector2f(0, 0),
-        Vector2f(1, 0),
-        Vector2f(1, 1),
-        Vector2f(0, 1)
+    static inline const std::array<math::Vector2f, 4> positions = {
+        math::Vector2f(0, 0),
+        math::Vector2f(1, 0),
+        math::Vector2f(1, 1),
+        math::Vector2f(0, 1)
     };
 
 private:

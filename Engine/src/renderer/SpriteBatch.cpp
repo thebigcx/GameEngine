@@ -35,7 +35,7 @@ Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
         Console::err("Too many sprites for batch!");
     }
 
-    batch->m_transform = Matrix4f();
+    batch->m_transform = math::Matrix4f();
     batch->m_mesh.vertexArray.bind();
 
     BufferLayout layout = {
@@ -92,15 +92,15 @@ void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
     // Populate the vertices array with the sprite's vertices
     for (int i = 0 ; i < 4 ; i++)
     {
-        auto pos = transform.matrix() * Vector4f(Sprite::positions[i].x, Sprite::positions[i].y, 0, 1);
-        vertices[i].position = Vector2f(pos.x, pos.y);
+        auto pos = transform.matrix() * math::Vector4f(Sprite::positions[i].x, Sprite::positions[i].y, 0, 1);
+        vertices[i].position = math::Vector2f(pos.x, pos.y);
 
         // Change "origin" of texCoord, then scale it
         auto rect = sprite.getTextureRect();
         
-        // Convert Vector2u to Vector2f
-        auto texPos = Vector2f(rect.x, rect.y) / Vector2f(texture.getSize().x, texture.getSize().y);
-        auto texSize = Vector2f(rect.width, rect.height) / Vector2f(texture.getSize().x, texture.getSize().y);
+        // Convert Vector2u to math::Vector2f
+        auto texPos = math::Vector2f(rect.x, rect.y) / math::Vector2f(texture.getSize().x, texture.getSize().y);
+        auto texSize = math::Vector2f(rect.width, rect.height) / math::Vector2f(texture.getSize().x, texture.getSize().y);
 
         vertices[i].texCoord = texPos;
         vertices[i].texCoord += Sprite::positions[i] * texSize;
@@ -114,14 +114,14 @@ void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
     }
 }
 
-void SpriteBatch::renderSprite(const Texture2D& texture, const Vector2f& position, const Vector2f& size)
+void SpriteBatch::renderSprite(const Texture2D& texture, const math::Vector2f& position, const math::Vector2f& size)
 {
     Sprite sprite(position, size, Color(1, 1, 1, 1));
     sprite.setTextureRect(FloatRect(0, 0, texture.getSize().x, texture.getSize().y));
     renderSprite(texture, sprite);
 }
 
-void SpriteBatch::renderSprite(const Texture2D& texture, const Vector2f& position, const Vector2f& size, const FloatRect& texRect)
+void SpriteBatch::renderSprite(const Texture2D& texture, const math::Vector2f& position, const math::Vector2f& size, const FloatRect& texRect)
 {
     Sprite sprite(position, size, Color(1, 1, 1, 1));
     sprite.setTextureRect(texRect);
@@ -147,7 +147,7 @@ void SpriteBatch::flush()
     Renderer2D::render(m_mesh, m_transform, *m_pLastTexture, *m_pShader);
 }
 
-void SpriteBatch::setTransformMatrix(const Matrix4f& matrix)
+void SpriteBatch::setTransformMatrix(const math::Matrix4f& matrix)
 {
     m_transform = matrix;
 }

@@ -2,6 +2,9 @@
 
 #include <math/matrix/Matrix.h>
 
+namespace math
+{
+
 template<typename T>
 class Matrix<3, 3, T>
 {
@@ -147,3 +150,5 @@ public:
 private:
     ColumnType m_cells[3];
 };
+
+}

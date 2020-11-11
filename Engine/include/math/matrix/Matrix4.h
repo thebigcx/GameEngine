@@ -8,6 +8,12 @@
 #include <math/Math.h>
 #include <math/matrix/Matrix.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+namespace math
+{
+
 template<typename T>
 class Matrix<4, 4, T>
 {
@@ -76,7 +82,7 @@ public:
     {
         Matrix<4, 4, T> matrix = mat;
 
-        float r = Math::asRadians(angle);
+        float r = math::asRadians(angle);
         float c = cos(angle);
         float s = sin(angle);
         float omc = 1.f - c;
@@ -119,7 +125,7 @@ public:
         return *this;
     }
 
-    static Matrix<4, 4, float> createOrthoProjection(float left, float right, float bottom, float top, float near, float far)
+    static Matrix<4, 4, float> ortho(float left, float right, float bottom, float top, float near, float far)
     {
         Matrix<4, 4, float> mat(1.f);
 
@@ -132,6 +138,19 @@ public:
         mat[3][2] = -(far + near) / (far - near);
 
         return mat;
+    }
+
+    static Matrix<4, 4, float> perspective(T fovy, T aspect, T zNear, T zFar)
+    {
+        Matrix<4, 4, T> result;
+
+        result[0][0] = 1 / (aspect * std::tan(fovy / 2));
+        result[1][1] = 1 / std::tan(fovy / 2);
+        result[2][2] = -(zFar + zNear) / (zFar - zNear);
+        result[2][3] = 1;
+        result[3][2] = -(2 * zFar * zNear) / (zFar - zNear);
+
+        return result;
     }
 
     static Matrix<4, 4, T> createOrthoView(const Vector3f& pos)
@@ -240,3 +259,5 @@ typedef Matrix<4, 4, int>          Matrix4i;
 typedef Matrix<4, 4, long>         Matrix4l;
 typedef Matrix<4, 4, double>       Matrix4d;
 typedef Matrix<4, 4, unsigned int> Matrix4u;
+
+}

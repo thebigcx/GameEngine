@@ -32,11 +32,11 @@ Window::~Window()
     glfwDestroyWindow(m_window);
 }
 
-Vector2i Window::getSize() const
+math::Vector2i Window::getSize() const
 {
     int width, height;
     glfwGetWindowSize(m_window, &width, &height);
-    return Vector2i(width, height);
+    return math::Vector2i(width, height);
 }
 
 bool Window::isOpen()
@@ -64,8 +64,8 @@ void Window::setIcon(const Image& image)
 {
     GLFWimage icon;
     icon.pixels = image.data;
-    icon.width = image.size.x;
-    icon.height = image.size.y;
+    icon.width = image.width;
+    icon.height = image.height;
     glfwSetWindowIcon(m_window, 1, &icon);
 }
 
@@ -74,7 +74,7 @@ void Window::setTitle(const std::string& title)
     glfwSetWindowTitle(m_window, title.c_str());
 }
 
-void Window::setSize(const Vector2u& size)
+void Window::setSize(const math::Vector2u& size)
 {
     glfwSetWindowSize(m_window, size.x, size.y);
 }

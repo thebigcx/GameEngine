@@ -18,7 +18,7 @@ public:
 
     static bool isKeyPressed(Key key);
 
-    static Vector2i getMousePosition();
+    static math::Vector2i getMousePosition();
     
     static bool isMousePressed(MouseButton button);
 };

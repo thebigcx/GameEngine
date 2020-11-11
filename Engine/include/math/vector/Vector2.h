@@ -4,6 +4,9 @@
 
 #include <math/vector/Vector.h>
 
+namespace math
+{
+
 template<typename T>
 class Vector<2, T>
 {
@@ -164,3 +167,5 @@ typedef Vector<2, int>          Vector2i;
 typedef Vector<2, long>         Vector2l;
 typedef Vector<2, double>       Vector2d;
 typedef Vector<2, unsigned int> Vector2u;
+
+}

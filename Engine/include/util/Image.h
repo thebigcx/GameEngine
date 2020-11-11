@@ -9,7 +9,8 @@ struct Image
 {
     ~Image();
     unsigned char* data;
-    Vector2u size;
+    unsigned int width;
+    unsigned int height;
     int channels = 0;
 };
 

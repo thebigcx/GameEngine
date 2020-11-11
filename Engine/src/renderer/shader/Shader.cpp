@@ -158,7 +158,7 @@ void Shader::setUniform(const std::string& name, float value)
     glUniform1f(location, value);
 }
 
-void Shader::setUniform(const std::string& name, const Vector4f& value)
+void Shader::setUniform(const std::string& name, const math::Vector4f& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform4f(location, value.x, value.y, value.z, value.w);
@@ -170,10 +170,10 @@ void Shader::setUniform(const std::string& name, const Color& value)
     glUniform4f(location, value.r, value.g, value.b, value.a);
 }
 
-void Shader::setUniform(const std::string& name, const Matrix4f& value)
+void Shader::setUniform(const std::string& name, const math::Matrix4f& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
-    glUniformMatrix4fv(location, 1, GL_FALSE, Matrix4f::buffer(value));
+    glUniformMatrix4fv(location, 1, GL_FALSE, math::Matrix4f::buffer(value));
 }
 
 unsigned int Shader::getId() const

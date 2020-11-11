@@ -18,11 +18,11 @@ public:
     static Shared<SpriteBatch> create(int size = MAX_SPRITES);
     static Shared<SpriteBatch> create(Shader& shader, int size = MAX_SPRITES);
 
-    void setTransformMatrix(const Matrix4f& transform);
+    void setTransformMatrix(const math::Matrix4f& transform);
     void start();
     void renderSprite(const Texture2D& texture, const Sprite& quad);
-    void renderSprite(const Texture2D& texture, const Vector2f& position, const Vector2f& size);
-    void renderSprite(const Texture2D& texture, const Vector2f& position, const Vector2f& size, const FloatRect& texRect);
+    void renderSprite(const Texture2D& texture, const math::Vector2f& position, const math::Vector2f& size);
+    void renderSprite(const Texture2D& texture, const math::Vector2f& position, const math::Vector2f& size, const FloatRect& texRect);
     void flush();
 
     void swapTexture(const Texture2D& texture);
@@ -39,7 +39,7 @@ private:
     const Texture2D* m_pLastTexture = nullptr;
     Shader* m_pShader;
 
-    Matrix4f m_transform;
+    math::Matrix4f m_transform;
 
     static inline constexpr uint32_t MAX_SPRITES = 10000;
 };

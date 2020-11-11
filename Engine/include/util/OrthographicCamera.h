@@ -7,15 +7,15 @@ class OrthographicCamera
 {
 public:
     OrthographicCamera() {}
-    OrthographicCamera(const Vector2f& position);
+    OrthographicCamera(const math::Vector2f& position);
 
-    void setPosition(const Vector2f& position);
-    void translate(const Vector2f& vec);
+    void setPosition(const math::Vector2f& position);
+    void translate(const math::Vector2f& vec);
 
-    inline const Vector2f& getPosition() const { return m_position; }
+    inline const math::Vector2f& getPosition() const { return m_position; }
 
-    Matrix4f getViewMatrix() const;
+    math::Matrix4f getViewMatrix() const;
 
 private:
-    Vector2f m_position;
+    math::Vector2f m_position;
 };
