@@ -29,25 +29,22 @@ struct Uniform
 class Shader
 {
 public:
-    Shader();
-    ~Shader();
-
-    Shader(const Shader& shader);
+    virtual ~Shader() = default;
 
     static Shared<Shader> createFromFile(const std::string& vsPath, const std::string& fsPath);
     static Shared<Shader> createFromSource(const std::string& vsSource, const std::string& fsSource);
 
-    void bind() const;
-    void unbind() const;
+    virtual void bind() const = 0;
+    virtual void unbind() const = 0;
 
-    void setUniform(const std::string& name, int value);
-    void setUniform(const std::string& name, bool value);
-    void setUniform(const std::string& name, float value);
-    void setUniform(const std::string& name, const math::Vector4f& value);
-    void setUniform(const std::string& name, const Color& value);
-    void setUniform(const std::string& name, const math::Matrix4f& value);
+    virtual void setUniform(const std::string& name, int value) = 0;
+    virtual void setUniform(const std::string& name, bool value) = 0;
+    virtual void setUniform(const std::string& name, float value) = 0;
+    virtual void setUniform(const std::string& name, const math::Vector4f& value) = 0;
+    virtual void setUniform(const std::string& name, const Color& value) = 0;
+    virtual void setUniform(const std::string& name, const math::Matrix4f& value) = 0;
 
-    unsigned int getId() const;
+    virtual unsigned int getId() const = 0;
 
     enum class DataType
     {
@@ -61,11 +58,4 @@ public:
         dMat3, dMat4,
         Color
     };
-
-private:
-    unsigned int m_id = 0;
-
-    static ShaderSource parseShader(const std::string& vsPath, const std::string& fsPath);
-
-    bool compileShader(const ShaderSource& source);
 };
