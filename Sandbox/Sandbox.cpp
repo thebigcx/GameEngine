@@ -61,7 +61,7 @@ void Sandbox::update()
     rot++;
 
     m_framebuffer->bind();
-    m_framebuffer->clear(0, 0, 0, 0);
+    Renderer2D::clear();
 
     m_sprites[0].setTextureRect(m_animation->getCurrentFrame());
     m_animation->update();
