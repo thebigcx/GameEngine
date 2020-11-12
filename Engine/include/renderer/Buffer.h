@@ -167,50 +167,31 @@ private:
 class VertexBuffer
 {
 public:
-    VertexBuffer();
-    ~VertexBuffer();
+    virtual ~VertexBuffer() = default;
 
-    void update(const void* data, size_t size);
+    virtual void update(const void* data, size_t size) = 0;
 
-    void bind() const;
+    virtual void bind() const = 0;
+    virtual void unbind() const = 0;
 
-    void create(size_t size);
+    virtual void setLayout(const BufferLayout& layout) = 0;
 
-    void setLayout(const BufferLayout& layout);
-    const BufferLayout& getLayout() const;
+    virtual const BufferLayout& getLayout() const = 0;
 
-private:
-    unsigned int m_id;
-
-    BufferLayout m_layout;
+    static Shared<VertexBuffer> create(size_t size);
 };
 
 class IndexBuffer
 {
 public:
-    IndexBuffer();
-    ~IndexBuffer();
+    virtual ~IndexBuffer() = default;
 
-    void update(const unsigned int* data, unsigned int size);
+    virtual void update(const unsigned int* data, unsigned int count) = 0;
 
-    void create(unsigned int size);
+    virtual void bind() const = 0;
+    virtual void unbind() const = 0;
 
-    void bind() const;
+    virtual unsigned int getCount() const = 0;
 
-    inline unsigned int getCount() const
-    {
-        return m_count;
-    }
-
-    inline GLenum getIndexType() const
-    {
-        return m_indexType;
-    }
-
-private:
-    unsigned int m_id = 0;
-
-    unsigned int m_count = 0;
-
-    const GLenum m_indexType = GL_UNSIGNED_INT;
+    static Shared<IndexBuffer> create(unsigned int count);
 };

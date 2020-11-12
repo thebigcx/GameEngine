@@ -1,52 +1,7 @@
 #include <renderer/VertexArray.h>
-#include <renderer/Vertex.h>
+#include <platform/GLVertexArray.h>
 
-#include <core/Console.h>
-
-VertexArray::VertexArray()
+Shared<VertexArray> VertexArray::create()
 {
-    glCreateVertexArrays(1, &m_id);
-}
-
-VertexArray::~VertexArray()
-{
-    glDeleteVertexArrays(1, &m_id);
-}
-
-void VertexArray::bind() const
-{
-    glBindVertexArray(m_id);
-}
-
-void VertexArray::unbind() const
-{
-    glBindVertexArray(0);
-}
-
-void VertexArray::addVertexBuffer(const VertexBuffer& buffer)
-{
-    bind();
-    buffer.bind();
-    int i = 0;
-    for (m_attribCount ; m_attribCount < buffer.getLayout().size() ; m_attribCount++)
-    {
-        glVertexAttribPointer(m_attribCount, 
-                              buffer.getLayout()[i].componentCount(), 
-                              buffer.getLayout()[i].getOpenGLType(), 
-                              GL_FALSE, 
-                              buffer.getLayout().getStride(), 
-                              (const void*)buffer.getLayout()[i].offset);
-
-        glEnableVertexAttribArray(m_attribCount);
-        i++;
-    }
-}
-
-void VertexArray::setIndexBuffer(const IndexBuffer& buffer)
-{
-    bind();
-
-    buffer.bind();
-
-    m_pIndexBuffer = &buffer;
+    return createShared<GLVertexArray>();
 }

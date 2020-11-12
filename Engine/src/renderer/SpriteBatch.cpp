@@ -36,7 +36,8 @@ Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
     }
 
     batch->m_transform = math::Matrix4f();
-    batch->m_mesh.vertexArray.bind();
+    batch->m_mesh.vertexArray = VertexArray::create();
+    batch->m_mesh.vertexArray->bind();
 
     BufferLayout layout = {
         { Shader::DataType::Vec2,  "aPos"      },
@@ -44,11 +45,13 @@ Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
         { Shader::DataType::Color, "aColor"    }
     };
 
-    batch->m_mesh.vertexBuffer.setLayout(layout);
-    batch->m_mesh.vertexBuffer.create(sizeof(Vertex) * Sprite::getVertexCount() * size);
+    batch->m_mesh.indexBuffer = IndexBuffer::create(0);
 
-    batch->m_mesh.vertexArray.addVertexBuffer(batch->m_mesh.vertexBuffer);
-    batch->m_mesh.vertexArray.setIndexBuffer(batch->m_mesh.indexBuffer);
+    batch->m_mesh.vertexBuffer = VertexBuffer::create(sizeof(Vertex) * Sprite::getVertexCount() * size);
+    batch->m_mesh.vertexBuffer->setLayout(layout);
+
+    batch->m_mesh.vertexArray->addVertexBuffer(batch->m_mesh.vertexBuffer);
+    batch->m_mesh.vertexArray->setIndexBuffer(batch->m_mesh.indexBuffer);
 
     return batch;
 }
@@ -57,7 +60,7 @@ void SpriteBatch::start()
 {
     m_vertices.clear();
     m_indices.clear();
-    m_mesh.vertexArray.bind();
+    m_mesh.vertexArray->bind();
 }
 
 void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
@@ -141,8 +144,8 @@ void SpriteBatch::flush()
         return;
     }
 
-    m_mesh.vertexBuffer.update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
-    m_mesh.indexBuffer.update(&m_indices[0], m_indices.size());
+    m_mesh.vertexBuffer->update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
+    m_mesh.indexBuffer->update(&m_indices[0], m_indices.size());
 
     Renderer2D::render(m_mesh, m_transform, *m_pLastTexture, *m_pShader);
 }

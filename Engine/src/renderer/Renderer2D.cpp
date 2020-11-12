@@ -55,9 +55,9 @@ void Renderer2D::render(const Mesh& mesh, const math::Matrix4f& transform, const
     shader.setUniform("transform", transform);
     texture.bind();
 
-    mesh.vertexArray.bind();
+    mesh.vertexArray->bind();
 
-    glDrawElements(GL_TRIANGLES, mesh.vertexArray.getIndexBuffer()->getCount(), mesh.vertexArray.getIndexBuffer()->getIndexType(), 0);
+    glDrawElements(GL_TRIANGLES, mesh.vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, 0);
     data.drawCalls++;
 }
 
@@ -87,7 +87,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
         indices.push_back(3 + i * 4);
         indices.push_back(0 + i * 4);
     }
-    m_textMesh->indexBuffer.update(&indices[0], indices.size());
+    m_textMesh->indexBuffer->update(&indices[0], indices.size());
 
     int x = position.x;
     int y = position.y;
@@ -98,7 +98,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     data.textShader->bind();
     data.textShader->setUniform("transform", math::identity<float>());
     data.textShader->setUniform("textColor", color);
-    m_textMesh->vertexArray.bind();
+    m_textMesh->vertexArray->bind();
     font.getTextureAtlas()->bind();
 
     BlendMode::Alpha.bind();
@@ -127,8 +127,8 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     }
 
     // Draw the text mesh
-    m_textMesh->vertexBuffer.bind();
-    m_textMesh->vertexBuffer.update(coords, sizeof(coords));
+    m_textMesh->vertexBuffer->bind();
+    m_textMesh->vertexBuffer->update(coords, sizeof(coords));
     glDrawElements(GL_TRIANGLES, 6 * text.size(), GL_UNSIGNED_INT, 0);
 
     BlendMode::Alpha.unbind();
@@ -139,7 +139,7 @@ void Renderer2D::renderFramebuffer(const Framebuffer& fbo)
     glBindTextureUnit(0, fbo.getColorAttachment());
     data.framebufferShader->bind();
 
-    m_framebufferMesh->vertexArray.bind();
+    m_framebufferMesh->vertexArray->bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 

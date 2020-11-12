@@ -7,24 +7,15 @@
 class VertexArray
 {
 public:
-    VertexArray();
-    ~VertexArray();
+    virtual ~VertexArray() = default;
 
-    void bind() const;
-    void unbind() const;
+    virtual void bind() const = 0;
+    virtual void unbind() const = 0;
 
-    void addVertexBuffer(const VertexBuffer& buffer);
-    void setIndexBuffer(const IndexBuffer& buffer);
+    virtual void addVertexBuffer(Shared<VertexBuffer> buffer) = 0;
+    virtual void setIndexBuffer(Shared<IndexBuffer> buffer) = 0;
 
-    inline const IndexBuffer* getIndexBuffer() const
-    {
-        return m_pIndexBuffer;
-    }
+    virtual Shared<IndexBuffer> getIndexBuffer() const = 0;
 
-private:
-    unsigned int m_id;
-
-    int m_attribCount = 0;
-
-    const IndexBuffer* m_pIndexBuffer;
+    static Shared<VertexArray> create();
 };

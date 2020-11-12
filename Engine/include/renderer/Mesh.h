@@ -10,7 +10,7 @@ class Mesh
 public:
     Mesh() {};
 
-    VertexBuffer vertexBuffer;
-    IndexBuffer indexBuffer;
-    VertexArray vertexArray;
+    Shared<VertexBuffer> vertexBuffer;
+    Shared<IndexBuffer> indexBuffer;
+    Shared<VertexArray> vertexArray;
 };
