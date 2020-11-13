@@ -28,8 +28,6 @@ public:
 
     virtual ~Texture2D() = default;
 
-    //Texture2D(Texture2D&& texture);
-
     static Shared<Texture2D> create(const std::string& file);
     static Shared<Texture2D> create(int width, int height, GLenum dataFormat = GL_RGBA8);
 

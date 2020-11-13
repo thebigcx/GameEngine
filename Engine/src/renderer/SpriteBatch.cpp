@@ -42,7 +42,7 @@ Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
     BufferLayout layout = {
         { Shader::DataType::Vec2,  "aPos"      },
         { Shader::DataType::Vec2,  "aTexCoord" },
-        { Shader::DataType::Color, "aColor"    }
+        { Shader::DataType::Vec4,  "aColor"    }
     };
 
     batch->m_mesh.indexBuffer = IndexBuffer::create(0);

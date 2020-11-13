@@ -49,8 +49,6 @@ struct BufferElement
 
             case Type::Mat4:
             case Type::dMat4:    return 16;
-            
-            case Type::Color:   return 4;
 
             default:                        return 0;
         }
@@ -67,8 +65,7 @@ struct BufferElement
             case Type::Vec3:
             case Type::Vec4:
             case Type::Mat3:
-            case Type::Mat4:
-            case Type::Color:   return componentCount() * sizeof(float);
+            case Type::Mat4:    return componentCount() * sizeof(float);
 
             case Type::Bool:
             case Type::bVec2:

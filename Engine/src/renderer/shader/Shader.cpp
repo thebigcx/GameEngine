@@ -4,7 +4,12 @@
 #include <util/Timer.h>
 #include <platform/GLShader.h>
 
-Shared<Shader> Shader::createFromFile(const std::string& vsPath, const std::string& fsPath)
+Shared<Shader> Shader::createFromFile(const std::string& path)
 {
-    return createShared<GLShader>(vsPath, fsPath);
+    return createShared<GLShader>(path);
+}
+
+Shared<Shader> Shader::createFromSource(const std::string& vertSource, const std::string& fragSource)
+{
+    return createShared<GLShader>(vertSource, fragSource);
 }

@@ -1,8 +1,18 @@
 #include <platform/GLShader.h>
+#include <io/FileReader.h>
 
-GLShader::GLShader(const std::string& vert, const std::string& frag)
+#include <cstring>
+
+GLShader::GLShader(const std::string& path)
 {
-    ShaderSource source = parseShader(vert, frag);
+    std::string source = FileReader::readFile(path);
+    ShaderSource shaderSource = preProcess(source);
+    compileShader(shaderSource);
+}
+
+GLShader::GLShader(const std::string& vertSource, const std::string& fragSource)
+{
+    ShaderSource source = { vertSource, fragSource };
     compileShader(source);
 }
 
@@ -14,39 +24,40 @@ GLShader::~GLShader()
     }
 }
 
-ShaderSource GLShader::parseShader(const std::string& vsPath, const std::string& fsPath)
+ShaderSource GLShader::preProcess(const std::string& source)
 {
-    std::string vertSource;
-    std::string fragSource;
-    std::ifstream vShaderFile;
-    std::ifstream fShaderFile;
+    ShaderSource shaderSource;
 
-    try
+    const char* typeFlag = "#shader";
+
+    size_t pos = source.find(typeFlag);
+
+    while (pos != std::string::npos)
     {
-        // Open files
-        vShaderFile.open(vsPath);
-        fShaderFile.open(fsPath);
+        size_t begin = pos + std::strlen(typeFlag) + 1;
+        size_t eol = source.find_first_of("\n", pos);
+        std::string type = source.substr(begin, eol - begin);
 
-        std::stringstream vShaderStream, fShaderStream;
+        size_t nextLine = source.find_first_not_of("\n", eol);
+        pos = source.find(typeFlag, nextLine);
 
-        // Read file's buffer contents into streams
-        vShaderStream << vShaderFile.rdbuf();
-        fShaderStream << fShaderFile.rdbuf();
-
-        // Close file handlers
-        vShaderFile.close();
-        fShaderFile.close();
-
-        // Convert stream into string
-        vertSource = vShaderStream.str();
-        fragSource = fShaderStream.str();
+        if (pos == std::string::npos)
+        {
+            if (type == "vertex")
+                shaderSource.vertex = source.substr(nextLine);
+            else if (type == "fragment")
+                shaderSource.fragment = source.substr(nextLine);
+        }
+        else
+        {
+            if (type == "vertex")
+                shaderSource.vertex = source.substr(nextLine, pos - nextLine);
+            else if (type == "fragment")
+                shaderSource.fragment = source.substr(nextLine, pos - nextLine);
+        }
     }
-    catch (std::ifstream::failure e)
-    {
-        std::cout << "Failed to read shader source: " << e.what() << "\n";
-    }
 
-    return { vertSource, fragSource };
+    return shaderSource;
 }
 
 bool GLShader::compileShader(const ShaderSource& source)
@@ -114,36 +125,139 @@ void GLShader::unbind() const
     glUseProgram(0);
 }
 
-void GLShader::setUniform(const std::string& name, int value)
+void GLShader::setInt(const std::string& name, int value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform1i(location, value);
 }
-
-void GLShader::setUniform(const std::string& name, bool value)
+    
+void GLShader::setInt2(const std::string& name, const math::Vector2i& value)
 {
-    setUniform(name, static_cast<int>(value));
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform2i(location, value.x, value.y);
 }
 
-void GLShader::setUniform(const std::string& name, float value)
+void GLShader::setInt3(const std::string& name, const math::Vector3i& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform3i(location, value.x, value.y, value.z);
+}
+
+void GLShader::setInt4(const std::string& name, const math::Vector4i& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform4i(location, value.x, value.y, value.z, value.w);
+}
+
+void GLShader::setFloat(const std::string& name, float value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform1f(location, value);
 }
 
-void GLShader::setUniform(const std::string& name, const math::Vector4f& value)
+void GLShader::setFloat2(const std::string& name, const math::Vector2f& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform2f(location, value.x, value.y);
+}
+
+void GLShader::setFloat3(const std::string& name, const math::Vector3f& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform3f(location, value.x, value.y, value.z);
+}
+
+void GLShader::setFloat4(const std::string& name, const math::Vector4f& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform4f(location, value.x, value.y, value.z, value.w);
 }
 
-void GLShader::setUniform(const std::string& name, const Color& value)
+void GLShader::setUint(const std::string& name, unsigned int value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
-    glUniform4f(location, value.r, value.g, value.b, value.a);
+    glUniform1ui(location, value);
 }
 
-void GLShader::setUniform(const std::string& name, const math::Matrix4f& value)
+void GLShader::setUint2(const std::string& name, math::Vector2u& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform2ui(location, value.x, value.y);
+}
+
+void GLShader::setUint3(const std::string& name, math::Vector3u& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform3ui(location, value.x, value.y, value.z);
+}
+
+void GLShader::setUint4(const std::string& name, math::Vector4u& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform4ui(location, value.x, value.y, value.z, value.w);
+}
+
+void GLShader::setFloatArray(const std::string& name, float* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform1fv(location, count, value);
+}
+
+void GLShader::setFloat2Array(const std::string& name, math::Vector2f* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform2fv(location, count, &(value->x));
+}
+
+void GLShader::setFloat3Array(const std::string& name, math::Vector3f* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform3fv(location, count, &(value->x));
+}
+
+void GLShader::setFloat4Array(const std::string& name, math::Vector4f* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform4fv(location, count, &(value->x));
+}
+
+void GLShader::setIntArray(const std::string& name, int* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform1iv(location, count, value);
+}
+
+void GLShader::setInt2Array(const std::string& name, math::Vector2i* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform2iv(location, count, &(value->x));
+}
+
+void GLShader::setInt3Array(const std::string& name, math::Vector3i* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform3iv(location, count, &(value->x));
+}
+
+void GLShader::setInt4Array(const std::string& name, math::Vector4i* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform4iv(location, count, &(value->x));
+}
+
+void GLShader::setUintArray(const std::string& name, unsigned int* value, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniform1uiv(location, count, value);
+}
+
+void GLShader::setMatrix3(const std::string& name, const math::Matrix3f& value)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniformMatrix3fv(location, 1, GL_FALSE, math::buffer(value));
+}
+
+void GLShader::setMatrix4(const std::string& name, const math::Matrix4f& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, math::buffer(value));

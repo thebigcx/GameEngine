@@ -37,8 +37,7 @@ void GLVertexArray::addVertexBuffer(Shared<VertexBuffer> buffer)
             case Type::Vec3:
             case Type::Vec4:
             case Type::Mat3:
-            case Type::Mat4:
-            case Type::Color:   type = GL_FLOAT; break;
+            case Type::Mat4:    type = GL_FLOAT; break;
 
             case Type::Bool:
             case Type::bVec2:

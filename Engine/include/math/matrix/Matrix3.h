@@ -98,11 +98,6 @@ public:
         return *this;
     }
 
-    static const T* buffer(const Matrix<3, 3, T>& mat)
-    {
-        return &(mat[0].x);
-    }
-
     std::string str()
     {
         std::string s;
@@ -149,6 +144,14 @@ public:
 
 private:
     ColumnType m_cells[3];
+
+    friend const T* buffer<>(const Matrix<3, 3, T>& mat);
 };
+
+typedef Matrix<3, 3, float>        Matrix3f;
+typedef Matrix<3, 3, int>          Matrix3i;
+typedef Matrix<3, 3, long>         Matrix3l;
+typedef Matrix<3, 3, double>       Matrix3d;
+typedef Matrix<3, 3, unsigned int> Matrix3u;
 
 }

@@ -21,11 +21,11 @@ void Renderer2D::init()
 
     data.textureShader = ShaderFactory::textureShader();
     data.textureShader->bind();
-    data.textureShader->setUniform("projection", data.projectionMatrix);
+    data.textureShader->setMatrix4("projection", data.projectionMatrix);
 
     data.textShader = ShaderFactory::textShader();
     data.textShader->bind();
-    data.textShader->setUniform("projection", data.projectionMatrix);
+    data.textShader->setMatrix4("projection", data.projectionMatrix);
 
     data.framebufferShader = ShaderFactory::framebufferShader();
 
@@ -52,7 +52,7 @@ void Renderer2D::setClearColor(const Color& color)
 void Renderer2D::render(const Mesh& mesh, const math::Matrix4f& transform, const Texture2D& texture, Shader& shader)
 {
     shader.bind();
-    shader.setUniform("transform", transform);
+    shader.setMatrix4("transform", transform);
     texture.bind();
 
     mesh.vertexArray->bind();
@@ -96,8 +96,8 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
 
     // Set render states
     data.textShader->bind();
-    data.textShader->setUniform("transform", math::identity<float>());
-    data.textShader->setUniform("textColor", color);
+    data.textShader->setMatrix4("transform", math::identity<float>());
+    data.textShader->setFloat4("textColor", math::Vector4f(color.r, color.g, color.b, color.a));
     m_textMesh->vertexArray->bind();
     font.getTextureAtlas()->bind();
 

@@ -2,18 +2,18 @@
 
 Shared<Shader> ShaderFactory::textureShader()
 {
-    auto shader = Shader::createFromFile("shaders/texture.vert", "shaders/texture.frag");
+    auto shader = Shader::createFromFile("shaders/texture.glsl");
     return shader;
 }
 
 Shared<Shader> ShaderFactory::textShader()
 {
-    auto shader = Shader::createFromFile("shaders/text.vert", "shaders/text.frag");
+    auto shader = Shader::createFromFile("shaders/text.glsl");
     return shader;
 }
 
 Shared<Shader> ShaderFactory::framebufferShader()
 {
-    auto shader = Shader::createFromFile("shaders/framebuffer.vert", "shaders/framebuffer.frag");
+    auto shader = Shader::createFromFile("shaders/framebuffer.glsl");
     return shader;
 }

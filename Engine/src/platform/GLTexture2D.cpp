@@ -72,14 +72,6 @@ GLTexture2D::~GLTexture2D()
     glDeleteTextures(1, &m_id);
 }
 
-/*GLTexture2D::GLTexture2D(GLTexture2D&& texture)
-{
-    m_id = texture.m_id;
-    texture.m_id = 0;
-    m_mipmapped = texture.m_mipmapped;
-    m_size = texture.m_size;
-}*/
-
 void GLTexture2D::setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat)
 {
     glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
