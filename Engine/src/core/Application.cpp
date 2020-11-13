@@ -7,6 +7,7 @@
 #include <events/EventDispatcher.h>
 #include <renderer/Renderer2D.h>
 #include <util/Time.h>
+#include <renderer/RenderCommand.h>
 
 Application* Application::m_instance = nullptr;
 
@@ -16,7 +17,7 @@ Application::Application()
     m_instance = this;
 
     math::Random::initSeed();
-    Console::init();
+    RenderCommand::init();
     SoundEngine::init();
     EventDispatcher::setupCallbacks();
     Renderer2D::init();
