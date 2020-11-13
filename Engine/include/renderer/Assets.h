@@ -24,12 +24,12 @@ class AssetList : public IAssetList
     friend class Assets;
 
 public:
-    void add(const std::string& key, T& asset)
+    void add(const std::string& key, Shared<T> asset)
     {
-        m_assets.insert(std::make_pair(key, std::move(asset)));
+        m_assets.insert(std::make_pair(key, asset));
     }
 
-    T& get(const std::string& key)
+    Shared<T> get(const std::string& key)
     {
         if (!exists(key))
         {
@@ -55,7 +55,7 @@ public:
     }
 
 private:
-    std::unordered_map<std::string, T> m_assets;
+    std::unordered_map<std::string, Shared<T>> m_assets;
 };
 
 class Assets
@@ -69,7 +69,7 @@ public:
     }
 
     template<typename T>
-    static void add(const std::string& key, T& asset)
+    static void add(const std::string& key, Shared<T> asset)
     {
         if (m_instance.m_lists.find(typeid(T)) == m_instance.m_lists.end())
         {
@@ -80,7 +80,7 @@ public:
     }
 
     template<typename T>
-    static T& get(const std::string& key)
+    static Shared<T> get(const std::string& key)
     {
         if (!listExists<T>())
         {

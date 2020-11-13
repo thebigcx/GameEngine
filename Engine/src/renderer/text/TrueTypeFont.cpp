@@ -67,7 +67,7 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
             continue;
         }
 
-        m_texture->updatePixels(x, 0, g->bitmap.width, g->bitmap.rows, g->bitmap.buffer, GL_RED);
+        m_texture->setData(x, 0, g->bitmap.width, g->bitmap.rows, g->bitmap.buffer, GL_RED);
 
         m_glyphs[i].advance.x = g->advance.x >> 6;
         m_glyphs[i].advance.y = g->advance.y >> 6;

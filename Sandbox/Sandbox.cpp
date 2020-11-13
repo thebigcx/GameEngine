@@ -3,7 +3,7 @@
 Sandbox::Sandbox()
 {
     Shared<Texture2D> texture = Texture2D::create("Sandbox/assets/terrain.png");
-    Assets::add<Texture2D>("texture", *texture);
+    Assets::add<Texture2D>("texture", texture);
 
     m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
     SoundEngine::play(*m_soundSource, true);

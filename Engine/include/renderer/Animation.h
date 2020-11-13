@@ -12,7 +12,7 @@ class Animation
 public:
     Animation() {};
 
-    static Shared<Animation> create(const Texture2D& texture);
+    static Shared<Animation> create(Shared<Texture2D> texture);
 
     void pushFrame(const FloatRect& frame);
     void setFrames(const std::initializer_list<FloatRect> frames);
@@ -41,7 +41,7 @@ public:
     }
 
 private:
-    const Texture2D* m_pTexture;
+    Shared<Texture2D> m_pTexture;
     std::vector<FloatRect> m_frames;
 
     int m_currentFrameIndex = 0;

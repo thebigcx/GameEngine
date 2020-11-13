@@ -26,40 +26,21 @@ public:
         ClampToEdge = GL_CLAMP_TO_EDGE
     };
 
-    Texture2D() {}
+    virtual ~Texture2D() = default;
 
-    ~Texture2D();
-
-    Texture2D(Texture2D&& texture);
+    //Texture2D(Texture2D&& texture);
 
     static Shared<Texture2D> create(const std::string& file);
     static Shared<Texture2D> create(int width, int height, GLenum dataFormat = GL_RGBA8);
 
-    void updatePixels(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA);
-    void setParameter(Parameter parameter, Value value);
+    virtual void setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA) = 0;
+    virtual void setParameter(Parameter parameter, Value value) = 0;
 
-    void bind(int slot = 0) const;
-    void unbind(int slot = 0) const;
+    virtual void bind(int slot = 0) const = 0;
+    virtual void unbind(int slot = 0) const = 0;
 
-    math::Vector2f getSize() const;
+    virtual float getWidth() const = 0;
+    virtual float getHeight() const = 0;
 
-    inline unsigned int getId() const
-    {
-        return m_id;
-    }
-
-    // TEMP
-    inline void setId(int id)
-    {
-        m_id = id;
-    }
-
-private:
-    unsigned int m_id = 0;
-
-    bool m_mipmapped = false;
-    GLenum m_internalFormat;
-    GLenum m_dataFormat;
-
-    math::Vector2f m_size;
+    virtual unsigned int getId() const = 0;
 };

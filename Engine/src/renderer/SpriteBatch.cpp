@@ -63,16 +63,16 @@ void SpriteBatch::start()
     m_mesh.vertexArray->bind();
 }
 
-void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
+void SpriteBatch::renderSprite(Shared<Texture2D> texture, const Sprite& sprite)
 {
     // TODO: figure out why this used to cause segfault
     if (m_pLastTexture == nullptr)
     {
-        m_pLastTexture = &texture;
+        m_pLastTexture = texture;
     }
     else if (m_pLastTexture != nullptr)
     {
-        if (texture.getId() != m_pLastTexture->getId())
+        if (texture->getId() != m_pLastTexture->getId())
         {
             swapTexture(texture);
         }
@@ -102,8 +102,8 @@ void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
         auto rect = sprite.getTextureRect();
         
         // Convert Vector2u to math::Vector2f
-        auto texPos = math::Vector2f(rect.x, rect.y) / math::Vector2f(texture.getSize().x, texture.getSize().y);
-        auto texSize = math::Vector2f(rect.width, rect.height) / math::Vector2f(texture.getSize().x, texture.getSize().y);
+        auto texPos = math::Vector2f(rect.x, rect.y) / math::Vector2f(texture->getWidth(), texture->getHeight());
+        auto texSize = math::Vector2f(rect.width, rect.height) / math::Vector2f(texture->getWidth(), texture->getHeight());
 
         vertices[i].texCoord = texPos;
         vertices[i].texCoord += Sprite::positions[i] * texSize;
@@ -117,24 +117,24 @@ void SpriteBatch::renderSprite(const Texture2D& texture, const Sprite& sprite)
     }
 }
 
-void SpriteBatch::renderSprite(const Texture2D& texture, const math::Vector2f& position, const math::Vector2f& size)
+void SpriteBatch::renderSprite(Shared<Texture2D> texture, const math::Vector2f& position, const math::Vector2f& size)
 {
     Sprite sprite(position, size, Color(1, 1, 1, 1));
-    sprite.setTextureRect(FloatRect(0, 0, texture.getSize().x, texture.getSize().y));
+    sprite.setTextureRect(FloatRect(0, 0, texture->getWidth(), texture->getHeight()));
     renderSprite(texture, sprite);
 }
 
-void SpriteBatch::renderSprite(const Texture2D& texture, const math::Vector2f& position, const math::Vector2f& size, const FloatRect& texRect)
+void SpriteBatch::renderSprite(Shared<Texture2D> texture, const math::Vector2f& position, const math::Vector2f& size, const FloatRect& texRect)
 {
     Sprite sprite(position, size, Color(1, 1, 1, 1));
     sprite.setTextureRect(texRect);
     renderSprite(texture, sprite);
 }
 
-void SpriteBatch::swapTexture(const Texture2D& texture)
+void SpriteBatch::swapTexture(Shared<Texture2D> texture)
 {
     flush();
-    m_pLastTexture = &texture;
+    m_pLastTexture = texture;
 }
 
 void SpriteBatch::flush()

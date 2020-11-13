@@ -20,12 +20,12 @@ public:
 
     void setTransformMatrix(const math::Matrix4f& transform);
     void start();
-    void renderSprite(const Texture2D& texture, const Sprite& quad);
-    void renderSprite(const Texture2D& texture, const math::Vector2f& position, const math::Vector2f& size);
-    void renderSprite(const Texture2D& texture, const math::Vector2f& position, const math::Vector2f& size, const FloatRect& texRect);
+    void renderSprite(Shared<Texture2D> texture, const Sprite& quad);
+    void renderSprite(Shared<Texture2D> texture, const math::Vector2f& position, const math::Vector2f& size);
+    void renderSprite(Shared<Texture2D> texture, const math::Vector2f& position, const math::Vector2f& size, const FloatRect& texRect);
     void flush();
 
-    void swapTexture(const Texture2D& texture);
+    void swapTexture(Shared<Texture2D> texture);
 
     // For Renderer class
     inline const Mesh& getMesh() const { return m_mesh; }
@@ -36,7 +36,7 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<unsigned int> m_indices;
 
-    const Texture2D* m_pLastTexture = nullptr;
+    Shared<Texture2D> m_pLastTexture = nullptr;
     Shader* m_pShader;
 
     math::Matrix4f m_transform;

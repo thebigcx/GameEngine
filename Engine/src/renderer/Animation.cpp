@@ -1,9 +1,9 @@
 #include <renderer/Animation.h>
 
-Shared<Animation> Animation::create(const Texture2D& texture)
+Shared<Animation> Animation::create(Shared<Texture2D> texture)
 {
     auto animation = createShared<Animation>();
-    animation->m_pTexture = &texture;
+    animation->m_pTexture = texture;
     return animation;
 }
 
