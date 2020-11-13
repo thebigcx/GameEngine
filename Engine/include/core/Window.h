@@ -6,6 +6,7 @@
 #include <string>
 
 #include <util/Image.h>
+#include <renderer/GraphicsContext.h>
 
 class Window
 {
@@ -18,6 +19,8 @@ public:
     bool isOpen();
 
     void pollEvents();
+
+    void onUpdate();
 
     inline GLFWwindow* getNative() const
     {
@@ -43,6 +46,8 @@ public:
 
 private:
     GLFWwindow* m_window;
+
+    Unique<GraphicsContext> m_context;
 
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 

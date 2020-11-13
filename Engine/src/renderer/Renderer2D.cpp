@@ -3,6 +3,7 @@
 #include <renderer/MeshFactory.h>
 #include <renderer/shader/ShaderFactory.h>
 #include <math/matrix/MatrixTransform.h>
+#include <renderer/RenderCommand.h>
 
 #include <GL/glew.h>
 
@@ -17,7 +18,6 @@ void Renderer2D::init()
     auto size = Application::get().getWindow().getSize();
 
     data.projectionMatrix = math::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
-    //data.projectionMatrix = math::Matrix4f::perspective(90.f, 1280.f / 720.f, -1.f, 100.f);
 
     data.textureShader = ShaderFactory::textureShader();
     data.textureShader->bind();
@@ -35,18 +35,17 @@ void Renderer2D::init()
 
 void Renderer2D::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    RenderCommand::clear();
 }
 
 void Renderer2D::endFrame()
 {
-    auto& window = Application::get().getWindow();
-    glfwSwapBuffers(window.getNative());
+    
 }
 
 void Renderer2D::setClearColor(const Color& color)
 {
-    glClearColor(color.r, color.g, color.b, color.a);
+    RenderCommand::setClearColor(color.r, color.g, color.b, color.a);
 }
 
 void Renderer2D::render(const Mesh& mesh, const math::Matrix4f& transform, const Texture2D& texture, Shader& shader)
@@ -57,7 +56,7 @@ void Renderer2D::render(const Mesh& mesh, const math::Matrix4f& transform, const
 
     mesh.vertexArray->bind();
 
-    glDrawElements(GL_TRIANGLES, mesh.vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, 0);
+    RenderCommand::renderIndexed(mesh.vertexArray);
     data.drawCalls++;
 }
 
@@ -129,7 +128,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     // Draw the text mesh
     m_textMesh->vertexBuffer->bind();
     m_textMesh->vertexBuffer->update(coords, sizeof(coords));
-    glDrawElements(GL_TRIANGLES, 6 * text.size(), GL_UNSIGNED_INT, 0);
+    RenderCommand::renderIndexed(m_textMesh->vertexArray);
 
     BlendMode::Alpha.unbind();
 }
@@ -140,7 +139,7 @@ void Renderer2D::renderFramebuffer(const Framebuffer& fbo)
     data.framebufferShader->bind();
 
     m_framebufferMesh->vertexArray->bind();
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    RenderCommand::renderIndexed(m_framebufferMesh->vertexArray);
 }
 
 void Renderer2D::render(IRenderable2D& renderable)

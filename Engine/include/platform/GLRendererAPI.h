@@ -12,5 +12,5 @@ public:
     void setClearColor(float r, float g, float b, float a) override;
     void clear() override;
 
-    void renderIndexed(Shared<VertexArray> array) override;
+    void renderIndexed(Shared<VertexArray> array, uint32_t count = 0, uint32_t offset = 0) override;
 };

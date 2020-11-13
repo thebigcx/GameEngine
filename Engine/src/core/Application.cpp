@@ -48,6 +48,8 @@ void Application::run()
         {
             layer->update();
         }
+
+        m_window.onUpdate();
     }
 }
 

@@ -22,9 +22,12 @@ Window::Window(int width, int height, const std::string& title)
 
     glViewport(0, 0, 1920, 1080);
 
-    glfwMakeContextCurrent(m_window);
+    m_context = GraphicsContext::create(m_window);
+    m_context->init();
 
-    glewInit();
+    //glfwMakeContextCurrent(m_window);
+
+    //glewInit();
 }
 
 Window::~Window()
@@ -37,6 +40,11 @@ math::Vector2i Window::getSize() const
     int width, height;
     glfwGetWindowSize(m_window, &width, &height);
     return math::Vector2i(width, height);
+}
+
+void Window::onUpdate()
+{
+    m_context->swapBuffers();
 }
 
 bool Window::isOpen()

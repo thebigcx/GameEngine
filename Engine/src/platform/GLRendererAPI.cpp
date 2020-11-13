@@ -37,7 +37,12 @@ void GLRendererAPI::clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void GLRendererAPI::renderIndexed(Shared<VertexArray> array)
+void GLRendererAPI::renderIndexed(Shared<VertexArray> array, uint32_t count, uint32_t offset)
 {
-    glDrawElements(GL_TRIANGLES, array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, 0);
+    if (count == 0)
+    {
+        count = array->getIndexBuffer()->getCount();
+    }
+
+    glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(uint32_t)));
 }
