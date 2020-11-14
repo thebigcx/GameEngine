@@ -29,7 +29,7 @@ public:
         m_assets.insert(std::make_pair(key, asset));
     }
 
-    Shared<T> get(const std::string& key)
+    const Shared<T>& get(const std::string& key)
     {
         if (!exists(key))
         {
@@ -80,7 +80,7 @@ public:
     }
 
     template<typename T>
-    static Shared<T> get(const std::string& key)
+    static const Shared<T>& get(const std::string& key)
     {
         if (!listExists<T>())
         {

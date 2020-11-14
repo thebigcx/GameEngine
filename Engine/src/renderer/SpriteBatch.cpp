@@ -17,18 +17,18 @@ Shared<SpriteBatch> SpriteBatch::create(int size)
 {
     if (Renderer2D::data.textureShader == nullptr)
     {
-        return create(*(ShaderFactory::textureShader()), size);
+        return create(ShaderFactory::textureShader(), size);
     }
-    return create(*(Renderer2D::data.textureShader), size);
+    return create(Renderer2D::data.textureShader, size);
 }
 
-Shared<SpriteBatch> SpriteBatch::create(Shader& shader, int size)
+Shared<SpriteBatch> SpriteBatch::create(const Shared<Shader>& shader, int size)
 {
     auto batch = createShared<SpriteBatch>();
     
     ENGINE_ASSERT(batch != nullptr, "Batch creation failed.");
 
-    batch->m_pShader = &shader;
+    batch->m_pShader = shader;
     
     if (size > MAX_SPRITES)
     {
@@ -63,24 +63,21 @@ void SpriteBatch::start()
     m_mesh.vertexArray->bind();
 }
 
-void SpriteBatch::renderSprite(Shared<Texture2D> texture, const Sprite& sprite)
+void SpriteBatch::renderSprite(const Shared<Texture2D>& texture, const Sprite& sprite)
 {
-    // TODO: figure out why this used to cause segfault
     if (m_pLastTexture == nullptr)
     {
         m_pLastTexture = texture;
     }
-    else if (m_pLastTexture != nullptr)
+    if (m_pLastTexture->getId() != texture->getId())
     {
-        if (texture->getId() != m_pLastTexture->getId())
-        {
-            swapTexture(texture);
-        }
+        swapTexture(texture);
     }
 
     if (m_vertices.size() / Sprite::getVertexCount() > MAX_SPRITES)
     {
         Console::err("Too many sprites for batch!");
+        return;
     }
 
     for (int i = 0 ; i < Sprite::indices.size() ; i++)
@@ -88,14 +85,14 @@ void SpriteBatch::renderSprite(Shared<Texture2D> texture, const Sprite& sprite)
         m_indices.push_back(Sprite::indices[i] + m_vertices.size());
     }
 
-    auto transform = sprite.getTransform();
+    auto transform = sprite.getTransform().matrix();
     
     std::array<Vertex, 4> vertices;
 
     // Populate the vertices array with the sprite's vertices
     for (int i = 0 ; i < 4 ; i++)
     {
-        auto pos = transform.matrix() * math::Vector4f(Sprite::positions[i].x, Sprite::positions[i].y, 0, 1);
+        auto pos = transform * math::Vector4f(Sprite::positions[i].x, Sprite::positions[i].y, 0, 1);
         vertices[i].position = math::Vector2f(pos.x, pos.y);
 
         // Change "origin" of texCoord, then scale it
@@ -117,21 +114,21 @@ void SpriteBatch::renderSprite(Shared<Texture2D> texture, const Sprite& sprite)
     }
 }
 
-void SpriteBatch::renderSprite(Shared<Texture2D> texture, const math::Vector2f& position, const math::Vector2f& size)
+void SpriteBatch::renderSprite(const Shared<Texture2D>& texture, const math::Vector2f& position, const math::Vector2f& size)
 {
-    Sprite sprite(position, size, Color(1, 1, 1, 1));
+    Sprite sprite(position, size, math::Vector4f(1, 1, 1, 1));
     sprite.setTextureRect(FloatRect(0, 0, texture->getWidth(), texture->getHeight()));
     renderSprite(texture, sprite);
 }
 
-void SpriteBatch::renderSprite(Shared<Texture2D> texture, const math::Vector2f& position, const math::Vector2f& size, const FloatRect& texRect)
+void SpriteBatch::renderSprite(const Shared<Texture2D>& texture, const math::Vector2f& position, const math::Vector2f& size, const FloatRect& texRect)
 {
-    Sprite sprite(position, size, Color(1, 1, 1, 1));
+    Sprite sprite(position, size, math::Vector4f(1, 1, 1, 1));
     sprite.setTextureRect(texRect);
     renderSprite(texture, sprite);
 }
 
-void SpriteBatch::swapTexture(Shared<Texture2D> texture)
+void SpriteBatch::swapTexture(const Shared<Texture2D>& texture)
 {
     flush();
     m_pLastTexture = texture;
@@ -147,7 +144,7 @@ void SpriteBatch::flush()
     m_mesh.vertexBuffer->update(&m_vertices[0], sizeof(Vertex) * m_vertices.size());
     m_mesh.indexBuffer->update(&m_indices[0], m_indices.size());
 
-    Renderer2D::render(m_mesh, m_transform, *m_pLastTexture, *m_pShader);
+    Renderer2D::render(m_mesh, m_transform, m_pLastTexture, m_pShader);
 }
 
 void SpriteBatch::setTransformMatrix(const math::Matrix4f& matrix)

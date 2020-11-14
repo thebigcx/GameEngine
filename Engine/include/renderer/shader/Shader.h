@@ -11,7 +11,6 @@
 #include <math/vector/Vector4.h>
 #include <math/matrix/Matrix4.h>
 #include <math/matrix/Matrix3.h>
-#include <util/Color.h>
 #include <core/Core.h>
 
 struct ShaderSource

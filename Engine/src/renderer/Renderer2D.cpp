@@ -43,16 +43,16 @@ void Renderer2D::endFrame()
     
 }
 
-void Renderer2D::setClearColor(const Color& color)
+void Renderer2D::setClearColor(const math::Vector4f& color)
 {
     RenderCommand::setClearColor(color.r, color.g, color.b, color.a);
 }
 
-void Renderer2D::render(const Mesh& mesh, const math::Matrix4f& transform, const Texture2D& texture, Shader& shader)
+void Renderer2D::render(const Mesh& mesh, const math::Matrix4f& transform, const Shared<Texture2D>& texture, const Shared<Shader>& shader)
 {
-    shader.bind();
-    shader.setMatrix4("transform", transform);
-    texture.bind();
+    shader->bind();
+    shader->setMatrix4("transform", transform);
+    texture->bind();
 
     mesh.vertexArray->bind();
 
@@ -60,12 +60,12 @@ void Renderer2D::render(const Mesh& mesh, const math::Matrix4f& transform, const
     data.drawCalls++;
 }
 
-void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const math::Vector2f& position, const Color& color)
+void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const math::Vector2f& position, const math::Vector4f& color)
 {
     renderText(text, font, position, math::Vector2f(font.getCharacterSize()), color);
 }
 
-void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const math::Vector2f& position, const math::Vector2f& size, const Color& color)
+void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const math::Vector2f& position, const math::Vector2f& size, const math::Vector4f& color)
 {
     struct GlyphVertex
     {
@@ -100,7 +100,8 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     m_textMesh->vertexArray->bind();
     font.getTextureAtlas()->bind();
 
-    BlendMode::Alpha.bind();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     int n = 0;
 
@@ -130,7 +131,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     m_textMesh->vertexBuffer->update(coords, sizeof(coords));
     RenderCommand::renderIndexed(m_textMesh->vertexArray);
 
-    BlendMode::Alpha.unbind();
+    glDisable(GL_BLEND);
 }
 
 void Renderer2D::renderFramebuffer(const Framebuffer& fbo)

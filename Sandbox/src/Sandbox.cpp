@@ -14,17 +14,17 @@ Sandbox::Sandbox()
 
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
-    for (int i = 0; i < 999; i++)
+    for (int i = 0; i < 9999; i++)
     {
         Sprite sprite((i % 10) * 100, (i / 10) * 100, 100, 100);
 
-        sprite.setColor(Color(1, 1, 1, 1));
+        sprite.setColor(math::Vector4f(1, 1, 1, 1));
         sprite.setTextureRect(FloatRect(i, i, 16.f, 16.f));
 
         m_sprites.push_back(sprite);
     }
 
-    Renderer2D::setClearColor(Color(0, 0, 0, 1));
+    Renderer2D::setClearColor(math::Vector4f(0, 0, 0, 1));
 
     m_animation = Animation::create(Assets::get<Texture2D>("texture"));
     m_animation->setFrames({ 
@@ -77,7 +77,7 @@ void Sandbox::update()
 
     m_batch->flush();
 
-    Renderer2D::renderText("Hello, world!", *m_font, math::Vector2f(500, 500), math::Vector2f(80, 80), Color(1, 0, 0, 1));
+    Renderer2D::renderText("Hello, world!", *m_font, math::Vector2f(500, 500), math::Vector2f(80, 80), math::Vector4f(1, 0, 0, 1));
 
     m_framebuffer->unbind();
 

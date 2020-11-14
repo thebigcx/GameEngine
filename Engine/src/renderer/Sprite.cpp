@@ -6,13 +6,13 @@ Sprite::Sprite()
 }
 
 Sprite::Sprite(const math::Vector2f& position, const math::Vector2f& size)
-: m_color(Color(1, 1, 1, 1))
+: m_color(math::Vector4f(1, 1, 1, 1))
 {
     m_position = position;
     m_size = size;
 }
 
-Sprite::Sprite(const math::Vector2f& position, const math::Vector2f& size, const Color& color)
+Sprite::Sprite(const math::Vector2f& position, const math::Vector2f& size, const math::Vector4f& color)
 : m_color(color)
 {
     m_position = position;
@@ -20,7 +20,7 @@ Sprite::Sprite(const math::Vector2f& position, const math::Vector2f& size, const
 }
 
 Sprite::Sprite(const FloatRect& rect)
-: m_color(Color(1, 1, 1, 1))
+: m_color(math::Vector4f(1, 1, 1, 1))
 {
     m_position = rect.getPosition();
     m_size = rect.getSize();
@@ -37,7 +37,7 @@ void Sprite::setTextureRect(const FloatRect& rect)
     m_texRect = rect;
 }
 
-void Sprite::setColor(const Color& color)
+void Sprite::setColor(const math::Vector4f& color)
 {
     m_color = color;
 }

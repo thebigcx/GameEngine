@@ -7,28 +7,12 @@
 #include <math/Math.h>
 #include <math/matrix/MatrixTransform.h>
 
-class Transform
+struct Transform
 {
-public:
-    Transform() 
-        : scale(1.f) {}
-
-    ~Transform() {}
-
-    Transform(const math::Vector2f& position_) 
-        : position(position_) {}
-
-    Transform(const math::Vector2f& position_, float rotation_)
-        : position(position_), rotation(rotation_) {}
-
-    Transform(const math::Vector2f& position_, float rotation_, const math::Vector2f& scale_) 
-        : position(position_), rotation(rotation_), scale(scale_) {}
-
-    Transform(const math::Vector2f& position_, float rotation_, const math::Vector2f& scale_, const math::Vector2f& origin_)
-        : position(position_), rotation(rotation_), scale(scale_), origin(origin_) {}
-
-    Transform(const math::Vector2f& position_, const math::Vector2f& scale_)
-        : position(position_), scale(scale_) {}
+    math::Vector2f position;
+    float rotation = 0.f;
+    math::Vector2f scale = math::Vector2f(1.f, 1.f);
+    math::Vector2f origin;
 
     math::Matrix4f matrix() const
     {
@@ -44,14 +28,4 @@ public:
 
         return mat;
     }
-
-    math::Vector2f position;
-    float rotation;
-    math::Vector2f origin;
-    math::Vector2f scale;
-
-    static Transform None;
-
-private:
-    math::Matrix4f m_matrix;
 };

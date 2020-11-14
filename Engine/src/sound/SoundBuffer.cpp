@@ -100,6 +100,5 @@ void SoundBuffer::destroy()
 
 SoundBuffer::~SoundBuffer()
 {
-    // TODO: fix
     destroy();
 }

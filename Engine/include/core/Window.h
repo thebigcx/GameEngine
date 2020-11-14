@@ -11,8 +11,6 @@
 class Window
 {
 public:
-    Window() {}
-
     Window(int width, int height, const std::string& title);
     ~Window();
 
@@ -44,11 +42,12 @@ public:
 
     void setOpacity(float opacity);
 
+    static Unique<Window> create(int width, int height, const std::string& title);
+
 private:
     GLFWwindow* m_window;
 
     Unique<GraphicsContext> m_context;
 
-    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
+    void init(int width, int height, const std::string& title);
 };

@@ -53,7 +53,7 @@ public:
 
     Transform getTransform() const
     {
-        return Transform(m_position, m_rotation, m_size, m_origin);
+        return { m_position, m_rotation, m_size, m_origin };
     }
 
 protected:

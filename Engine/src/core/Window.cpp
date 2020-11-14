@@ -1,6 +1,18 @@
 #include <core/Window.h>
 
+#include <iostream>
+
+static void GLFWErrorCallback(int error, const char* description)
+{
+    std::cout << "GLFW error (" << error << "): " << description << "\n";
+}
+
 Window::Window(int width, int height, const std::string& title)
+{
+    init(width, height, title);
+}
+
+void Window::init(int width, int height, const std::string& title)
 {
     glfwInit();
 
@@ -8,31 +20,34 @@ Window::Window(int width, int height, const std::string& title)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    glfwSetErrorCallback(GLFWErrorCallback);
+
     m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
     if (m_window == nullptr)
     {
-        printf("Failed to create GLFW window.\n");
+        std::cout << "Failed to create GLFW window.\n";
         glfwTerminate();
     }
 
     glfwSetWindowSizeLimits(m_window, 200, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
-
-    glfwSwapInterval(1);
 
     glViewport(0, 0, 1920, 1080);
 
     m_context = GraphicsContext::create(m_window);
     m_context->init();
 
-    //glfwMakeContextCurrent(m_window);
-
-    //glewInit();
+    glfwSwapInterval(1);
 }
 
 Window::~Window()
 {
     glfwDestroyWindow(m_window);
+}
+
+Unique<Window> Window::create(int width, int height, const std::string& title)
+{
+    return createUnique<Window>(width, height, title);
 }
 
 math::Vector2i Window::getSize() const

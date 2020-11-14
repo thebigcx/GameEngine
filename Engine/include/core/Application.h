@@ -29,7 +29,7 @@ public:
 private:
     static Application* m_instance;
 
-    Window m_window;
+    Unique<Window> m_window;
 
     std::vector<Layer*> m_layers;
 

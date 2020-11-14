@@ -8,11 +8,11 @@
 #include <core/KeyCodes.h>
 
 #include <util/Image.h>
-#include <util/Color.h>
 #include <util/Timer.h>
 #include <util/OrthographicCamera.h>
 #include <util/Time.h>
 #include <util/Transform.h>
+#include <util/io/Files.h>
 
 #include <renderer/SpriteBatch.h>
 #include <renderer/Buffer.h>
@@ -37,9 +37,6 @@
 #include <math/vector/Vector4.h>
 #include <math/matrix/Matrix3.h>
 #include <math/matrix/Matrix4.h>
-
-#include <io/FileWriter.h>
-#include <io/FileReader.h>
 
 #include <sound/SoundEngine.h>
 #include <sound/SoundSource.h>

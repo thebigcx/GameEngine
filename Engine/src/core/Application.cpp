@@ -12,9 +12,10 @@
 Application* Application::m_instance = nullptr;
 
 Application::Application()
-: m_window(1280, 720, "Application")
 {
     m_instance = this;
+
+    m_window = Window::create(1280, 720, "Application");
 
     math::Random::initSeed();
     RenderCommand::init();
@@ -26,11 +27,11 @@ Application::Application()
 
 void Application::run()
 {
-    while (m_window.isOpen())
+    while (m_window->isOpen())
     {
         Time::update();
 
-        m_window.pollEvents();
+        m_window->pollEvents();
         
         while (!m_eventStack.isEmpty())
         {
@@ -49,13 +50,13 @@ void Application::run()
             layer->update();
         }
 
-        m_window.onUpdate();
+        m_window->onUpdate();
     }
 }
 
 void Application::quit()
 {
-    m_window.close();
+    m_window->close();
 }
 
 void Application::addLayer(Layer* layer)
@@ -80,5 +81,5 @@ void Application::onWindowResize(int width, int height)
 
 Window& Application::getWindow()
 {
-    return m_window;
+    return *m_window;
 }

@@ -1,11 +1,11 @@
 #include <platform/GLShader.h>
-#include <io/FileReader.h>
+#include <util/io/Files.h>
 
 #include <cstring>
 
 GLShader::GLShader(const std::string& path)
 {
-    std::string source = FileReader::readFile(path);
+    std::string source = Files::readFile(path);
     ShaderSource shaderSource = preProcess(source);
     compileShader(shaderSource);
 }
