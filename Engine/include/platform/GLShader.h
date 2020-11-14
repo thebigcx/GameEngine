@@ -13,34 +13,34 @@ public:
     void bind() const override;
 
     void setInt(const std::string& name, int value) override;
-    void setInt2(const std::string& name, const math::Vector2i& value) override;
-    void setInt3(const std::string& name, const math::Vector3i& value) override;
-    void setInt4(const std::string& name, const math::Vector4i& value) override;
+    void setInt2(const std::string& name, const math::ivec2& value) override;
+    void setInt3(const std::string& name, const math::ivec3& value) override;
+    void setInt4(const std::string& name, const math::ivec4& value) override;
 
     void setFloat(const std::string& name, float value) override;
-    void setFloat2(const std::string& name, const math::Vector2f& value) override;
-    void setFloat3(const std::string& name, const math::Vector3f& value) override;
-    void setFloat4(const std::string& name, const math::Vector4f& value) override;
+    void setFloat2(const std::string& name, const math::vec2& value) override;
+    void setFloat3(const std::string& name, const math::vec3& value) override;
+    void setFloat4(const std::string& name, const math::vec4& value) override;
 
     void setUint(const std::string& name, unsigned int value) override;
-    void setUint2(const std::string& name, math::Vector2u& value) override;
-    void setUint3(const std::string& name, math::Vector3u& value) override;
-    void setUint4(const std::string& name, math::Vector4u& value) override;
+    void setUint2(const std::string& name, math::uvec2& value) override;
+    void setUint3(const std::string& name, math::uvec3& value) override;
+    void setUint4(const std::string& name, math::uvec4& value) override;
 
     void setFloatArray(const std::string& name, float* value, uint32_t count) override;
-    void setFloat2Array(const std::string& name, math::Vector2f* value, uint32_t count) override;
-    void setFloat3Array(const std::string& name, math::Vector3f* value, uint32_t count) override;
-    void setFloat4Array(const std::string& name, math::Vector4f* value, uint32_t count) override;
+    void setFloat2Array(const std::string& name, math::vec2* value, uint32_t count) override;
+    void setFloat3Array(const std::string& name, math::vec3* value, uint32_t count) override;
+    void setFloat4Array(const std::string& name, math::vec4* value, uint32_t count) override;
 
     void setIntArray(const std::string& name, int* value, uint32_t count) override;
-    void setInt2Array(const std::string& name, math::Vector2i* value, uint32_t count) override;
-    void setInt3Array(const std::string& name, math::Vector3i* value, uint32_t count) override;
-    void setInt4Array(const std::string& name, math::Vector4i* value, uint32_t count) override;
+    void setInt2Array(const std::string& name, math::ivec2* value, uint32_t count) override;
+    void setInt3Array(const std::string& name, math::ivec3* value, uint32_t count) override;
+    void setInt4Array(const std::string& name, math::ivec4* value, uint32_t count) override;
 
     void setUintArray(const std::string& name, unsigned int* value, uint32_t count) override;
 
-    void setMatrix3(const std::string& name, const math::Matrix3f& value) override;
-    void setMatrix4(const std::string& name, const math::Matrix4f& value) override;
+    void setMatrix3(const std::string& name, const math::mat3& value) override;
+    void setMatrix4(const std::string& name, const math::mat4& value) override;
 
     inline unsigned int getId() const override { return m_id; }
 

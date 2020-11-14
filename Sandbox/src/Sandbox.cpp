@@ -18,13 +18,13 @@ Sandbox::Sandbox()
     {
         Sprite sprite((i % 10) * 100, (i / 10) * 100, 100, 100);
 
-        sprite.setColor(math::Vector4f(1, 1, 1, 1));
+        sprite.setColor(math::vec4(1, 1, 1, 1));
         sprite.setTextureRect(FloatRect(i, i, 16.f, 16.f));
 
         m_sprites.push_back(sprite);
     }
 
-    Renderer2D::setClearColor(math::Vector4f(0, 0, 0, 1));
+    Renderer2D::setClearColor(math::vec4(0, 0, 0, 1));
 
     m_animation = Animation::create(Assets::get<Texture2D>("texture"));
     m_animation->setFrames({ 
@@ -42,16 +42,16 @@ void Sandbox::update()
     const float speed = 0.5;
 
     if (Input::isKeyPressed(Key::A))
-        m_camera.translate(math::Vector2f(-speed * dt, 0));
+        m_camera.translate(math::vec2(-speed * dt, 0));
 
     if (Input::isKeyPressed(Key::D))
-        m_camera.translate(math::Vector2f(speed * dt, 0));
+        m_camera.translate(math::vec2(speed * dt, 0));
 
     if (Input::isKeyPressed(Key::W))
-        m_camera.translate(math::Vector2f(0, speed * dt));
+        m_camera.translate(math::vec2(0, speed * dt));
 
     if (Input::isKeyPressed(Key::S))
-        m_camera.translate(math::Vector2f(0, -speed * dt));
+        m_camera.translate(math::vec2(0, -speed * dt));
 
     if (Input::isKeyPressed(Key::Escape))
     {
@@ -77,7 +77,7 @@ void Sandbox::update()
 
     m_batch->flush();
 
-    Renderer2D::renderText("Hello, world!", *m_font, math::Vector2f(500, 500), math::Vector2f(80, 80), math::Vector4f(1, 0, 0, 1));
+    Renderer2D::renderText("Hello, world!", *m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
 
     m_framebuffer->unbind();
 

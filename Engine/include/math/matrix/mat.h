@@ -4,12 +4,12 @@ namespace math
 {
 
 template<int width, int height, typename T>
-class Matrix;
+class mat;
 
 template<int width, int height, typename T>
-const T* buffer(const Matrix<width, height, T>& mat)
+const T* buffer(const mat<width, height, T>& val)
 {
-    return &(mat.m_cells[0].x);
+    return &(val.m_cells[0].x);
 }
 
 }

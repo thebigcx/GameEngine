@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <math/vector/Vector2.h>
+#include <math/vector/vec2.h>
 #include <core/Core.h>
 
 struct Image

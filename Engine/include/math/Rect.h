@@ -1,6 +1,6 @@
 #pragma once
 
-#include <math/vector/Vector2.h>
+#include <math/vector/vec2.h>
 
 template<typename T>
 class Rect
@@ -16,12 +16,12 @@ public:
 	{
 	}
 
-	Rect(const math::Vector<2, T>& pos, const math::Vector<2, T>& size)
+	Rect(const math::vec<2, T>& pos, const math::vec<2, T>& size)
 		: x(pos.x), y(pos.y), width(size.x), height(size.y)
 	{
 	}
 
-	bool contains(const math::Vector<2, T>& point) const
+	bool contains(const math::vec<2, T>& point) const
 	{
 		return point.x > x && point.x < x + width && point.y > y && point.y < y + height;
 	}
@@ -32,19 +32,19 @@ public:
 			   other.y < y + height && other.y + other.height > y;
 	}
 
-	math::Vector<2, T> getPosition() const
+	math::vec<2, T> getPosition() const
 	{
-		return math::Vector<2, T>(x, y);
+		return math::vec<2, T>(x, y);
 	}
 
-	math::Vector<2, T> getSize() const
+	math::vec<2, T> getSize() const
 	{
-		return math::Vector<2, T>(width, height);
+		return math::vec<2, T>(width, height);
 	}
 
-	math::Vector<2, T> getIntersection(Rect<T> other) const
+	math::vec<2, T> getIntersection(Rect<T> other) const
 	{
-		math::Vector<2, T> amount;
+		math::vec<2, T> amount;
 		amount.x = abs(other.x - x + width);
 		amount.y = abs(other.y - y + height);
 		return amount;

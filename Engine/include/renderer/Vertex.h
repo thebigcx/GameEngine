@@ -1,11 +1,11 @@
 #pragma once
 
-#include <math/vector/Vector2.h>
-#include <math/vector/Vector4.h>
+#include <math/vector/vec2.h>
+#include <math/vector/vec4.h>
 
 struct Vertex
 {
-    math::Vector2f position;
-    math::Vector2f texCoord;
-    math::Vector4f color;
+    math::vec2 position;
+    math::vec2 texCoord;
+    math::vec4 color;
 };

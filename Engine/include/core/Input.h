@@ -2,7 +2,7 @@
 
 #include <core/KeyCodes.h>
 #include <core/Application.h>
-#include <math/vector/Vector2.h>
+#include <math/vector/vec2.h>
 
 #include <GLFW/glfw3.h>
 
@@ -18,7 +18,7 @@ public:
 
     static bool isKeyPressed(Key key);
 
-    static math::Vector2i getMousePosition();
+    static math::ivec2 getMousePosition();
     
     static bool isMousePressed(MouseButton button);
 };

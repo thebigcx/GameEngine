@@ -131,19 +131,19 @@ void GLShader::setInt(const std::string& name, int value)
     glUniform1i(location, value);
 }
     
-void GLShader::setInt2(const std::string& name, const math::Vector2i& value)
+void GLShader::setInt2(const std::string& name, const math::ivec2& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform2i(location, value.x, value.y);
 }
 
-void GLShader::setInt3(const std::string& name, const math::Vector3i& value)
+void GLShader::setInt3(const std::string& name, const math::ivec3& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform3i(location, value.x, value.y, value.z);
 }
 
-void GLShader::setInt4(const std::string& name, const math::Vector4i& value)
+void GLShader::setInt4(const std::string& name, const math::ivec4& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform4i(location, value.x, value.y, value.z, value.w);
@@ -155,19 +155,19 @@ void GLShader::setFloat(const std::string& name, float value)
     glUniform1f(location, value);
 }
 
-void GLShader::setFloat2(const std::string& name, const math::Vector2f& value)
+void GLShader::setFloat2(const std::string& name, const math::vec2& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform2f(location, value.x, value.y);
 }
 
-void GLShader::setFloat3(const std::string& name, const math::Vector3f& value)
+void GLShader::setFloat3(const std::string& name, const math::vec3& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform3f(location, value.x, value.y, value.z);
 }
 
-void GLShader::setFloat4(const std::string& name, const math::Vector4f& value)
+void GLShader::setFloat4(const std::string& name, const math::vec4& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform4f(location, value.x, value.y, value.z, value.w);
@@ -179,19 +179,19 @@ void GLShader::setUint(const std::string& name, unsigned int value)
     glUniform1ui(location, value);
 }
 
-void GLShader::setUint2(const std::string& name, math::Vector2u& value)
+void GLShader::setUint2(const std::string& name, math::uvec2& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform2ui(location, value.x, value.y);
 }
 
-void GLShader::setUint3(const std::string& name, math::Vector3u& value)
+void GLShader::setUint3(const std::string& name, math::uvec3& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform3ui(location, value.x, value.y, value.z);
 }
 
-void GLShader::setUint4(const std::string& name, math::Vector4u& value)
+void GLShader::setUint4(const std::string& name, math::uvec4& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform4ui(location, value.x, value.y, value.z, value.w);
@@ -203,19 +203,19 @@ void GLShader::setFloatArray(const std::string& name, float* value, uint32_t cou
     glUniform1fv(location, count, value);
 }
 
-void GLShader::setFloat2Array(const std::string& name, math::Vector2f* value, uint32_t count)
+void GLShader::setFloat2Array(const std::string& name, math::vec2* value, uint32_t count)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform2fv(location, count, &(value->x));
 }
 
-void GLShader::setFloat3Array(const std::string& name, math::Vector3f* value, uint32_t count)
+void GLShader::setFloat3Array(const std::string& name, math::vec3* value, uint32_t count)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform3fv(location, count, &(value->x));
 }
 
-void GLShader::setFloat4Array(const std::string& name, math::Vector4f* value, uint32_t count)
+void GLShader::setFloat4Array(const std::string& name, math::vec4* value, uint32_t count)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform4fv(location, count, &(value->x));
@@ -227,19 +227,19 @@ void GLShader::setIntArray(const std::string& name, int* value, uint32_t count)
     glUniform1iv(location, count, value);
 }
 
-void GLShader::setInt2Array(const std::string& name, math::Vector2i* value, uint32_t count)
+void GLShader::setInt2Array(const std::string& name, math::ivec2* value, uint32_t count)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform2iv(location, count, &(value->x));
 }
 
-void GLShader::setInt3Array(const std::string& name, math::Vector3i* value, uint32_t count)
+void GLShader::setInt3Array(const std::string& name, math::ivec3* value, uint32_t count)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform3iv(location, count, &(value->x));
 }
 
-void GLShader::setInt4Array(const std::string& name, math::Vector4i* value, uint32_t count)
+void GLShader::setInt4Array(const std::string& name, math::ivec4* value, uint32_t count)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniform4iv(location, count, &(value->x));
@@ -251,13 +251,13 @@ void GLShader::setUintArray(const std::string& name, unsigned int* value, uint32
     glUniform1uiv(location, count, value);
 }
 
-void GLShader::setMatrix3(const std::string& name, const math::Matrix3f& value)
+void GLShader::setMatrix3(const std::string& name, const math::mat3& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniformMatrix3fv(location, 1, GL_FALSE, math::buffer(value));
 }
 
-void GLShader::setMatrix4(const std::string& name, const math::Matrix4f& value)
+void GLShader::setMatrix4(const std::string& name, const math::mat4& value)
 {
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, math::buffer(value));

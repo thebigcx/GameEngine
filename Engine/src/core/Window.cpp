@@ -50,11 +50,11 @@ Unique<Window> Window::create(int width, int height, const std::string& title)
     return createUnique<Window>(width, height, title);
 }
 
-math::Vector2i Window::getSize() const
+math::ivec2 Window::getSize() const
 {
     int width, height;
     glfwGetWindowSize(m_window, &width, &height);
-    return math::Vector2i(width, height);
+    return math::ivec2(width, height);
 }
 
 void Window::onUpdate()
@@ -97,7 +97,7 @@ void Window::setTitle(const std::string& title)
     glfwSetWindowTitle(m_window, title.c_str());
 }
 
-void Window::setSize(const math::Vector2u& size)
+void Window::setSize(const math::uvec2& size)
 {
     glfwSetWindowSize(m_window, size.x, size.y);
 }

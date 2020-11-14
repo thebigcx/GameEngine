@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <memory>
 
-#include <math/vector/Vector2.h>
+#include <math/vector/vec2.h>
 #include <core/Core.h>
 #include <renderer/Texture2D.h>
 
@@ -12,9 +12,9 @@
 
 struct Glyph
 {
-    math::Vector2f advance;
-    math::Vector2f size;
-    math::Vector2f pos;
+    math::vec2 advance;
+    math::vec2 size;
+    math::vec2 pos;
 
     float texOffset;
 };
@@ -29,12 +29,12 @@ public:
     static Shared<TrueTypeFont> create(const std::string& path, int characterSize);
 
     inline const std::unordered_map<char, Glyph>& getGlyphs() const { return m_glyphs; }
-    inline const math::Vector2f& getAtlasSize() const { return m_atlasSize; }
+    inline const math::vec2& getAtlasSize() const { return m_atlasSize; }
     inline Shared<Texture2D> getTextureAtlas() const { return m_texture; }
     inline int getCharacterSize() const { return m_characterSize; }
 
 private:
-    math::Vector2f m_atlasSize;
+    math::vec2 m_atlasSize;
 
     Shared<Texture2D> m_texture;
     int m_characterSize = 0;

@@ -1,25 +1,25 @@
 #include <util/OrthographicCamera.h>
 
-#include <math/matrix/MatrixTransform.h>
+#include <math/matrix/matrix_transform.h>
 #include <iostream>
 
-OrthographicCamera::OrthographicCamera(const math::Vector2f& position)
+OrthographicCamera::OrthographicCamera(const math::vec2& position)
     : m_position(position)
 {
 
 }
 
-void OrthographicCamera::setPosition(const math::Vector2f& position)
+void OrthographicCamera::setPosition(const math::vec2& position)
 {
     m_position = position;
 }
 
-void OrthographicCamera::translate(const math::Vector2f& vec)
+void OrthographicCamera::translate(const math::vec2& vec)
 {
     m_position += vec;
 }
 
-math::Matrix4f OrthographicCamera::getViewMatrix() const
+math::mat4 OrthographicCamera::getViewMatrix() const
 {
-    return math::lookAt(math::Vector3f(m_position, -1), math::Vector3f(m_position, 1), math::Vector3f(0, 1, 0));
+    return math::lookAt(math::vec3(m_position, -1), math::vec3(m_position, 1), math::vec3(0, 1, 0));
 }

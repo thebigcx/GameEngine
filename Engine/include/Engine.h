@@ -30,13 +30,13 @@
 #include <renderer/Animation.h>
 #include <renderer/Assets.h>
 
-#include <math/Math.h>
+#include <math/math.h>
 #include <math/Rect.h>
-#include <math/vector/Vector2.h>
-#include <math/vector/Vector3.h>
-#include <math/vector/Vector4.h>
-#include <math/matrix/Matrix3.h>
-#include <math/matrix/Matrix4.h>
+#include <math/vector/vec2.h>
+#include <math/vector/vec3.h>
+#include <math/vector/vec4.h>
+#include <math/matrix/mat3.h>
+#include <math/matrix/mat4.h>
 
 #include <sound/SoundEngine.h>
 #include <sound/SoundSource.h>

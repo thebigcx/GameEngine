@@ -4,6 +4,6 @@ namespace math
 {
 
 template<unsigned int length, typename T>
-class Vector;
+class vec;
 
 }

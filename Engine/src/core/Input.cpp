@@ -2,12 +2,12 @@
 
 #include <GLFW/glfw3.h>
 
-math::Vector2i Input::getMousePosition()
+math::ivec2 Input::getMousePosition()
 {
     auto& window = Application::get().getWindow();
     double x, y;
     glfwGetCursorPos(window.getNative(), &x, &y);
-    return math::Vector2i(x, window.getSize().y - y);
+    return math::ivec2(x, window.getSize().y - y);
 }
     
 bool Input::isMousePressed(MouseButton button)
