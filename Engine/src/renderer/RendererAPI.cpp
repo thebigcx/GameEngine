@@ -1,5 +1,5 @@
 #include <renderer/RendererAPI.h>
-#include <platform/GLRendererAPI.h>
+#include <platform/GL/GLRendererAPI.h>
 
 Unique<RendererAPI> RendererAPI::create()
 {

@@ -1,5 +1,5 @@
 #include <renderer/Buffer.h>
-#include <platform/GLBuffer.h>
+#include <platform/GL/GLBuffer.h>
 
 Shared<VertexBuffer> VertexBuffer::create(size_t size)
 {

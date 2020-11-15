@@ -2,7 +2,7 @@
 
 #include <renderer/shader/Shader.h>
 #include <util/Timer.h>
-#include <platform/GLShader.h>
+#include <platform/GL/GLShader.h>
 
 Shared<Shader> Shader::createFromFile(const std::string& path)
 {

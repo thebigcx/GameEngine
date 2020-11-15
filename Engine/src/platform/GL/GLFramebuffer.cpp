@@ -1,4 +1,4 @@
-#include <platform/GLFramebuffer.h>
+#include <platform/GL/GLFramebuffer.h>
 
 #include <GL/glew.h>
 

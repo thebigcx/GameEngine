@@ -1,4 +1,4 @@
-#include <platform/GLBuffer.h>
+#include <platform/GL/GLBuffer.h>
 
 #include "renderer/Buffer.h"
 

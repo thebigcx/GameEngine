@@ -1,4 +1,4 @@
-#include <platform/GLTexture2D.h>
+#include <platform/GL/GLTexture2D.h>
 
 #include <iostream>
 

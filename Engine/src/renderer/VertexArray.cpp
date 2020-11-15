@@ -1,5 +1,5 @@
 #include <renderer/VertexArray.h>
-#include <platform/GLVertexArray.h>
+#include <platform/GL/GLVertexArray.h>
 
 Shared<VertexArray> VertexArray::create()
 {

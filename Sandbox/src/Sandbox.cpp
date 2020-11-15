@@ -14,7 +14,7 @@ Sandbox::Sandbox()
 
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
-    for (int i = 0; i < 9999; i++)
+    for (int i = 0; i < 20000; i++)
     {
         Sprite sprite((i % 10) * 100, (i / 10) * 100, 100, 100);
 

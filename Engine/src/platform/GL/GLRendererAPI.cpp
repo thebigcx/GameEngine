@@ -1,4 +1,4 @@
-#include <platform/GLRendererAPI.h>
+#include <platform/GL/GLRendererAPI.h>
 
 void GLAPIENTRY messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const char* message, const void* userParam)
 {

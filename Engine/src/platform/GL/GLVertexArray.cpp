@@ -1,4 +1,4 @@
-#include <platform/GLVertexArray.h>
+#include <platform/GL/GLVertexArray.h>
 
 GLVertexArray::GLVertexArray()
 {

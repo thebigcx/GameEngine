@@ -1,4 +1,4 @@
-#include <platform/GLShader.h>
+#include <platform/GL/GLShader.h>
 #include <util/io/Files.h>
 
 #include <cstring>

@@ -1,7 +1,7 @@
 #include <renderer/Texture2D.h>
 
 #include <util/Image.h>
-#include <platform/GLTexture2D.h>
+#include <platform/GL/GLTexture2D.h>
 
 #include <iostream>
 

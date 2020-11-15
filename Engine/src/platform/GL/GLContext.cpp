@@ -1,4 +1,4 @@
-#include <platform/GLContext.h>
+#include <platform/GL/GLContext.h>
 
 GLContext::GLContext(GLFWwindow* window)
     : m_window(window)
