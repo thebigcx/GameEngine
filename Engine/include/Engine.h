@@ -14,9 +14,8 @@
 #include <util/Transform.h>
 #include <util/io/Files.h>
 
-#include <renderer/SpriteBatch.h>
+
 #include <renderer/Buffer.h>
-#include <renderer/Sprite.h>
 #include <renderer/shader/Shader.h>
 #include <renderer/Texture2D.h>
 #include <renderer/VertexArray.h>

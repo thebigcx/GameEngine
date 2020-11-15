@@ -10,19 +10,7 @@ Sandbox::Sandbox()
     
     m_framebuffer = Framebuffer::create(1280, 720);
 
-    m_batch = SpriteBatch::create();
-
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
-
-    for (int i = 0; i < 20000; i++)
-    {
-        Sprite sprite((i % 10) * 100, (i / 10) * 100, 100, 100);
-
-        sprite.setColor(math::vec4(1, 1, 1, 1));
-        sprite.setTextureRect(FloatRect(i, i, 16.f, 16.f));
-
-        m_sprites.push_back(sprite);
-    }
 
     Renderer2D::setClearColor(math::vec4(0, 0, 0, 1));
 
@@ -63,19 +51,15 @@ void Sandbox::update()
     m_framebuffer->bind();
     Renderer2D::clear();
 
-    m_sprites[0].setTextureRect(m_animation->getCurrentFrame());
     m_animation->update();
 
-    m_batch->setTransformMatrix(m_camera.getViewMatrix());
-    m_batch->start();
+    Renderer2D::data.transform = m_camera.getViewMatrix();
+    Renderer2D::startBatch();
 
-    for (auto& sprite : m_sprites)
-    {
-        sprite.setRotation(rot);
-        m_batch->renderSprite(Assets::get<Texture2D>("texture"), sprite);
-    }
+    //Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(), math::vec2(100, 100), m_animation->getCurrentFrame(), 0, math::vec4(1, 1, 1, 1));
+    Renderer2D::renderQuad(math::vec2(), math::vec2(100, 100), 0, math::vec4(0, 1, 0, 1));
 
-    m_batch->flush();
+    Renderer2D::endBatch();
 
     Renderer2D::renderText("Hello, world!", *m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
 
