@@ -11,9 +11,10 @@
 #include <renderer/Vertex.h>
 #include <math/Rect.h>
 
-struct RenderData
+struct Renderer2DData
 {
     uint64_t drawCalls;
+
     math::mat4 projectionMatrix;
     Shared<Shader> textureShader;
     Shared<Shader> textShader;
@@ -29,6 +30,11 @@ struct RenderData
     const int MAX_SPRITES = 100000;
 };
 
+struct Statistics
+{
+    uint64_t drawCalls;
+};
+
 class Renderer2D
 {
 public:
@@ -39,7 +45,6 @@ public:
 
     static void setClearColor(const math::vec4& color);
 
-    static void render(const Mesh& mesh, const math::mat4& transform, const Shared<Texture2D>& texture, const Shared<Shader>& shader);
     static void render(IRenderable2D& renderable);
 
     static void startBatch();
@@ -48,15 +53,15 @@ public:
     static void endBatch();
     static void flushBatch();
 
-    static void renderText(const std::string& text, const TrueTypeFont& font, const math::vec2& position, const math::vec4& color = math::vec4(0, 0, 0, 0));
-    static void renderText(const std::string& text, const TrueTypeFont& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
+    static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color = math::vec4(0, 0, 0, 0));
+    static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
 
     static void renderFramebuffer(const Framebuffer& fbo);
 
-    static RenderData data;
+    static Renderer2DData data;
+    //static Statistics stats;
 
 private:
     static Shared<Mesh> m_textMesh;
     static Shared<Mesh> m_framebufferMesh;
-        
 };

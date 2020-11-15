@@ -180,3 +180,16 @@ public:
 
     static Shared<IndexBuffer> create(unsigned int count);
 };
+
+class UniformBuffer
+{
+public:
+    virtual ~UniformBuffer() = default;
+
+    virtual void update();
+
+    virtual void bind() const = 0;
+    virtual void unbind() const = 0;
+
+    static Shared<UniformBuffer> create();
+};

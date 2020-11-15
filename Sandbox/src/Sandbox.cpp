@@ -26,6 +26,7 @@ Sandbox::Sandbox()
 
 void Sandbox::update()
 {
+    Timer timer;
     auto dt = Time::getDelta();
     const float speed = 0.5;
 
@@ -53,6 +54,9 @@ void Sandbox::update()
 
     m_animation->update();
 
+    auto mesh = MeshFactory::cubeMesh(1);
+    Renderer3D::render(*mesh, math::mat4(), Assets::get<Texture2D>("texture"), Renderer2D::data.textureShader);
+
     Renderer2D::data.transform = m_camera.getViewMatrix();
     Renderer2D::startBatch();
 
@@ -61,7 +65,7 @@ void Sandbox::update()
 
     Renderer2D::endBatch();
 
-    Renderer2D::renderText("Hello, world!", *m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
+    Renderer2D::renderText("Hello, world!", m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
 
     m_framebuffer->unbind();
 
@@ -70,6 +74,8 @@ void Sandbox::update()
     Renderer2D::renderFramebuffer(*m_framebuffer);
 
     Renderer2D::endFrame();
+
+    Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));
 }
 
 void Sandbox::handleEvent(const Event& event)

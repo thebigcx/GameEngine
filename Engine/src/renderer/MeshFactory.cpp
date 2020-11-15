@@ -55,3 +55,8 @@ Shared<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
 
     return quad;
 }
+
+Shared<Mesh> MeshFactory::cubeMesh(float size)
+{
+    return quadMesh(0, 0, size, size);
+}

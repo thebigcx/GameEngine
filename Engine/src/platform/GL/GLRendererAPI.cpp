@@ -32,9 +32,61 @@ void GLRendererAPI::setClearColor(float r, float g, float b, float a)
     glClearColor(r, g, b, a);
 }
 
-void GLRendererAPI::clear()
+void GLRendererAPI::clear(uint32_t buffer)
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GLenum result;
+
+    if (buffer & (uint32_t)RendererBufferType::Color)
+        result |= GL_COLOR_BUFFER_BIT;
+
+    if (buffer & (uint32_t)RendererBufferType::Depth)
+        result |= GL_DEPTH_BUFFER_BIT;
+
+    if (buffer & (uint32_t)RendererBufferType::Stencil)
+        result |= GL_STENCIL_BUFFER_BIT;
+
+    glClear(result);
+}
+
+void GLRendererAPI::setDepthTesting(bool enabled)
+{
+    if (enabled)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+}
+
+void GLRendererAPI::setBlend(bool enabled)
+{
+    if (enabled)
+        glEnable(GL_BLEND);
+    else
+        glDisable(GL_BLEND);
+}
+
+void GLRendererAPI::setBlendFunction(BlendFunction src, BlendFunction dst)
+{
+    GLenum glsrc, gldst;
+
+    switch (src)
+    {
+        case BlendFunction::Zero: glsrc = GL_ZERO; break;
+        case BlendFunction::One: glsrc = GL_ONE; break;
+        case BlendFunction::SourceAlpha: glsrc = GL_SRC_ALPHA; break;
+        case BlendFunction::DestinationAlpha: glsrc = GL_DST_ALPHA; break;
+        case BlendFunction::OneMinusSourceAlpha: glsrc = GL_ONE_MINUS_SRC_ALPHA; break;
+    }
+
+    switch (dst)
+    {
+        case BlendFunction::Zero: gldst = GL_ZERO; break;
+        case BlendFunction::One: gldst = GL_ONE; break;
+        case BlendFunction::SourceAlpha: gldst = GL_SRC_ALPHA; break;
+        case BlendFunction::DestinationAlpha: gldst = GL_DST_ALPHA; break;
+        case BlendFunction::OneMinusSourceAlpha: gldst = GL_ONE_MINUS_SRC_ALPHA; break;
+    }
+
+    glBlendFunc(glsrc, gldst);
 }
 
 void GLRendererAPI::renderIndexed(Shared<VertexArray> array, uint32_t count, uint32_t offset)

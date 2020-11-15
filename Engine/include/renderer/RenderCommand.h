@@ -21,9 +21,24 @@ public:
         m_api->setClearColor(r, g, b, a);
     }
 
-    static void clear()
+    static void setDepthTesting(bool enabled)
     {
-        m_api->clear();
+        m_api->setDepthTesting(enabled);
+    }
+
+    static void clear(uint32_t buffer)
+    {
+        m_api->clear(buffer);
+    }
+
+    static void setBlend(bool enabled)
+    {
+        m_api->setBlend(enabled);
+    }
+
+    static void setBlendFunction(BlendFunction src, BlendFunction dst)
+    {
+        m_api->setBlendFunction(src, dst);
     }
 
     static void renderIndexed(Shared<VertexArray> array)

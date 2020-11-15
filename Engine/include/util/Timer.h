@@ -39,8 +39,6 @@ public:
     {
         uint64_t duration = getTime();
         double ms = duration * 0.001;
-
-        std::cout << duration << "us (" << ms << "ms)\n";
     }
 
 private:

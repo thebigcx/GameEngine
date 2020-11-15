@@ -7,13 +7,13 @@
 
 #include <GL/glew.h>
 
-RenderData Renderer2D::data;
+Renderer2DData Renderer2D::data;
 Shared<Mesh> Renderer2D::m_textMesh;
 Shared<Mesh> Renderer2D::m_framebufferMesh;
 
 void Renderer2D::init()
 {
-    glDisable(GL_DEPTH_TEST);
+    RenderCommand::setDepthTesting(false);
 
     auto size = Application::get().getWindow().getSize();
 
@@ -57,7 +57,7 @@ void Renderer2D::init()
 
 void Renderer2D::clear()
 {
-    RenderCommand::clear();
+    RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
 }
 
 void Renderer2D::endFrame()
@@ -68,18 +68,6 @@ void Renderer2D::endFrame()
 void Renderer2D::setClearColor(const math::vec4& color)
 {
     RenderCommand::setClearColor(color.r, color.g, color.b, color.a);
-}
-
-void Renderer2D::render(const Mesh& mesh, const math::mat4& transform, const Shared<Texture2D>& texture, const Shared<Shader>& shader)
-{
-    shader->bind();
-    shader->setMatrix4("transform", transform);
-    texture->bind();
-
-    mesh.vertexArray->bind();
-
-    RenderCommand::renderIndexed(mesh.vertexArray);
-    data.drawCalls++;
 }
 
 void Renderer2D::startBatch()
@@ -104,7 +92,14 @@ void Renderer2D::flushBatch()
     data.mesh.vertexBuffer->update(&data.vertices[0], sizeof(Vertex) * data.vertices.size());
     data.mesh.indexBuffer->update(&data.indices[0], data.indices.size());
 
-    render(data.mesh, data.transform, data.activeTexture, data.textureShader);
+    data.textureShader->bind();
+    data.textureShader->setMatrix4("transform", data.transform);
+    data.activeTexture->bind();
+
+    data.mesh.vertexArray->bind();
+
+    RenderCommand::renderIndexed(data.mesh.vertexArray);
+    data.drawCalls++;
 }
 
 void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const FloatRect& texRect, float rotation, math::vec4 color)
@@ -173,12 +168,12 @@ void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, 
     renderSprite(data.whiteTexture, position, size, FloatRect(0, 0, 1, 1), rotation, color);
 }
 
-void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const math::vec2& position, const math::vec4& color)
+void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color)
 {
-    renderText(text, font, position, math::vec2(font.getCharacterSize()), color);
+    renderText(text, font, position, math::vec2(font->getCharacterSize()), color);
 }
 
-void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, const math::vec2& position, const math::vec2& size, const math::vec4& color)
+void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color)
 {
     struct GlyphVertex
     {
@@ -186,7 +181,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
         math::vec2 texCoord;
     };
 
-    math::vec2 scale = size / font.getCharacterSize();
+    math::vec2 scale = size / font->getCharacterSize();
     std::vector<unsigned int> indices;
 
     // Set the indices
@@ -211,10 +206,10 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     data.textShader->setMatrix4("transform", math::identity<float>());
     data.textShader->setFloat4("textColor", math::vec4(color.r, color.g, color.b, color.a));
     m_textMesh->vertexArray->bind();
-    font.getTextureAtlas()->bind();
+    font->getTextureAtlas()->bind();
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    RenderCommand::setBlend(true);
+    RenderCommand::setBlendFunction(BlendFunction::SourceAlpha, BlendFunction::OneMinusSourceAlpha);
 
     int n = 0;
 
@@ -222,7 +217,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); c++)
     {
-        auto& ch = font.getGlyphs().at(*c);
+        auto& ch = font->getGlyphs().at(*c);
 
         math::vec2 pos(x + ch.pos.x * scale.x, -y - ch.pos.y * scale.y);
         math::vec2 size = ch.size * scale;
@@ -233,10 +228,10 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
         if (!size.x || !size.y)
             continue;
 
-        coords[n++] = { math::vec2(pos.x,          -pos.y),          math::vec2(ch.texOffset,                                     0) };
-        coords[n++] = { math::vec2(pos.x + size.x, -pos.y),          math::vec2(ch.texOffset + ch.size.x / font.getAtlasSize().x, 0) };
-        coords[n++] = { math::vec2(pos.x + size.x, -pos.y - size.y), math::vec2(ch.texOffset + ch.size.x / font.getAtlasSize().x, ch.size.y / font.getAtlasSize().y) };
-        coords[n++] = { math::vec2(pos.x,          -pos.y - size.y), math::vec2(ch.texOffset,                                     ch.size.y / font.getAtlasSize().y) };
+        coords[n++] = { math::vec2(pos.x,          -pos.y),          math::vec2(ch.texOffset,                                      0) };
+        coords[n++] = { math::vec2(pos.x + size.x, -pos.y),          math::vec2(ch.texOffset + ch.size.x / font->getAtlasSize().x, 0) };
+        coords[n++] = { math::vec2(pos.x + size.x, -pos.y - size.y), math::vec2(ch.texOffset + ch.size.x / font->getAtlasSize().x, ch.size.y / font->getAtlasSize().y) };
+        coords[n++] = { math::vec2(pos.x,          -pos.y - size.y), math::vec2(ch.texOffset,                                      ch.size.y / font->getAtlasSize().y) };
     }
 
     // Draw the text mesh
@@ -244,7 +239,7 @@ void Renderer2D::renderText(const std::string& text, const TrueTypeFont& font, c
     m_textMesh->vertexBuffer->update(coords, sizeof(coords));
     RenderCommand::renderIndexed(m_textMesh->vertexArray);
 
-    glDisable(GL_BLEND);
+    RenderCommand::setBlend(false);
 }
 
 void Renderer2D::renderFramebuffer(const Framebuffer& fbo)
