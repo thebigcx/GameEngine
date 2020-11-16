@@ -16,10 +16,10 @@ Sandbox::Sandbox()
 
     m_animation = Animation::create(Assets::get<Texture2D>("texture"));
     m_animation->setFrames({ 
-        FloatRect(32, 240, 16, 16), 
-        FloatRect(48, 240, 16, 16),
-        FloatRect(64, 240, 16, 16),
-        FloatRect(80, 240, 16, 16)
+        math::frect(32, 240, 16, 16), 
+        math::frect(48, 240, 16, 16),
+        math::frect(64, 240, 16, 16),
+        math::frect(80, 240, 16, 16)
     });
     m_animation->setFrameInterval(100.f);
 }
@@ -54,18 +54,26 @@ void Sandbox::update()
 
     m_animation->update();
 
-    auto mesh = MeshFactory::cubeMesh(1);
-    Renderer3D::render(*mesh, math::mat4(), Assets::get<Texture2D>("texture"), Renderer2D::data.textureShader);
-
     Renderer2D::data.transform = m_camera.getViewMatrix();
     Renderer2D::startBatch();
 
-    Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(100, 0), math::vec2(100, 100), m_animation->getCurrentFrame(), 0, math::vec4(1, 1, 1, 1));
-    Renderer2D::renderQuad(math::vec2(0, 0), math::vec2(100, 100), 0, math::vec4(1, 0, 1, 1));
+    for (int x = 0; x < 1000; x++)
+    for (int y = 0; y < 1000; y++)
+    {
+        Renderer2D::renderQuad(math::vec2(x * 100, y * 100), math::vec2(100, 100), math::vec4(1, 1, 1, 1));
+    }
 
+    Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(100, 100), math::vec2(100, 100), m_animation->getCurrentFrame());
+    
+    
+    
     Renderer2D::endBatch();
 
     Renderer2D::renderText("Hello, world!", m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
+
+    //auto mesh = MeshFactory::cubeMesh(100);
+    //Renderer3D::render(*mesh, math::mat4(1.f), Assets::get<Texture2D>("texture"), Renderer2D::data.textureShader);
+    //Renderer3D::render(*mesh, math::mat4(1.f), Renderer2D::data.whiteTexture, Renderer2D::data.textureShader);
 
     m_framebuffer->unbind();
 

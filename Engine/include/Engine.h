@@ -31,7 +31,7 @@
 #include <renderer/Assets.h>
 
 #include <math/math.h>
-#include <math/Rect.h>
+#include <math/rect.h>
 #include <math/vector/vec2.h>
 #include <math/vector/vec3.h>
 #include <math/vector/vec4.h>

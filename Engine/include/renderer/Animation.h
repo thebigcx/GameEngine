@@ -4,7 +4,7 @@
 
 #include <core/Core.h>
 #include <util/Time.h>
-#include <math/Rect.h>
+#include <math/rect.h>
 #include <renderer/Texture2D.h>
 
 class Animation
@@ -14,8 +14,8 @@ public:
 
     static Shared<Animation> create(Shared<Texture2D> texture);
 
-    void pushFrame(const FloatRect& frame);
-    void setFrames(const std::initializer_list<FloatRect> frames);
+    void pushFrame(const math::frect& frame);
+    void setFrames(const std::initializer_list<math::frect> frames);
 
     void setFrameInterval(float interval)
     {
@@ -24,7 +24,7 @@ public:
 
     float getFrameInterval() const { return m_interval; }
 
-    const FloatRect& getCurrentFrame() const;
+    const math::frect& getCurrentFrame() const;
 
     inline void update()
     {
@@ -42,7 +42,7 @@ public:
 
 private:
     Shared<Texture2D> m_pTexture;
-    std::vector<FloatRect> m_frames;
+    std::vector<math::frect> m_frames;
 
     int m_currentFrameIndex = 0;
 

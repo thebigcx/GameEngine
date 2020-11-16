@@ -9,7 +9,7 @@
 #include <renderer/IRenderable2D.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/Vertex.h>
-#include <math/Rect.h>
+#include <math/rect.h>
 
 struct Renderer2DData
 {
@@ -47,8 +47,15 @@ public:
     static void render(IRenderable2D& renderable);
 
     static void startBatch();
-    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const FloatRect& texRect, float rotation, math::vec4 color);
-    static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, math::vec4 color);
+
+    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size);
+    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect);
+    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, math::vec4 color);
+    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color);
+    
+    static void renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color);
+    static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color);
+    
     static void endBatch();
     static void flushBatch();
 

@@ -7,17 +7,17 @@ Shared<Animation> Animation::create(Shared<Texture2D> texture)
     return animation;
 }
 
-void Animation::pushFrame(const FloatRect& frame)
+void Animation::pushFrame(const math::frect& frame)
 {
     m_frames.push_back(frame);
 }
 
-void Animation::setFrames(const std::initializer_list<FloatRect> frames)
+void Animation::setFrames(const std::initializer_list<math::frect> frames)
 {
-    m_frames = std::vector<FloatRect>(frames);
+    m_frames = std::vector<math::frect>(frames);
 }
 
-const FloatRect& Animation::getCurrentFrame() const
+const math::frect& Animation::getCurrentFrame() const
 {
     return m_frames[m_currentFrameIndex];
 }

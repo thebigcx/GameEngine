@@ -15,10 +15,10 @@ void Renderer2D::init()
 {
     RenderCommand::setDepthTesting(false);
 
-    auto size = Application::get().getWindow().getSize();
+    auto windowSize = Application::get().getWindow().getSize();
 
-    data.projectionMatrix = math::ortho(0.f, (float)size.x, 0.f, (float)size.y, -1.f, 1.f);
-
+    data.projectionMatrix = math::ortho(0.f, (float)windowSize.x, 0.f, (float)windowSize.y, -1.f, 1.f);
+    
     data.textureShader = ShaderFactory::textureShader();
     data.textureShader->bind();
     data.textureShader->setMatrix4("projection", data.projectionMatrix);
@@ -41,7 +41,7 @@ void Renderer2D::init()
     data.mesh.vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec2, "aPos"      },
+        { Shader::DataType::Vec3, "aPos"      },
         { Shader::DataType::Vec2, "aTexCoord" },
         { Shader::DataType::Vec4, "aColor"    }
     };
@@ -89,6 +89,7 @@ void Renderer2D::flushBatch()
 
     data.textureShader->bind();
     data.textureShader->setMatrix4("transform", data.transform);
+    data.textureShader->setMatrix4("projection", data.projectionMatrix);
     data.activeTexture->bind();
 
     data.mesh.vertexArray->bind();
@@ -97,7 +98,22 @@ void Renderer2D::flushBatch()
     data.drawCalls++;
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const FloatRect& texRect, float rotation, math::vec4 color)
+void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size)
+{
+    renderSprite(texture, position, size, math::frect(0, 0, texture->getWidth(), texture->getHeight()), 0, math::vec4(1, 1, 1, 1));
+}
+
+void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect)
+{
+    renderSprite(texture, position, size, texRect, 0, math::vec2(), math::vec4(1, 1, 1, 1));
+}
+
+void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, math::vec4 color)
+{
+    renderSprite(texture, position, size, texRect, rotation, math::vec2(), color);
+}
+
+void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)
 {
     if (data.activeTexture == nullptr)
     {
@@ -111,9 +127,11 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
         data.activeTexture = texture;
     }
 
-    if (data.vertices.size() / 4 > data.MAX_SPRITES)
+    if (data.vertices.size() > data.MAX_SPRITES * 4 - 100)
     {
-        std::cout << "Too many sprites for batch!\n";
+        flushBatch();
+        data.vertices.clear();
+        data.indices.clear();
     }
 
     uint32_t indices[] = {
@@ -125,7 +143,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
         data.indices.push_back(indices[i] + data.vertices.size());
     }
 
-    Transform t = { position, rotation, size, math::vec2() };
+    Transform t = { position, rotation, size, origin };
     math::mat4 transform = t.matrix();
     
     std::array<Vertex, 4> vertices;
@@ -141,7 +159,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     for (int i = 0 ; i < 4 ; i++)
     {
         math::vec4 pos = transform * math::vec4(positions[i].x, positions[i].y, 0, 1);
-        vertices[i].position = math::vec2(pos.x, pos.y);
+        vertices[i].position = math::vec3(pos.x, pos.y, 0);
 
         // Change "origin" of texCoord, then scale it
         
@@ -160,9 +178,14 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     }
 }
 
-void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, float rotation, math::vec4 color)
+void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color)
 {
-    renderSprite(data.whiteTexture, position, size, FloatRect(0, 0, 1, 1), rotation, color);
+    renderQuad(position, size, 0, color);
+}
+
+void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color)
+{
+    renderSprite(data.whiteTexture, position, size, math::frect(0, 0, 1, 1), rotation, color);
 }
 
 void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color)
