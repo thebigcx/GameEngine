@@ -60,11 +60,6 @@ void Renderer2D::clear()
     RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
 }
 
-void Renderer2D::endFrame()
-{
-    
-}
-
 void Renderer2D::setClearColor(const math::vec4& color)
 {
     RenderCommand::setClearColor(color.r, color.g, color.b, color.a);
@@ -111,6 +106,8 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     if (data.activeTexture->getId() != texture->getId())
     {
         flushBatch();
+        data.vertices.clear();
+        data.indices.clear();
         data.activeTexture = texture;
     }
 
@@ -184,16 +181,17 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     math::vec2 scale = size / font->getCharacterSize();
     std::vector<unsigned int> indices;
 
+    uint32_t quadIndices[] = {
+        0, 1, 2, 2, 3, 0
+    };
+
     // Set the indices
     for (int i = 0 ; i < text.size() ; i++)
+    for (int j = 0; j < 6; j++)
     {
-        indices.push_back(0 + i * 4);
-        indices.push_back(1 + i * 4);
-        indices.push_back(2 + i * 4);
-        indices.push_back(2 + i * 4);
-        indices.push_back(3 + i * 4);
-        indices.push_back(0 + i * 4);
+        indices.push_back(quadIndices[j] + i * 4);
     }
+
     m_textMesh->indexBuffer->update(&indices[0], indices.size());
 
     int x = position.x;

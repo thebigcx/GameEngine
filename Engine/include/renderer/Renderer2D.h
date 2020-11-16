@@ -41,7 +41,6 @@ public:
     static void init();
 
     static void clear();
-    static void endFrame();
 
     static void setClearColor(const math::vec4& color);
 

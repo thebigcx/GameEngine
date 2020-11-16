@@ -60,8 +60,8 @@ void Sandbox::update()
     Renderer2D::data.transform = m_camera.getViewMatrix();
     Renderer2D::startBatch();
 
-    //Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(), math::vec2(100, 100), m_animation->getCurrentFrame(), 0, math::vec4(1, 1, 1, 1));
-    Renderer2D::renderQuad(math::vec2(), math::vec2(100, 100), 0, math::vec4(0, 1, 0, 1));
+    Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(100, 0), math::vec2(100, 100), m_animation->getCurrentFrame(), 0, math::vec4(1, 1, 1, 1));
+    Renderer2D::renderQuad(math::vec2(0, 0), math::vec2(100, 100), 0, math::vec4(1, 0, 1, 1));
 
     Renderer2D::endBatch();
 
@@ -72,8 +72,6 @@ void Sandbox::update()
     Renderer2D::clear();
 
     Renderer2D::renderFramebuffer(*m_framebuffer);
-
-    Renderer2D::endFrame();
 
     Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));
 }
