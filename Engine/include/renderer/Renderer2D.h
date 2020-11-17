@@ -27,6 +27,15 @@ struct Renderer2DData
     math::mat4 transform;
     Mesh mesh;
 
+    Shared<Framebuffer> target;
+
+    static inline const math::vec2 quadPositions[] = {
+        math::vec2(0, 0),
+        math::vec2(0, 1),
+        math::vec2(1, 1),
+        math::vec2(1, 0)
+    };
+
     const int MAX_SPRITES = 100000;
 };
 
@@ -46,6 +55,9 @@ public:
 
     static void render(IRenderable2D& renderable);
 
+    static void setTarget(const Shared<Framebuffer>& framebuffer);
+    static void setTransformMatrix(const math::mat4& matrix);
+    static void startFrame();
     static void startBatch();
 
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size);
@@ -58,16 +70,18 @@ public:
     
     static void endBatch();
     static void flushBatch();
+    static void endFrame();
 
     static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color = math::vec4(0, 0, 0, 0));
     static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
 
     static void renderFramebuffer(const Framebuffer& fbo);
 
-    static Renderer2DData data;
     //static Statistics stats;
 
 private:
     static Shared<Mesh> m_textMesh;
     static Shared<Mesh> m_framebufferMesh;
+
+    static Renderer2DData data;
 };

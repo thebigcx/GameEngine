@@ -11,7 +11,7 @@ Shared<Mesh> MeshFactory::textMesh()
         { Shader::DataType::Vec2, "aPos" },
         { Shader::DataType::Vec2, "aTexCoord" }
     };
-    text->indexBuffer = IndexBuffer::create(0);
+    text->indexBuffer = IndexBuffer::create(6 * 200);
 
     text->vertexBuffer = VertexBuffer::create(sizeof(float) * 4 * 200);
     text->vertexBuffer->setLayout(layout);

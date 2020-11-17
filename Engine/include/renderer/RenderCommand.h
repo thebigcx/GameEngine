@@ -41,9 +41,9 @@ public:
         m_api->setBlendFunction(src, dst);
     }
 
-    static void renderIndexed(Shared<VertexArray> array)
+    static void renderIndexed(Shared<VertexArray> array, uint32_t count = 0, uint32_t offset = 0)
     {
-        m_api->renderIndexed(array);
+        m_api->renderIndexed(array, count, offset);
     }
 
 private:

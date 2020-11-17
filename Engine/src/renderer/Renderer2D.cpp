@@ -46,7 +46,22 @@ void Renderer2D::init()
         { Shader::DataType::Vec4, "aColor"    }
     };
 
-    data.mesh.indexBuffer = IndexBuffer::create(0);
+    data.mesh.indexBuffer = IndexBuffer::create(data.MAX_SPRITES * 6);
+    int offset = 0;
+    for (int i = 0; i < data.MAX_SPRITES * 6; i += 6)
+    {
+        data.indices.push_back(offset + 0);
+        data.indices.push_back(offset + 1);
+        data.indices.push_back(offset + 2);
+
+        data.indices.push_back(offset + 2);
+        data.indices.push_back(offset + 3);
+        data.indices.push_back(offset + 0);
+
+        offset += 4;
+    }
+
+    data.mesh.indexBuffer->update(&data.indices[0], data.indices.size());
 
     data.mesh.vertexBuffer = VertexBuffer::create(sizeof(Vertex) * 4 * data.MAX_SPRITES);
     data.mesh.vertexBuffer->setLayout(layout);
@@ -65,24 +80,56 @@ void Renderer2D::setClearColor(const math::vec4& color)
     RenderCommand::setClearColor(color.r, color.g, color.b, color.a);
 }
 
+void Renderer2D::setTarget(const Shared<Framebuffer>& framebuffer)
+{
+    data.target = framebuffer;
+}
+
+void Renderer2D::startFrame()
+{
+    if (data.target != nullptr)
+    {
+        data.target->bind();
+    }
+    
+    clear();
+}
+
+void Renderer2D::endFrame()
+{
+    if (data.target != nullptr)
+    {
+        data.target->unbind();
+
+        Renderer2D::clear();
+        Renderer2D::renderFramebuffer(*data.target);
+    }
+}
+
+void Renderer2D::setTransformMatrix(const math::mat4& matrix)
+{
+    data.transform = matrix;
+}
+
 void Renderer2D::startBatch()
 {
-    data.vertices.clear();
-    data.indices.clear();
-    data.mesh.vertexArray->bind();
+    data.drawCalls = 0;
 }
 
 void Renderer2D::endBatch()
 {
-    flushBatch();
+    if (data.vertices.size() > 0)
+    {
+        flushBatch();
+    }
 }
 
 void Renderer2D::flushBatch()
 {
-    if (data.vertices.size() == 0 || data.activeTexture == nullptr)
-    {
+    if (data.activeTexture == nullptr)
         return;
-    }
+
+    data.mesh.vertexArray->bind();
 
     data.mesh.vertexBuffer->update(&data.vertices[0], sizeof(Vertex) * data.vertices.size());
     data.mesh.indexBuffer->update(&data.indices[0], data.indices.size());
@@ -92,10 +139,9 @@ void Renderer2D::flushBatch()
     data.textureShader->setMatrix4("projection", data.projectionMatrix);
     data.activeTexture->bind();
 
-    data.mesh.vertexArray->bind();
-
-    RenderCommand::renderIndexed(data.mesh.vertexArray);
+    RenderCommand::renderIndexed(data.mesh.vertexArray, data.vertices.size() * 6/4);
     data.drawCalls++;
+    data.vertices.clear();
 }
 
 void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size)
@@ -122,25 +168,12 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     if (data.activeTexture->getId() != texture->getId())
     {
         flushBatch();
-        data.vertices.clear();
-        data.indices.clear();
         data.activeTexture = texture;
     }
 
     if (data.vertices.size() > data.MAX_SPRITES * 4 - 100)
     {
         flushBatch();
-        data.vertices.clear();
-        data.indices.clear();
-    }
-
-    uint32_t indices[] = {
-        0, 1, 2, 2, 3, 0
-    };
-
-    for (int i = 0 ; i < 6 ; i++)
-    {
-        data.indices.push_back(indices[i] + data.vertices.size());
     }
 
     Transform t = { position, rotation, size, origin };
@@ -148,17 +181,10 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     
     std::array<Vertex, 4> vertices;
 
-    math::vec2 positions[] = {
-        math::vec2(0, 0),
-        math::vec2(0, 1),
-        math::vec2(1, 1),
-        math::vec2(1, 0)
-    };
-
     // Populate the vertices array with the sprite's vertices
     for (int i = 0 ; i < 4 ; i++)
     {
-        math::vec4 pos = transform * math::vec4(positions[i].x, positions[i].y, 0, 1);
+        math::vec4 pos = transform * math::vec4(data.quadPositions[i]);
         vertices[i].position = math::vec3(pos.x, pos.y, 0);
 
         // Change "origin" of texCoord, then scale it
@@ -167,8 +193,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
         math::vec2 textureSize(1.f / texture->getWidth(), 1.f / texture->getHeight());
 
         vertices[i].texCoord = texRect.getPosition() * textureSize;
-        vertices[i].texCoord += positions[i] * (texRect.getSize() * textureSize);
-
+        vertices[i].texCoord += data.quadPositions[i] * (texRect.getSize() * textureSize);
         vertices[i].color = color;
     }
 

@@ -42,7 +42,7 @@ void GLVertexBuffer::setLayout(const BufferLayout& layout)
 
 //------------------------------------------------------------------------------------------------//
 
-GLIndexBuffer::GLIndexBuffer(unsigned int count)
+GLIndexBuffer::GLIndexBuffer(uint32_t count)
 {
     glCreateBuffers(1, &m_id);
 
@@ -50,7 +50,16 @@ GLIndexBuffer::GLIndexBuffer(unsigned int count)
 
     bind();
 
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), nullptr, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), nullptr, GL_DYNAMIC_DRAW);
+}
+
+GLIndexBuffer::GLIndexBuffer(const uint32_t* data, uint32_t count)
+{
+    glCreateBuffers(1, &m_id);
+    m_count = count;
+    bind();
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
 }
 
 GLIndexBuffer::~GLIndexBuffer()
@@ -58,13 +67,19 @@ GLIndexBuffer::~GLIndexBuffer()
     glDeleteBuffers(1, &m_id);
 }
 
-void GLIndexBuffer::update(const unsigned int* data, unsigned int count)
+void GLIndexBuffer::update(const uint32_t* data, uint32_t count)
 {
-    m_count = count;
-
     bind();
 
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
+    //if (count < m_count)
+    {
+        m_count = count;
+        //glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
+    }
+    //else
+    {
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, count * sizeof(uint32_t), data);
+    }
 }
 
 void GLIndexBuffer::bind() const
@@ -75,4 +90,9 @@ void GLIndexBuffer::bind() const
 void GLIndexBuffer::unbind() const
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+IndexDataType GLIndexBuffer::getDataType() const
+{
+    return IndexDataType::UnsignedInt;
 }

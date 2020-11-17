@@ -166,19 +166,29 @@ public:
     static Shared<VertexBuffer> create(size_t size);
 };
 
+enum class IndexDataType
+{
+    UnsignedByte,
+    UnsignedShort,
+    UnsignedInt
+};
+
 class IndexBuffer
 {
 public:
     virtual ~IndexBuffer() = default;
 
-    virtual void update(const unsigned int* data, unsigned int count) = 0;
+    virtual void update(const uint32_t* data, uint32_t count) = 0;
 
     virtual void bind() const = 0;
     virtual void unbind() const = 0;
 
-    virtual unsigned int getCount() const = 0;
+    virtual uint32_t getCount() const = 0;
 
-    static Shared<IndexBuffer> create(unsigned int count);
+    virtual IndexDataType getDataType() const = 0;
+
+    static Shared<IndexBuffer> create(uint32_t count);
+    static Shared<IndexBuffer> create(const uint32_t* data, uint32_t count);
 };
 
 class UniformBuffer

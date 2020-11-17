@@ -27,9 +27,14 @@ public:
     {
     }
 
-    vec<4, T>(const vec<3, T>& vec, T w)
+    vec<4, T>(const vec<3, T>& vec, T w = 1)
         : x(vec.x), y(vec.y), z(vec.z), w(w)
     {
+    }
+
+    vec<4, T>(const vec<2, T>& vec, T z = 0, T w = 1)
+        : x(vec.x), y(vec.y), z(z), w(w)
+    {        
     }
 
     vec<4, T> operator+(const vec<4, T>& val) const
@@ -149,11 +154,10 @@ public:
         return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ", " + std::to_string(w) + ")";
     }
 
-    union
-    {
-        struct { T x, y, z, w; };
-        struct { T r, g, b, a; };
-    };
+    union { T x, r, s; };
+    union { T y, g, t; };
+    union { T z, b, p; };
+    union { T w, a, q; };
 };
 
 typedef vec<4, float>        vec4;

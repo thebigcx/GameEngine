@@ -159,7 +159,8 @@ public:
         return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
     }
 
-    T x, y;
+    union { T x, r, s; };
+    union { T y, g, t; };
 };
 
 typedef vec<2, float>        vec2;

@@ -25,7 +25,7 @@ public:
     }
 
 private:
-    unsigned int m_id = 0;
+    uint32_t m_id = 0;
 
     BufferLayout m_layout;
 };
@@ -33,20 +33,23 @@ private:
 class GLIndexBuffer : public IndexBuffer
 {
 public:
-    GLIndexBuffer(unsigned int count);
+    GLIndexBuffer(uint32_t count);
+    GLIndexBuffer(const uint32_t* data, uint32_t count);
     ~GLIndexBuffer();
 
-    void update(const unsigned int* data, unsigned int size) override;
+    void update(const uint32_t* data, uint32_t size) override;
 
     void bind() const override;
     void unbind() const override;
 
-    inline unsigned int getCount() const override
+    IndexDataType getDataType() const override;
+
+    inline uint32_t getCount() const override
     {
         return m_count;
     }
 
 private:
-    unsigned int m_id = 0;
-    unsigned int m_count = 0;
+    uint32_t m_id = 0;
+    uint32_t m_count = 0;
 };
