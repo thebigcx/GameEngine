@@ -17,7 +17,7 @@ Application::Application()
 
     m_window = Window::create(1280, 720, "Application");
 
-    math::Random::initSeed();
+    math::random::initSeed();
     RenderCommand::init();
     SoundEngine::init();
     EventDispatcher::setupCallbacks();

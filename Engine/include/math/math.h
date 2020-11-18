@@ -7,7 +7,7 @@
 namespace math
 {
 
-struct Random
+struct random
 {
     static void initSeed()
     {
@@ -16,8 +16,8 @@ struct Random
 
     static double generate(int min, int max)
     {
-        int rand = std::rand();
-        return rand % max + min;
+        double f = (double)std::rand() / RAND_MAX;
+        return min + f * (max - min);
     }
 };
 

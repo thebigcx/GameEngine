@@ -29,6 +29,7 @@
 #include <renderer/MeshFactory.h>
 #include <renderer/Animation.h>
 #include <renderer/Assets.h>
+#include <renderer/Particles.h>
 
 #include <math/math.h>
 #include <math/rect.h>

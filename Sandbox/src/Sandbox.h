@@ -15,6 +15,8 @@ private:
     Shared<TrueTypeFont> m_font;
 
     Shared<Framebuffer> m_framebuffer;
+
+    Shared<ParticleSystem> m_particleSystem;
     
     Shared<Animation> m_animation;
     float rot = 0;

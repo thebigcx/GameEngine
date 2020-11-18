@@ -23,6 +23,16 @@ Sandbox::Sandbox()
         math::frect(80, 240, 16, 16)
     });
     m_animation->setFrameInterval(100.f);
+
+    m_particleSystem = ParticleSystem::create(Assets::get<Texture2D>("texture"));
+    for (int i = 0 ; i < 10 ; i++)
+    {
+        Particle p;
+        p.life = 1.f;
+        p.velocity = math::vec2(math::random::generate(-5, 5), math::random::generate(-5, 5));
+        m_particleSystem->particles.push_back(p);
+    }
+    
 }
 
 void Sandbox::update()
@@ -53,6 +63,9 @@ void Sandbox::update()
     Renderer2D::startFrame();
 
     m_animation->update();
+
+    m_particleSystem->update();
+    m_particleSystem->render();
 
     Renderer2D::setTransformMatrix(m_camera.getViewMatrix());
     Renderer2D::startBatch();

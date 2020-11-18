@@ -17,6 +17,11 @@ public:
     {
     }
 
+    vec<4, T>(T v)
+        : x(v), y(v), z(v), w(v)
+    {
+    }
+
     vec<4, T>(T x, T y, T z, T w)
         : x(x), y(y), z(z), w(w)
     {

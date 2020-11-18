@@ -38,6 +38,7 @@ private:
     static void init()
     {
         m_startTime = std::chrono::high_resolution_clock::now();
+        m_lastFrame = m_startTime;
     }
 
     inline static double m_delta;
