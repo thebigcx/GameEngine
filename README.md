@@ -15,7 +15,7 @@ Link the static library, and you should be good to go.
 ## Features
 
 Current features include:
-- 2D rendering of sprites and quads
+- 2D rendering of sprites, quads, and text
 - Sound engine capable of playing 3D sounds
 - Animation system
 - Particle system
