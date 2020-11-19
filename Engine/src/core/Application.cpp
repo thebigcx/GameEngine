@@ -6,6 +6,7 @@
 #include <core/Input.h>
 #include <events/EventDispatcher.h>
 #include <renderer/Renderer2D.h>
+#include <renderer/Renderer3D.h>
 #include <util/Time.h>
 #include <renderer/RenderCommand.h>
 
@@ -22,6 +23,7 @@ Application::Application()
     SoundEngine::init();
     EventDispatcher::setupCallbacks();
     Renderer2D::init();
+    Renderer3D::init();
     Time::init();
 }
 

@@ -10,6 +10,7 @@
 #include <util/Image.h>
 #include <util/Timer.h>
 #include <util/OrthographicCamera.h>
+#include <util/PerspectiveCamera.h>
 #include <util/Time.h>
 #include <util/Transform.h>
 #include <util/io/Files.h>
@@ -21,6 +22,7 @@
 #include <renderer/VertexArray.h>
 #include <renderer/Transformable.h>
 #include <renderer/Framebuffer.h>
+#include <renderer/RenderCommand.h>
 #include <renderer/Renderer2D.h>
 #include <renderer/Renderer3D.h>
 #include <renderer/Vertex.h>

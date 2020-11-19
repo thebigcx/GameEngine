@@ -94,7 +94,7 @@ mat<4, 4, T> perspective(T fovy, T aspect, T zNear, T zFar)
     result[0][0] = static_cast<T>(1) / (aspect * std::tan(fovy / static_cast<T>(2)));
     result[1][1] = static_cast<T>(1) / std::tan(fovy / static_cast<T>(2));
     result[2][2] = -(zFar + zNear) / (zFar - zNear);
-    result[2][3] = static_cast<T>(1);
+    result[2][3] = -static_cast<T>(1);
     result[3][2] = -(static_cast<T>(2) * zFar * zNear) / (zFar - zNear);
 
     return result;

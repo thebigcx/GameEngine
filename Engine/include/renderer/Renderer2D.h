@@ -49,10 +49,6 @@ class Renderer2D
 public:
     static void init();
 
-    static void clear();
-
-    static void setClearColor(const math::vec4& color);
-
     static void render(IRenderable2D& renderable);
 
     static void setTarget(const Shared<Framebuffer>& framebuffer);
@@ -83,6 +79,6 @@ public:
 private:
     static Shared<Mesh> m_textMesh;
     static Shared<Mesh> m_framebufferMesh;
-
+public:
     static Renderer2DData data;
 };

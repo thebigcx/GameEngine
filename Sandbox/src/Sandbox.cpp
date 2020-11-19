@@ -12,7 +12,7 @@ Sandbox::Sandbox()
 
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
-    Renderer2D::setClearColor(math::vec4(0, 0, 0, 1));
+    RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
     Renderer2D::setTarget(m_framebuffer);
 
     m_animation = Animation::create(Assets::get<Texture2D>("texture"));
@@ -73,7 +73,7 @@ void Sandbox::update()
     for (int x = 0; x < 100; x++)
     for (int y = 0; y < 1000; y++)
     {
-        Renderer2D::renderQuad(math::vec2(x * 11, y * 11), math::vec2(10, 10), math::vec4(1, 1, 1, 1));
+        //Renderer2D::renderQuad(math::vec2(x * 11, y * 11), math::vec2(10, 10), math::vec4(1, 1, 1, 1));
     }
 
     Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(100, 100), math::vec2(100, 100), m_animation->getCurrentFrame());
@@ -81,6 +81,12 @@ void Sandbox::update()
     Renderer2D::endBatch();
 
     Renderer2D::renderText("Hello, world!", m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
+
+    Shared<Mesh> mesh = MeshFactory::cubeMesh(1.f);
+    math::mat4 view(1.f);
+    view = math::translate(view, math::vec3(0.f, 0.f, -3.f));
+    math::mat4 transform = math::rotate(math::mat4(1.f), (float)math::asRadians(Time::getTime()), math::vec3(0, 1, 0));
+    Renderer3D::render(*mesh, view * transform, Assets::get<Texture2D>("texture"), Renderer2D::data.textureShader);
 
     Renderer2D::endFrame();
 

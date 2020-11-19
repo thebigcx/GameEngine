@@ -27,9 +27,9 @@ void GLRendererAPI::setViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t
     glViewport(x, y, width, height);
 }
 
-void GLRendererAPI::setClearColor(float r, float g, float b, float a)
+void GLRendererAPI::setClearColor(const math::vec4& color)
 {
-    glClearColor(r, g, b, a);
+    glClearColor(color.r, color.g, color.b, color.a);
 }
 
 void GLRendererAPI::clear(uint32_t buffer)

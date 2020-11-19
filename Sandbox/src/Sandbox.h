@@ -22,4 +22,5 @@ private:
     float rot = 0;
 
     OrthographicCamera m_camera;
+    PerspectiveCamera m_perspectiveCamera;
 };

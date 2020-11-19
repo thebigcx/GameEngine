@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ostream>
+#include <cmath>
 
 #include <math/vector/vec.h>
 #include <math/vector/vec2.h>
@@ -45,7 +46,7 @@ public:
 
     float mag() const
     {
-        return sqrt(x * x + y * y + z * z);
+        return std::sqrt(x * x + y * y + z * z);
     }
 
     static vec<3, T> normalize(const vec<3, T>& val)

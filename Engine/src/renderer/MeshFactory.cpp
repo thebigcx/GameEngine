@@ -1,4 +1,5 @@
 #include <renderer/MeshFactory.h>
+#include <renderer/Vertex.h>
 
 Shared<Mesh> MeshFactory::textMesh()
 {
@@ -70,21 +71,53 @@ Shared<Mesh> MeshFactory::cubeMesh(float size)
     };
 
     uint32_t indices[] = {
-        0, 1, 2, 2, 3, 0
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4,
+        8, 9, 10, 10, 11, 8,
+        12, 13, 14, 14, 15, 12,
+        16, 17, 18, 18, 19, 16,
+        20, 21, 22, 22, 23, 20
     };
 
-    float vertices[] = {
-        0,    0,    0, 0, 0, 1, 1, 1, 1,
-        0,    size, 0, 0, 1, 1, 1, 1, 1,
-        size, size, 0, 1, 1, 1, 1, 1, 1,
-        size, 0,    0, 1, 0, 1, 1, 1, 1
+    float hSize = size / 2.f;
+
+    Vertex vertices[] = {
+        {math::vec3(-hSize, -hSize, -hSize), math::vec2(0, 0), math::vec4(1)}, // Front
+        {math::vec3(-hSize,  hSize, -hSize), math::vec2(0, 1), math::vec4(1)},
+        {math::vec3( hSize,  hSize, -hSize), math::vec2(1, 1), math::vec4(1)},
+        {math::vec3( hSize, -hSize, -hSize), math::vec2(1, 0), math::vec4(1)},
+
+        {math::vec3(-hSize, -hSize,  hSize), math::vec2(0, 0), math::vec4(1)}, // Back
+        {math::vec3(-hSize,  hSize,  hSize), math::vec2(0, 1), math::vec4(1)},
+        {math::vec3( hSize,  hSize,  hSize), math::vec2(1, 1), math::vec4(1)},
+        {math::vec3( hSize, -hSize,  hSize), math::vec2(1, 0), math::vec4(1)},
+
+        {math::vec3(-hSize,  hSize, -hSize), math::vec2(0, 0), math::vec4(1)}, // Top
+        {math::vec3(-hSize,  hSize,  hSize), math::vec2(0, 1), math::vec4(1)},
+        {math::vec3( hSize,  hSize,  hSize), math::vec2(1, 1), math::vec4(1)},
+        {math::vec3( hSize,  hSize, -hSize), math::vec2(1, 0), math::vec4(1)},
+
+        {math::vec3(-hSize, -hSize, -hSize), math::vec2(0, 0), math::vec4(1)}, // Bottom
+        {math::vec3(-hSize, -hSize,  hSize), math::vec2(0, 1), math::vec4(1)},
+        {math::vec3( hSize, -hSize,  hSize), math::vec2(1, 1), math::vec4(1)},
+        {math::vec3( hSize, -hSize, -hSize), math::vec2(1, 0), math::vec4(1)},
+
+        {math::vec3( hSize, -hSize, -hSize), math::vec2(0, 0), math::vec4(1)}, // Left
+        {math::vec3( hSize, -hSize,  hSize), math::vec2(0, 1), math::vec4(1)},
+        {math::vec3( hSize,  hSize,  hSize), math::vec2(1, 1), math::vec4(1)},
+        {math::vec3( hSize,  hSize, -hSize), math::vec2(1, 0), math::vec4(1)},
+
+        {math::vec3(-hSize, -hSize, -hSize), math::vec2(0, 0), math::vec4(1)}, // Right
+        {math::vec3(-hSize, -hSize,  hSize), math::vec2(0, 1), math::vec4(1)},
+        {math::vec3(-hSize,  hSize,  hSize), math::vec2(1, 1), math::vec4(1)},
+        {math::vec3(-hSize,  hSize, -hSize), math::vec2(1, 0), math::vec4(1)}
     };
 
-    quad->indexBuffer = IndexBuffer::create(6);
-    quad->indexBuffer->update(indices, 6);
+    quad->indexBuffer = IndexBuffer::create(36);
+    quad->indexBuffer->update(indices, 36);
 
-    quad->vertexBuffer = VertexBuffer::create(sizeof(float) * 9 * 4);
-    quad->vertexBuffer->update(vertices, 9 * 4 * sizeof(float));
+    quad->vertexBuffer = VertexBuffer::create(sizeof(Vertex) * 24);
+    quad->vertexBuffer->update(vertices, sizeof(Vertex) * 24);
     quad->vertexBuffer->setLayout(layout);
     quad->vertexArray->addVertexBuffer(quad->vertexBuffer);
     quad->vertexArray->setIndexBuffer(quad->indexBuffer);

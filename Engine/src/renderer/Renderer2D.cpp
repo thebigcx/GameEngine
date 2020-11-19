@@ -70,16 +70,6 @@ void Renderer2D::init()
     data.mesh.vertexArray->setIndexBuffer(data.mesh.indexBuffer);
 }
 
-void Renderer2D::clear()
-{
-    RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
-}
-
-void Renderer2D::setClearColor(const math::vec4& color)
-{
-    RenderCommand::setClearColor(color.r, color.g, color.b, color.a);
-}
-
 void Renderer2D::setTarget(const Shared<Framebuffer>& framebuffer)
 {
     data.target = framebuffer;
@@ -92,7 +82,7 @@ void Renderer2D::startFrame()
         data.target->bind();
     }
     
-    clear();
+    RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
 }
 
 void Renderer2D::endFrame()
@@ -101,7 +91,7 @@ void Renderer2D::endFrame()
     {
         data.target->unbind();
 
-        Renderer2D::clear();
+        RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
         Renderer2D::renderFramebuffer(*data.target);
     }
 }

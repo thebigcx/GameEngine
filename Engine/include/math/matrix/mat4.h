@@ -62,10 +62,10 @@ public:
         mat<4, 4, T> result;
 
         // Multiply them together
-        vec<4, T> dstCol1 = *this[0] * m2[0].x + *this[1] * m2[0].y + *this[2] * m2[0].z + *this[3] * m2[0].w;
-        vec<4, T> dstCol2 = *this[0] * m2[1].x + *this[1] * m2[1].y + *this[2] * m2[1].z + *this[3] * m2[1].w;
-        vec<4, T> dstCol3 = *this[0] * m2[2].x + *this[1] * m2[2].y + *this[2] * m2[2].z + *this[3] * m2[2].w;
-        vec<4, T> dstCol4 = *this[0] * m2[3].x + *this[1] * m2[3].y + *this[2] * m2[3].z + *this[3] * m2[3].w;
+        vec<4, T> dstCol1 = (*this)[0] * m2[0].x + (*this)[1] * m2[0].y + (*this)[2] * m2[0].z + (*this)[3] * m2[0].w;
+        vec<4, T> dstCol2 = (*this)[0] * m2[1].x + (*this)[1] * m2[1].y + (*this)[2] * m2[1].z + (*this)[3] * m2[1].w;
+        vec<4, T> dstCol3 = (*this)[0] * m2[2].x + (*this)[1] * m2[2].y + (*this)[2] * m2[2].z + (*this)[3] * m2[2].w;
+        vec<4, T> dstCol4 = (*this)[0] * m2[3].x + (*this)[1] * m2[3].y + (*this)[2] * m2[3].z + (*this)[3] * m2[3].w;
 
         // Add the columns to result
         result[0] = dstCol1;

@@ -16,9 +16,9 @@ public:
         m_api->setViewport(x, y, width, height);
     }
 
-    static void setClearColor(float r, float g, float b, float a)
+    static void setClearColor(const math::vec4& color)
     {
-        m_api->setClearColor(r, g, b, a);
+        m_api->setClearColor(color);
     }
 
     static void setDepthTesting(bool enabled)

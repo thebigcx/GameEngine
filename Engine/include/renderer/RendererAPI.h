@@ -34,7 +34,7 @@ public:
     virtual void setBlend(bool enabled) = 0;
     virtual void setBlendFunction(BlendFunction src, BlendFunction dst) = 0;
 
-    virtual void setClearColor(float r, float g, float b, float a) = 0;
+    virtual void setClearColor(const math::vec4& color) = 0;
     virtual void clear(uint32_t buffer) = 0;
 
     virtual void renderIndexed(Shared<VertexArray> array, uint32_t count, uint32_t offset) = 0;
