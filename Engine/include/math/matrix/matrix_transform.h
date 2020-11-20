@@ -103,7 +103,7 @@ mat<4, 4, T> perspective(T fovy, T aspect, T zNear, T zFar)
 template<typename T>
 mat<4, 4, T> lookAt(const vec<3, T>& pos, const vec<3, T>& object, const vec<3, T>& up)
 {
-    mat<4, 4, T> result = identity<T>();
+    mat<4, 4, T> result(1.f);
 
     vec<3, T> f = vec<3, T>::normalize(object - pos);
     vec<3, T> s = vec<3, T>::normalize(vec<3, T>::cross(up, f));

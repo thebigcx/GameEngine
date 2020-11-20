@@ -18,7 +18,6 @@ struct Renderer2DData
     math::mat4 projectionMatrix;
     Shared<Shader> textureShader;
     Shared<Shader> textShader;
-    Shared<Shader> framebufferShader;
     Shared<Texture2D> whiteTexture;
 
     std::vector<Vertex> vertices;
@@ -26,8 +25,6 @@ struct Renderer2DData
     Shared<Texture2D> activeTexture = nullptr;
     math::mat4 transform;
     Mesh mesh;
-
-    Shared<Framebuffer> target;
 
     static inline const math::vec2 quadPositions[] = {
         math::vec2(0, 0),
@@ -51,10 +48,7 @@ public:
 
     static void render(IRenderable2D& renderable);
 
-    static void setTarget(const Shared<Framebuffer>& framebuffer);
-    static void setTransformMatrix(const math::mat4& matrix);
-    static void startFrame();
-    static void startBatch();
+    static void startBatch(const math::mat4& transform = math::mat4(1.f));
 
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color);
@@ -67,12 +61,9 @@ public:
     
     static void endBatch();
     static void flushBatch();
-    static void endFrame();
 
     static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color = math::vec4(0, 0, 0, 0));
     static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
-
-    static void renderFramebuffer(const Framebuffer& fbo);
 
     //static Statistics stats;
 

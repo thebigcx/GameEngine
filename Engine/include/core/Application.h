@@ -16,6 +16,7 @@ public:
     void addLayer(Layer* layer);
     void onWindowResize(int width, int height);
     void quit();
+    void setCursorEnabled(bool enabled);
 
     Window& getWindow();
     

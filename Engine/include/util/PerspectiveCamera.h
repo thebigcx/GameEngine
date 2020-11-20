@@ -11,6 +11,8 @@ public:
     void setPosition(const math::vec3& position);
     void setDirection(const math::vec3& direction);
 
+    void update();
+
     inline const math::vec3& getPosition() const { return m_position; };
     inline const math::vec3& getDirection() const { return m_direction; };
 
@@ -20,4 +22,12 @@ private:
     math::vec3 m_position;
     math::vec3 m_direction;
     math::vec3 m_up;
+    float m_speed = 0.1f;
+
+    float m_pan = 0;
+    float m_tilt = 0;
+
+    math::ivec2 m_lastMousePos;
+
+    float m_sensitivity = 0.1f;
 };

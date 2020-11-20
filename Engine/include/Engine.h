@@ -22,6 +22,7 @@
 #include <renderer/VertexArray.h>
 #include <renderer/Transformable.h>
 #include <renderer/Framebuffer.h>
+#include <renderer/Renderer.h>
 #include <renderer/RenderCommand.h>
 #include <renderer/Renderer2D.h>
 #include <renderer/Renderer3D.h>

@@ -2,8 +2,10 @@
 
 Sandbox::Sandbox()
 {
-    Shared<Texture2D> texture = Texture2D::create("Sandbox/assets/terrain.png");
-    Assets::add<Texture2D>("texture", texture);
+    Assets::add<Texture2D>("texture", Texture2D::create("Sandbox/assets/terrain.png"));
+    Assets::add<Texture2D>("grass", Texture2D::create("Sandbox/assets/grass.png"));
+
+    
 
     m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
     SoundEngine::play(*m_soundSource, true);
@@ -13,7 +15,7 @@ Sandbox::Sandbox()
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
-    Renderer2D::setTarget(m_framebuffer);
+    Renderer::setTarget(m_framebuffer);
 
     m_animation = Animation::create(Assets::get<Texture2D>("texture"));
     m_animation->setFrames({ 
@@ -32,7 +34,11 @@ Sandbox::Sandbox()
         p.velocity = math::vec2(math::random::generate(-5, 5), math::random::generate(-5, 5));
         m_particleSystem->particles.push_back(p);
     }
+
+    m_cubeMaterial = Material::create(Renderer2D::data.textureShader);
+    m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
     
+    Application::get().setCursorEnabled(false);
 }
 
 void Sandbox::update()
@@ -60,15 +66,14 @@ void Sandbox::update()
 
     rot++;
 
-    Renderer2D::startFrame();
+    Renderer::startFrame();
 
     m_animation->update();
 
     m_particleSystem->update();
     m_particleSystem->render();
 
-    Renderer2D::setTransformMatrix(m_camera.getViewMatrix());
-    Renderer2D::startBatch();
+    Renderer2D::startBatch(m_camera.getViewMatrix());
 
     for (int x = 0; x < 100; x++)
     for (int y = 0; y < 1000; y++)
@@ -83,12 +88,14 @@ void Sandbox::update()
     Renderer2D::renderText("Hello, world!", m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
 
     Shared<Mesh> mesh = MeshFactory::cubeMesh(1.f);
-    math::mat4 view(1.f);
-    view = math::translate(view, math::vec3(0.f, 0.f, -3.f));
-    math::mat4 transform = math::rotate(math::mat4(1.f), (float)math::asRadians(Time::getTime()), math::vec3(0, 1, 0));
-    Renderer3D::render(*mesh, view * transform, Assets::get<Texture2D>("texture"), Renderer2D::data.textureShader);
 
-    Renderer2D::endFrame();
+    math::mat4 view = math::translate(math::mat4(1.f), math::vec3(0.f, 0.f, -3.f));
+    math::mat4 transform(1.f);
+    Renderer3D::render(mesh, m_perspectiveCamera.getViewMatrix() * transform, m_cubeMaterial);
+
+    m_perspectiveCamera.update();
+
+    Renderer::endFrame();
 
     Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));
 }

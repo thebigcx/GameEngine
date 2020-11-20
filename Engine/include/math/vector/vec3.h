@@ -57,7 +57,7 @@ public:
 
     static vec<3, T> cross(const vec<3, T>& first, const vec<3, T>& second)
     {
-        return vec<3, T>(first.y * second.z - first.z * second.y, first.z + second.x - first.x * second.z, first.x * second.y - first.y * second.x);
+        return vec<3, T>(first.y * second.z - first.z * second.y, first.z * second.x - first.x * second.z, first.x * second.y - first.y * second.x);
     }
 
     static float dot(const vec<3, T>& first, const vec<3, T>& second)

@@ -11,14 +11,13 @@ void Renderer3D::init()
     data.projectionMatrix = math::perspective((float)math::asRadians(45.f), (float)windowSize.x / (float)windowSize.y, 0.1f, 100.f);
 }
 
-void Renderer3D::render(const Mesh& mesh, const math::mat4& transform, const Shared<Texture2D>& texture, const Shared<Shader>& shader)
+void Renderer3D::render(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material)
 {
     RenderCommand::setDepthTesting(true);
 
-    shader->bind();
-    shader->setMatrix4("transform", transform);
-    shader->setMatrix4("projection", data.projectionMatrix);
-    texture->bind();
+    material->bind();
+    material->getShader()->setMatrix4("transform", transform);
+    material->getShader()->setMatrix4("projection", data.projectionMatrix);
 
-    RenderCommand::renderIndexed(mesh.vertexArray);
+    RenderCommand::renderIndexed(mesh->vertexArray);
 }

@@ -27,10 +27,7 @@ void Renderer2D::init()
     data.textShader->bind();
     data.textShader->setMatrix4("projection", data.projectionMatrix);
 
-    data.framebufferShader = ShaderFactory::framebufferShader();
-
     m_textMesh = MeshFactory::textMesh();
-    m_framebufferMesh = MeshFactory::quadMesh(-1, -1, 1, 1); // Normalized device coordinates
 
     data.whiteTexture = Texture2D::create(1, 1);
     uint32_t white = 0xffffff;
@@ -70,39 +67,9 @@ void Renderer2D::init()
     data.mesh.vertexArray->setIndexBuffer(data.mesh.indexBuffer);
 }
 
-void Renderer2D::setTarget(const Shared<Framebuffer>& framebuffer)
+void Renderer2D::startBatch(const math::mat4& transform)
 {
-    data.target = framebuffer;
-}
-
-void Renderer2D::startFrame()
-{
-    if (data.target != nullptr)
-    {
-        data.target->bind();
-    }
-    
-    RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
-}
-
-void Renderer2D::endFrame()
-{
-    if (data.target != nullptr)
-    {
-        data.target->unbind();
-
-        RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
-        Renderer2D::renderFramebuffer(*data.target);
-    }
-}
-
-void Renderer2D::setTransformMatrix(const math::mat4& matrix)
-{
-    data.transform = matrix;
-}
-
-void Renderer2D::startBatch()
-{
+    data.transform = transform;
     data.drawCalls = 0;
 }
 
@@ -118,6 +85,8 @@ void Renderer2D::flushBatch()
 {
     if (data.activeTexture == nullptr)
         return;
+
+    RenderCommand::setDepthTesting(false);
 
     data.mesh.vertexArray->bind();
 
@@ -281,15 +250,6 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     RenderCommand::renderIndexed(m_textMesh->vertexArray);
 
     RenderCommand::setBlend(false);
-}
-
-void Renderer2D::renderFramebuffer(const Framebuffer& fbo)
-{
-    glBindTextureUnit(0, fbo.getColorAttachment());
-    data.framebufferShader->bind();
-
-    m_framebufferMesh->vertexArray->bind();
-    RenderCommand::renderIndexed(m_framebufferMesh->vertexArray);
 }
 
 void Renderer2D::render(IRenderable2D& renderable)

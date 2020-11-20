@@ -13,6 +13,7 @@ public:
 private:
     Shared<SoundSource> m_soundSource;
     Shared<TrueTypeFont> m_font;
+    Shared<Material> m_cubeMaterial;
 
     Shared<Framebuffer> m_framebuffer;
 

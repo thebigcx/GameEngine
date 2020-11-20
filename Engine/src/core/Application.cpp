@@ -7,6 +7,7 @@
 #include <events/EventDispatcher.h>
 #include <renderer/Renderer2D.h>
 #include <renderer/Renderer3D.h>
+#include <renderer/Renderer.h>
 #include <util/Time.h>
 #include <renderer/RenderCommand.h>
 
@@ -19,11 +20,9 @@ Application::Application()
     m_window = Window::create(1280, 720, "Application");
 
     math::random::initSeed();
-    RenderCommand::init();
     SoundEngine::init();
     EventDispatcher::setupCallbacks();
-    Renderer2D::init();
-    Renderer3D::init();
+    Renderer::init();
     Time::init();
 }
 
@@ -84,4 +83,11 @@ void Application::onWindowResize(int width, int height)
 Window& Application::getWindow()
 {
     return *m_window;
+}
+
+void Application::setCursorEnabled(bool enabled)
+{
+    uint32_t glfwEnabled = enabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
+
+    glfwSetInputMode(m_window->getNative(), GLFW_CURSOR, glfwEnabled);
 }
