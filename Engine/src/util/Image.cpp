@@ -19,7 +19,7 @@ Shared<Image> ImageLoader::loadImage(const std::string& file)
 
     if (!image->data)
     {
-        Console::errf("Image does not exist or contains corrupted data: %s", file);
+        std::cout << "Image does not exist or contains corrupted data: " << file << "\n";
     }
 
     image->width = width;

@@ -15,6 +15,8 @@ private:
     Shared<TrueTypeFont> m_font;
     Shared<Material> m_cubeMaterial;
 
+    Shared<Model> m_model;
+
     Shared<Framebuffer> m_framebuffer;
 
     Shared<ParticleSystem> m_particleSystem;

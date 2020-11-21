@@ -22,7 +22,8 @@ project "GameEngine"
         "glfw",
         "GLEW",
         "openal",
-        "freetype"
+        "freetype",
+        "assimp"
     }
 
     optimize "On"

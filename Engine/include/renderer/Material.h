@@ -23,6 +23,6 @@ public:
 
 private:
     Shared<Shader> m_shader;
-    //std::vector<Shared<Texture2D>> m_textures;
-    Shared<Texture2D> m_texture;
+    std::vector<Shared<Texture2D>> m_textures;
+    //Shared<Texture2D> m_texture;
 };

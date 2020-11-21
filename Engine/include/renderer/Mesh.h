@@ -4,6 +4,7 @@
 
 #include <renderer/Buffer.h>
 #include <renderer/VertexArray.h>
+#include <renderer/Material.h>
 
 class Mesh
 {
@@ -13,4 +14,5 @@ public:
     Shared<VertexBuffer> vertexBuffer;
     Shared<IndexBuffer> indexBuffer;
     Shared<VertexArray> vertexArray;
+    Shared<Material> material;
 };

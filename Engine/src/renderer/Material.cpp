@@ -2,22 +2,25 @@
 
 void Material::setTexture(const Shared<Texture2D>& texture)
 {
-    //m_textures.push_back(texture);
-    m_texture = texture;
+    m_textures.push_back(texture);
 }
 
 void Material::bind() const
 {
     m_shader->bind();
-    //m_textures[0]->bind(); // TODO: multiple textures
-    m_texture->bind();
+    for (int i = 0; i < m_textures.size(); i++)
+    {
+        m_textures[i]->bind(i);
+    }
 }
 
 void Material::unbind() const
 {
     m_shader->unbind();
-    //m_textures[0]->unbind();
-    m_texture->bind();
+    for (int i = 0; i < m_textures.size(); i++)
+    {
+        m_textures[i]->unbind(i);
+    }
 }
 
 Shared<Material> Material::create(const Shared<Shader>& shader)

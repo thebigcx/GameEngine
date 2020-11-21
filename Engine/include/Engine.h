@@ -33,6 +33,7 @@
 #include <renderer/Animation.h>
 #include <renderer/Assets.h>
 #include <renderer/Particles.h>
+#include <renderer/Model.h>
 
 #include <math/math.h>
 #include <math/rect.h>

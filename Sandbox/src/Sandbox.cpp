@@ -37,6 +37,8 @@ Sandbox::Sandbox()
 
     m_cubeMaterial = Material::create(Renderer2D::data.textureShader);
     m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
+
+    m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
     
     Application::get().setCursorEnabled(false);
 }
@@ -87,11 +89,9 @@ void Sandbox::update()
 
     Renderer2D::renderText("Hello, world!", m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
 
-    Shared<Mesh> mesh = MeshFactory::cubeMesh(1.f);
-
     math::mat4 view = math::translate(math::mat4(1.f), math::vec3(0.f, 0.f, -3.f));
     math::mat4 transform(1.f);
-    Renderer3D::render(mesh, m_perspectiveCamera.getViewMatrix() * transform, m_cubeMaterial);
+    Renderer3D::submit(m_model, m_perspectiveCamera.getViewMatrix() * transform);
 
     m_perspectiveCamera.update();
 
