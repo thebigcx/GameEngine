@@ -22,6 +22,8 @@ public:
 
     unsigned int getId() const override;
 
+    const std::string& getPath() const;
+
 private:
     unsigned int m_id = 0;
 
@@ -30,4 +32,6 @@ private:
     GLenum m_dataFormat;
 
     float m_width, m_height;
+
+    std::string m_path;
 };

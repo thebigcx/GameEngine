@@ -35,25 +35,37 @@ Sandbox::Sandbox()
         m_particleSystem->particles.push_back(p);
     }
 
-    m_cubeMaterial = Material::create(Renderer2D::data.textureShader);
+    m_cubeMaterial = Material::create(Renderer3D::data.modelShader);
     m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
 
-    m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
+    Renderer3D::data.modelShader->bind();
+
+    Renderer3D::data.modelShader->setFloat3("light.position", math::vec3(2.f, 1.5f, 4.f));
+    Renderer3D::data.modelShader->setFloat3("light.ambient", math::vec3(0.2f, 0.2f, 0.2f));
+    Renderer3D::data.modelShader->setFloat3("light.diffuse", math::vec3(0.5f, 0.5f, 0.5f));
+    Renderer3D::data.modelShader->setFloat3("light.specular", math::vec3(1.f, 1.f, 1.f));
+
+    //m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
+    m_model = Model::loadModel("Sandbox/assets/cylinder.obj");
     
     Application::get().setCursorEnabled(false);
 }
 
 void Sandbox::update()
 {
+    //if (Time::getTime() < 100000)
+    {
+        
+    }
     Timer timer;
     auto dt = Time::getDelta();
     const float speed = 0.5;
 
     if (Input::isKeyPressed(Key::A))
-        m_camera.translate(math::vec2(-speed * dt, 0));
+        m_camera.translate(math::vec2(speed * dt, 0));
 
     if (Input::isKeyPressed(Key::D))
-        m_camera.translate(math::vec2(speed * dt, 0));
+        m_camera.translate(math::vec2(-speed * dt, 0));
 
     if (Input::isKeyPressed(Key::W))
         m_camera.translate(math::vec2(0, speed * dt));
@@ -77,21 +89,24 @@ void Sandbox::update()
 
     Renderer2D::startBatch(m_camera.getViewMatrix());
 
-    for (int x = 0; x < 100; x++)
-    for (int y = 0; y < 1000; y++)
-    {
-        //Renderer2D::renderQuad(math::vec2(x * 11, y * 11), math::vec2(10, 10), math::vec4(1, 1, 1, 1));
-    }
-
     Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(100, 100), math::vec2(100, 100), m_animation->getCurrentFrame());
-    
+
     Renderer2D::endBatch();
 
     Renderer2D::renderText("Hello, world!", m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
 
-    math::mat4 view = math::translate(math::mat4(1.f), math::vec3(0.f, 0.f, -3.f));
     math::mat4 transform(1.f);
-    Renderer3D::submit(m_model, m_perspectiveCamera.getViewMatrix() * transform);
+    transform = math::scale(transform, math::vec3(1.f));
+    Renderer3D::data.modelShader->bind();
+    Renderer3D::data.modelShader->setMatrix4("view", m_perspectiveCamera.getViewMatrix());
+    Renderer3D::data.modelShader->setFloat3("viewPos", m_perspectiveCamera.getPosition());
+
+    Renderer3D::data.modelShader->setFloat("material.shininess", 32.f);
+
+    Renderer3D::submit(m_model, transform);
+
+    auto mesh = MeshFactory::cubeMesh(1.f);
+    Renderer3D::render(*mesh, math::scale(math::mat4(1.f), math::vec3(2.f)), m_cubeMaterial);
 
     m_perspectiveCamera.update();
 

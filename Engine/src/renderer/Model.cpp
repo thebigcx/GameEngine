@@ -1,5 +1,7 @@
 #include <renderer/Model.h>
 #include <renderer/Renderer3D.h>
+#include <renderer/MeshFactory.h>
+#include <renderer/Assets.h>
 
 Shared<Model> Model::loadModel(const std::string& file)
 {
@@ -8,7 +10,7 @@ Shared<Model> Model::loadModel(const std::string& file)
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-    if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
         std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << "\n";
         return model;
@@ -17,6 +19,7 @@ Shared<Model> Model::loadModel(const std::string& file)
     model->m_directory = file.substr(0, file.find_last_of('/'));
 
     model->processNode(scene->mRootNode, scene);
+    //model->meshes.push_back(model->processMesh(scene->mMeshes[0], scene));
 
     return model;
 }
@@ -35,11 +38,11 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     }
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
+    std::vector<Shared<Texture2D>> textures;
     std::vector<ModelVertex> vertices;
     std::vector<uint32_t> indices;
-    std::vector<Shared<Texture2D>> textures;
 
     for (int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -75,16 +78,20 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         }
     }
 
+
     if (mesh->mMaterialIndex >= 0)
     {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
         std::vector<Shared<Texture2D>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+        std::vector<Shared<Texture2D>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
-    Mesh mesh_;
-    mesh_.vertexArray = VertexArray::create();
-    mesh_.vertexArray->bind();
+    Shared<Mesh> mesh_ = createShared<Mesh>();
+    mesh_->vertexArray = VertexArray::create();
+    mesh_->vertexArray->bind();
 
     BufferLayout layout = {
         { Shader::DataType::Vec3, "aPos"      },
@@ -92,14 +99,15 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         { Shader::DataType::Vec2, "aTexCoord" }
     };
 
-    mesh_.indexBuffer = IndexBuffer::create(&indices[0], indices.size());
+    mesh_->indexBuffer = IndexBuffer::create(indices.size());
+    mesh_->indexBuffer->update(&indices[0], indices.size());
     
-    mesh_.vertexBuffer = VertexBuffer::create(vertices.size() * sizeof(ModelVertex));
-    mesh_.vertexBuffer->update(&vertices[0], vertices.size() * sizeof(ModelVertex));
-    mesh_.vertexBuffer->setLayout(layout);
+    mesh_->vertexBuffer = VertexBuffer::create(vertices.size() * sizeof(ModelVertex));
+    mesh_->vertexBuffer->update(&vertices[0], vertices.size() * sizeof(ModelVertex));
+    mesh_->vertexBuffer->setLayout(layout);
     
-    mesh_.vertexArray->addVertexBuffer(mesh_.vertexBuffer);
-    mesh_.vertexArray->setIndexBuffer(mesh_.indexBuffer);
+    mesh_->vertexArray->addVertexBuffer(mesh_->vertexBuffer);
+    mesh_->vertexArray->setIndexBuffer(mesh_->indexBuffer);
 
     Shared<Material> material = Material::create(Renderer3D::data.modelShader);
     for (auto& texture : textures)
@@ -107,8 +115,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         material->setTexture(texture);
     }
 
-    mesh_.material = material;
-    
+    mesh_->material = material;
+
     return mesh_;
 }
 
@@ -119,10 +127,27 @@ std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTe
     {
         aiString str;
         mat->GetTexture(type, i, &str);
-        Shared<Texture2D> texture;
-        //texture = Texture2D::create(m_directory + "/" + str.C_Str());
-        texture = Texture2D::create("Sandbox/assets/grass.png");
-        textures.push_back(texture);
+
+        bool skip = false;
+        for (int j = 0; j < m_texturesLoaded.size(); j++)
+        {
+            if (std::strcmp(m_texturesLoaded[j]->getPath().data(), str.C_Str()) != 0)
+            {
+                textures.push_back(m_texturesLoaded[j]);
+                skip = true;
+                break;
+            }
+        }
+        if (!skip)
+        {
+            std::cout << "Didn't skip\n";
+            Shared<Texture2D> texture;
+            texture = Texture2D::create(m_directory + "/" + str.C_Str());
+            //texture = Texture2D::create("Sandbox/assets/grass.png");
+            textures.push_back(texture);
+
+            m_texturesLoaded.push_back(texture);
+        }
     }
 
     return textures;

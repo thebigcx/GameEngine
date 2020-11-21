@@ -4,6 +4,8 @@
 
 GLTexture2D::GLTexture2D(const std::string& file)
 {
+    m_path = file;
+
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     bind();
 
@@ -105,4 +107,9 @@ float GLTexture2D::getHeight() const
 unsigned int GLTexture2D::getId() const
 {
     return m_id;
+}
+
+const std::string& GLTexture2D::getPath() const
+{
+    return m_path;
 }

@@ -106,8 +106,8 @@ mat<4, 4, T> lookAt(const vec<3, T>& pos, const vec<3, T>& object, const vec<3, 
     mat<4, 4, T> result(1.f);
 
     vec<3, T> f = vec<3, T>::normalize(object - pos);
-    vec<3, T> s = vec<3, T>::normalize(vec<3, T>::cross(up, f));
-    vec<3, T> u = vec<3, T>::normalize(up);
+    vec<3, T> s = vec<3, T>::normalize(vec<3, T>::cross(f, up));
+    vec<3, T> u = vec<3, T>::cross(s, f);
 
     result[0][0] = s.x;
     result[1][0] = s.y;
@@ -117,13 +117,13 @@ mat<4, 4, T> lookAt(const vec<3, T>& pos, const vec<3, T>& object, const vec<3, 
     result[1][1] = u.y;
     result[2][1] = u.z;
 
-    result[0][2] = f.x;
-    result[1][2] = f.y;
-    result[2][2] = f.z;
+    result[0][2] = -f.x;
+    result[1][2] = -f.y;
+    result[2][2] = -f.z;
 
     result[3][0] = -vec<3, T>::dot(s, pos);
     result[3][1] = -vec<3, T>::dot(u, pos);
-    result[3][2] = -vec<3, T>::dot(f, pos);
+    result[3][2] =  vec<3, T>::dot(f, pos);
 
     return result;
 }

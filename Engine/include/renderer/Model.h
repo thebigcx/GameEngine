@@ -22,12 +22,15 @@ class Model
 public:
     static Shared<Model> loadModel(const std::string& file);
 
-    std::vector<Mesh> meshes;
+    std::vector<Shared<Mesh>> meshes;
+    Shared<Mesh> modelmesh;
 
 private:
     std::string m_directory;
 
     void processNode(aiNode* node, const aiScene* scene);
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    Shared<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Shared<Texture2D>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
+
+    std::vector<Shared<Texture2D>> m_texturesLoaded;
 };

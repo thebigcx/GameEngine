@@ -41,4 +41,6 @@ public:
     virtual float getHeight() const = 0;
 
     virtual unsigned int getId() const = 0;
+
+    virtual const std::string& getPath() const = 0;
 };

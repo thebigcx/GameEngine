@@ -21,6 +21,8 @@ void Renderer3D::render(const Mesh& mesh, const math::mat4& transform, const Sha
     material->getShader()->setMatrix4("transform", transform);
     material->getShader()->setMatrix4("projection", data.projectionMatrix);
 
+    mesh.vertexArray->bind();
+
     RenderCommand::renderIndexed(mesh.vertexArray);
 }
 
@@ -28,6 +30,6 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
 {
     for (auto& mesh : model->meshes)
     {
-        render(mesh, transform, mesh.material);
+        render(*mesh, transform, mesh->material);
     }
 }

@@ -20,22 +20,24 @@ void PerspectiveCamera::setDirection(const math::vec3& direction)
 
 math::mat4 PerspectiveCamera::getViewMatrix() const
 {
-    return math::lookAt(m_position, m_position + m_direction, m_up);
+    math::mat4 view = math::lookAt(m_position, m_position + m_direction, m_up);
+
+    return view;
 }
 
 void PerspectiveCamera::update()
 {
     if (Input::isKeyPressed(Key::W))
-        m_position -= math::vec3(cos(math::asRadians(m_pan)), 0, sin(math::asRadians(m_pan))) * m_speed;
+        m_position += math::vec3(cos(math::asRadians(m_pan)), 0, sin(math::asRadians(m_pan))) * m_speed;
     
     if (Input::isKeyPressed(Key::S))
-        m_position += math::vec3(cos(math::asRadians(m_pan)), 0, sin(math::asRadians(m_pan))) * m_speed;
+        m_position -= math::vec3(cos(math::asRadians(m_pan)), 0, sin(math::asRadians(m_pan))) * m_speed;
 
     if (Input::isKeyPressed(Key::A))
-        m_position += math::vec3::normalize(math::vec3::cross(m_direction, m_up)) * m_speed;
+        m_position -= math::vec3::normalize(math::vec3::cross(m_direction, m_up)) * m_speed;
 
     if (Input::isKeyPressed(Key::D))
-        m_position -= math::vec3::normalize(math::vec3::cross(m_direction, m_up)) * m_speed;
+        m_position += math::vec3::normalize(math::vec3::cross(m_direction, m_up)) * m_speed;
 
     if (Input::isKeyPressed(Key::Space))
         m_position.y += m_speed;
