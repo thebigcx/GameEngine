@@ -40,13 +40,31 @@ Sandbox::Sandbox()
 
     Renderer3D::data.modelShader->bind();
 
-    Renderer3D::data.modelShader->setFloat3("light.position", math::vec3(2.f, 1.5f, 4.f));
-    Renderer3D::data.modelShader->setFloat3("light.ambient", math::vec3(0.2f, 0.2f, 0.2f));
-    Renderer3D::data.modelShader->setFloat3("light.diffuse", math::vec3(0.5f, 0.5f, 0.5f));
-    Renderer3D::data.modelShader->setFloat3("light.specular", math::vec3(1.f, 1.f, 1.f));
+    Renderer3D::data.modelShader->setFloat3("dirLight.direction", math::vec3(-0.2f, -1.f, -0.3f));
+    Renderer3D::data.modelShader->setFloat3("dirLight.ambient", math::vec3(0.05f, 0.05f, 0.05f));
+    Renderer3D::data.modelShader->setFloat3("dirLight.diffuse", math::vec3(0.4f, 0.4f, 0.4f));
+    Renderer3D::data.modelShader->setFloat3("dirLight.specular", math::vec3(0.5f, 0.5f, 0.5f));
 
-    //m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
-    m_model = Model::loadModel("Sandbox/assets/cylinder.obj");
+    Renderer3D::data.modelShader->setInt("numPointLights", 2);
+    Renderer3D::data.modelShader->setFloat3("pointLights[0].position", math::vec3(5.f, 5.f, 3.f));
+    Renderer3D::data.modelShader->setFloat3("pointLights[0].ambient", math::vec3(0.05f, 0.05f, 0.05f));
+    Renderer3D::data.modelShader->setFloat3("pointLights[0].diffuse", math::vec3(0.8f, 0.8f, 0.8f));
+    Renderer3D::data.modelShader->setFloat3("pointLights[0].specular", math::vec3(1.0f, 1.0f, 1.0f));
+    Renderer3D::data.modelShader->setFloat("pointLights[0].constant", 1.0f);
+    Renderer3D::data.modelShader->setFloat("pointLights[0].linear", 0.09);
+    Renderer3D::data.modelShader->setFloat("pointLights[0].quadratic", 0.032);
+
+    Renderer3D::data.modelShader->setFloat3("pointLights[1].position", math::vec3(2.f, 3.4f, 5.f));
+    Renderer3D::data.modelShader->setFloat3("pointLights[1].ambient", math::vec3(0.05f, 0.05f, 0.05f));
+    Renderer3D::data.modelShader->setFloat3("pointLights[1].diffuse", math::vec3(0.8f, 0.8f, 0.8f));
+    Renderer3D::data.modelShader->setFloat3("pointLights[1].specular", math::vec3(1.0f, 1.0f, 1.0f));
+    Renderer3D::data.modelShader->setFloat("pointLights[1].constant", 1.0f);
+    Renderer3D::data.modelShader->setFloat("pointLights[1].linear", 0.09);
+    Renderer3D::data.modelShader->setFloat("pointLights[1].quadratic", 0.032);
+
+    //m_model = Model::loadModel("Sandbox/assets/Rock1.obj");
+    m_model = Model::loadModel("Sandbox/assets/Donut.obj");
+    //m_model = Model::loadModel("Sandbox/assets/model/Rock1.obj");
     
     Application::get().setCursorEnabled(false);
 }
@@ -82,7 +100,7 @@ void Sandbox::update()
 
     Renderer::startFrame();
 
-    m_animation->update();
+    /*m_animation->update();
 
     m_particleSystem->update();
     m_particleSystem->render();
@@ -93,7 +111,7 @@ void Sandbox::update()
 
     Renderer2D::endBatch();
 
-    Renderer2D::renderText("Hello, world!", m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
+    Renderer2D::renderText("Hello, world!", m_font, math::vec2(500, 500), math::vec2(80, 80), math::vec4(1, 0, 0, 1));*/
 
     math::mat4 transform(1.f);
     transform = math::scale(transform, math::vec3(1.f));
@@ -101,12 +119,19 @@ void Sandbox::update()
     Renderer3D::data.modelShader->setMatrix4("view", m_perspectiveCamera.getViewMatrix());
     Renderer3D::data.modelShader->setFloat3("viewPos", m_perspectiveCamera.getPosition());
 
-    Renderer3D::data.modelShader->setFloat("material.shininess", 32.f);
+    Renderer3D::data.modelShader->setFloat("material.shininess", 16.f);
 
     Renderer3D::submit(m_model, transform);
 
     auto mesh = MeshFactory::cubeMesh(1.f);
-    Renderer3D::render(*mesh, math::scale(math::mat4(1.f), math::vec3(2.f)), m_cubeMaterial);
+
+    for (int i = 0; i < 10; i++)
+    for (int j = 0; j < 10; j++)
+    {
+        //Renderer3D::render(*mesh, math::scale(math::translate(math::mat4(1.f), math::vec3(i*2, j*2, 0)), math::vec3(2.f)), m_cubeMaterial);
+    }
+
+    Renderer3D::render(*mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.5f, 4.f)), m_cubeMaterial);
 
     m_perspectiveCamera.update();
 

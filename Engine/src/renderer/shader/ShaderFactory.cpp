@@ -2,18 +2,20 @@
 
 Shared<Shader> ShaderFactory::textureShader()
 {
-    auto shader = Shader::createFromFile("shaders/texture.glsl");
-    return shader;
+    return Shader::createFromFile("Engine/shaders/texture.glsl");
 }
 
 Shared<Shader> ShaderFactory::textShader()
 {
-    auto shader = Shader::createFromFile("shaders/text.glsl");
-    return shader;
+    return Shader::createFromFile("Engine/shaders/text.glsl");
 }
 
 Shared<Shader> ShaderFactory::framebufferShader()
 {
-    auto shader = Shader::createFromFile("shaders/framebuffer.glsl");
-    return shader;
+    return Shader::createFromFile("Engine/shaders/framebuffer.glsl");
+}
+
+Shared<Shader> ShaderFactory::lightingShader()
+{
+    return Shader::createFromFile("Engine/shaders/lighting.glsl");
 }

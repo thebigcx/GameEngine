@@ -14,15 +14,15 @@ GLTexture2D::GLTexture2D(const std::string& file)
     if (image->data)
     {
         GLenum internalFormat, dataFormat;
-        if (image->channels == 4)
+        //if (image->channels == 4)
         {
             internalFormat = GL_RGBA8;
             dataFormat = GL_RGBA;
         }
-        else if (image->channels == 3)
+        //else if (image->channels == 3)
         {
-            internalFormat = GL_RGB8;
-            dataFormat = GL_RGB;
+            //internalFormat = GL_RGB8;
+            //dataFormat = GL_RGB;
         }
         m_internalFormat = internalFormat;
         m_dataFormat = dataFormat;

@@ -19,7 +19,6 @@ Shared<Model> Model::loadModel(const std::string& file)
     model->m_directory = file.substr(0, file.find_last_of('/'));
 
     model->processNode(scene->mRootNode, scene);
-    //model->meshes.push_back(model->processMesh(scene->mMeshes[0], scene));
 
     return model;
 }
