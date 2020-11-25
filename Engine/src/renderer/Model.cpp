@@ -37,9 +37,11 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     }
 }
 
+// TODO: multiple materials
 Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Shared<Texture2D>> textures;
+    //std::vector<Shared<Material>> materials;
     std::vector<ModelVertex> vertices;
     std::vector<uint32_t> indices;
 
@@ -80,12 +82,22 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
     if (mesh->mMaterialIndex >= 0)
     {
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<Shared<Texture2D>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        //Shared<Material> material = Material::create(Renderer3D::data.modelShader);
+        aiMaterial* aimaterial = scene->mMaterials[mesh->mMaterialIndex];
+        std::vector<Shared<Texture2D>> diffuseMaps = loadMaterialTextures(aimaterial, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        /*for (auto& texture : diffuseMaps)
+        {
+            material->setTexture(texture);
+        }*/
 
-        std::vector<Shared<Texture2D>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        std::vector<Shared<Texture2D>> specularMaps = loadMaterialTextures(aimaterial, aiTextureType_SPECULAR, "texture_specular");
+        /*for (auto& texture : specularMaps)
+        {
+            material->setTexture(texture);
+        }
+
+        materials.push_back(material);*/
     }
 
     Shared<Mesh> mesh_ = createShared<Mesh>();
@@ -113,6 +125,15 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     {
         material->setTexture(texture);
     }
+
+    float shininess = 0.f;
+    aiGetMaterialFloat(scene->mMaterials[0], AI_MATKEY_SHININESS, &shininess);
+    if (shininess == 0.f)
+    {
+        shininess = 16.f;
+    }
+
+    material->shininess = shininess;
 
     mesh_->material = material;
 
@@ -142,7 +163,6 @@ std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTe
             std::cout << "Didn't skip\n";
             Shared<Texture2D> texture;
             texture = Texture2D::create(m_directory + "/" + str.C_Str());
-            //texture = Texture2D::create("Sandbox/assets/grass.png");
             textures.push_back(texture);
 
             m_texturesLoaded.push_back(texture);

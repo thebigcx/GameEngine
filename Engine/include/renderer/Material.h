@@ -21,6 +21,8 @@ public:
 
     static Shared<Material> create(const Shared<Shader>& shader);
 
+    float shininess = 0.f;
+
 private:
     Shared<Shader> m_shader;
     std::vector<Shared<Texture2D>> m_textures;
