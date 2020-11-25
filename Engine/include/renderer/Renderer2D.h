@@ -9,7 +9,7 @@
 #include <renderer/IRenderable2D.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/Vertex.h>
-#include <math/rect.h>
+#include <maths/maths/rect.h>
 
 struct Renderer2DData
 {

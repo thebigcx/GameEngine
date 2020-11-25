@@ -1,0 +1,3 @@
+[submodule "Engine/include/maths"]
+	path = Engine/include/maths
+	url = https://github.com/thebigcx/maths.git

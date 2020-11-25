@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 
-#include <math/vector/vec3.h>
+#include <maths/maths/vector/vec3.h>
 
 struct PointLight
 {

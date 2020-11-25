@@ -1,7 +1,7 @@
 #pragma once
 
-#include <math/vector/vec3.h>
-#include <math/matrix/mat4.h>
+#include <maths/maths/vector/vec3.h>
+#include <maths/maths/matrix/mat4.h>
 
 class PerspectiveCamera
 {

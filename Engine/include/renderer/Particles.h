@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include <math/vector/vec2.h>
-#include <math/vector/vec4.h>
+#include <maths/maths/vector/vec2.h>
+#include <maths/maths/vector/vec4.h>
 #include <renderer/Texture2D.h>
 #include <renderer/Renderer2D.h>
 #include <util/Time.h>
