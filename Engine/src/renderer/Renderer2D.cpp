@@ -2,7 +2,7 @@
 #include <core/Application.h>
 #include <renderer/MeshFactory.h>
 #include <renderer/shader/ShaderFactory.h>
-#include <maths/maths/matrix/matrix_transform.h>
+#include <maths/matrix/matrix_transform.h>
 #include <renderer/RenderCommand.h>
 
 #include <GL/glew.h>

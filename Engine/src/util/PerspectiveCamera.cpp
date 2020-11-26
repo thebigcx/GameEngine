@@ -1,5 +1,5 @@
 #include <util/PerspectiveCamera.h>
-#include <maths/maths/matrix/matrix_transform.h>
+#include <maths/matrix/matrix_transform.h>
 #include <core/Input.h>
 
 PerspectiveCamera::PerspectiveCamera()

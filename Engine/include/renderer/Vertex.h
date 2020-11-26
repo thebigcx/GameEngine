@@ -1,7 +1,7 @@
 #pragma once
 
-#include <maths/maths/vector/vec2.h>
-#include <maths/maths/vector/vec4.h>
+#include <maths/vector/vec2.h>
+#include <maths/vector/vec4.h>
 
 struct Vertex
 {

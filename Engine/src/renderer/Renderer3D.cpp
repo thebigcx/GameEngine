@@ -1,6 +1,6 @@
 #include <renderer/Renderer3D.h>
 #include <core/Application.h>
-#include <maths/maths/matrix/matrix_transform.h>
+#include <maths/matrix/matrix_transform.h>
 #include <renderer/RenderCommand.h>
 #include <renderer/shader/ShaderFactory.h>
 

@@ -6,6 +6,7 @@
 #include <string>
 
 #include <util/Image.h>
+#include <maths/vector/vec2.h>
 #include <renderer/GraphicsContext.h>
 
 class Window

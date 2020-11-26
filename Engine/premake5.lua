@@ -8,13 +8,20 @@ project "GameEngine"
 
     files {
         "src/**.cpp", "src/**.c",
-        "include/**.h", "include/**.hpp"
+        "include/**.h", "include/**.hpp",
+        "vendor/stb_image/src/stb_image/stb_image.cpp",
+        "vendor/dr_libs/src/dr_libs/dr_libs.c"
     }
 
     includedirs {
         "include",
         "include/vendor",
-        "include/vendor/freetype2"
+        "vendor/freetype2/include/freetype2",
+        "vendor/dr_libs/include/",
+        "vendor/glfw/include",
+        "vendor/assimp/include",
+        "vendor/maths",
+        "vendor/stb_image/include"
     }
 
     links {

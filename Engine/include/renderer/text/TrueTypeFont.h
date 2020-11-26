@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <memory>
 
-#include <maths/maths/vector/vec2.h>
+#include <maths/vector/vec2.h>
 #include <core/Core.h>
 #include <renderer/Texture2D.h>
 

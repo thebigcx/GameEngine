@@ -1,6 +1,6 @@
 #include <util/OrthographicCamera.h>
 
-#include <maths/maths/matrix/matrix_transform.h>
+#include <maths/matrix/matrix_transform.h>
 #include <iostream>
 
 OrthographicCamera::OrthographicCamera(const math::vec2& position)

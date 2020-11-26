@@ -1,7 +1,7 @@
 #pragma once
 
 #include <util/Transform.h>
-#include <maths/maths/vector/vec2.h>
+#include <maths/vector/vec2.h>
 #include <core/Console.h>
 
 class Transformable

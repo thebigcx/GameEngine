@@ -35,13 +35,13 @@
 #include <renderer/Particles.h>
 #include <renderer/Model.h>
 
-#include <maths/maths/math.h>
-#include <maths/maths/rect.h>
-#include <maths/maths/vector/vec2.h>
-#include <maths/maths/vector/vec3.h>
-#include <maths/maths/vector/vec4.h>
-#include <maths/maths/matrix/mat3.h>
-#include <maths/maths/matrix/mat4.h>
+#include <maths/math.h>
+#include <maths/rect.h>
+#include <maths/vector/vec2.h>
+#include <maths/vector/vec3.h>
+#include <maths/vector/vec4.h>
+#include <maths/matrix/mat3.h>
+#include <maths/matrix/mat4.h>
 
 #include <sound/SoundEngine.h>
 #include <sound/SoundSource.h>

@@ -8,9 +8,9 @@
 #include <iostream>
 #include <unordered_map>
 
-#include <maths/maths/vector/vec4.h>
-#include <maths/maths/matrix/mat4.h>
-#include <maths/maths/matrix/mat3.h>
+#include <maths/vector/vec4.h>
+#include <maths/matrix/mat4.h>
+#include <maths/matrix/mat3.h>
 #include <core/Core.h>
 
 struct ShaderSource

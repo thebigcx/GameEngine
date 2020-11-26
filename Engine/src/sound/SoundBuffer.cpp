@@ -2,8 +2,8 @@
 
 #include <AL/al.h>
 
-#include <vendor/dr_libs/dr_wav.h>
-#include <vendor/dr_libs/dr_mp3.h>
+#include <dr_libs/dr_wav.h>
+#include <dr_libs/dr_mp3.h>
 #include <core/Console.h>
 
 SoundBuffer::SoundBuffer()

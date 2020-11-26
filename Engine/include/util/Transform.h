@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#include <maths/maths/vector/vec2.h>
-#include <maths/maths/matrix/mat4.h>
-#include <maths/maths/math.h>
-#include <maths/maths/matrix/matrix_transform.h>
+#include <maths/vector/vec2.h>
+#include <maths/matrix/mat4.h>
+#include <maths/math.h>
+#include <maths/matrix/matrix_transform.h>
 
 struct Transform
 {
