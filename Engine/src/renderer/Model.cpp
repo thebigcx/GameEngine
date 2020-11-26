@@ -147,7 +147,10 @@ std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTe
     for (int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
-        mat->GetTexture(type, i, &str);
+        if (mat->GetTexture(type, i, &str) == AI_FAILURE)
+        {
+            std::cout << "[ASSIMP] Could not open texture material!\n";
+        }
 
         bool skip = false;
         for (int j = 0; j < m_texturesLoaded.size(); j++)

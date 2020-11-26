@@ -7,6 +7,3 @@
 [submodule "Engine/vendor/glfw"]
 	path = Engine/vendor/glfw
 	url = https://github.com/thebigcx/glfw.git
-[submodule "Engine/vendor/assimp"]
-	path = Engine/vendor/assimp
-	url = https://github.com/assimp/assimp.git

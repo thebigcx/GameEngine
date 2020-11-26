@@ -46,8 +46,8 @@ Sandbox::Sandbox()
 
     Renderer3D::setLights(lights);
 
-    //m_model = Model::loadModel("Sandbox/assets/Donut.obj");
-    m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
+    m_model = Model::loadModel("Sandbox/assets/Donut.obj");
+    //m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
     
     Application::get().setCursorEnabled(false);
 }
