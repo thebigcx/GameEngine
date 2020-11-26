@@ -92,6 +92,7 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
         }*/
 
         std::vector<Shared<Texture2D>> specularMaps = loadMaterialTextures(aimaterial, aiTextureType_SPECULAR, "texture_specular");
+        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         /*for (auto& texture : specularMaps)
         {
             material->setTexture(texture);
@@ -160,7 +161,6 @@ std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTe
         }
         if (!skip)
         {
-            std::cout << "Didn't skip\n";
             Shared<Texture2D> texture;
             texture = Texture2D::create(m_directory + "/" + str.C_Str());
             textures.push_back(texture);

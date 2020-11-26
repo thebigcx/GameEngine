@@ -11,8 +11,13 @@ project "Sandbox"
 	
 	includedirs {
 		"%{wks.location}/Engine/include",
-		"%{wks.location}/Engine/include/vendor",
-		"%{wks.location}/Engine/include/vendor/freetype2"
+        "%{wks.location}/Engine/include/vendor",
+        "%{wks.location}/Engine/vendor/freetype2/include/freetype2",
+        "%{wks.location}/Engine/vendor/dr_libs/include/",
+        "%{wks.location}/Engine/vendor/glfw/include",
+        "%{wks.location}/Engine/vendor/assimp/include",
+        "%{wks.location}/Engine/vendor/maths",
+        "%{wks.location}/Engine/vendor/stb_image/include"
 	}
 	
 	libdirs {
