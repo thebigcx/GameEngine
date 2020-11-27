@@ -22,6 +22,7 @@ Sandbox::Sandbox()
     dirLight.direction = math::vec3(-0.2f, -1.f, -0.3f);
     dirLight.intensity = 0.02f;
     dirLight.color = math::vec3(1, 1, 1);
+    dirLight.specular = 1.f;
 
     lights.setDirectionalLight(dirLight);
 
@@ -32,11 +33,31 @@ Sandbox::Sandbox()
 
         pointLight.color = math::vec3(1, 1, 1);
         pointLight.intensity = 1.f;
+        pointLight.specular = 1.f;
+        pointLight.attenuation = 0.08f;
         
         pointLights.push_back(pointLight);
     }
 
     lights.setPointLights(pointLights);
+
+    std::vector<SpotLight> spotLights;
+    for (int i = 0; i < 1; i++)
+    {
+        SpotLight spotLight;
+
+        spotLight.color = math::vec3(1, 1, 1);
+        spotLight.intensity = 1.f;
+        spotLight.specular = 1.f;
+        spotLight.attenuation = 0.08f;
+        spotLight.cutoff = cos(math::asRadians(12.5f));
+        spotLight.outerCutoff = cos(math::asRadians(17.5f));
+        spotLight.direction = math::vec3(0, 0, 1);
+        
+        spotLights.push_back(spotLight);
+    }
+
+    lights.setSpotLights(spotLights);
 
     Renderer3D::setLights(lights);
 
@@ -69,7 +90,8 @@ void Sandbox::update()
         Renderer3D::submit(mesh, math::scale(math::translate(math::mat4(1.f), math::vec3(i * 2, j * 2, 0)), math::vec3(2.f)));
     }
 
-    Renderer3D::data.modelShader->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
+    Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());
+    Renderer3D::data.modelShader->setFloat3("spotLights[0].direction", m_perspectiveCamera.getDirection());
 
     Renderer3D::submit(mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.5f, 4.f)));
 

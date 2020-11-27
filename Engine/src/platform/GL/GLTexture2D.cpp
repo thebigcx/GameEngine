@@ -13,23 +13,10 @@ GLTexture2D::GLTexture2D(const std::string& file)
 
     if (image->data)
     {
-        GLenum internalFormat, dataFormat;
-        //if (image->channels == 4)
-        {
-            //internalFormat = GL_RGBA8;
-            internalFormat = GL_SRGB8_ALPHA8;
-            dataFormat = GL_RGBA;
-            //dataFormat = GL_SRGB_ALPHA;
-        }
-        //else if (image->channels == 3)
-        {
-            //internalFormat = GL_RGB8;
-            //dataFormat = GL_RGB;
-        }
-        m_internalFormat = internalFormat;
-        m_dataFormat = dataFormat;
+        m_internalFormat = GL_SRGB8_ALPHA8;
+        m_dataFormat = GL_RGBA;
 
-        glTextureStorage2D(m_id, 1, internalFormat, image->width, image->height);
+        glTextureStorage2D(m_id, 1, m_internalFormat, image->width, image->height);
 
         glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
@@ -43,7 +30,7 @@ GLTexture2D::GLTexture2D(const std::string& file)
                      0,
                      image->width,
                      image->height,
-                     dataFormat,
+                     m_dataFormat,
                      GL_UNSIGNED_BYTE,
                      image->data);
 

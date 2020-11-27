@@ -7,18 +7,29 @@
 
 struct PointLight
 {
-    //math::vec3 position, ambient, diffuse, specular;
-    //float constant, linear, quadratic;
     math::vec3 position, color;
     float intensity;
+    float specular;
+    float attenuation;
 };
 
 struct DirectionalLight
 {
-    //math::vec3 direction, ambient, diffuse, specular;
     math::vec3 direction;
     math::vec3 color;
     float intensity;
+    float specular;
+};
+
+struct SpotLight
+{
+    math::vec3 position, direction;
+    math::vec3 color;
+    float cutoff;
+    float outerCutoff;
+    float intensity;
+    float specular;
+    float attenuation;
 };
 
 class LightSetup
@@ -37,6 +48,15 @@ public:
         if (m_pointLights.size() > 64)
         {
             std::cout << "Too many point lights!\n\n";
+        }
+    }
+
+    void setSpotLights(const std::vector<SpotLight>& lights)
+    {
+        m_spotLights.insert(m_spotLights.begin(), lights.begin(), lights.end());
+        if (m_spotLights.size() > 64)
+        {
+            std::cout << "Too many spot lights!\n\n";
         }
     }
 
@@ -60,6 +80,11 @@ public:
         return m_pointLights;
     }
 
+    const std::vector<SpotLight>& getSpotLights() const
+    {
+        return m_spotLights;
+    }
+
     float getSkyLight() const
     {
         return m_skyLight;
@@ -68,5 +93,6 @@ public:
 private:
     DirectionalLight m_dirLight;
     std::vector<PointLight> m_pointLights;
+    std::vector<SpotLight> m_spotLights;
     float m_skyLight = 0;
 };
