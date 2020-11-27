@@ -16,7 +16,5 @@ private:
 
     Shared<Model> m_model;
 
-    Shared<Framebuffer> m_framebuffer;
-
     PerspectiveCamera m_perspectiveCamera;
 };

@@ -7,13 +7,18 @@
 
 struct PointLight
 {
-    math::vec3 position, ambient, diffuse, specular;
-    float constant, linear, quadratic;
+    //math::vec3 position, ambient, diffuse, specular;
+    //float constant, linear, quadratic;
+    math::vec3 position, color;
+    float intensity;
 };
 
 struct DirectionalLight
 {
-    math::vec3 direction, ambient, diffuse, specular;
+    //math::vec3 direction, ambient, diffuse, specular;
+    math::vec3 direction;
+    math::vec3 color;
+    float intensity;
 };
 
 class LightSetup
@@ -35,6 +40,11 @@ public:
         }
     }
 
+    void setSkylight(float intensity)
+    {
+        m_skyLight = intensity;
+    }
+
     void removePointLight(int index)
     {
         m_pointLights.erase(m_pointLights.begin() + index);
@@ -50,7 +60,13 @@ public:
         return m_pointLights;
     }
 
+    float getSkyLight() const
+    {
+        return m_skyLight;
+    }
+
 private:
     DirectionalLight m_dirLight;
     std::vector<PointLight> m_pointLights;
+    float m_skyLight = 0;
 };

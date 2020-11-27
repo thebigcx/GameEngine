@@ -6,6 +6,7 @@
 #include <renderer/Material.h>
 #include <renderer/Model.h>
 #include <renderer/Lights.h>
+#include <renderer/Framebuffer.h>
 
 #include <util/PerspectiveCamera.h>
 
@@ -15,6 +16,9 @@ struct Renderer3DData
     Shared<Shader> modelShader;
     PerspectiveCamera* camera;
     bool sceneStarted = false;
+    Shared<Framebuffer> hdrBuffer;
+    Shared<Mesh> quadMesh;
+    Shared<Shader> hdrShader;
 };
 
 class Renderer3D
@@ -24,7 +28,7 @@ public:
 
     static void beginScene(PerspectiveCamera& camera);
 
-    static void render(const Mesh& mesh, const math::mat4& transform);
+    static void submit(const Shared<Mesh>& mesh, const math::mat4& transform);
     static void submit(const Shared<Model>& model, const math::mat4& transform);
 
     static void setLights(const LightSetup& setup);

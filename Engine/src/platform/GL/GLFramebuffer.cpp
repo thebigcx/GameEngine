@@ -39,7 +39,7 @@ void GLFramebuffer::invalidate(uint32_t width, uint32_t height)
     glCreateTextures(GL_TEXTURE_2D, 1, &(m_colorAttachment));
 
     glBindTextureUnit(0, m_colorAttachment);
-    glTextureStorage2D(m_colorAttachment, 1, GL_RGBA8, width, height);
+    glTextureStorage2D(m_colorAttachment, 1, GL_RGBA16F, width, height);
 
     glTextureParameteri(m_colorAttachment, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTextureParameteri(m_colorAttachment, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
