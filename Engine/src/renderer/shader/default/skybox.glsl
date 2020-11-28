@@ -4,15 +4,21 @@
 
 layout (location = 0) in vec3 aPos;
 
-out vec3 TexCoord;
+out DATA
+{
+    vec3 texCoord;
+} vs_out;
 
-uniform mat4 projection;
-uniform mat4 view;
+layout (std140) uniform matrices
+{
+    mat4 projection;
+    mat4 view;
+};
 
 void main()
 {
-    TexCoord = aPos;
-    vec4 pos = projection * view * vec4(aPos, 1.0); 
+    vs_out.texCoord = aPos;
+    vec4 pos = projection * mat4(mat3(view)) * vec4(aPos, 1.0); 
     gl_Position = pos.xyww;
 }
 
@@ -20,7 +26,10 @@ void main()
 
 #version 460 core
 
-in vec3 TexCoord;
+in DATA
+{
+    vec3 texCoord;
+} fs_in;
 
 out vec4 FragColor;
 
@@ -28,5 +37,5 @@ uniform samplerCube TextureCube;
 
 void main()
 {
-    FragColor = texture(TextureCube, TexCoord);
+    FragColor = texture(TextureCube, fs_in.texCoord);
 }

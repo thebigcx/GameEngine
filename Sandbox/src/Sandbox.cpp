@@ -75,6 +75,14 @@ Sandbox::Sandbox()
     };
     m_skyboxTexture = TextureCube::create(&files[0]);
     m_skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
+
+    m_uniformBuffer = UniformBuffer::create(sizeof(math::mat4) * 2);
+    m_uniformBuffer->addBinding(Renderer3D::data.modelShader, "matrices");
+    m_uniformBuffer->addBinding(m_skyboxShader, "matrices");
+    m_uniformBuffer->addBinding(m_cubeMaterial->getShader(), "matrices");
+
+    m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4));
+    m_uniformBuffer->setData(math::buffer(m_perspectiveCamera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
     
     Application::get().setCursorEnabled(false);
 }
@@ -87,6 +95,8 @@ void Sandbox::update()
     {
         Application::get().quit();
     }
+
+    m_perspectiveCamera.update();
 
     //Renderer::startFrame();
 
@@ -103,8 +113,9 @@ void Sandbox::update()
         Renderer3D::submit(mesh, math::scale(math::translate(math::mat4(1.f), math::vec3(i * 2, j * 2, 0)), math::vec3(2.f)));
     }
 
-    m_cubeMaterial->getShader()->setMatrix4("view", m_perspectiveCamera.getViewMatrix());
-    m_cubeMaterial->getShader()->setFloat3("viewPos", m_perspectiveCamera.getPosition());
+    m_uniformBuffer->setData(math::buffer(m_perspectiveCamera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
+
+    m_cubeMaterial->getShader()->setFloat3("cameraPos", m_perspectiveCamera.getPosition());
 
     Renderer3D::data.modelShader->bind();
     Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());
@@ -115,14 +126,10 @@ void Sandbox::update()
 
     glDepthFunc(GL_LEQUAL);
     m_skyboxShader->bind();
-    m_skyboxShader->setMatrix4("projection", Renderer3D::data.projectionMatrix);
-    m_skyboxShader->setMatrix4("view", math::mat4(math::mat3(m_perspectiveCamera.getViewMatrix())));
     m_skyboxMesh->vertexArray->bind();
     m_skyboxTexture->bind();
     RenderCommand::renderIndexed(m_skyboxMesh->vertexArray);
     glDepthFunc(GL_LESS);
-
-    m_perspectiveCamera.update();
 
     Renderer3D::endScene();
 

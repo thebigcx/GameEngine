@@ -62,6 +62,7 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
     RenderCommand::setDepthTesting(true);
 
     mesh->material->bind();
+    mesh->material->getShader()->setMatrix4("view", data.camera->getViewMatrix());
     mesh->material->getShader()->setMatrix4("transform", transform);
     mesh->material->getShader()->setMatrix4("projection", data.projectionMatrix);
     mesh->material->getShader()->setFloat("material.shininess", mesh->material->shininess);
@@ -127,7 +128,7 @@ void Renderer3D::setLights(const LightSetup& setup)
         std::string index = std::to_string(i);
 
         auto& light = spotLights[i];
-        
+
         data.modelShader->setFloat3("spotLights[" + index + "].position",  light.position);
         data.modelShader->setFloat3("spotLights[" + index + "].direction",  light.direction);
         data.modelShader->setFloat3("spotLights[" + index + "].color",   light.color);

@@ -196,10 +196,12 @@ class UniformBuffer
 public:
     virtual ~UniformBuffer() = default;
 
-    virtual void update();
+    virtual void setData(const void* data, size_t size, size_t offset = 0) = 0;
+
+    virtual void addBinding(const Shared<Shader>& shader, const std::string& name) = 0;
 
     virtual void bind() const = 0;
     virtual void unbind() const = 0;
 
-    static Shared<UniformBuffer> create();
+    static Shared<UniformBuffer> create(size_t size);
 };

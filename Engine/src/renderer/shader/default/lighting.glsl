@@ -6,19 +6,26 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
 
-out vec2 TexCoord;
-out vec3 Normal;
-out vec3 FragPos;
+out DATA
+{
+    vec2 texCoord;
+    vec3 normal;
+    vec3 fragPos;
+} vs_out;
 
-uniform mat4 projection;
-uniform mat4 view = mat4(1.f);
+layout (std140) uniform matrices
+{
+    mat4 projection;
+    mat4 view;
+};
+
 uniform mat4 transform = mat4(1.f);
 
 void main()
 {
-    Normal = aNormal;
-    TexCoord = aTexCoord;
-    FragPos = vec3(transform * vec4(aPos, 1.0));
+    vs_out.normal = aNormal;
+    vs_out.texCoord = aTexCoord;
+    vs_out.fragPos = vec3(transform * vec4(aPos, 1.0));
     gl_Position = projection * view * transform * vec4(aPos, 1.0);
 }
 
@@ -67,9 +74,12 @@ struct LightValues
     vec3 ambient, diffuse, specular;
 };
 
-in vec2 TexCoord;
-in vec3 Normal;
-in vec3 FragPos;
+in DATA
+{
+    vec2 texCoord;
+    vec3 normal;
+    vec3 fragPos;
+} fs_in;
 
 out vec4 FragColor;
 
@@ -92,18 +102,18 @@ LightValues calculateLight(vec3 lightDir, vec3 normal, vec3 viewDir, vec3 lightD
 
 void main()
 {
-    vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 norm = normalize(fs_in.normal);
+    vec3 viewDir = normalize(viewPos - fs_in.fragPos);
 
     vec3 result = calcDirLight(dirLight, norm, viewDir);
 
-    result += skyLight * vec3(texture(material.diffuse, TexCoord));
+    result += skyLight * vec3(texture(material.diffuse, fs_in.texCoord));
     
     for (int i = 0; i < numPointLights; i++)
-        result += calcPointLight(pointLights[i], norm, FragPos, viewDir);
+        result += calcPointLight(pointLights[i], norm, fs_in.fragPos, viewDir);
 
     for (int i = 0; i < numSpotLights; i++)
-        result += calcSpotLight(spotLights[i], norm, FragPos, viewDir);
+        result += calcSpotLight(spotLights[i], norm, fs_in.fragPos, viewDir);
 
     FragColor = vec4(result, 1.0);
 }
@@ -161,8 +171,8 @@ LightValues calculateLight(vec3 lightDir, vec3 normal, vec3 viewDir, vec3 lightD
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 
-    values.diffuse  = lightDiffuse  * diff * vec3(texture(material.diffuse, TexCoord));
-    values.specular = lightSpecular * spec * vec3(texture(material.specular, TexCoord));
+    values.diffuse  = lightDiffuse  * diff * vec3(texture(material.diffuse, fs_in.texCoord));
+    values.specular = lightSpecular * spec * vec3(texture(material.specular, fs_in.texCoord));
 
     return values;
 }

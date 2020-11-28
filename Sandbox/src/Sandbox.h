@@ -20,5 +20,7 @@ private:
     Shared<TextureCube> m_skyboxTexture;
     Shared<Shader> m_skyboxShader;
 
+    Shared<UniformBuffer> m_uniformBuffer;
+
     PerspectiveCamera m_perspectiveCamera;
 };

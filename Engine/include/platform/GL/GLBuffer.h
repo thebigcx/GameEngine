@@ -53,3 +53,20 @@ private:
     uint32_t m_id = 0;
     uint32_t m_count = 0;
 };
+
+class GLUniformBuffer : public UniformBuffer
+{
+public:
+    GLUniformBuffer(size_t size);
+
+    void setData(const void* data, size_t size, size_t offset = 0) override;
+
+    void addBinding(const Shared<Shader>& shader, const std::string& name) override;
+
+    void bind() const override;
+    void unbind() const override;
+
+private:
+    uint32_t m_id;
+    uint32_t m_bindingPoint;
+};

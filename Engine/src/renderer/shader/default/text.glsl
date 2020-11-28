@@ -5,15 +5,17 @@
 layout (location = 0) in vec2 aPos;
 layout (location = 1) in vec2 aTexCoord;
 
-out vec2 texCoord;
-out vec4 color;
+out DATA
+{
+    vec2 texCoord;
+} vs_out;
 
 uniform mat4 projection;
 uniform mat4 transform = mat4(1.f);
 
 void main()
 {
-    texCoord = aTexCoord;
+    vs_out.texCoord = aTexCoord;
     gl_Position = projection * transform * vec4(aPos, 0.0, 1.0);
 }
 
@@ -21,19 +23,22 @@ void main()
 
 #version 460 core
 
-in vec2 texCoord;
+in DATA
+{
+    vec2 texCoord;
+} fs_in;
 
-out vec4 fragColor;
+out vec4 FragColor;
 
-uniform sampler2D texture_;
+uniform sampler2D fontAtlas;
 uniform vec4 textColor;
 
 void main()
 {
-    vec4 sampled = vec4(1, 1, 1, texture(texture_, texCoord).r);
+    vec4 sampled = vec4(1, 1, 1, texture(fontAtlas, fs_in.texCoord).r);
     if (sampled.a < 0.1)
     {
         discard;
     }
-    fragColor = sampled * vec4(textColor.rgb, 1);
+    FragColor = sampled * vec4(textColor.rgb, 1);
 }
