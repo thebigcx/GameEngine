@@ -213,7 +213,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
 
     // Set render states
     data.textShader->bind();
-    data.textShader->setMatrix4("transform", math::identity<float>());
+    data.textShader->setMatrix4("transform", math::mat4(1.f));
     data.textShader->setFloat4("textColor", math::vec4(color.r, color.g, color.b, color.a));
     m_textMesh->vertexArray->bind();
     font->getTextureAtlas()->bind();

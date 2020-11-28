@@ -18,4 +18,7 @@ class ImageLoader
 public:
     static Shared<Image> loadOpenGLImage(const std::string& path);
     static Shared<Image> loadImage(const std::string& path);
+
+private:
+    static Shared<Image> loadImageImpl(const std::string& path);
 };

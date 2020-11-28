@@ -9,7 +9,7 @@ Image::~Image()
     stbi_image_free(data);
 }
 
-Shared<Image> ImageLoader::loadImage(const std::string& file)
+Shared<Image> ImageLoader::loadImageImpl(const std::string& file)
 {
     auto image = createShared<Image>();
 
@@ -29,9 +29,16 @@ Shared<Image> ImageLoader::loadImage(const std::string& file)
     return image;
 }
 
+Shared<Image> ImageLoader::loadImage(const std::string& file)
+{
+    stbi_set_flip_vertically_on_load(false);
+
+    return loadImageImpl(file);
+}
+
 Shared<Image> ImageLoader::loadOpenGLImage(const std::string& file)
 {
     stbi_set_flip_vertically_on_load(true);
 
-    return loadImage(file);
+    return loadImageImpl(file);
 }

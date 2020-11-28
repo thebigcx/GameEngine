@@ -1,6 +1,6 @@
 #pragma once
 
-#include <maths/matrix/mat4.h>
+#include <maths/matrix/mat4x4.h>
 #include <renderer/Mesh.h>
 #include <renderer/Texture2D.h>
 #include <renderer/Material.h>

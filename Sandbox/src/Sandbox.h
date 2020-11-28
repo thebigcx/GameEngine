@@ -16,5 +16,9 @@ private:
 
     Shared<Model> m_model;
 
+    Shared<Mesh> m_skyboxMesh;
+    Shared<TextureCube> m_skyboxTexture;
+    Shared<Shader> m_skyboxShader;
+
     PerspectiveCamera m_perspectiveCamera;
 };

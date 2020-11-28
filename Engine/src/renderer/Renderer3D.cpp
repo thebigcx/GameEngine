@@ -10,7 +10,7 @@ Renderer3DData Renderer3D::data;
 void Renderer3D::init()
 {
     math::ivec2 windowSize = Application::get().getWindow().getSize();
-    data.projectionMatrix = math::perspective((float)math::asRadians(45.f), (float)windowSize.x / (float)windowSize.y, 0.1f, 100.f);
+    data.projectionMatrix = math::perspective((float)math::radians(45.f), (float)windowSize.x / (float)windowSize.y, 0.1f, 100.f);
 
     data.modelShader = ShaderFactory::lightingShader();
 
@@ -100,10 +100,12 @@ void Renderer3D::setLights(const LightSetup& setup)
 
     auto& dirLight = setup.getDirectionalLight();
 
+    data.modelShader->setFloat("skyLight", setup.getSkyLight());
+
     data.modelShader->setFloat3("dirLight.direction", dirLight.direction);
-    data.modelShader->setFloat3("dirLight.ambient",  math::vec3(setup.getSkyLight()));
-    data.modelShader->setFloat3("dirLight.diffuse", dirLight.color * dirLight.intensity);
-    data.modelShader->setFloat3("dirLight.specular", dirLight.color * dirLight.specular);
+    data.modelShader->setFloat3("dirLight.color", dirLight.color);
+    data.modelShader->setFloat("dirLight.intensity", dirLight.intensity);
+    data.modelShader->setFloat("dirLight.specular", dirLight.specular);
 
     auto& pointLights = setup.getPointLights();
     for (int i = 0; i < pointLights.size(); i++)
@@ -113,11 +115,10 @@ void Renderer3D::setLights(const LightSetup& setup)
         auto& light = pointLights[i];
 
         data.modelShader->setFloat3("pointLights[" + index + "].position",  light.position);
-        data.modelShader->setFloat3("pointLights[" + index + "].diffuse",   light.color * light.intensity);
-        data.modelShader->setFloat3("pointLights[" + index + "].specular",  light.color * light.specular);
-        data.modelShader->setFloat("pointLights[" + index + "].constant",  1.f);
-        data.modelShader->setFloat("pointLights[" + index + "].linear",    0);
-        data.modelShader->setFloat("pointLights[" + index + "].quadratic", light.attenuation);
+        data.modelShader->setFloat3("pointLights[" + index + "].color",   light.color);
+        data.modelShader->setFloat("pointLights[" + index + "].intensity",  light.intensity);
+        data.modelShader->setFloat("pointLights[" + index + "].specular",  light.specular);
+        data.modelShader->setFloat("pointLights[" + index + "].attenuation", light.attenuation);
     }
 
     auto& spotLights = setup.getSpotLights();
@@ -126,14 +127,13 @@ void Renderer3D::setLights(const LightSetup& setup)
         std::string index = std::to_string(i);
 
         auto& light = spotLights[i];
-
+        
         data.modelShader->setFloat3("spotLights[" + index + "].position",  light.position);
         data.modelShader->setFloat3("spotLights[" + index + "].direction",  light.direction);
-        data.modelShader->setFloat3("spotLights[" + index + "].diffuse",   light.color * light.intensity);
-        data.modelShader->setFloat3("spotLights[" + index + "].specular",  light.color * light.specular);
-        data.modelShader->setFloat("spotLights[" + index + "].constant",  1.f);
-        data.modelShader->setFloat("spotLights[" + index + "].linear",    0);
-        data.modelShader->setFloat("spotLights[" + index + "].quadratic", light.attenuation);
+        data.modelShader->setFloat3("spotLights[" + index + "].color",   light.color);
+        data.modelShader->setFloat("spotLights[" + index + "].intensity",   light.intensity);
+        data.modelShader->setFloat("spotLights[" + index + "].specular",  light.specular);
+        data.modelShader->setFloat("spotLights[" + index + "].attenuation", light.attenuation);
         data.modelShader->setFloat("spotLights[" + index + "].cutoff", light.cutoff);
         data.modelShader->setFloat("spotLights[" + index + "].outerCutoff", light.outerCutoff);
     }

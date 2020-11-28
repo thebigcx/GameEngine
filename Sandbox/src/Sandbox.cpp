@@ -50,8 +50,8 @@ Sandbox::Sandbox()
         spotLight.intensity = 1.f;
         spotLight.specular = 1.f;
         spotLight.attenuation = 0.08f;
-        spotLight.cutoff = cos(math::asRadians(12.5f));
-        spotLight.outerCutoff = cos(math::asRadians(17.5f));
+        spotLight.cutoff = math::cos(math::radians(12.5f));
+        spotLight.outerCutoff = math::cos(math::radians(17.5f));
         spotLight.direction = math::vec3(0, 0, 1);
         
         spotLights.push_back(spotLight);
@@ -62,6 +62,18 @@ Sandbox::Sandbox()
     Renderer3D::setLights(lights);
 
     m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
+
+    m_skyboxMesh = MeshFactory::skyboxMesh();
+    std::string files[] = {
+        "Sandbox/assets/skybox/right.jpg",
+        "Sandbox/assets/skybox/left.jpg",
+        "Sandbox/assets/skybox/top.jpg",
+        "Sandbox/assets/skybox/bottom.jpg",
+        "Sandbox/assets/skybox/front.jpg",
+        "Sandbox/assets/skybox/back.jpg",
+    };
+    m_skyboxTexture = TextureCube::create(&files[0]);
+    m_skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
     
     Application::get().setCursorEnabled(false);
 }
@@ -92,8 +104,18 @@ void Sandbox::update()
 
     Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());
     Renderer3D::data.modelShader->setFloat3("spotLights[0].direction", m_perspectiveCamera.getDirection());
+    //Renderer3D::data.modelShader->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
 
     Renderer3D::submit(mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.5f, 4.f)));
+
+    glDepthFunc(GL_LEQUAL);
+    m_skyboxShader->bind();
+    m_skyboxShader->setMatrix4("projection", Renderer3D::data.projectionMatrix);
+    m_skyboxShader->setMatrix4("view", math::mat4(math::mat3(m_perspectiveCamera.getViewMatrix())));
+    m_skyboxMesh->vertexArray->bind();
+    m_skyboxTexture->bind();
+    RenderCommand::renderIndexed(m_skyboxMesh->vertexArray);
+    glDepthFunc(GL_LESS);
 
     m_perspectiveCamera.update();
 
