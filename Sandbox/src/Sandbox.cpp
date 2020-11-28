@@ -10,7 +10,8 @@ Sandbox::Sandbox()
 
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
 
-    m_cubeMaterial = Material::create(Renderer3D::data.modelShader);
+    //m_cubeMaterial = Material::create(Renderer3D::data.modelShader);
+    m_cubeMaterial = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
     m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
     m_cubeMaterial->shininess = 16.f;
 
@@ -102,6 +103,10 @@ void Sandbox::update()
         Renderer3D::submit(mesh, math::scale(math::translate(math::mat4(1.f), math::vec3(i * 2, j * 2, 0)), math::vec3(2.f)));
     }
 
+    m_cubeMaterial->getShader()->setMatrix4("view", m_perspectiveCamera.getViewMatrix());
+    m_cubeMaterial->getShader()->setFloat3("viewPos", m_perspectiveCamera.getPosition());
+
+    Renderer3D::data.modelShader->bind();
     Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());
     Renderer3D::data.modelShader->setFloat3("spotLights[0].direction", m_perspectiveCamera.getDirection());
     //Renderer3D::data.modelShader->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
