@@ -21,6 +21,9 @@ private:
     Shared<Shader> m_skyboxShader;
 
     Shared<UniformBuffer> m_uniformBuffer;
+    Shared<UniformBuffer> m_testUniformBuffer;
+
+    LightSetup lights;
 
     PerspectiveCamera m_perspectiveCamera;
 };

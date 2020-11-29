@@ -15,10 +15,10 @@ struct PointLight
 
 struct DirectionalLight
 {
-    math::vec3 direction;
-    math::vec3 color;
-    float intensity;
-    float specular;
+    alignas(16) math::vec3 direction;
+    alignas(16) math::vec3 color;
+    alignas(4) float intensity;
+    alignas(4) float specular;
 };
 
 struct SpotLight
@@ -94,4 +94,17 @@ private:
     std::vector<PointLight> m_pointLights;
     std::vector<SpotLight> m_spotLights;
     float m_skyLight = 0;
+};
+
+struct LightStruct
+{
+    alignas(64) DirectionalLight dirLight;
+    //PointLight pointLights[64];
+    //SpotLight spotLights[64];
+
+    //int numPointLights;
+    //int numSpotLights;
+
+    alignas(16) math::vec3 cameraPos;
+    alignas(4) float skyLight;
 };

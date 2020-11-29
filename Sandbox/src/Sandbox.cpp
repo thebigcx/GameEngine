@@ -15,13 +15,27 @@ Sandbox::Sandbox()
     m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
     m_cubeMaterial->shininess = 16.f;
 
-    LightSetup lights;
+    m_skyboxMesh = MeshFactory::skyboxMesh();
+    std::string files[] = {
+        "Sandbox/assets/skybox/right.jpg",
+        "Sandbox/assets/skybox/left.jpg",
+        "Sandbox/assets/skybox/top.jpg",
+        "Sandbox/assets/skybox/bottom.jpg",
+        "Sandbox/assets/skybox/front.jpg",
+        "Sandbox/assets/skybox/back.jpg",
+    };
+    m_skyboxTexture = TextureCube::create(&files[0]);
+    m_skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
+
+    m_uniformBuffer = UniformBuffer::create(sizeof(math::mat4) * 2 + sizeof(math::vec3), 0);
+
+    m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4), 0);
 
     lights.setSkylight(0.01f);
 
     DirectionalLight dirLight;
-    dirLight.direction = math::vec3(-0.2f, -1.f, -0.3f);
-    dirLight.intensity = 0.02f;
+    dirLight.direction = math::vec3(-0.6f, -0.6f, -0.6f);
+    dirLight.intensity = 0.2f;
     dirLight.color = math::vec3(1, 1, 1);
     dirLight.specular = 1.f;
 
@@ -53,7 +67,6 @@ Sandbox::Sandbox()
         spotLight.attenuation = 0.08f;
         spotLight.cutoff = math::cos(math::radians(12.5f));
         spotLight.outerCutoff = math::cos(math::radians(17.5f));
-        spotLight.direction = math::vec3(0, 0, 1);
         
         spotLights.push_back(spotLight);
     }
@@ -62,25 +75,10 @@ Sandbox::Sandbox()
 
     Renderer3D::setLights(lights);
 
-    m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
+    //m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
+    m_model = Model::loadModel("Sandbox/assets/sphere.obj");
+    m_model->meshes[0]->material = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
 
-    m_skyboxMesh = MeshFactory::skyboxMesh();
-    std::string files[] = {
-        "Sandbox/assets/skybox/right.jpg",
-        "Sandbox/assets/skybox/left.jpg",
-        "Sandbox/assets/skybox/top.jpg",
-        "Sandbox/assets/skybox/bottom.jpg",
-        "Sandbox/assets/skybox/front.jpg",
-        "Sandbox/assets/skybox/back.jpg",
-    };
-    m_skyboxTexture = TextureCube::create(&files[0]);
-    m_skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
-
-    m_uniformBuffer = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
-
-    m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4));
-    m_uniformBuffer->setData(math::buffer(m_perspectiveCamera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
-    
     Application::get().setCursorEnabled(false);
 }
 
@@ -99,10 +97,9 @@ void Sandbox::update()
 
     Renderer3D::beginScene(m_perspectiveCamera);
 
-    Renderer3D::submit(m_model, math::mat4(1.f));
+    Renderer3D::submit(m_model, math::translate(math::mat4(1.f), math::vec3(0, 0, 3)));
 
-    auto mesh = MeshFactory::cubeMesh(1.f);
-    mesh->material = m_cubeMaterial;
+    auto mesh = MeshFactory::cubeMesh(1.f, m_cubeMaterial);
 
     for (int i = 0; i < 10; i++)
     for (int j = 0; j < 10; j++)
@@ -111,8 +108,7 @@ void Sandbox::update()
     }
 
     m_uniformBuffer->setData(math::buffer(m_perspectiveCamera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
-
-    m_cubeMaterial->getShader()->setFloat3("cameraPos", m_perspectiveCamera.getPosition());
+    //m_uniformBuffer->setData(&(m_perspectiveCamera.getPosition().x), sizeof(math::vec3), 2 * sizeof(math::mat4));
 
     Renderer3D::data.modelShader->bind();
     Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());

@@ -51,4 +51,8 @@ private:
 
     ShaderSource preProcess(const std::string& source);
     bool compileShader(const ShaderSource& source);
+
+    std::unordered_map<std::string, uint32_t> m_uniformLocations;
+
+    uint32_t getUniformLocation(const std::string& uniform);
 };

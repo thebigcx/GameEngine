@@ -58,7 +58,7 @@ Shared<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
     return quad;
 }
 
-Shared<Mesh> MeshFactory::cubeMesh(float size)
+Shared<Mesh> MeshFactory::cubeMesh(float size, const Shared<Material>& material)
 {
     auto quad = createShared<Mesh>();
 
@@ -122,6 +122,8 @@ Shared<Mesh> MeshFactory::cubeMesh(float size)
     quad->vertexBuffer->setLayout(layout);
     quad->vertexArray->addVertexBuffer(quad->vertexBuffer);
     quad->vertexArray->setIndexBuffer(quad->indexBuffer);
+
+    quad->material = material;
 
     return quad;
 }

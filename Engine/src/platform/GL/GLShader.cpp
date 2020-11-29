@@ -127,144 +127,154 @@ void GLShader::unbind() const
 
 void GLShader::setInt(const std::string& name, int value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform1i(location, value);
 }
     
 void GLShader::setInt2(const std::string& name, const math::ivec2& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform2i(location, value.x, value.y);
 }
 
 void GLShader::setInt3(const std::string& name, const math::ivec3& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform3i(location, value.x, value.y, value.z);
 }
 
 void GLShader::setInt4(const std::string& name, const math::ivec4& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform4i(location, value.x, value.y, value.z, value.w);
 }
 
 void GLShader::setFloat(const std::string& name, float value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform1f(location, value);
 }
 
 void GLShader::setFloat2(const std::string& name, const math::vec2& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform2f(location, value.x, value.y);
 }
 
 void GLShader::setFloat3(const std::string& name, const math::vec3& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform3f(location, value.x, value.y, value.z);
 }
 
 void GLShader::setFloat4(const std::string& name, const math::vec4& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform4f(location, value.x, value.y, value.z, value.w);
 }
 
 void GLShader::setUint(const std::string& name, unsigned int value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform1ui(location, value);
 }
 
 void GLShader::setUint2(const std::string& name, math::uvec2& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform2ui(location, value.x, value.y);
 }
 
 void GLShader::setUint3(const std::string& name, math::uvec3& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform3ui(location, value.x, value.y, value.z);
 }
 
 void GLShader::setUint4(const std::string& name, math::uvec4& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform4ui(location, value.x, value.y, value.z, value.w);
 }
 
 void GLShader::setFloatArray(const std::string& name, float* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform1fv(location, count, value);
 }
 
 void GLShader::setFloat2Array(const std::string& name, math::vec2* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform2fv(location, count, &(value->x));
 }
 
 void GLShader::setFloat3Array(const std::string& name, math::vec3* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform3fv(location, count, &(value->x));
 }
 
 void GLShader::setFloat4Array(const std::string& name, math::vec4* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform4fv(location, count, &(value->x));
 }
 
 void GLShader::setIntArray(const std::string& name, int* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform1iv(location, count, value);
 }
 
 void GLShader::setInt2Array(const std::string& name, math::ivec2* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform2iv(location, count, &(value->x));
 }
 
 void GLShader::setInt3Array(const std::string& name, math::ivec3* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform3iv(location, count, &(value->x));
 }
 
 void GLShader::setInt4Array(const std::string& name, math::ivec4* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform4iv(location, count, &(value->x));
 }
 
 void GLShader::setUintArray(const std::string& name, unsigned int* value, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniform1uiv(location, count, value);
 }
 
 void GLShader::setMatrix3(const std::string& name, const math::mat3& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniformMatrix3fv(location, 1, GL_FALSE, math::buffer(value));
 }
 
 void GLShader::setMatrix4(const std::string& name, const math::mat4& value)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniformMatrix4fv(location, 1, GL_FALSE, math::buffer(value));
 }
 
 void GLShader::setMatrix4Array(const std::string& name, math::mat4* matrices, uint32_t count)
 {
-    auto location = glGetUniformLocation(m_id, name.c_str());
+    auto location = getUniformLocation(name);
     glUniformMatrix4fv(location, count, GL_FALSE, math::buffer(matrices[0]));
+}
+
+uint32_t GLShader::getUniformLocation(const std::string& name)
+{
+    if (m_uniformLocations.find(name) == m_uniformLocations.end())
+    {
+        m_uniformLocations.insert(std::make_pair(name, glGetUniformLocation(m_id, name.c_str())));
+    }
+
+    return m_uniformLocations.at(name);
 }

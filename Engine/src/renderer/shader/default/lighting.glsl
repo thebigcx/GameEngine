@@ -17,6 +17,7 @@ layout (std140, binding = 0) uniform matrices
 {
     mat4 projection;
     mat4 view;
+    //vec3 cameraPos;
 };
 
 uniform mat4 transform = mat4(1.f);
@@ -26,6 +27,7 @@ void main()
     vs_out.normal = aNormal;
     vs_out.texCoord = aTexCoord;
     vs_out.fragPos = vec3(transform * vec4(aPos, 1.0));
+
     gl_Position = projection * view * transform * vec4(aPos, 1.0);
 }
 
@@ -85,27 +87,28 @@ out vec4 FragColor;
 
 uniform Material material;
 
-/*layout (std140, binding = 1) uniform lighting
+layout (std140, binding = 1) uniform lighting
 {
-    DirLight dirLight;
-    PointLight pointLights[MAX_LIGHTS];
-    SpotLight spotLights[MAX_LIGHTS];
+    DirLight dirLightTest;
+    //PointLight sfsfdg[MAX_LIGHTS];
+    //SpotLight sgdfsgsgsds[MAX_LIGHTS];
 
-    int numPointLights;
-    int numSpotLights;
+    //int sgdhtrtsg;
+    //int shrdgsrhg;
 
     vec3 cameraPos;
     float skyLight;
-};*/
-uniform DirLight dirLight;
+};
+
+//uniform DirLight dirLight;
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform SpotLight spotLights[MAX_LIGHTS];
 
 uniform int numPointLights;
 uniform int numSpotLights;
 
-uniform vec3 cameraPos;
-uniform float skyLight;
+//uniform float skyLight;
+//uniform vec3 cameraPos;
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -117,7 +120,7 @@ void main()
     vec3 norm = normalize(fs_in.normal);
     vec3 viewDir = normalize(cameraPos - fs_in.fragPos);
 
-    vec3 result = calcDirLight(dirLight, norm, viewDir);
+    vec3 result = calcDirLight(dirLightTest, norm, viewDir);
 
     result += skyLight * vec3(texture(material.diffuse, fs_in.texCoord));
     
