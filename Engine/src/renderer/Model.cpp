@@ -112,10 +112,10 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     };
 
     mesh_->indexBuffer = IndexBuffer::create(indices.size());
-    mesh_->indexBuffer->update(&indices[0], indices.size());
+    mesh_->indexBuffer->setData(&indices[0], indices.size());
     
     mesh_->vertexBuffer = VertexBuffer::create(vertices.size() * sizeof(ModelVertex));
-    mesh_->vertexBuffer->update(&vertices[0], vertices.size() * sizeof(ModelVertex));
+    mesh_->vertexBuffer->setData(&vertices[0], vertices.size() * sizeof(ModelVertex));
     mesh_->vertexBuffer->setLayout(layout);
     
     mesh_->vertexArray->addVertexBuffer(mesh_->vertexBuffer);

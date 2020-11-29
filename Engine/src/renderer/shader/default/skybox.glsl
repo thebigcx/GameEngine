@@ -9,7 +9,7 @@ out DATA
     vec3 texCoord;
 } vs_out;
 
-layout (std140) uniform matrices
+layout (std140, binding = 0) uniform matrices
 {
     mat4 projection;
     mat4 view;

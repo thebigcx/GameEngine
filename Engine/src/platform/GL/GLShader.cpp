@@ -262,3 +262,9 @@ void GLShader::setMatrix4(const std::string& name, const math::mat4& value)
     auto location = glGetUniformLocation(m_id, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, math::buffer(value));
 }
+
+void GLShader::setMatrix4Array(const std::string& name, math::mat4* matrices, uint32_t count)
+{
+    auto location = glGetUniformLocation(m_id, name.c_str());
+    glUniformMatrix4fv(location, count, GL_FALSE, math::buffer(matrices[0]));
+}

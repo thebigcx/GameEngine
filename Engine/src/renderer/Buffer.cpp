@@ -16,7 +16,7 @@ Shared<IndexBuffer> IndexBuffer::create(const uint32_t* data, uint32_t count)
     return createShared<GLIndexBuffer>(data, count);
 }
 
-Shared<UniformBuffer> UniformBuffer::create(size_t size)
+Shared<UniformBuffer> UniformBuffer::create(size_t size, uint32_t bindingPoint)
 {
-    return createShared<GLUniformBuffer>(size);
+    return createShared<GLUniformBuffer>(size, bindingPoint);
 }

@@ -12,7 +12,7 @@ out DATA
     vec3 position;
 } vs_out;
 
-layout (std140) uniform matrices
+layout (std140, binding = 0) uniform matrices
 {
     mat4 projection;
     mat4 view;
@@ -44,13 +44,15 @@ struct Material
     float shininess;
 };
 
-uniform vec3 cameraPos;
-uniform samplerCube skybox;
 uniform Material material;
+uniform vec3 cameraPos;
+
+uniform samplerCube skybox;
 
 void main()
 {
     vec3 I = normalize(fs_in.position - cameraPos);
-    vec3 R = reflect(I, normalize(fs_in.normal));
+    //vec3 R = reflect(I, normalize(fs_in.normal));
+    vec3 R = refract(I, normalize(fs_in.normal), 1.00 / 1.309);
     FragColor = vec4(texture(skybox, R).rgb, 1.0);
 }

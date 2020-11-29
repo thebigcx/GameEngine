@@ -10,8 +10,8 @@ Sandbox::Sandbox()
 
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
 
-    //m_cubeMaterial = Material::create(Renderer3D::data.modelShader);
-    m_cubeMaterial = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
+    m_cubeMaterial = Material::create(Renderer3D::data.modelShader);
+    //m_cubeMaterial = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
     m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
     m_cubeMaterial->shininess = 16.f;
 
@@ -76,10 +76,7 @@ Sandbox::Sandbox()
     m_skyboxTexture = TextureCube::create(&files[0]);
     m_skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
 
-    m_uniformBuffer = UniformBuffer::create(sizeof(math::mat4) * 2);
-    m_uniformBuffer->addBinding(Renderer3D::data.modelShader, "matrices");
-    m_uniformBuffer->addBinding(m_skyboxShader, "matrices");
-    m_uniformBuffer->addBinding(m_cubeMaterial->getShader(), "matrices");
+    m_uniformBuffer = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
 
     m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4));
     m_uniformBuffer->setData(math::buffer(m_perspectiveCamera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));

@@ -58,7 +58,7 @@ void Renderer2D::init()
         offset += 4;
     }
 
-    data.mesh.indexBuffer->update(&data.indices[0], data.indices.size());
+    data.mesh.indexBuffer->setData(&data.indices[0], data.indices.size());
 
     data.mesh.vertexBuffer = VertexBuffer::create(sizeof(Vertex) * 4 * data.MAX_SPRITES);
     data.mesh.vertexBuffer->setLayout(layout);
@@ -90,8 +90,8 @@ void Renderer2D::flushBatch()
 
     data.mesh.vertexArray->bind();
 
-    data.mesh.vertexBuffer->update(&data.vertices[0], sizeof(Vertex) * data.vertices.size());
-    data.mesh.indexBuffer->update(&data.indices[0], data.indices.size());
+    data.mesh.vertexBuffer->setData(&data.vertices[0], sizeof(Vertex) * data.vertices.size());
+    data.mesh.indexBuffer->setData(&data.indices[0], data.indices.size());
 
     data.textureShader->bind();
     data.textureShader->setMatrix4("transform", data.transform);
@@ -204,7 +204,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
         indices.push_back(quadIndices[j] + i * 4);
     }
 
-    m_textMesh->indexBuffer->update(&indices[0], indices.size());
+    m_textMesh->indexBuffer->setData(&indices[0], indices.size());
 
     int x = position.x;
     int y = position.y;
@@ -246,7 +246,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
 
     // Draw the text mesh
     m_textMesh->vertexBuffer->bind();
-    m_textMesh->vertexBuffer->update(coords, sizeof(coords));
+    m_textMesh->vertexBuffer->setData(coords, sizeof(coords));
     RenderCommand::renderIndexed(m_textMesh->vertexArray);
 
     RenderCommand::setBlend(false);

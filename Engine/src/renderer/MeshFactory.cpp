@@ -47,10 +47,10 @@ Shared<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
     };
 
     quad->indexBuffer = IndexBuffer::create(6);
-    quad->indexBuffer->update(indices, 6);
+    quad->indexBuffer->setData(indices, 6);
 
     quad->vertexBuffer = VertexBuffer::create(sizeof(float) * 4 * 4);
-    quad->vertexBuffer->update(vertices, 16 * sizeof(float));
+    quad->vertexBuffer->setData(vertices, 16 * sizeof(float));
     quad->vertexBuffer->setLayout(layout);
     quad->vertexArray->addVertexBuffer(quad->vertexBuffer);
     quad->vertexArray->setIndexBuffer(quad->indexBuffer);
@@ -115,10 +115,10 @@ Shared<Mesh> MeshFactory::cubeMesh(float size)
     };
 
     quad->indexBuffer = IndexBuffer::create(36);
-    quad->indexBuffer->update(indices, 36);
+    quad->indexBuffer->setData(indices, 36);
 
     quad->vertexBuffer = VertexBuffer::create(sizeof(ModelVertex) * 24);
-    quad->vertexBuffer->update(vertices, sizeof(ModelVertex) * 24);
+    quad->vertexBuffer->setData(vertices, sizeof(ModelVertex) * 24);
     quad->vertexBuffer->setLayout(layout);
     quad->vertexArray->addVertexBuffer(quad->vertexBuffer);
     quad->vertexArray->setIndexBuffer(quad->indexBuffer);
@@ -179,10 +179,10 @@ Shared<Mesh> MeshFactory::skyboxMesh()
     };
 
     box->indexBuffer = IndexBuffer::create(36);
-    box->indexBuffer->update(indices, 36);
+    box->indexBuffer->setData(indices, 36);
 
     box->vertexBuffer = VertexBuffer::create(sizeof(math::vec3) * 24);
-    box->vertexBuffer->update(vertices, sizeof(math::vec3) * 24);
+    box->vertexBuffer->setData(vertices, sizeof(math::vec3) * 24);
     box->vertexBuffer->setLayout(layout);
     box->vertexArray->addVertexBuffer(box->vertexBuffer);
     box->vertexArray->setIndexBuffer(box->indexBuffer);

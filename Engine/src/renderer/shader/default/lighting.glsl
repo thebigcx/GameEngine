@@ -13,7 +13,7 @@ out DATA
     vec3 fragPos;
 } vs_out;
 
-layout (std140) uniform matrices
+layout (std140, binding = 0) uniform matrices
 {
     mat4 projection;
     mat4 view;
@@ -85,14 +85,26 @@ out vec4 FragColor;
 
 uniform Material material;
 
+/*layout (std140, binding = 1) uniform lighting
+{
+    DirLight dirLight;
+    PointLight pointLights[MAX_LIGHTS];
+    SpotLight spotLights[MAX_LIGHTS];
+
+    int numPointLights;
+    int numSpotLights;
+
+    vec3 cameraPos;
+    float skyLight;
+};*/
 uniform DirLight dirLight;
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform SpotLight spotLights[MAX_LIGHTS];
 
-uniform int numPointLights = 0;
-uniform int numSpotLights = 0;
+uniform int numPointLights;
+uniform int numSpotLights;
 
-uniform vec3 viewPos;
+uniform vec3 cameraPos;
 uniform float skyLight;
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir);
@@ -103,7 +115,7 @@ LightValues calculateLight(vec3 lightDir, vec3 normal, vec3 viewDir, vec3 lightD
 void main()
 {
     vec3 norm = normalize(fs_in.normal);
-    vec3 viewDir = normalize(viewPos - fs_in.fragPos);
+    vec3 viewDir = normalize(cameraPos - fs_in.fragPos);
 
     vec3 result = calcDirLight(dirLight, norm, viewDir);
 

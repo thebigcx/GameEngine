@@ -11,6 +11,19 @@ GLVertexBuffer::GLVertexBuffer(size_t size)
     bind();
 
     glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+
+    m_usage = BufferUsage::Dynamic;
+}
+
+GLVertexBuffer::GLVertexBuffer(const void* data, size_t size)
+{
+    glCreateBuffers(1, &m_id);
+
+    bind();
+
+    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+
+    m_usage = BufferUsage::Static;
 }
 
 GLVertexBuffer::~GLVertexBuffer()
@@ -18,11 +31,18 @@ GLVertexBuffer::~GLVertexBuffer()
     glDeleteBuffers(1, &m_id);
 }
 
-void GLVertexBuffer::update(const void* data, size_t size)
+void GLVertexBuffer::setData(const void* data, size_t size, size_t offset)
 {
     bind();
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+    if (m_usage == BufferUsage::Static)
+    {
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+    }
+    else
+    {
+        glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+    }
 }
 
 void GLVertexBuffer::bind() const
@@ -51,6 +71,8 @@ GLIndexBuffer::GLIndexBuffer(uint32_t count)
     bind();
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), nullptr, GL_DYNAMIC_DRAW);
+
+    m_usage = BufferUsage::Dynamic;
 }
 
 GLIndexBuffer::GLIndexBuffer(const uint32_t* data, uint32_t count)
@@ -60,6 +82,8 @@ GLIndexBuffer::GLIndexBuffer(const uint32_t* data, uint32_t count)
     glCreateBuffers(1, &m_id);
     bind();
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
+
+    m_usage = BufferUsage::Static;
 }
 
 GLIndexBuffer::~GLIndexBuffer()
@@ -67,18 +91,18 @@ GLIndexBuffer::~GLIndexBuffer()
     glDeleteBuffers(1, &m_id);
 }
 
-void GLIndexBuffer::update(const uint32_t* data, uint32_t count)
+void GLIndexBuffer::setData(const uint32_t* data, uint32_t count, uint32_t offset)
 {
     bind();
 
-    //if (count < m_count)
+    if (m_usage == BufferUsage::Static)
     {
         m_count = count;
-        //glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
     }
-    //else
+    else
     {
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, count * sizeof(uint32_t), data);
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset * sizeof(uint32_t), count * sizeof(uint32_t), data);
     }
 }
 
@@ -94,21 +118,39 @@ void GLIndexBuffer::unbind() const
 
 IndexDataType GLIndexBuffer::getDataType() const
 {
-    return IndexDataType::UnsignedInt;
+    return IndexDataType::UInt32;
 }
 
 //------------------------------------------------------------------------------------------------//
-// TODO: add multiple binding points
 
-GLUniformBuffer::GLUniformBuffer(size_t size)
+GLUniformBuffer::GLUniformBuffer(size_t size, uint32_t bindingPoint)
 {
+    m_bindingPoint = bindingPoint;
+
     glCreateBuffers(1, &m_id);
 
     glBindBuffer(GL_UNIFORM_BUFFER, m_id);
     glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_id, 0, size);
+    glBindBufferRange(GL_UNIFORM_BUFFER, m_bindingPoint, m_id, 0, size);
+
+    m_usage = BufferUsage::Dynamic;
+}
+
+GLUniformBuffer::GLUniformBuffer(const void* data, size_t size, uint32_t bindingPoint)
+{
+    m_bindingPoint = bindingPoint;
+
+    glCreateBuffers(1, &m_id);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, m_id);
+    glBufferData(GL_UNIFORM_BUFFER, size, data, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    glBindBufferRange(GL_UNIFORM_BUFFER, m_bindingPoint, m_id, 0, size);
+
+    m_usage = BufferUsage::Static;
 }
 
 void GLUniformBuffer::bind() const
@@ -125,17 +167,14 @@ void GLUniformBuffer::setData(const void* data, size_t size, size_t offset)
 {
     bind();
 
-    glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
-
-    unbind();
-}
-
-void GLUniformBuffer::addBinding(const Shared<Shader>& shader, const std::string& name)
-{
-    bind();
-
-    uint32_t index = glGetUniformBlockIndex(shader->getId(), name.c_str());
-    glUniformBlockBinding(shader->getId(), index, 0);
+    if (m_usage == BufferUsage::Static)
+    {
+        glBufferData(GL_UNIFORM_BUFFER, size, data, GL_STATIC_DRAW);
+    }
+    else
+    {
+        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+    }
 
     unbind();
 }

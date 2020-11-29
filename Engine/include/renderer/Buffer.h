@@ -147,14 +147,17 @@ private:
     size_t m_stride;
 };
 
-
+enum class BufferUsage
+{
+    Static, Dynamic, Stream
+};
 
 class VertexBuffer
 {
 public:
     virtual ~VertexBuffer() = default;
 
-    virtual void update(const void* data, size_t size) = 0;
+    virtual void setData(const void* data, size_t size, size_t offset = 0) = 0;
 
     virtual void bind() const = 0;
     virtual void unbind() const = 0;
@@ -168,9 +171,9 @@ public:
 
 enum class IndexDataType
 {
-    UnsignedByte,
-    UnsignedShort,
-    UnsignedInt
+    UInt8,
+    UInt16,
+    UInt32
 };
 
 class IndexBuffer
@@ -178,7 +181,7 @@ class IndexBuffer
 public:
     virtual ~IndexBuffer() = default;
 
-    virtual void update(const uint32_t* data, uint32_t count) = 0;
+    virtual void setData(const uint32_t* data, uint32_t count, uint32_t offset = 0) = 0;
 
     virtual void bind() const = 0;
     virtual void unbind() const = 0;
@@ -198,10 +201,8 @@ public:
 
     virtual void setData(const void* data, size_t size, size_t offset = 0) = 0;
 
-    virtual void addBinding(const Shared<Shader>& shader, const std::string& name) = 0;
-
     virtual void bind() const = 0;
     virtual void unbind() const = 0;
 
-    static Shared<UniformBuffer> create(size_t size);
+    static Shared<UniformBuffer> create(size_t size, uint32_t bindingPoint);
 };

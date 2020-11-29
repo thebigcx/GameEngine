@@ -19,6 +19,7 @@ struct Renderer3DData
     Shared<Framebuffer> hdrBuffer;
     Shared<Mesh> quadMesh;
     Shared<Shader> hdrShader;
+    Shared<UniformBuffer> lightingData;
 };
 
 class Renderer3D

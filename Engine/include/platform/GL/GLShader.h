@@ -39,6 +39,8 @@ public:
 
     void setUintArray(const std::string& name, unsigned int* value, uint32_t count) override;
 
+    void setMatrix4Array(const std::string& name, math::mat4* matrices, uint32_t count) override;
+
     void setMatrix3(const std::string& name, const math::mat3& value) override;
     void setMatrix4(const std::string& name, const math::mat4& value) override;
 
