@@ -14,10 +14,6 @@ void Renderer3D::init()
 
     data.modelShader = ShaderFactory::lightingShader();
 
-    data.hdrBuffer = Framebuffer::create(1280, 720);
-    data.quadMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
-    data.hdrShader = Shader::createFromFile("Engine/src/renderer/shader/default/hdr.glsl");
-
     data.lightingData = UniformBuffer::create(sizeof(DirectionalLight)
                                             + sizeof(PointLight) * 64
                                             + sizeof(SpotLight) * 64
@@ -41,25 +37,11 @@ void Renderer3D::beginScene(PerspectiveCamera& camera)
     data.modelShader->setFloat3("cameraPos", data.camera->getPosition());
     //math::vec3 camPos = data.camera->getPosition();
     //data.lightingData->setData(&camPos.x, 16, 48);
-
-    data.hdrBuffer->bind();
-    RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
 }
 
 void Renderer3D::endScene()
 {
     data.sceneStarted = false;
-
-    data.hdrBuffer->unbind();
-
-    RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
-
-    glBindTextureUnit(0, data.hdrBuffer->getColorAttachment());
-
-    data.hdrShader->bind();
-    data.quadMesh->vertexArray->bind();
-
-    RenderCommand::renderIndexed(data.quadMesh->vertexArray);
 }
 
 void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)

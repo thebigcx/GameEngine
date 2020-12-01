@@ -29,12 +29,7 @@ Sandbox::Sandbox()
 
     m_uniformBuffer = UniformBuffer::create(sizeof(math::mat4) * 2 + sizeof(math::vec3), 0);
 
-    //m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4), 0);
-    void* buffer = m_uniformBuffer->getBufferPtr(0);
-
-    memcpy(buffer, math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4));
-
-    m_uniformBuffer->unmap();
+    m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4), 0);
 
     lights.setSkylight(0.01f);
 
@@ -98,7 +93,7 @@ void Sandbox::update()
 
     m_perspectiveCamera.update();
 
-    //Renderer::startFrame();
+    Renderer::startFrame();
 
     Renderer3D::beginScene(m_perspectiveCamera);
 
@@ -132,13 +127,10 @@ void Sandbox::update()
 
     Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));
 
-    //Renderer::endFrame();
+    Renderer::endFrame();
 }
 
 void Sandbox::handleEvent(const Event& event)
 {
-    if (event.type() == EventType::WindowResize)
-    {
-        Renderer3D::data.hdrBuffer->resize(event.data().window.width, event.data().window.height);
-    }
+
 }

@@ -2,20 +2,25 @@
 
 Shared<Shader> ShaderFactory::textureShader()
 {
-    return Shader::createFromFile("Engine/src/renderer/shader/default/texture.glsl");
+    return createShader("texture");;
 }
 
 Shared<Shader> ShaderFactory::textShader()
 {
-    return Shader::createFromFile("Engine/src/renderer/shader/default/text.glsl");
+    return createShader("text");
 }
 
 Shared<Shader> ShaderFactory::framebufferShader()
 {
-    return Shader::createFromFile("Engine/src/renderer/shader/default/framebuffer.glsl");
+    return createShader("framebuffer");
 }
 
 Shared<Shader> ShaderFactory::lightingShader()
 {
-    return Shader::createFromFile("Engine/src/renderer/shader/default/lighting.glsl");
+    return createShader("lighting");
+}
+
+Shared<Shader> ShaderFactory::createShader(const std::string& name)
+{
+    return Shader::createFromFile("Engine/src/renderer/shader/default/" + name + ".glsl");
 }

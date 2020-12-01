@@ -10,4 +10,5 @@ public:
     static Shared<Shader> textShader();
     static Shared<Shader> framebufferShader();
     static Shared<Shader> lightingShader();
+    static Shared<Shader> createShader(const std::string& name);
 };

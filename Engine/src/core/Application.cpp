@@ -38,6 +38,11 @@ void Application::run()
         {
             auto event = m_eventStack.getEvent();
 
+            if (event.type() == EventType::WindowResize)
+            {
+                Renderer::windowResize(event.data().window.width, event.data().window.height);
+            }
+
             for (auto layer : m_layers)
             {
                 layer->handleEvent(event);

@@ -11,12 +11,8 @@ void Renderer::init()
     Renderer3D::init();
 
     m_data.fboMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
-    m_data.fboShader = ShaderFactory::framebufferShader();
-}
-
-void Renderer::setTarget(const Shared<Framebuffer>& target)
-{
-    m_data.target = target;
+    m_data.fboShader = ShaderFactory::createShader("hdr");
+    m_data.target = Framebuffer::create(1280, 720);
 }
 
 void Renderer::startFrame()
@@ -37,4 +33,9 @@ void Renderer::endFrame()
     m_data.fboMesh->vertexArray->bind();
 
     RenderCommand::renderIndexed(m_data.fboMesh->vertexArray);
+}
+
+void Renderer::windowResize(uint32_t width, uint32_t height)
+{
+    m_data.target->resize(width, height);
 }

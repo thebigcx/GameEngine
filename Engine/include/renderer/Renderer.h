@@ -18,10 +18,10 @@ class Renderer
 public:
     static void init();
 
-    static void setTarget(const Shared<Framebuffer>& target);
-
     static void startFrame();
     static void endFrame();
+
+    static void windowResize(uint32_t width, uint32_t height);
 
 private:
     static RendererData m_data;
