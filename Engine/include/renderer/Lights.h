@@ -96,7 +96,7 @@ private:
     float m_skyLight = 0;
 };
 
-struct LightStruct
+struct alignas(16) LightStruct
 {
     alignas(64) DirectionalLight dirLight;
     //PointLight pointLights[64];

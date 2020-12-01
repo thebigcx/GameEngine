@@ -37,10 +37,10 @@ void Renderer3D::beginScene(PerspectiveCamera& camera)
     data.sceneStarted = true;
     data.camera = &camera;
 
-    //data.modelShader->bind();
-    //data.modelShader->setFloat3("cameraPos", data.camera->getPosition());
-    math::vec3 camPos = data.camera->getPosition();
-    data.lightingData->setData(&camPos.x, 16, 64);
+    data.modelShader->bind();
+    data.modelShader->setFloat3("cameraPos", data.camera->getPosition());
+    //math::vec3 camPos = data.camera->getPosition();
+    //data.lightingData->setData(&camPos.x, 16, 48);
 
     data.hdrBuffer->bind();
     RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
@@ -107,17 +107,24 @@ void Renderer3D::setLights(const LightSetup& setup)
 
     size_t counter = 0;
 
-    //data.modelShader->setFloat("skyLight", setup.getSkyLight());
-    float skylight = setup.getSkyLight();
-    data.lightingData->setData(&skylight, 4, 80);
+    //data.lightingData->bind();
 
-    //data.modelShader->setFloat3("dirLight.direction", dirLight.direction);
-    //data.modelShader->setFloat3("dirLight.color", dirLight.color);
-    //data.modelShader->setFloat("dirLight.intensity", dirLight.intensity);
-    //data.modelShader->setFloat("dirLight.specular", dirLight.specular);
+    //void* buffer = data.lightingData->getBufferPtr();
+
+    data.modelShader->setFloat("skyLight", setup.getSkyLight());
+    //float skylight = setup.getSkyLight();
+    //data.lightingData->setData(&skylight, 4, 48);
+    //memcpy();
+    
+    DirectionalLight dirLight = setup.getDirectionalLight();
+    data.modelShader->setFloat3("dirLight.direction", dirLight.direction);
+    data.modelShader->setFloat3("dirLight.color", dirLight.color);
+    data.modelShader->setFloat("dirLight.intensity", dirLight.intensity);
+    data.modelShader->setFloat("dirLight.specular", dirLight.specular);
 
     //data.lightingData->setData(&(setup.getDirectionalLight().direction.x), 48, 0);
-    data.lightingData->setData(&(setup.getDirectionalLight().direction.x), 64, 0);
+
+    //data.lightingData->unmap();
 
     auto& pointLights = setup.getPointLights();
     for (int i = 0; i < 64; i++)

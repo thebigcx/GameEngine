@@ -166,6 +166,10 @@ public:
 
     virtual const BufferLayout& getLayout() const = 0;
 
+    virtual void* getBufferPtr(size_t size, size_t offset) const = 0;
+    virtual void* getBufferPtr(size_t offset) const = 0;
+    virtual void unmap() const = 0;
+
     static Shared<VertexBuffer> create(size_t size);
 };
 
@@ -190,8 +194,12 @@ public:
 
     virtual IndexDataType getDataType() const = 0;
 
-    static Shared<IndexBuffer> create(uint32_t count);
-    static Shared<IndexBuffer> create(const uint32_t* data, uint32_t count);
+    virtual void* getBufferPtr(uint32_t size, uint32_t offset) const = 0;
+    virtual void* getBufferPtr(uint32_t offset) const = 0;
+    virtual void unmap() const = 0;
+
+    static Shared<IndexBuffer> create(uint32_t count, IndexDataType type);
+    static Shared<IndexBuffer> create(const uint32_t* data, uint32_t count, IndexDataType type);
 };
 
 class UniformBuffer
@@ -203,6 +211,10 @@ public:
 
     virtual void bind() const = 0;
     virtual void unbind() const = 0;
+
+    virtual void* getBufferPtr(size_t size, size_t offset) const = 0;
+    virtual void* getBufferPtr(size_t offset) const = 0;
+    virtual void unmap() const = 0;
 
     static Shared<UniformBuffer> create(size_t size, uint32_t bindingPoint);
 };

@@ -13,7 +13,7 @@ Shared<Mesh> MeshFactory::textMesh()
         { Shader::DataType::Vec2, "aPos" },
         { Shader::DataType::Vec2, "aTexCoord" }
     };
-    text->indexBuffer = IndexBuffer::create(6 * 200);
+    text->indexBuffer = IndexBuffer::create(6 * 200, IndexDataType::UInt32);
 
     text->vertexBuffer = VertexBuffer::create(sizeof(float) * 4 * 200);
     text->vertexBuffer->setLayout(layout);
@@ -46,7 +46,7 @@ Shared<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
         x2, y1, 1, 0
     };
 
-    quad->indexBuffer = IndexBuffer::create(6);
+    quad->indexBuffer = IndexBuffer::create(6, IndexDataType::UInt32);
     quad->indexBuffer->setData(indices, 6);
 
     quad->vertexBuffer = VertexBuffer::create(sizeof(float) * 4 * 4);
@@ -114,7 +114,7 @@ Shared<Mesh> MeshFactory::cubeMesh(float size, const Shared<Material>& material)
         {math::vec3( hSize, -hSize,  hSize), math::vec3( 1,  0,  0), math::vec2(1, 0)}
     };
 
-    quad->indexBuffer = IndexBuffer::create(36);
+    quad->indexBuffer = IndexBuffer::create(36, IndexDataType::UInt32);
     quad->indexBuffer->setData(indices, 36);
 
     quad->vertexBuffer = VertexBuffer::create(sizeof(ModelVertex) * 24);
@@ -180,7 +180,7 @@ Shared<Mesh> MeshFactory::skyboxMesh()
         math::vec3( 1.f, -1.f,  1.f)
     };
 
-    box->indexBuffer = IndexBuffer::create(36);
+    box->indexBuffer = IndexBuffer::create(36, IndexDataType::UInt32);
     box->indexBuffer->setData(indices, 36);
 
     box->vertexBuffer = VertexBuffer::create(sizeof(math::vec3) * 24);

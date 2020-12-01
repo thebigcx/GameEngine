@@ -1,6 +1,7 @@
 #include <platform/GL/GLBuffer.h>
+#include <renderer/Buffer.h>
 
-#include "renderer/Buffer.h"
+#include <cstring>
 
 #include <GL/glew.h>
 
@@ -13,6 +14,7 @@ GLVertexBuffer::GLVertexBuffer(size_t size)
     glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 
     m_usage = BufferUsage::Dynamic;
+    m_size = size;
 }
 
 GLVertexBuffer::GLVertexBuffer(const void* data, size_t size)
@@ -24,6 +26,7 @@ GLVertexBuffer::GLVertexBuffer(const void* data, size_t size)
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 
     m_usage = BufferUsage::Static;
+    m_size = size;
 }
 
 GLVertexBuffer::~GLVertexBuffer()
@@ -37,11 +40,14 @@ void GLVertexBuffer::setData(const void* data, size_t size, size_t offset)
 
     if (m_usage == BufferUsage::Static)
     {
-        glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+        m_size = size;
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
     }
     else
     {
-        glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+        void* ptr = getBufferPtr(size, offset);
+        memcpy(ptr, data, size);
+        unmap();
     }
 }
 
@@ -60,30 +66,50 @@ void GLVertexBuffer::setLayout(const BufferLayout& layout)
     m_layout = layout;
 }
 
-//------------------------------------------------------------------------------------------------//
-
-GLIndexBuffer::GLIndexBuffer(uint32_t count)
+void* GLVertexBuffer::getBufferPtr(size_t size, size_t offset) const
 {
-    glCreateBuffers(1, &m_id);
+    void* ptr = glMapNamedBufferRange(m_id, offset, size, GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
 
-    m_count = count;
+    if (ptr == nullptr)
+    {
+        std::cout << "Nullptr returned from glMapNamedBufferRange(). Check OpenGL errors.\n";
+    }
 
-    bind();
-
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), nullptr, GL_DYNAMIC_DRAW);
-
-    m_usage = BufferUsage::Dynamic;
+    return ptr;
 }
 
-GLIndexBuffer::GLIndexBuffer(const uint32_t* data, uint32_t count)
+void* GLVertexBuffer::getBufferPtr(size_t offset) const
 {
-    m_count = count;
+    return getBufferPtr(m_size - offset, offset);
+}
+
+void GLVertexBuffer::unmap() const
+{
+    glUnmapNamedBuffer(m_id);
+}
+
+//------------------------------------------------------------------------------------------------//
+
+GLIndexBuffer::GLIndexBuffer(uint32_t count, IndexDataType type)
+    : m_count(count), m_usage(BufferUsage::Dynamic)
+{
+    m_typeSize = calculateTypeSize(type);
+
+    glCreateBuffers(1, &m_id);
+
+    bind();
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * m_typeSize, nullptr, GL_DYNAMIC_DRAW);
+}
+
+GLIndexBuffer::GLIndexBuffer(const uint32_t* data, uint32_t count, IndexDataType type)
+    : m_count(count), m_usage(BufferUsage::Static)
+{
+    m_typeSize = calculateTypeSize(type);
 
     glCreateBuffers(1, &m_id);
     bind();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
-
-    m_usage = BufferUsage::Static;
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * m_typeSize, data, GL_STATIC_DRAW);
 }
 
 GLIndexBuffer::~GLIndexBuffer()
@@ -98,11 +124,13 @@ void GLIndexBuffer::setData(const uint32_t* data, uint32_t count, uint32_t offse
     if (m_usage == BufferUsage::Static)
     {
         m_count = count;
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * m_typeSize, data, GL_STATIC_DRAW);
     }
     else
     {
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset * sizeof(uint32_t), count * sizeof(uint32_t), data);
+        void* ptr = getBufferPtr(count, offset);
+        memcpy(ptr, data, count * m_typeSize);
+        unmap();
     }
 }
 
@@ -121,11 +149,53 @@ IndexDataType GLIndexBuffer::getDataType() const
     return IndexDataType::UInt32;
 }
 
+void* GLIndexBuffer::getBufferPtr(uint32_t size, uint32_t offset) const
+{
+    void* ptr = glMapNamedBufferRange(m_id, offset * m_typeSize, size * m_typeSize, GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
+
+    if (ptr == nullptr)
+    {
+        std::cout << "Nullptr returned from glMapNamedBufferRange(). Check OpenGL errors.\n";
+    }
+
+    return ptr;
+}
+
+void* GLIndexBuffer::getBufferPtr(uint32_t offset) const
+{
+    return getBufferPtr(m_count - offset, offset);
+}
+
+void GLIndexBuffer::unmap() const
+{
+    glUnmapNamedBuffer(m_id);
+}
+
+size_t GLIndexBuffer::calculateTypeSize(IndexDataType type)
+{
+    switch (type)
+    {
+        case IndexDataType::UInt8:
+            return sizeof(uint8_t);
+            break;
+        case IndexDataType::UInt16:
+            return sizeof(uint16_t);
+            break;
+        case IndexDataType::UInt32:
+            return sizeof(uint32_t);
+            break;
+        default:
+            std::cout << "Invalid index type!\n";
+            return 0;
+    };
+}
+
 //------------------------------------------------------------------------------------------------//
 
 GLUniformBuffer::GLUniformBuffer(size_t size, uint32_t bindingPoint)
 {
     m_bindingPoint = bindingPoint;
+    m_size = size;
 
     glCreateBuffers(1, &m_id);
 
@@ -141,6 +211,7 @@ GLUniformBuffer::GLUniformBuffer(size_t size, uint32_t bindingPoint)
 GLUniformBuffer::GLUniformBuffer(const void* data, size_t size, uint32_t bindingPoint)
 {
     m_bindingPoint = bindingPoint;
+    m_size = size;
 
     glCreateBuffers(1, &m_id);
 
@@ -165,16 +236,38 @@ void GLUniformBuffer::unbind() const
 
 void GLUniformBuffer::setData(const void* data, size_t size, size_t offset)
 {
-    bind();
-
     if (m_usage == BufferUsage::Static)
     {
-        glBufferData(GL_UNIFORM_BUFFER, size, data, GL_STATIC_DRAW);
+        bind();
+        glBufferData(m_id, size, data, GL_STATIC_DRAW);
+        unbind();
     }
-    else
+    else // Use memcpy (faster)
     {
-        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+        void* ptr = getBufferPtr(offset);
+        memcpy(ptr, data, size);
+        unmap();
+    }
+}
+
+void* GLUniformBuffer::getBufferPtr(size_t size, size_t offset) const
+{
+    void* ptr = glMapNamedBufferRange(m_id, offset, size, GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
+
+    if (ptr == nullptr)
+    {
+        std::cout << "Nullptr returned from glMapNamedBufferRange(). Check OpenGL errors.\n";
     }
 
-    unbind();
+    return ptr;
+}
+
+void* GLUniformBuffer::getBufferPtr(size_t offset) const
+{
+    return getBufferPtr(m_size - offset, offset);
+}
+
+void GLUniformBuffer::unmap() const
+{
+    glUnmapNamedBuffer(m_id);
 }

@@ -47,7 +47,8 @@ struct Material
 
 struct DirLight
 {
-    vec3 direction, color;
+    vec3 direction;
+    vec3 color;
     float intensity;
     float specular;
 };
@@ -87,7 +88,7 @@ out vec4 FragColor;
 
 uniform Material material;
 
-layout (std140, binding = 1) uniform lighting
+/*layout (std140, binding = 1) uniform lighting
 {
     DirLight dirLightTest;
     //PointLight sfsfdg[MAX_LIGHTS];
@@ -98,17 +99,17 @@ layout (std140, binding = 1) uniform lighting
 
     vec3 cameraPos;
     float skyLight;
-};
+};*/
 
-//uniform DirLight dirLight;
+uniform DirLight dirLight;
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform SpotLight spotLights[MAX_LIGHTS];
 
 uniform int numPointLights;
 uniform int numSpotLights;
 
-//uniform float skyLight;
-//uniform vec3 cameraPos;
+uniform float skyLight;
+uniform vec3 cameraPos;
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -120,7 +121,7 @@ void main()
     vec3 norm = normalize(fs_in.normal);
     vec3 viewDir = normalize(cameraPos - fs_in.fragPos);
 
-    vec3 result = calcDirLight(dirLightTest, norm, viewDir);
+    vec3 result = calcDirLight(dirLight, norm, viewDir);
 
     result += skyLight * vec3(texture(material.diffuse, fs_in.texCoord));
     

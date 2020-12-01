@@ -29,7 +29,12 @@ Sandbox::Sandbox()
 
     m_uniformBuffer = UniformBuffer::create(sizeof(math::mat4) * 2 + sizeof(math::vec3), 0);
 
-    m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4), 0);
+    //m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4), 0);
+    void* buffer = m_uniformBuffer->getBufferPtr(0);
+
+    memcpy(buffer, math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4));
+
+    m_uniformBuffer->unmap();
 
     lights.setSkylight(0.01f);
 
@@ -76,8 +81,8 @@ Sandbox::Sandbox()
     Renderer3D::setLights(lights);
 
     //m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
-    m_model = Model::loadModel("Sandbox/assets/sphere.obj");
-    m_model->meshes[0]->material = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
+    //m_model = Model::loadModel("Sandbox/assets/sphere.obj");
+    //m_model->meshes[0]->material = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
 
     Application::get().setCursorEnabled(false);
 }
@@ -97,7 +102,7 @@ void Sandbox::update()
 
     Renderer3D::beginScene(m_perspectiveCamera);
 
-    Renderer3D::submit(m_model, math::translate(math::mat4(1.f), math::vec3(0, 0, 3)));
+    //Renderer3D::submit(m_model, math::translate(math::mat4(1.f), math::vec3(0, 0, 3)));
 
     auto mesh = MeshFactory::cubeMesh(1.f, m_cubeMaterial);
 
@@ -108,14 +113,13 @@ void Sandbox::update()
     }
 
     m_uniformBuffer->setData(math::buffer(m_perspectiveCamera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
-    //m_uniformBuffer->setData(&(m_perspectiveCamera.getPosition().x), sizeof(math::vec3), 2 * sizeof(math::mat4));
 
     Renderer3D::data.modelShader->bind();
     Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());
     Renderer3D::data.modelShader->setFloat3("spotLights[0].direction", m_perspectiveCamera.getDirection());
     //Renderer3D::data.modelShader->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
 
-    Renderer3D::submit(mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.5f, 4.f)));
+    Renderer3D::submit(mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.f, 4.f)));
 
     glDepthFunc(GL_LEQUAL);
     m_skyboxShader->bind();

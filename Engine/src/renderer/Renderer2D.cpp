@@ -43,7 +43,7 @@ void Renderer2D::init()
         { Shader::DataType::Vec4, "aColor"    }
     };
 
-    data.mesh.indexBuffer = IndexBuffer::create(data.MAX_SPRITES * 6);
+    data.mesh.indexBuffer = IndexBuffer::create(data.MAX_SPRITES * 6, IndexDataType::UInt32);
     int offset = 0;
     for (int i = 0; i < data.MAX_SPRITES * 6; i += 6)
     {

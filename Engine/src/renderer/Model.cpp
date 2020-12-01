@@ -111,7 +111,7 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
         { Shader::DataType::Vec2, "aTexCoord" }
     };
 
-    mesh_->indexBuffer = IndexBuffer::create(indices.size());
+    mesh_->indexBuffer = IndexBuffer::create(indices.size(), IndexDataType::UInt32);
     mesh_->indexBuffer->setData(&indices[0], indices.size());
     
     mesh_->vertexBuffer = VertexBuffer::create(vertices.size() * sizeof(ModelVertex));
