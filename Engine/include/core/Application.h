@@ -4,7 +4,6 @@
 
 #include <core/Window.h>
 #include <core/Layer.h>
-#include <events/EventStack.h>
 
 // Singleton
 class Application
@@ -14,16 +13,13 @@ public:
 
     void run();
     void addLayer(Layer* layer);
-    void onWindowResize(int width, int height);
+    void onWindowResize(WindowResizedEvent& event);
     void quit();
     void setCursorEnabled(bool enabled);
 
+    void onEvent(Event& event);
+
     Window& getWindow();
-    
-    inline EventStack& getEventStack()
-    {
-        return m_eventStack;
-    }
 
     static Application& get();
 
@@ -33,8 +29,6 @@ private:
     Unique<Window> m_window;
 
     std::vector<Layer*> m_layers;
-
-    EventStack m_eventStack;
 };
 
 Application* createApplication();

@@ -21,7 +21,7 @@ Application::Application()
 
     math::random::initSeed();
     SoundEngine::init();
-    EventDispatcher::setupCallbacks();
+    EventManager::setupCallbacks();
     Renderer::init();
     Time::init();
 }
@@ -33,23 +33,6 @@ void Application::run()
         Time::update();
 
         m_window->pollEvents();
-        
-        while (!m_eventStack.isEmpty())
-        {
-            auto event = m_eventStack.getEvent();
-
-            if (event.type() == EventType::WindowResize)
-            {
-                Renderer::windowResize(event.data().window.width, event.data().window.height);
-            }
-
-            for (auto layer : m_layers)
-            {
-                layer->handleEvent(event);
-            }
-
-            m_eventStack.pop();
-        }
 
         for (auto layer : m_layers)
         {
@@ -57,6 +40,17 @@ void Application::run()
         }
 
         m_window->onUpdate();
+    }
+}
+
+void Application::onEvent(Event& event)
+{
+    EventDispatcher dispatcher(event);
+    dispatcher.dispatch<WindowResizedEvent>(BIND_EVENT_FN(Application::onWindowResize));
+
+    for (auto& layer : m_layers)
+    {
+        layer->handleEvent(event);
     }
 }
 
@@ -80,9 +74,11 @@ Application& Application::get()
     return *m_instance;
 }
 
-void Application::onWindowResize(int width, int height)
+void Application::onWindowResize(WindowResizedEvent& event)
 {
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, event.getWidth(), event.getHeight());
+
+    Renderer::windowResize(event);
 }
 
 Window& Application::getWindow()

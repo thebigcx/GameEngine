@@ -6,6 +6,7 @@ void GLAPIENTRY messageCallback(GLenum source, GLenum type, GLuint id, GLenum se
     {
         case GL_DEBUG_SEVERITY_HIGH:
             std::cout << "[OpenGL Debug HIGH] " << message << "\n";
+            abort();
             break;
         case GL_DEBUG_SEVERITY_MEDIUM:
             std::cout << "[OpenGL Debug MEDIUM] " << message << "\n";

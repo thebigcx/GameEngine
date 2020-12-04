@@ -5,59 +5,56 @@
 
 #include <GLFW/glfw3.h>
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int32_t width, int32_t height)
 {
-    Application::get().onWindowResize(width, height);
-
-    EventData data;
-    data.window.width = width;
-    data.window.height = height;
-    Event event(EventType::WindowResize, data);
-    Application::get().getEventStack().push(event);
+    WindowResizedEvent event(width, height);
+    Application::get().onEvent(event);
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    EventData data;
-    data.key.keycode = key;
-    data.key.scancode = scancode;
-    data.key.action = action;
-    data.key.mods = mods;
-
-    EventType type = action == GLFW_PRESS ? EventType::KeyPressed : EventType::KeyReleased;
-    Event event(type, data);
-    Application::get().getEventStack().push(event);
+    if (action == GLFW_PRESS)
+    {
+        KeyPressedEvent event(key, 0, mods);
+        Application::get().onEvent(event);
+    }
+    else if (action == GLFW_RELEASE)
+    {
+        KeyReleasedEvent event(key);
+        Application::get().onEvent(event);
+    }
 }
 
 static void character_callback(GLFWwindow* window, unsigned int codepoint)
 {
-    EventData data;
-    data.typekey.code = codepoint;
-    Event event(EventType::KeyTyped, data);
-    Application::get().getEventStack().push(event);
+
 }
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    EventData data;
-    data.mousepos.x = xpos;
-    data.mousepos.y = ypos;
-    Event event(EventType::MouseMoved, data);
-    Application::get().getEventStack().push(event);
+    MouseMovedEvent event(xpos, ypos, false);
+    Application::get().onEvent(event);
 }
 
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    EventData data;
-    data.mouseclick.button = button;
-    data.mouseclick.action = (bool)action;
-
-    EventType type = action == GLFW_PRESS ? EventType::MouseButtonPressed : EventType::MouseButtonReleased;
-    Event event(type, data);
-    Application::get().getEventStack().push(event);
+    if (action == GLFW_PRESS)
+    {
+        double x, y;
+        glfwGetCursorPos(window, &x, &y);
+        MousePressedEvent event(button, x, y);
+        Application::get().onEvent(event);
+    }
+    else if (action == GLFW_RELEASE)
+    {
+        double x, y;
+        glfwGetCursorPos(window, &x, &y);
+        MouseReleasedEvent event(button, x, y);
+        Application::get().onEvent(event);
+    }
 }
 
-void EventDispatcher::setupCallbacks()
+void EventManager::setupCallbacks()
 {
     auto& window = Application::get().getWindow();
 

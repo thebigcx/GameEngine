@@ -1,6 +1,7 @@
 #include <renderer/Renderer.h>
 #include <renderer/MeshFactory.h>
 #include <renderer/shader/ShaderFactory.h>
+#include <core/Application.h>
 
 RendererData Renderer::m_data;
 
@@ -12,7 +13,9 @@ void Renderer::init()
 
     m_data.fboMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
     m_data.fboShader = ShaderFactory::createShader("hdr");
-    m_data.target = Framebuffer::create(1280, 720);
+    
+    math::ivec2 windowSize = Application::get().getWindow().getSize();
+    m_data.target = Framebuffer::create(windowSize.x, windowSize.y);
 }
 
 void Renderer::startFrame()
@@ -35,7 +38,7 @@ void Renderer::endFrame()
     RenderCommand::renderIndexed(m_data.fboMesh->vertexArray);
 }
 
-void Renderer::windowResize(uint32_t width, uint32_t height)
+void Renderer::windowResize(WindowResizedEvent& event)
 {
-    m_data.target->resize(width, height);
+    m_data.target->resize(event.getWidth(), event.getHeight());
 }

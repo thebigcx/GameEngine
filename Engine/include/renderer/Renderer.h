@@ -5,6 +5,7 @@
 #include <renderer/Renderer2D.h>
 #include <renderer/Renderer3D.h>
 #include <renderer/RenderCommand.h>
+#include <events/Event.h>
 
 struct RendererData
 {
@@ -21,7 +22,7 @@ public:
     static void startFrame();
     static void endFrame();
 
-    static void windowResize(uint32_t width, uint32_t height);
+    static void windowResize(WindowResizedEvent& event);
 
 private:
     static RendererData m_data;

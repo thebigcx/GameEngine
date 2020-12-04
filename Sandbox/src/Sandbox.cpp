@@ -2,6 +2,8 @@
 
 Sandbox::Sandbox()
 {
+    Application::get().getWindow().setSize(math::uvec2(1280, 720));
+
     Assets::add<Texture2D>("texture", Texture2D::create("Sandbox/assets/terrain.png"));
     Assets::add<Texture2D>("grass", Texture2D::create("Sandbox/assets/grass.png"));
 
@@ -79,7 +81,7 @@ Sandbox::Sandbox()
     //m_model = Model::loadModel("Sandbox/assets/sphere.obj");
     //m_model->meshes[0]->material = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
 
-    Application::get().setCursorEnabled(false);
+    //Application::get().setCursorEnabled(false);
 }
 
 void Sandbox::update()
@@ -132,5 +134,5 @@ void Sandbox::update()
 
 void Sandbox::handleEvent(const Event& event)
 {
-
+    
 }
