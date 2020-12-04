@@ -18,6 +18,11 @@ public:
 
     math::mat4 getViewMatrix() const;
 
+    inline constexpr const math::mat4& getProjectionMatrix() const
+    {
+        return m_projectionMatrix;
+    }
+
 private:
     math::vec3 m_position;
     math::vec3 m_direction;
@@ -30,4 +35,6 @@ private:
     math::ivec2 m_lastMousePos;
 
     float m_sensitivity = 0.1f;
+
+    math::mat4 m_projectionMatrix;
 };

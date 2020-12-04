@@ -10,8 +10,11 @@ out DATA
     vec2 texCoord;
 } vs_out;
 
-uniform mat4 projection;
-uniform mat4 transform = mat4(1.f);
+layout (std140, binding = 2) uniform matrices
+{
+    uniform mat4 projection;
+    uniform mat4 transform;
+};
 
 void main()
 {

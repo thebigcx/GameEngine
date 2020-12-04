@@ -5,7 +5,7 @@
 PerspectiveCamera::PerspectiveCamera()
     : m_up(0, 1, 0), m_direction(0, 0, -1)
 {
-
+    m_projectionMatrix = math::perspective((float)math::radians(60.f), 1280.f / 720.f, 0.1f, 100.f);
 }
 
 void PerspectiveCamera::setPosition(const math::vec3& position)

@@ -17,15 +17,13 @@ void Renderer2D::init()
 
     auto windowSize = Application::get().getWindow().getSize();
 
-    data.projectionMatrix = math::ortho(0.f, (float)windowSize.x, 0.f, (float)windowSize.y, -1.f, 1.f);
+    data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
     
     data.textureShader = ShaderFactory::textureShader();
     data.textureShader->bind();
-    data.textureShader->setMatrix4("projection", data.projectionMatrix);
 
     data.textShader = ShaderFactory::textShader();
     data.textShader->bind();
-    data.textShader->setMatrix4("projection", data.projectionMatrix);
 
     m_textMesh = MeshFactory::textMesh();
 
@@ -33,7 +31,7 @@ void Renderer2D::init()
     uint32_t white = 0xffffff;
     data.whiteTexture->setData(0, 0, 1, 1, &white);
 
-    data.transform = math::mat4();
+    //data.transform = math::mat4();
     data.mesh.vertexArray = VertexArray::create();
     data.mesh.vertexArray->bind();
 
@@ -67,10 +65,14 @@ void Renderer2D::init()
     data.mesh.vertexArray->setIndexBuffer(data.mesh.indexBuffer);
 }
 
-void Renderer2D::startBatch(const math::mat4& transform)
+void Renderer2D::startBatch(OrthographicCamera& camera)
 {
-    data.transform = transform;
+    //data.transform = transform;
+    data.camera = &camera;
     data.drawCalls = 0;
+
+    data.matrixData->setData(math::buffer(data.camera->getProjectionMatrix()), sizeof(math::mat4), 0);
+    data.matrixData->setData(math::buffer(data.camera->getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
 }
 
 void Renderer2D::endBatch()
@@ -94,8 +96,8 @@ void Renderer2D::flushBatch()
     data.mesh.indexBuffer->setData(&data.indices[0], data.indices.size());
 
     data.textureShader->bind();
-    data.textureShader->setMatrix4("transform", data.transform);
-    data.textureShader->setMatrix4("projection", data.projectionMatrix);
+    //data.textureShader->setMatrix4("transform", data.camera->getViewMatrix());
+    //data.textureShader->setMatrix4("projection", data.camera->getProjectionMatrix());
     data.activeTexture->bind();
 
     RenderCommand::renderIndexed(data.mesh.vertexArray, data.vertices.size() * 6/4);
@@ -213,7 +215,8 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
 
     // Set render states
     data.textShader->bind();
-    data.textShader->setMatrix4("transform", math::mat4(1.f));
+    //data.textShader->setMatrix4("transform", math::mat4(1.f));
+    data.matrixData->setData(math::buffer(math::mat4(1.f)), sizeof(math::mat4), sizeof(math::mat4));
     data.textShader->setFloat4("textColor", math::vec4(color.r, color.g, color.b, color.a));
     m_textMesh->vertexArray->bind();
     font->getTextureAtlas()->bind();

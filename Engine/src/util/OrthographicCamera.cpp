@@ -3,10 +3,9 @@
 #include <maths/matrix/matrix_transform.h>
 #include <iostream>
 
-OrthographicCamera::OrthographicCamera(const math::vec2& position)
-    : m_position(position)
+OrthographicCamera::OrthographicCamera()
 {
-
+    m_projectionMatrix = math::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
 }
 
 void OrthographicCamera::setPosition(const math::vec2& position)

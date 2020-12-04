@@ -10,9 +10,10 @@ Renderer3DData Renderer3D::data;
 void Renderer3D::init()
 {
     math::ivec2 windowSize = Application::get().getWindow().getSize();
-    data.projectionMatrix = math::perspective((float)math::radians(45.f), (float)windowSize.x / (float)windowSize.y, 0.1f, 100.f);
-
+    
     data.modelShader = ShaderFactory::lightingShader();
+
+    data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
 
     data.lightingData = UniformBuffer::create(sizeof(DirectionalLight)
                                             + sizeof(PointLight) * 64
@@ -32,6 +33,9 @@ void Renderer3D::beginScene(PerspectiveCamera& camera)
 
     data.sceneStarted = true;
     data.camera = &camera;
+
+    data.matrixData->setData(math::buffer(data.camera->getProjectionMatrix()), sizeof(math::mat4), 0);
+    data.matrixData->setData(math::buffer(data.camera->getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
 
     data.modelShader->bind();
     data.modelShader->setFloat3("cameraPos", data.camera->getPosition());

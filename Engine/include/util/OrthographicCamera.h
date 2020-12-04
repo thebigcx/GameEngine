@@ -6,8 +6,7 @@
 class OrthographicCamera
 {
 public:
-    OrthographicCamera() {}
-    OrthographicCamera(const math::vec2& position);
+    OrthographicCamera();
 
     void setPosition(const math::vec2& position);
     void translate(const math::vec2& vec);
@@ -15,7 +14,13 @@ public:
     inline const math::vec2& getPosition() const { return m_position; }
 
     math::mat4 getViewMatrix() const;
+    inline constexpr const math::mat4& getProjectionMatrix() const
+    {
+        return m_projectionMatrix;
+    }
 
 private:
     math::vec2 m_position;
+
+    math::mat4 m_projectionMatrix;
 };

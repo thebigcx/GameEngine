@@ -10,6 +10,8 @@ Sandbox::Sandbox()
     m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
     SoundEngine::play(*m_soundSource, true);
 
+    m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
+
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
 
     m_cubeMaterial = Material::create(Renderer3D::data.modelShader);
@@ -28,10 +30,6 @@ Sandbox::Sandbox()
     };
     m_skyboxTexture = TextureCube::create(&files[0]);
     m_skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
-
-    m_uniformBuffer = UniformBuffer::create(sizeof(math::mat4) * 2 + sizeof(math::vec3), 0);
-
-    m_uniformBuffer->setData(math::buffer(Renderer3D::data.projectionMatrix), sizeof(math::mat4), 0);
 
     lights.setSkylight(0.01f);
 
@@ -81,7 +79,7 @@ Sandbox::Sandbox()
     //m_model = Model::loadModel("Sandbox/assets/sphere.obj");
     //m_model->meshes[0]->material = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
 
-    //Application::get().setCursorEnabled(false);
+    Application::get().setCursorEnabled(false);
 }
 
 void Sandbox::update()
@@ -97,6 +95,7 @@ void Sandbox::update()
 
     Renderer::startFrame();
 
+
     Renderer3D::beginScene(m_perspectiveCamera);
 
     //Renderer3D::submit(m_model, math::translate(math::mat4(1.f), math::vec3(0, 0, 3)));
@@ -108,8 +107,6 @@ void Sandbox::update()
     {
         Renderer3D::submit(mesh, math::scale(math::translate(math::mat4(1.f), math::vec3(i * 2, j * 2, 0)), math::vec3(2.f)));
     }
-
-    m_uniformBuffer->setData(math::buffer(m_perspectiveCamera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
 
     Renderer3D::data.modelShader->bind();
     Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());
@@ -127,9 +124,16 @@ void Sandbox::update()
 
     Renderer3D::endScene();
 
+    
+
     Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));
 
     Renderer::endFrame();
+
+    Renderer2D::startBatch(m_orthoCamera);
+    Renderer2D::renderQuad(math::vec2(100, 100), math::vec2(100, 100), math::vec4(1, 1, 1, 1));
+    Renderer2D::renderText("Hello", m_font, math::vec2(100, 100), math::vec4(1, 0, 0, 1));
+    Renderer2D::endBatch();
 }
 
 void Sandbox::handleEvent(const Event& event)

@@ -12,11 +12,14 @@
 
 struct Renderer3DData
 {
-    math::mat4 projectionMatrix;
     Shared<Shader> modelShader;
+
     PerspectiveCamera* camera;
+
     bool sceneStarted = false;
     Shared<UniformBuffer> lightingData;
+
+    Shared<UniformBuffer> matrixData;
 };
 
 class Renderer3D

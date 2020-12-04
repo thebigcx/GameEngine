@@ -10,6 +10,7 @@
 #include <renderer/Framebuffer.h>
 #include <renderer/Vertex.h>
 #include <maths/rect.h>
+#include <util/OrthographicCamera.h>
 
 struct Renderer2DData
 {
@@ -23,8 +24,10 @@ struct Renderer2DData
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     Shared<Texture2D> activeTexture = nullptr;
-    math::mat4 transform;
+    OrthographicCamera* camera;
     Mesh mesh;
+
+    Shared<UniformBuffer> matrixData;
 
     static inline const math::vec2 quadPositions[] = {
         math::vec2(0, 0),
@@ -48,7 +51,7 @@ public:
 
     static void render(IRenderable2D& renderable);
 
-    static void startBatch(const math::mat4& transform = math::mat4(1.f));
+    static void startBatch(OrthographicCamera& camera);
 
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color);

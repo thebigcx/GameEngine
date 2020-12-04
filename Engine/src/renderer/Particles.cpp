@@ -32,7 +32,7 @@ void ParticleSystem::render()
         return;
     }
 
-    Renderer2D::startBatch();
+    /*Renderer2D::startBatch();
     for (auto& particle : particles)
     {
         Renderer2D::renderSprite(m_texture, particle.position, math::vec2(50, 50), particle.color);
@@ -41,7 +41,7 @@ void ParticleSystem::render()
     RenderCommand::setBlend(true);
     RenderCommand::setBlendFunction(BlendFunction::SourceAlpha, BlendFunction::One);
     Renderer2D::flushBatch();
-    RenderCommand::setBlend(false);
+    RenderCommand::setBlend(false);*/
 }
 
 Shared<ParticleSystem> ParticleSystem::create(const Shared<Texture2D>& texture)
