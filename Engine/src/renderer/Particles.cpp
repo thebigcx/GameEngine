@@ -11,7 +11,7 @@ ParticleSystem::ParticleSystem(const Shared<Texture2D>& texture)
 void ParticleSystem::update()
 {
     float dt = Time::getDelta();
-    for (int i = 0; i < particles.size(); i++)
+    for (unsigned int i = 0; i < particles.size(); i++)
     {
         particles[i].life -= 0.001 * dt;
         particles[i].color.a = particles[i].life;

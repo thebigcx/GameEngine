@@ -35,7 +35,7 @@ void GLRendererAPI::setClearColor(const math::vec4& color)
 
 void GLRendererAPI::clear(uint32_t buffer)
 {
-    GLenum result;
+    GLenum result = 0;
 
     if (buffer & (uint32_t)RendererBufferType::Color)
         result |= GL_COLOR_BUFFER_BIT;
@@ -76,6 +76,7 @@ void GLRendererAPI::setBlendFunction(BlendFunction src, BlendFunction dst)
         case BlendFunction::SourceAlpha: glsrc = GL_SRC_ALPHA; break;
         case BlendFunction::DestinationAlpha: glsrc = GL_DST_ALPHA; break;
         case BlendFunction::OneMinusSourceAlpha: glsrc = GL_ONE_MINUS_SRC_ALPHA; break;
+        default: glsrc = GL_ZERO; break;
     }
 
     switch (dst)
@@ -85,6 +86,7 @@ void GLRendererAPI::setBlendFunction(BlendFunction src, BlendFunction dst)
         case BlendFunction::SourceAlpha: gldst = GL_SRC_ALPHA; break;
         case BlendFunction::DestinationAlpha: gldst = GL_DST_ALPHA; break;
         case BlendFunction::OneMinusSourceAlpha: gldst = GL_ONE_MINUS_SRC_ALPHA; break;
+        default: gldst = GL_ZERO; break;
     }
 
     glBlendFunc(glsrc, gldst);
@@ -103,6 +105,7 @@ void GLRendererAPI::renderIndexed(Shared<VertexArray> array, uint32_t count, uin
         case IndexDataType::UInt8:  type = GL_UNSIGNED_BYTE;  break;
         case IndexDataType::UInt16: type = GL_UNSIGNED_SHORT; break;
         case IndexDataType::UInt32: type = GL_UNSIGNED_INT;   break;
+        default: type = GL_UNSIGNED_INT; break;
     }
 
     glDrawElements(GL_TRIANGLES, count, type, (void*)(offset * sizeof(uint32_t)));

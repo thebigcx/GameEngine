@@ -316,9 +316,9 @@ inline aiMatrix3x3t<TReal>& aiMatrix3x3t<TReal>::FromToMatrix(const aiVector3t<T
         const TReal c2 = static_cast<TReal>(2.0) / (v * v);
         const TReal c3 = c1 * c2  * (u * v);
 
-        for (unsigned int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (unsigned int j = 0; j < 3; j++)
+            for (int j = 0; j < 3; j++)
             {
                 mtx[i][j] =  - c1 * u[i] * u[j] - c2 * v[i] * v[j]
                     + c3 * v[i] * u[j];

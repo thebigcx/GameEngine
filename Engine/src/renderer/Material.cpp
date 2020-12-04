@@ -8,7 +8,7 @@ void Material::setTexture(const Shared<Texture2D>& texture)
 void Material::bind() const
 {
     m_shader->bind();
-    for (int i = 0; i < m_textures.size(); i++)
+    for (unsigned int i = 0; i < m_textures.size(); i++)
     {
         m_textures[i]->bind(i);
     }
@@ -17,7 +17,7 @@ void Material::bind() const
 void Material::unbind() const
 {
     m_shader->unbind();
-    for (int i = 0; i < m_textures.size(); i++)
+    for (unsigned int i = 0; i < m_textures.size(); i++)
     {
         m_textures[i]->unbind(i);
     }

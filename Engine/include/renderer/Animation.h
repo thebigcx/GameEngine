@@ -44,7 +44,7 @@ private:
     Shared<Texture2D> m_pTexture;
     std::vector<math::frect> m_frames;
 
-    int m_currentFrameIndex = 0;
+    unsigned int m_currentFrameIndex = 0;
 
     float m_interval = 0;
 

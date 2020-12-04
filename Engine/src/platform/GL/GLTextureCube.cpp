@@ -40,7 +40,7 @@ uint32_t GLTextureCube::loadFromMultipleFiles(const std::string* files)
     glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &id);
     glBindTextureUnit(0, id);
 
-    for (int i = 0; i < 6; i++)
+    for (unsigned int i = 0; i < 6; i++)
     {
         //auto image = ImageLoader::loadOpenGLImage(files[i]);
         auto image = ImageLoader::loadImage(files[i]);

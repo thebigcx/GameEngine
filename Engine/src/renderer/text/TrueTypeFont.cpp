@@ -42,7 +42,7 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
     int w = 0;
     int h = 0;
 
-    for (int i = 32; i < 255; i++)
+    for (unsigned int i = 32; i < 255; i++)
     {
         if (FT_Load_Char(face, i, FT_LOAD_RENDER))
         {
@@ -60,7 +60,7 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
     m_texture = Texture2D::create(m_atlasSize.x, m_atlasSize.y);
 
     int x = 0;
-    for (int i = 32; i < 255; i++)
+    for (unsigned int i = 32; i < 255; i++)
     {
         if (FT_Load_Char(face, i, FT_LOAD_RENDER))
         {

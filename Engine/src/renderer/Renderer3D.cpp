@@ -109,7 +109,7 @@ void Renderer3D::setLights(const LightSetup& setup)
     //data.lightingData->unmap();
 
     auto& pointLights = setup.getPointLights();
-    for (int i = 0; i < 64; i++)
+    for (unsigned int i = 0; i < 64; i++)
     {
         if (i >= pointLights.size())
         {
@@ -130,7 +130,7 @@ void Renderer3D::setLights(const LightSetup& setup)
     }
 
     auto& spotLights = setup.getSpotLights();
-    for (int i = 0; i < 64; i++)
+    for (unsigned int i = 0; i < 64; i++)
     {
         if (i >= spotLights.size())
         {

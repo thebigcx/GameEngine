@@ -33,7 +33,7 @@ struct Renderer2DData
         math::vec2(1, 0)
     };
 
-    const int MAX_SPRITES = 100000;
+    const unsigned int MAX_SPRITES = 100000;
 };
 
 struct Statistics

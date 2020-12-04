@@ -7,7 +7,7 @@
 
 #include <util/Image.h>
 #include <maths/vector/vec2.h>
-#include <renderer/GraphicsContext.h>
+#include <renderer/RenderingContext.h>
 
 class Window
 {
@@ -48,7 +48,7 @@ public:
 private:
     GLFWwindow* m_window;
 
-    Unique<GraphicsContext> m_context;
+    Unique<RenderingContext> m_context;
 
     void init(int width, int height, const std::string& title);
 };

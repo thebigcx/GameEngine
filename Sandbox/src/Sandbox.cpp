@@ -44,7 +44,7 @@ Sandbox::Sandbox()
     lights.setDirectionalLight(dirLight);
 
     std::vector<PointLight> pointLights;
-    for (int i = 0; i < 1; i++)
+    for (unsigned int i = 0; i < 1; i++)
     {
         PointLight pointLight;
 
@@ -59,7 +59,7 @@ Sandbox::Sandbox()
     lights.setPointLights(pointLights);
 
     std::vector<SpotLight> spotLights;
-    for (int i = 0; i < 1; i++)
+    for (unsigned int i = 0; i < 1; i++)
     {
         SpotLight spotLight;
 
@@ -103,8 +103,8 @@ void Sandbox::update()
 
     auto mesh = MeshFactory::cubeMesh(1.f, m_cubeMaterial);
 
-    for (int i = 0; i < 10; i++)
-    for (int j = 0; j < 10; j++)
+    for (unsigned int i = 0; i < 10; i++)
+    for (unsigned int j = 0; j < 10; j++)
     {
         Renderer3D::submit(mesh, math::scale(math::translate(math::mat4(1.f), math::vec3(i * 2, j * 2, 0)), math::vec3(2.f)));
     }

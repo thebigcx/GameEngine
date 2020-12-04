@@ -25,13 +25,13 @@ Shared<Model> Model::loadModel(const std::string& file)
 
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
-    for (int i = 0; i < node->mNumMeshes; i++)
+    for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         meshes.push_back(processMesh(mesh, scene));
     }
 
-    for (int i = 0; i < node->mNumChildren; i++)
+    for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
         processNode(node->mChildren[i], scene);
     }
@@ -45,7 +45,7 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<ModelVertex> vertices;
     std::vector<uint32_t> indices;
 
-    for (int i = 0; i < mesh->mNumVertices; i++)
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         ModelVertex vertex;
 
@@ -70,17 +70,17 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
         vertices.push_back(vertex);
     }
 
-    for (int i = 0; i < mesh->mNumFaces; i++)
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
-        for (int j = 0; j < face.mNumIndices; j++)
+        for (unsigned int j = 0; j < face.mNumIndices; j++)
         {
             indices.push_back(face.mIndices[j]);
         }
     }
 
 
-    if (mesh->mMaterialIndex >= 0)
+    if (mesh->mMaterialIndex > 0)
     {
         //Shared<Material> material = Material::create(Renderer3D::data.modelShader);
         aiMaterial* aimaterial = scene->mMaterials[mesh->mMaterialIndex];
@@ -144,7 +144,7 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)
 {
     std::vector<Shared<Texture2D>> textures;
-    for (int i = 0; i < mat->GetTextureCount(type); i++)
+    for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
         if (mat->GetTexture(type, i, &str) == AI_FAILURE)
@@ -153,7 +153,7 @@ std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTe
         }
 
         bool skip = false;
-        for (int j = 0; j < m_texturesLoaded.size(); j++)
+        for (unsigned int j = 0; j < m_texturesLoaded.size(); j++)
         {
             if (std::strcmp(m_texturesLoaded[j]->getPath().data(), str.C_Str()) != 0)
             {

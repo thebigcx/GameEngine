@@ -45,7 +45,7 @@ void Renderer2D::init()
 
     data.mesh.indexBuffer = IndexBuffer::create(data.MAX_SPRITES * 6, IndexDataType::UInt32);
     int offset = 0;
-    for (int i = 0; i < data.MAX_SPRITES * 6; i += 6)
+    for (unsigned int i = 0; i < data.MAX_SPRITES * 6; i += 6)
     {
         data.indices.push_back(offset + 0);
         data.indices.push_back(offset + 1);
@@ -146,7 +146,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     std::array<Vertex, 4> vertices;
 
     // Populate the vertices array with the sprite's vertices
-    for (int i = 0 ; i < 4 ; i++)
+    for (unsigned int i = 0 ; i < 4 ; i++)
     {
         math::vec4 pos = transform * math::vec4(data.quadPositions[i]);
         vertices[i].position = math::vec3(pos.x, pos.y, 0);
@@ -198,8 +198,8 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     };
 
     // Set the indices
-    for (int i = 0 ; i < text.size() ; i++)
-    for (int j = 0; j < 6; j++)
+    for (unsigned int i = 0 ; i < text.size() ; i++)
+    for (unsigned int j = 0; j < 6; j++)
     {
         indices.push_back(quadIndices[j] + i * 4);
     }
@@ -209,7 +209,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     int x = position.x;
     int y = position.y;
 
-    GlyphVertex coords[4 * text.size()];
+    GlyphVertex* coords = new GlyphVertex[4 * text.size()];
 
     // Set render states
     data.textShader->bind();
@@ -250,6 +250,8 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     RenderCommand::renderIndexed(m_textMesh->vertexArray);
 
     RenderCommand::setBlend(false);
+
+    delete[] coords;
 }
 
 void Renderer2D::render(IRenderable2D& renderable)

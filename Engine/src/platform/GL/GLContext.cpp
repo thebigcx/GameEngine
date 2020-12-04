@@ -17,3 +17,9 @@ void GLContext::swapBuffers()
 {
     glfwSwapBuffers(m_window);
 }
+
+void GLContext::vsync(bool enabled)
+{
+    int interval = enabled ? 1 : 0;
+    glfwSwapInterval(interval);
+}

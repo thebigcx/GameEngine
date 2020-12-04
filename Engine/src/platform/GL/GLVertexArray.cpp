@@ -60,7 +60,7 @@ void GLVertexArray::addVertexBuffer(Shared<VertexBuffer> buffer)
             case Type::dMat3:
             case Type::dMat4:   type = GL_DOUBLE; break;
 
-            default:            std::cout << "Unknown GLSL data type.\n";
+            default:            std::cout << "Unknown GLSL data type.\n"; type = GL_FLOAT; break;
         }
 
         glVertexAttribPointer(m_attribCount,

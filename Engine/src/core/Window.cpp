@@ -34,10 +34,9 @@ void Window::init(int width, int height, const std::string& title)
 
     glViewport(0, 0, 1920, 1080);
 
-    m_context = GraphicsContext::create(m_window);
+    m_context = RenderingContext::create(m_window);
     m_context->init();
-
-    glfwSwapInterval(1);
+    m_context->vsync(true);
 }
 
 Window::~Window()
