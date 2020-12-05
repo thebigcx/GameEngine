@@ -12,7 +12,7 @@ Shared<Model> Model::loadModel(const std::string& file)
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
-        std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << "\n";
+        Logger::getCoreLogger()->error("[ASSIMP] %s", importer.GetErrorString());
         return model;
     }
 
@@ -149,7 +149,7 @@ std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTe
         aiString str;
         if (mat->GetTexture(type, i, &str) == AI_FAILURE)
         {
-            std::cout << "[ASSIMP] Could not open texture material!\n";
+            Logger::getCoreLogger()->error("[ASSIMP] Could not open texture material!");
         }
 
         bool skip = false;

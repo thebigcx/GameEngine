@@ -31,7 +31,7 @@ public:
 
     static void err(const std::string& what)
     {
-        std::cout << "* Runtime error *\n";
+        std::cout << "[ENGINE] Runtime error! \n";
         std::cout << what << "\n\n";
 
         throw std::runtime_error("Error thrown by Console::err()");

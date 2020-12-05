@@ -5,6 +5,8 @@
 
 #include <maths/vector/vec3.h>
 
+#include <core/Logger.h>
+
 struct PointLight
 {
     math::vec3 position, color;
@@ -46,7 +48,7 @@ public:
         m_pointLights.insert(m_pointLights.begin(), lights.begin(), lights.end());
         if (m_pointLights.size() > 64)
         {
-            std::cout << "Too many point lights!\n\n";
+            Logger::getCoreLogger()->error("Too many point lights: %i", m_pointLights.size());
         }
     }
 
@@ -55,7 +57,7 @@ public:
         m_spotLights.insert(m_spotLights.begin(), lights.begin(), lights.end());
         if (m_spotLights.size() > 64)
         {
-            std::cout << "Too many spot lights!\n\n";
+            Logger::getCoreLogger()->error("Too many spot lights: %i", m_spotLights.size());
         }
     }
 

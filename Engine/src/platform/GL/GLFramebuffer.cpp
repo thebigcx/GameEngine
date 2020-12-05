@@ -1,4 +1,5 @@
 #include <platform/GL/GLFramebuffer.h>
+#include <core/Logger.h>
 
 #include <GL/glew.h>
 
@@ -58,7 +59,7 @@ void GLFramebuffer::invalidate(uint32_t width, uint32_t height)
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
-        std::cout << "Framebuffer is incomplete.\n";
+        Logger::getCoreLogger()->error("Framebuffer is incomplete.");
     }
 
     // Make sure to not leave framebuffer bound
@@ -69,7 +70,7 @@ void GLFramebuffer::resize(uint32_t width, uint32_t height)
 {
     if (width > s_maxSize || height > s_maxSize)
     {
-        std::cout << "Attempted to resize framebuffer to (" << width << ", " << height << "), which is greater than max size (" << s_maxSize << ", " << s_maxSize << ").";
+        Logger::getCoreLogger()->error("Attempted to resize framebuffer to (%d, %d), which is greater than max size (%d, %d).", width, height, s_maxSize, s_maxSize);
         return;
     }
 

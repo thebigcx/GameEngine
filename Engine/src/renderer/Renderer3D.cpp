@@ -41,7 +41,7 @@ void Renderer3D::beginScene(PerspectiveCamera& camera)
 {
     if (data.sceneStarted)
     {
-        std::cout << "beginScene() called before endScene()!\n";
+        Logger::getCoreLogger()->error("beginScene() must be called before endScene()!");
     }
 
     data.sceneStarted = true;
@@ -72,7 +72,7 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
 {
     if (!data.sceneStarted)
     {
-        std::cout << "beginScene() must be called before executing draw calls!\n";
+        Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
     }
 
     RenderCommand::setDepthTesting(true);
@@ -90,7 +90,7 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
 {
     if (!data.sceneStarted)
     {
-        std::cout << "beginScene() must be called before executing draw calls!\n";
+        Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
     }
 
     RenderCommand::setDepthTesting(true);

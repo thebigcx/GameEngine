@@ -1,4 +1,5 @@
 #include <platform/GL/GLTexture2D.h>
+#include <core/Logger.h>
 
 #include <iostream>
 
@@ -40,7 +41,7 @@ GLTexture2D::GLTexture2D(const std::string& file)
     }
     else
     {
-        std::cout << "Image is corrupted or contains unknown formatted data!\n";
+        Logger::getCoreLogger()->error("Image is corrupted or contains unknown formatted data!");
     }
 
     m_width = image->width;

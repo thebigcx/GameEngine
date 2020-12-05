@@ -1,4 +1,5 @@
 #include <platform/GL/GLVertexArray.h>
+#include <core/Logger.h>
 
 GLVertexArray::GLVertexArray()
 {
@@ -60,7 +61,7 @@ void GLVertexArray::addVertexBuffer(Shared<VertexBuffer> buffer)
             case Type::dMat3:
             case Type::dMat4:   type = GL_DOUBLE; break;
 
-            default:            std::cout << "Unknown GLSL data type.\n"; type = GL_FLOAT; break;
+            default:            Logger::getCoreLogger()->error("Unknown GLSL data type."); type = GL_FLOAT; break;
         }
 
         glVertexAttribPointer(m_attribCount,

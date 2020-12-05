@@ -21,3 +21,6 @@ constexpr Unique<T> createUnique(Args&& ... args)
 }
 
 #define ENGINE_ASSERT(check, msg) { if (!(check)) { std::cout << "* Assertion failed! *\n" << "Reason: " << msg << "\n"; } }
+
+#define EXPAND_MACRO(x) x
+#define STINGIFY_MACRO(x) #x

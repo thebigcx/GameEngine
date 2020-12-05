@@ -1,5 +1,6 @@
 #include <platform/GL/GLBuffer.h>
 #include <renderer/Buffer.h>
+#include <core/Logger.h>
 
 #include <cstring>
 
@@ -72,7 +73,7 @@ void* GLVertexBuffer::getBufferPtr(size_t size, size_t offset) const
 
     if (ptr == nullptr)
     {
-        std::cout << "Nullptr returned from glMapNamedBufferRange(). Check OpenGL errors.\n";
+        Logger::getCoreLogger()->error("Nullptr returned from glMapNamedBufferRange().");
     }
 
     return ptr;
@@ -155,7 +156,7 @@ void* GLIndexBuffer::getBufferPtr(uint32_t size, uint32_t offset) const
 
     if (ptr == nullptr)
     {
-        std::cout << "Nullptr returned from glMapNamedBufferRange(). Check OpenGL errors.\n";
+       Logger::getCoreLogger()->error("Nullptr returned from glMapNamedBufferRange().");
     }
 
     return ptr;
@@ -185,7 +186,7 @@ size_t GLIndexBuffer::calculateTypeSize(IndexDataType type)
             return sizeof(uint32_t);
             break;
         default:
-            std::cout << "Invalid index type!\n";
+            Logger::getCoreLogger()->error("Invalid index type!");
             return 0;
     };
 }
@@ -256,7 +257,7 @@ void* GLUniformBuffer::getBufferPtr(size_t size, size_t offset) const
 
     if (ptr == nullptr)
     {
-        std::cout << "Nullptr returned from glMapNamedBufferRange(). Check OpenGL errors.\n";
+        Logger::getCoreLogger()->error("Nullptr returned from glMapNamedBufferRange().");
     }
 
     return ptr;

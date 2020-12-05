@@ -1,6 +1,5 @@
 #include <util/Image.h>
-
-#include <core/Console.h>
+#include <core/Logger.h>
 
 #include <stb_image/stb_image.h>
 
@@ -19,7 +18,7 @@ Shared<Image> ImageLoader::loadImageImpl(const std::string& file)
 
     if (!image->data)
     {
-        std::cout << "Image does not exist or contains corrupted data: " << file << "\n";
+        Logger::getCoreLogger()->error("Image does not exist or contains corrupted data: %s", file);
     }
 
     image->width = width;

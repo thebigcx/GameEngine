@@ -1,5 +1,6 @@
 #include <platform/GL/GLShader.h>
 #include <util/io/Files.h>
+#include <core/Logger.h>
 
 #include <cstring>
 
@@ -78,7 +79,7 @@ bool GLShader::compileShader(const ShaderSource& source)
     if (!success)
     {
         glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-        std::cout << "Failed to compile vertex shader.\n" << infoLog << std::endl;
+        Logger::getCoreLogger()->error("Failed to compile vertex shader: %s.", infoLog);
     }
 
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -90,7 +91,7 @@ bool GLShader::compileShader(const ShaderSource& source)
     if (!success)
     {
         glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-        std::cout << "Failed to compile fragment shader.\n" << infoLog << std::endl;
+        Logger::getCoreLogger()->error("Failed to compile fragment shader: %s.", infoLog);
     }
 
     m_id = glCreateProgram();
@@ -103,7 +104,7 @@ bool GLShader::compileShader(const ShaderSource& source)
     if (!success)
     {
         glGetProgramInfoLog(m_id, 512, nullptr, infoLog);
-        std::cout << "Failed to link shader program.\n" << infoLog << std::endl;
+        Logger::getCoreLogger()->error("Failed to link shader program: %s.", infoLog);
     }
 
     glDeleteShader(vertex);

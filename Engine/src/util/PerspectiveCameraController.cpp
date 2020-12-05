@@ -4,7 +4,7 @@
 
 PerspectiveCameraController::PerspectiveCameraController()
 {
-    
+
 }
 
 void PerspectiveCameraController::update()
