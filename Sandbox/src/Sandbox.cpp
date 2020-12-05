@@ -14,6 +14,8 @@ Sandbox::Sandbox()
 
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
 
+    m_orthoCamera.setPosition(math::vec2(0, 0));
+
     m_cubeMaterial = Material::create(Renderer3D::data.modelShader);
     //m_cubeMaterial = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
     m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
@@ -95,6 +97,7 @@ void Sandbox::update()
 
     Renderer::startFrame();
 
+    
 
     Renderer3D::beginScene(m_perspectiveCamera);
 
@@ -124,16 +127,15 @@ void Sandbox::update()
 
     Renderer3D::endScene();
 
+    Renderer2D::startBatch(m_orthoCamera);
+    Renderer2D::renderSprite(Assets::get<Texture2D>("grass"), math::vec2(100, 100), math::vec2(100, 100), math::vec4(1, 1, 1, 1));
+    Renderer2D::endBatch();
     
+    Renderer2D::renderText("Hello", m_font, math::vec2(0, 0), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
 
     Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));
 
     Renderer::endFrame();
-
-    Renderer2D::startBatch(m_orthoCamera);
-    Renderer2D::renderQuad(math::vec2(100, 100), math::vec2(100, 100), math::vec4(1, 1, 1, 1));
-    Renderer2D::renderText("Hello", m_font, math::vec2(100, 100), math::vec4(1, 0, 0, 1));
-    Renderer2D::endBatch();
 }
 
 void Sandbox::handleEvent(const Event& event)

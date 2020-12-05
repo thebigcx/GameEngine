@@ -12,8 +12,8 @@ out DATA
 
 layout (std140, binding = 2) uniform matrices
 {
-    uniform mat4 projection;
-    uniform mat4 transform;
+    mat4 projection;
+    mat4 transform;
 };
 
 void main()
@@ -31,7 +31,7 @@ in DATA
     vec2 texCoord;
 } fs_in;
 
-out vec4 FragColor;
+out vec4 fragColor;
 
 uniform sampler2D fontAtlas;
 uniform vec4 textColor;
@@ -43,5 +43,5 @@ void main()
     {
         discard;
     }
-    FragColor = sampled * vec4(textColor.rgb, 1);
+    fragColor = sampled * vec4(textColor.rgb, 1);
 }

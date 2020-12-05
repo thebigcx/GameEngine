@@ -14,7 +14,7 @@ public:
     inline const math::vec2& getPosition() const { return m_position; }
 
     math::mat4 getViewMatrix() const;
-    inline constexpr const math::mat4& getProjectionMatrix() const
+    inline const math::mat4& getProjectionMatrix() const
     {
         return m_projectionMatrix;
     }

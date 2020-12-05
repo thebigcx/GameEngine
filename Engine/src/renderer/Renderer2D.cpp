@@ -13,17 +13,12 @@ Shared<Mesh> Renderer2D::m_framebufferMesh;
 
 void Renderer2D::init()
 {
-    RenderCommand::setDepthTesting(false);
-
     auto windowSize = Application::get().getWindow().getSize();
 
     data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
     
     data.textureShader = ShaderFactory::textureShader();
-    data.textureShader->bind();
-
     data.textShader = ShaderFactory::textShader();
-    data.textShader->bind();
 
     m_textMesh = MeshFactory::textMesh();
 
@@ -31,7 +26,6 @@ void Renderer2D::init()
     uint32_t white = 0xffffff;
     data.whiteTexture->setData(0, 0, 1, 1, &white);
 
-    //data.transform = math::mat4();
     data.mesh.vertexArray = VertexArray::create();
     data.mesh.vertexArray->bind();
 
@@ -67,7 +61,6 @@ void Renderer2D::init()
 
 void Renderer2D::startBatch(OrthographicCamera& camera)
 {
-    //data.transform = transform;
     data.camera = &camera;
     data.drawCalls = 0;
 
@@ -96,8 +89,6 @@ void Renderer2D::flushBatch()
     data.mesh.indexBuffer->setData(&data.indices[0], data.indices.size());
 
     data.textureShader->bind();
-    //data.textureShader->setMatrix4("transform", data.camera->getViewMatrix());
-    //data.textureShader->setMatrix4("projection", data.camera->getProjectionMatrix());
     data.activeTexture->bind();
 
     RenderCommand::renderIndexed(data.mesh.vertexArray, data.vertices.size() * 6/4);
@@ -186,6 +177,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
 
 void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color)
 {
+    RenderCommand::setDepthTesting(false);
     struct GlyphVertex
     {
         math::vec2 position;
@@ -193,7 +185,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     };
 
     math::vec2 scale = size / font->getCharacterSize();
-    std::vector<unsigned int> indices;
+    std::vector<uint32_t> indices;
 
     uint32_t quadIndices[] = {
         0, 1, 2, 2, 3, 0
@@ -205,7 +197,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     {
         indices.push_back(quadIndices[j] + i * 4);
     }
-
+    m_textMesh->vertexArray->bind();
     m_textMesh->indexBuffer->setData(&indices[0], indices.size());
 
     int x = position.x;
@@ -215,10 +207,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
 
     // Set render states
     data.textShader->bind();
-    //data.textShader->setMatrix4("transform", math::mat4(1.f));
-    data.matrixData->setData(math::buffer(math::mat4(1.f)), sizeof(math::mat4), sizeof(math::mat4));
     data.textShader->setFloat4("textColor", math::vec4(color.r, color.g, color.b, color.a));
-    m_textMesh->vertexArray->bind();
     font->getTextureAtlas()->bind();
 
     RenderCommand::setBlend(true);
@@ -248,8 +237,8 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     }
 
     // Draw the text mesh
-    m_textMesh->vertexBuffer->bind();
-    m_textMesh->vertexBuffer->setData(coords, sizeof(coords));
+    //m_textMesh->vertexBuffer->bind();
+    m_textMesh->vertexBuffer->setData(coords, sizeof(GlyphVertex) * (4 * text.size()));
     RenderCommand::renderIndexed(m_textMesh->vertexArray);
 
     RenderCommand::setBlend(false);

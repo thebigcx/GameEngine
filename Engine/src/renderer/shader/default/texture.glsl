@@ -14,8 +14,8 @@ out DATA
 
 layout (std140, binding = 2) uniform matrices
 {
-    uniform mat4 projection;
-    uniform mat4 transform;
+    mat4 projection;
+    mat4 transform;
 };
 
 void main()
@@ -35,17 +35,17 @@ in DATA
     vec4 color;
 } fs_in;
 
-out vec4 FragColor;
+out vec4 fragColor;
 
-uniform sampler2D Texture2D;
+uniform sampler2D textureSampler;
 
 void main()
 {
-    vec4 color = texture(Texture2D, fs_in.texCoord) * fs_in.color;
+    vec4 color = texture(textureSampler, fs_in.texCoord) * fs_in.color;
     if (color.a < 0.1)
     {
         discard;
     }
 
-    FragColor = color;
+    fragColor = color;
 }
