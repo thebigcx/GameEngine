@@ -8,7 +8,7 @@ public:
     Sandbox();
 
     void update() override;
-    void handleEvent(const Event& event) override;
+    void handleEvent(Event& event) override;
 
 private:
     Shared<SoundSource> m_soundSource;
@@ -22,6 +22,6 @@ private:
 
     LightSetup lights;
 
-    PerspectiveCamera m_perspectiveCamera;
-    OrthographicCamera m_orthoCamera;
+    PerspectiveCameraController m_perspectiveCamera;
+    OrthographicCameraController m_orthoCamera;
 };

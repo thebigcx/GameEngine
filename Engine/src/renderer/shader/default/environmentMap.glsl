@@ -17,9 +17,10 @@ layout (std140, binding = 0) uniform matrices
 {
     mat4 projection;
     mat4 view;
-    vec3 cameraPos;
+    //vec3 cameraPos;
 };
 
+uniform vec3 cameraPos;
 uniform mat4 transform = mat4(1.f);
 
 void main()

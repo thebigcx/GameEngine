@@ -34,7 +34,8 @@ project "Sandbox"
 		"GLEW",
 		"openal",
 		"freetype",
-		"assimp"
+		"assimp",
+		"pthread"
 	}
 	
 	optimize "On"

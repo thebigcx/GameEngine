@@ -9,7 +9,7 @@ public:
     virtual ~Layer() = default;
 
     virtual void update() {};
-    virtual void handleEvent(const Event& event) {};
+    virtual void handleEvent(Event& event) {};
 
 protected:
     

@@ -8,6 +8,7 @@
 
 #include <sound/SoundBuffer.h>
 #include <sound/SoundSource.h>
+#include <core/Core.h>
 
 class SoundEngine
 {
@@ -16,7 +17,7 @@ public:
 
     static void destroy();
 
-    static void play(const SoundSource& source, bool loop);
+    static void play(const Shared<SoundSource>& source, bool loop);
 
 private:
     static SoundEngine m_instance;

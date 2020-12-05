@@ -13,15 +13,15 @@ void SoundEngine::init()
     alcMakeContextCurrent(m_context);
 }
 
-void SoundEngine::play(const SoundSource& source, bool loop)
+void SoundEngine::play(const Shared<SoundSource>& source, bool loop)
 {
-    if (source.isPlaying())
+    if (source->isPlaying())
     {
         return;
     }
 
-    alSourcei(source.m_id, AL_LOOPING, (int)loop);
-    alSourcePlay(source.m_id);
+    alSourcei(source->m_id, AL_LOOPING, (int)loop);
+    alSourcePlay(source->m_id);
 }
 
 void SoundEngine::destroy()

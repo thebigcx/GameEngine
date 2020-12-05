@@ -10,7 +10,9 @@
 #include <util/Image.h>
 #include <util/Timer.h>
 #include <util/OrthographicCamera.h>
+#include <util/OrthographicCameraController.h>
 #include <util/PerspectiveCamera.h>
+#include <util/PerspectiveCameraController.h>
 #include <util/Time.h>
 #include <util/Transform.h>
 #include <util/io/Files.h>

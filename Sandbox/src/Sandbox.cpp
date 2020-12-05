@@ -8,7 +8,7 @@ Sandbox::Sandbox()
     Assets::add<Texture2D>("grass", Texture2D::create("Sandbox/assets/grass.png"));
 
     m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
-    SoundEngine::play(*m_soundSource, true);
+    SoundEngine::play(m_soundSource, true);
 
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
@@ -66,10 +66,12 @@ Sandbox::Sandbox()
     Renderer3D::setLights(lights);
 
     //m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
-    //m_model = Model::loadModel("Sandbox/assets/sphere.obj");
+    m_model = Model::loadModel("Sandbox/assets/sphere.obj");
+    m_model->meshes[0]->material = Material::create(Renderer3D::data.modelShader);
+    m_model->meshes[0]->material->setTexture(Assets::get<Texture2D>("grass"));
     //m_model->meshes[0]->material = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
 
-    Application::get().setCursorEnabled(false);
+    //Application::get().setCursorEnabled(false);
 }
 
 void Sandbox::update()
@@ -87,7 +89,7 @@ void Sandbox::update()
 
     Renderer3D::beginScene(m_perspectiveCamera);
 
-    //Renderer3D::submit(m_model, math::translate(math::mat4(1.f), math::vec3(0, 0, 3)));
+    Renderer3D::submit(m_model, math::translate(math::mat4(1.f), math::vec3(0, 0, 3)));
 
     auto mesh = MeshFactory::cubeMesh(1.f, m_cubeMaterial);
 
@@ -117,7 +119,8 @@ void Sandbox::update()
     Renderer::endFrame();
 }
 
-void Sandbox::handleEvent(const Event& event)
+void Sandbox::handleEvent(Event& event)
 {
-    
+    m_perspectiveCamera.onEvent(event);
+    m_orthoCamera.onEvent(event);
 }
