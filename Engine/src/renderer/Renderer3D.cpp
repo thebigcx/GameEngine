@@ -37,6 +37,11 @@ void Renderer3D::init()
     data.skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
 }
 
+void Renderer3D::shutdown()
+{
+    
+}
+
 void Renderer3D::beginScene(PerspectiveCamera& camera)
 {
     if (data.sceneStarted)

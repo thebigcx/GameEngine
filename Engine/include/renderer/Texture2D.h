@@ -43,4 +43,7 @@ public:
     virtual unsigned int getId() const = 0;
 
     virtual const std::string& getPath() const = 0;
+
+    virtual bool operator==(const Texture2D& other) = 0;
+    virtual bool operator!=(const Texture2D& other) = 0;
 };

@@ -8,4 +8,5 @@ struct Vertex
     math::vec3 position;
     math::vec2 texCoord;
     math::vec4 color;
+    float texIndex;
 };

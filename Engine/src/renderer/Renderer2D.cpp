@@ -7,7 +7,7 @@
 
 #include <GL/glew.h>
 
-Renderer2DData Renderer2D::data;
+Renderer2DData Renderer2D::s_data;
 Shared<Mesh> Renderer2D::m_textMesh;
 Shared<Mesh> Renderer2D::m_framebufferMesh;
 
@@ -15,85 +15,111 @@ void Renderer2D::init()
 {
     auto windowSize = Application::get().getWindow().getSize();
 
-    data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
+    s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
     
-    data.textureShader = ShaderFactory::textureShader();
-    data.textShader = ShaderFactory::textShader();
+    s_data.textureShader = ShaderFactory::textureShader();
+    s_data.textShader = ShaderFactory::textShader();
 
     m_textMesh = MeshFactory::textMesh();
 
-    data.whiteTexture = Texture2D::create(1, 1);
+    s_data.whiteTexture = Texture2D::create(1, 1);
     uint32_t white = 0xffffff;
-    data.whiteTexture->setData(0, 0, 1, 1, &white);
+    s_data.whiteTexture->setData(0, 0, 1, 1, &white);
 
-    data.mesh.vertexArray = VertexArray::create();
-    data.mesh.vertexArray->bind();
+    s_data.vertexBase = new Vertex[s_data.MAX_VERTICES];
+
+    s_data.mesh.vertexArray = VertexArray::create();
+    s_data.mesh.vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec3, "aPos"      },
-        { Shader::DataType::Vec2, "aTexCoord" },
-        { Shader::DataType::Vec4, "aColor"    }
+        { Shader::DataType::Vec3,  "aPos"      },
+        { Shader::DataType::Vec2,  "aTexCoord" },
+        { Shader::DataType::Vec4,  "aColor"    },
+        { Shader::DataType::Float, "aTexIndex" }
     };
+    
+    uint32_t* indices = new uint32_t[s_data.MAX_INDICES];
 
-    data.mesh.indexBuffer = IndexBuffer::create(data.MAX_SPRITES * 6, IndexDataType::UInt32);
     int offset = 0;
-    for (unsigned int i = 0; i < data.MAX_SPRITES * 6; i += 6)
+    for (unsigned int i = 0; i < s_data.MAX_SPRITES * 6; i += 6)
     {
-        data.indices.push_back(offset + 0);
-        data.indices.push_back(offset + 1);
-        data.indices.push_back(offset + 2);
+        indices[i + 0] = offset + 0;
+        indices[i + 1] = offset + 1;
+        indices[i + 2] = offset + 2;
 
-        data.indices.push_back(offset + 2);
-        data.indices.push_back(offset + 3);
-        data.indices.push_back(offset + 0);
+        indices[i + 3] = offset + 2;
+        indices[i + 4] = offset + 3;
+        indices[i + 5] = offset + 0;
 
         offset += 4;
     }
 
-    data.mesh.indexBuffer->setData(&data.indices[0], data.indices.size());
+    s_data.mesh.indexBuffer = IndexBuffer::create(indices, s_data.MAX_SPRITES * 6, IndexDataType::UInt32);
 
-    data.mesh.vertexBuffer = VertexBuffer::create(sizeof(Vertex) * 4 * data.MAX_SPRITES);
-    data.mesh.vertexBuffer->setLayout(layout);
+    delete[] indices;
+ 
+    s_data.mesh.vertexBuffer = VertexBuffer::create(sizeof(Vertex) * 4 * s_data.MAX_SPRITES);
+    s_data.mesh.vertexBuffer->setLayout(layout);
 
-    data.mesh.vertexArray->addVertexBuffer(data.mesh.vertexBuffer);
-    data.mesh.vertexArray->setIndexBuffer(data.mesh.indexBuffer);
+    s_data.mesh.vertexArray->addVertexBuffer(s_data.mesh.vertexBuffer);
+    s_data.mesh.vertexArray->setIndexBuffer(s_data.mesh.indexBuffer);
 }
 
-void Renderer2D::startBatch(OrthographicCamera& camera)
+void Renderer2D::shutdown()
 {
-    data.camera = &camera;
-    data.drawCalls = 0;
-
-    data.matrixData->setData(math::buffer(data.camera->getProjectionMatrix()), sizeof(math::mat4), 0);
-    data.matrixData->setData(math::buffer(data.camera->getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
+    delete[] s_data.vertexBase;
 }
 
-void Renderer2D::endBatch()
+void Renderer2D::beginScene(OrthographicCamera& camera)
 {
-    if (data.vertices.size() > 0)
-    {
-        flushBatch();
-    }
+    s_data.camera = &camera;
+    s_data.drawCalls = 0;
+
+    s_data.matrixData->setData(math::buffer(s_data.camera->getProjectionMatrix()), sizeof(math::mat4), 0);
+    s_data.matrixData->setData(math::buffer(s_data.camera->getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
+
+    startBatch();
+}
+
+void Renderer2D::endScene()
+{
+    flushBatch();
+}
+
+void Renderer2D::startBatch()
+{
+    s_data.textureSlotIndex = 0;
+    s_data.vertexPointer = s_data.vertexBase;
+    s_data.indexCount = 0;
+}
+
+void Renderer2D::nextBatch()
+{
+    flushBatch();
+    startBatch();
 }
 
 void Renderer2D::flushBatch()
 {
-    if (data.activeTexture == nullptr)
+    if (s_data.indexCount == 0)
         return;
 
     RenderCommand::setDepthTesting(false);
 
-    data.mesh.vertexArray->bind();
+    s_data.mesh.vertexArray->bind();
 
-    data.mesh.vertexBuffer->setData(&data.vertices[0], sizeof(Vertex) * data.vertices.size());
-    data.mesh.indexBuffer->setData(&data.indices[0], data.indices.size());
+    size_t dataSize = (size_t)((uint8_t*)s_data.vertexPointer - (uint8_t*)s_data.vertexBase);
+    s_data.mesh.vertexBuffer->setData(s_data.vertexBase, dataSize);
 
-    data.textureShader->bind();
-    data.activeTexture->bind();
+    s_data.textureShader->bind();
+    
+    for (unsigned int i = 0; i < s_data.textureSlotIndex; i++)
+    {
+        s_data.textureSlots[i]->bind(i);
+    }
 
-    RenderCommand::renderIndexed(data.mesh.vertexArray, data.vertices.size() * 6/4);
-    data.drawCalls++;
-    data.vertices.clear();
+    RenderCommand::renderIndexed(s_data.mesh.vertexArray, s_data.indexCount);
+    s_data.drawCalls++;
 }
 
 void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size)
@@ -118,17 +144,29 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
 
 void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)
 {
-    if (data.activeTexture == nullptr)
+    float textureIndex = 0.f;
+    for (unsigned int i = 0; i < s_data.textureSlotIndex; i++)
     {
-        data.activeTexture = texture;
-    }
-    if (data.activeTexture->getId() != texture->getId())
-    {
-        flushBatch();
-        data.activeTexture = texture;
+        if (*s_data.textureSlots[i] == *texture)
+        {
+            textureIndex = (float)i;
+            break;
+        }
     }
 
-    if (data.vertices.size() > data.MAX_SPRITES * 4 - 100)
+    if (textureIndex == 0.f)
+    {
+        if (s_data.textureSlotIndex >= Renderer2DData::MAX_TEXTURE_SLOTS)
+        {
+            nextBatch();
+        }
+
+        textureIndex = (float)s_data.textureSlotIndex;
+        s_data.textureSlots[s_data.textureSlotIndex] = texture;
+        s_data.textureSlotIndex++;
+    }
+
+    if (s_data.indexCount >= s_data.MAX_INDICES)
     {
         flushBatch();
     }
@@ -136,28 +174,26 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     Transform t = { position, rotation, size, origin };
     math::mat4 transform = t.matrix();
     
-    std::array<Vertex, 4> vertices;
-
     // Populate the vertices array with the sprite's vertices
     for (unsigned int i = 0 ; i < 4 ; i++)
     {
-        math::vec4 pos = transform * math::vec4(data.quadPositions[i]);
-        vertices[i].position = math::vec3(pos.x, pos.y, 0);
+        math::vec4 pos = transform * math::vec4(s_data.quadPositions[i]);
+        s_data.vertexPointer->position = math::vec3(pos.x, pos.y, 0);
 
         // Change "origin" of texCoord, then scale it
         
         // Reciprocal of size (save division operations)
         math::vec2 textureSize(1.f / texture->getWidth(), 1.f / texture->getHeight());
+        math::vec2 texCoord = texRect.getPosition() * textureSize;
+        texCoord += s_data.quadPositions[i] * (texRect.getSize() * textureSize);
 
-        vertices[i].texCoord = texRect.getPosition() * textureSize;
-        vertices[i].texCoord += data.quadPositions[i] * (texRect.getSize() * textureSize);
-        vertices[i].color = color;
+        s_data.vertexPointer->texCoord = texCoord;
+        s_data.vertexPointer->color = color;
+        s_data.vertexPointer->texIndex = textureIndex;
+        s_data.vertexPointer++;
     }
 
-    for (auto& vertex : vertices)
-    {
-        data.vertices.push_back(vertex);
-    }
+    s_data.indexCount += 6;
 }
 
 void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color)
@@ -167,7 +203,7 @@ void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, 
 
 void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color)
 {
-    renderSprite(data.whiteTexture, position, size, math::frect(0, 0, 1, 1), rotation, color);
+    renderSprite(s_data.whiteTexture, position, size, math::frect(0, 0, 1, 1), rotation, color);
 }
 
 void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color)
@@ -206,8 +242,8 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     GlyphVertex* coords = new GlyphVertex[4 * text.size()];
 
     // Set render states
-    data.textShader->bind();
-    data.textShader->setFloat4("textColor", math::vec4(color.r, color.g, color.b, color.a));
+    s_data.textShader->bind();
+    s_data.textShader->setFloat4("textColor", math::vec4(color.r, color.g, color.b, color.a));
     font->getTextureAtlas()->bind();
 
     RenderCommand::setBlend(true);
@@ -237,9 +273,8 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     }
 
     // Draw the text mesh
-    //m_textMesh->vertexBuffer->bind();
     m_textMesh->vertexBuffer->setData(coords, sizeof(GlyphVertex) * (4 * text.size()));
-    RenderCommand::renderIndexed(m_textMesh->vertexArray);
+    RenderCommand::renderIndexed(m_textMesh->vertexArray, 6 * text.size());
 
     RenderCommand::setBlend(false);
 

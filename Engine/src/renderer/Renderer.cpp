@@ -18,6 +18,12 @@ void Renderer::init()
     m_data.target = Framebuffer::create(windowSize.x, windowSize.y);
 }
 
+void Renderer::shutdown()
+{
+    Renderer2D::shutdown();
+    Renderer3D::shutdown();
+}
+
 void Renderer::startFrame()
 {
     m_data.target->bind();

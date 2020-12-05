@@ -8,8 +8,8 @@
 
 struct BufferElement
 {
-    BufferElement(Shader::DataType type, const std::string& name)
-        : type(type), name(name)
+    BufferElement(Shader::DataType type, const std::string& name, bool normalized = false)
+        : type(type), name(name), normalized(normalized)
     {
         size = dataTypeSize();
     }
@@ -24,33 +24,33 @@ struct BufferElement
             case Type::Bool:
             case Type::Int:
             case Type::Double:
-            case Type::Uint:    return 1;
+            case Type::Uint:  return 1;
 
             case Type::Vec2:
             case Type::iVec2:
             case Type::uVec2:
             case Type::dVec2:
-            case Type::bVec2:   return 2;
+            case Type::bVec2: return 2;
 
             case Type::Vec3:
             case Type::iVec3:
             case Type::uVec3:
             case Type::dVec3:
-            case Type::bVec3:    return 3;
+            case Type::bVec3: return 3;
 
             case Type::Vec4:
             case Type::iVec4:
             case Type::uVec4:
             case Type::dVec4:
-            case Type::bVec4:    return 4;
+            case Type::bVec4: return 4;
 
             case Type::Mat3:
-            case Type::dMat3:    return 9;
+            case Type::dMat3: return 9;
 
             case Type::Mat4:
-            case Type::dMat4:    return 16;
+            case Type::dMat4: return 16;
 
-            default:                        return 0;
+            default:          return 0;
         }
     }
 
@@ -65,7 +65,7 @@ struct BufferElement
             case Type::Vec3:
             case Type::Vec4:
             case Type::Mat3:
-            case Type::Mat4:    return componentCount() * sizeof(float);
+            case Type::Mat4:  return componentCount() * sizeof(float);
 
             case Type::Bool:
             case Type::bVec2:
@@ -74,21 +74,21 @@ struct BufferElement
             case Type::Int:
             case Type::iVec2:
             case Type::iVec3:
-            case Type::iVec4:   return componentCount() * sizeof(int);
+            case Type::iVec4: return componentCount() * sizeof(int);
 
             case Type::Uint:
             case Type::uVec2:
             case Type::uVec3:
-            case Type::uVec4:   return componentCount() * sizeof(unsigned int);
+            case Type::uVec4: return componentCount() * sizeof(unsigned int);
 
             case Type::Double:
             case Type::dVec2:
             case Type::dVec3:
             case Type::dVec4:
             case Type::dMat3:
-            case Type::dMat4:   return componentCount() * sizeof(double);
+            case Type::dMat4: return componentCount() * sizeof(double);
 
-            default:            return componentCount() * sizeof(float);
+            default:          return componentCount() * sizeof(float);
         }
     }
 
@@ -96,8 +96,8 @@ struct BufferElement
     std::string name;
     size_t offset;
     size_t size;
+    bool normalized;
 };
-
 
 
 class BufferLayout

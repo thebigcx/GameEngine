@@ -10,6 +10,7 @@ class Application
 {
 public:
     Application();
+    ~Application();
 
     void run();
     void addLayer(Layer* layer);

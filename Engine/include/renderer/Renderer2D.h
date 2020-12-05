@@ -14,6 +14,11 @@
 
 struct Renderer2DData
 {
+    static const unsigned int MAX_SPRITES = 100000;
+    static const unsigned int MAX_TEXTURE_SLOTS = 32;
+    static const unsigned int MAX_VERTICES = MAX_SPRITES * 4;
+    static const unsigned int MAX_INDICES = MAX_SPRITES * 6;
+
     uint64_t drawCalls;
 
     math::mat4 projectionMatrix;
@@ -21,9 +26,13 @@ struct Renderer2DData
     Shared<Shader> textShader;
     Shared<Texture2D> whiteTexture;
 
-    std::vector<Vertex> vertices;
-    std::vector<uint32_t> indices;
-    Shared<Texture2D> activeTexture = nullptr;
+    Vertex* vertexBase = nullptr;
+    Vertex* vertexPointer = nullptr;
+    uint32_t indexCount = 0;
+    
+    Shared<Texture2D> textureSlots[MAX_TEXTURE_SLOTS];
+    unsigned int textureSlotIndex;
+
     OrthographicCamera* camera;
     Mesh mesh;
 
@@ -35,8 +44,6 @@ struct Renderer2DData
         math::vec2(1, 1),
         math::vec2(1, 0)
     };
-
-    const unsigned int MAX_SPRITES = 100000;
 };
 
 struct Statistics
@@ -48,10 +55,15 @@ class Renderer2D
 {
 public:
     static void init();
+    static void shutdown();
 
     static void render(IRenderable2D& renderable);
 
-    static void startBatch(OrthographicCamera& camera);
+    static void startBatch();
+    static void nextBatch();
+    static void flushBatch();
+
+    static void beginScene(OrthographicCamera& camera);
 
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color);
@@ -62,8 +74,7 @@ public:
     static void renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color);
     static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color);
     
-    static void endBatch();
-    static void flushBatch();
+    static void endScene();
 
     static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color = math::vec4(0, 0, 0, 0));
     static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
@@ -73,6 +84,6 @@ public:
 private:
     static Shared<Mesh> m_textMesh;
     static Shared<Mesh> m_framebufferMesh;
-public:
-    static Renderer2DData data;
+
+    static Renderer2DData s_data;
 };

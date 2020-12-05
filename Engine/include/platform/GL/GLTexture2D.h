@@ -24,6 +24,9 @@ public:
 
     const std::string& getPath() const;
 
+    bool operator==(const Texture2D& other) override;
+    bool operator!=(const Texture2D& other) override;
+
 private:
     unsigned int m_id = 0;
 

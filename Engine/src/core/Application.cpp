@@ -26,6 +26,11 @@ Application::Application()
     Time::init();
 }
 
+Application::~Application()
+{
+    Renderer::shutdown();
+}
+
 void Application::run()
 {
     while (m_window->isOpen())

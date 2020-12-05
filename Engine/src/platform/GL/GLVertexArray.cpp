@@ -64,10 +64,12 @@ void GLVertexArray::addVertexBuffer(Shared<VertexBuffer> buffer)
             default:            Logger::getCoreLogger()->error("Unknown GLSL data type."); type = GL_FLOAT; break;
         }
 
+        bool normalized = buffer->getLayout()[i].normalized ? GL_TRUE : GL_FALSE;
+
         glVertexAttribPointer(m_attribCount,
                               buffer->getLayout()[i].componentCount(),
                               type,
-                              GL_FALSE,
+                              normalized,
                               buffer->getLayout().getStride(),
                               (const void*)buffer->getLayout()[i].offset);
 

@@ -103,3 +103,13 @@ const std::string& GLTexture2D::getPath() const
 {
     return m_path;
 }
+
+bool GLTexture2D::operator==(const Texture2D& other)
+{
+    return m_id == static_cast<const GLTexture2D&>(other).m_id;
+}
+
+bool GLTexture2D::operator!=(const Texture2D& other)
+{
+    return m_id != static_cast<const GLTexture2D&>(other).m_id;
+}

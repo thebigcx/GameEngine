@@ -18,6 +18,7 @@ class Renderer
 {
 public:
     static void init();
+    static void shutdown();
 
     static void startFrame();
     static void endFrame();

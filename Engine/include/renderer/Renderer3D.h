@@ -31,6 +31,7 @@ class Renderer3D
 {
 public:
     static void init();
+    static void shutdown();
 
     static void beginScene(PerspectiveCamera& camera);
 
