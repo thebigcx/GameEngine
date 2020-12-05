@@ -23,6 +23,13 @@ enum class RendererBufferType
     Stencil = 1 << 2
 };
 
+enum class DepthFunction
+{
+    Less, Greater,
+    Equal, NotEqual, LessOrEqual, GreaterOrEqual,
+    Always, Never
+};
+
 class RendererAPI
 {
 public:
@@ -35,6 +42,8 @@ public:
     virtual void setDepthTesting(bool enabled) = 0;
     virtual void setBlend(bool enabled) = 0;
     virtual void setBlendFunction(BlendFunction src, BlendFunction dst) = 0;
+
+    //virtual void setDepthFunction(DepthFunction function);
 
     virtual void setClearColor(const math::vec4& color) = 0;
     virtual void clear(uint32_t buffer) = 0;

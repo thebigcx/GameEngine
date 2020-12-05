@@ -22,6 +22,19 @@ void Renderer3D::init()
                                             + sizeof(uint32_t)
                                             + sizeof(math::vec3)
                                             + sizeof(float), 1);
+
+    std::array<std::string, 6> skyboxFaces = {
+        "Sandbox/assets/skybox/right.jpg",
+        "Sandbox/assets/skybox/left.jpg",
+        "Sandbox/assets/skybox/top.jpg",
+        "Sandbox/assets/skybox/bottom.jpg",
+        "Sandbox/assets/skybox/front.jpg",
+        "Sandbox/assets/skybox/back.jpg"
+    };
+
+    data.environment = Skybox::create(skyboxFaces);
+    data.skyboxMesh = MeshFactory::skyboxMesh();
+    data.skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
 }
 
 void Renderer3D::beginScene(PerspectiveCamera& camera)
@@ -46,6 +59,13 @@ void Renderer3D::beginScene(PerspectiveCamera& camera)
 void Renderer3D::endScene()
 {
     data.sceneStarted = false;
+
+    glDepthFunc(GL_LEQUAL);
+    data.skyboxShader->bind();
+    data.skyboxMesh->vertexArray->bind();
+    data.environment->getCubemap()->bind();
+    RenderCommand::renderIndexed(data.skyboxMesh->vertexArray);
+    glDepthFunc(GL_LESS);
 }
 
 void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
@@ -175,4 +195,9 @@ void Renderer3D::setLights(const LightSetup& setup)
 
     float skylight = setup.getSkyLight();
     data.lightingData->setData(&skylight, sizeof(float), counter);*/
+}
+
+void Renderer3D::setEnvironment(const Shared<Skybox>& environment)
+{
+    data.environment = environment;
 }

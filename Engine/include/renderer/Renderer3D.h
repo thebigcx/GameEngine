@@ -7,6 +7,7 @@
 #include <renderer/Model.h>
 #include <renderer/Lights.h>
 #include <renderer/Framebuffer.h>
+#include <renderer/Skybox.h>
 
 #include <util/PerspectiveCamera.h>
 
@@ -20,6 +21,10 @@ struct Renderer3DData
     Shared<UniformBuffer> lightingData;
 
     Shared<UniformBuffer> matrixData;
+
+    Shared<Skybox> environment;
+    Shared<Mesh> skyboxMesh;
+    Shared<Shader> skyboxShader;
 };
 
 class Renderer3D
@@ -33,6 +38,7 @@ public:
     static void submit(const Shared<Model>& model, const math::mat4& transform);
 
     static void setLights(const LightSetup& setup);
+    static void setEnvironment(const Shared<Skybox>& environment);
 
     static void endScene();
 

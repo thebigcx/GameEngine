@@ -21,18 +21,6 @@ Sandbox::Sandbox()
     m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
     m_cubeMaterial->shininess = 16.f;
 
-    m_skyboxMesh = MeshFactory::skyboxMesh();
-    std::string files[] = {
-        "Sandbox/assets/skybox/right.jpg",
-        "Sandbox/assets/skybox/left.jpg",
-        "Sandbox/assets/skybox/top.jpg",
-        "Sandbox/assets/skybox/bottom.jpg",
-        "Sandbox/assets/skybox/front.jpg",
-        "Sandbox/assets/skybox/back.jpg",
-    };
-    m_skyboxTexture = TextureCube::create(&files[0]);
-    m_skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
-
     lights.setSkylight(0.01f);
 
     DirectionalLight dirLight;
@@ -97,8 +85,6 @@ void Sandbox::update()
 
     Renderer::startFrame();
 
-    
-
     Renderer3D::beginScene(m_perspectiveCamera);
 
     //Renderer3D::submit(m_model, math::translate(math::mat4(1.f), math::vec3(0, 0, 3)));
@@ -117,13 +103,6 @@ void Sandbox::update()
     //Renderer3D::data.modelShader->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
 
     Renderer3D::submit(mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.f, 4.f)));
-
-    glDepthFunc(GL_LEQUAL);
-    m_skyboxShader->bind();
-    m_skyboxMesh->vertexArray->bind();
-    m_skyboxTexture->bind();
-    RenderCommand::renderIndexed(m_skyboxMesh->vertexArray);
-    glDepthFunc(GL_LESS);
 
     Renderer3D::endScene();
 
