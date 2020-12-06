@@ -76,6 +76,11 @@ void Sandbox::onAttach()
     //Application::get().setCursorEnabled(false);
 }
 
+void Sandbox::onDetach()
+{
+    
+}
+
 void Sandbox::onUpdate()
 {
     Timer timer;

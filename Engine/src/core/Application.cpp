@@ -55,6 +55,10 @@ void Application::onEvent(Event& event)
 
     for (auto& layer : m_layers)
     {
+        if (event.handled)
+        {
+            break;
+        }
         layer->onEvent(event);
     }
 }

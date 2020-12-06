@@ -26,6 +26,8 @@ public:
         return m_window;
     }
 
+    int getWidth() const;
+    int getHeight() const;
     math::ivec2 getSize() const;
 
     void close();

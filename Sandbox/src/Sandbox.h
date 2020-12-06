@@ -8,6 +8,7 @@ public:
     Sandbox();
 
     void onAttach() override;
+    void onDetach() override;
     void onUpdate() override;
     void onEvent(Event& event) override;
 

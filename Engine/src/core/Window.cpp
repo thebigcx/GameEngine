@@ -56,6 +56,16 @@ math::ivec2 Window::getSize() const
     return math::ivec2(width, height);
 }
 
+int Window::getWidth() const
+{
+    return this->getSize().x;
+}
+
+int Window::getHeight() const
+{
+    return this->getSize().y;
+}
+
 void Window::onUpdate()
 {
     m_context->swapBuffers();

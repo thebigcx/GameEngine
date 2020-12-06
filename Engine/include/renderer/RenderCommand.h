@@ -46,6 +46,11 @@ public:
         m_api->renderIndexed(array, count, offset);
     }
 
+    static uint32_t defaultClearBits()
+    {
+        return (uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth;
+    }
+
 private:
     static Unique<RendererAPI> m_api;
 };

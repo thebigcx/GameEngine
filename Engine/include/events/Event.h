@@ -9,14 +9,31 @@ enum class EventType
     KeyPressed, KeyReleased, MousePressed, MouseMoved, MouseReleased, WindowResized
 };
 
+enum class EventCategory
+{
+    Keyboard    = 1 << 0, 
+    Mouse       = 1 << 1, 
+    MouseButton = 1 << 2, 
+    Window      = 1 << 3
+};
+
 class Event
 {
 public:
     virtual ~Event() = default;
 
     virtual EventType getEventType() const = 0;
+    virtual uint32_t getCategoryFlags() const = 0;
+
+    bool inCategory(EventCategory category)
+    {
+        return getCategoryFlags() & (uint32_t)category;
+    }
+
+    bool handled = false;
 
 protected:
+    
 };
 
 class WindowResizedEvent : public Event
@@ -37,6 +54,7 @@ public:
 
     static EventType getStaticType() { return EventType::WindowResized; }
     inline EventType getEventType() const override { return getStaticType(); }
+    inline uint32_t getCategoryFlags() const override { return (uint32_t)EventCategory::Window; }
 
 protected:
     math::uvec2 m_size;
@@ -54,6 +72,7 @@ public:
     }
 
     virtual EventType getEventType() const override = 0;
+    inline uint32_t getCategoryFlags() const override { return (uint32_t)EventCategory::Keyboard; }
 
 protected:
     int32_t m_keyCode;
@@ -121,6 +140,7 @@ public:
     }
 
     virtual EventType getEventType() const override = 0;
+    inline uint32_t getCategoryFlags() const override { return (uint32_t)EventCategory::MouseButton; }
 
 protected:
     MouseButtonEvent(int32_t button, float x, float y, EventType type)
@@ -173,6 +193,7 @@ public:
 
     static EventType getStaticType() { return EventType::MouseMoved; }
     inline EventType getEventType() const override { return getStaticType(); }
+    inline uint32_t getCategoryFlags() const override { return (uint32_t)EventCategory::Mouse; }
 
 private:
     bool m_dragged;
