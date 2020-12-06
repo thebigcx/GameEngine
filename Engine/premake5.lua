@@ -26,7 +26,8 @@ project "GameEngine"
         "vendor/assimp/include",
         "vendor/maths",
         "vendor/stb_image/include",
-        "vendor/imgui"
+        "vendor/imgui",
+        "vendor"
     }
 
     optimize "On"

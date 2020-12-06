@@ -24,6 +24,10 @@ Application::Application()
     EventManager::setupCallbacks();
     Renderer::init();
     Time::init();
+
+    m_imguiLayer = new ImGuiLayer();
+    m_imguiLayer->onAttach();
+    m_layers.emplace_back(m_imguiLayer);
 }
 
 Application::~Application()
@@ -43,6 +47,13 @@ void Application::run()
         {
             layer->onUpdate();
         }
+
+        m_imguiLayer->begin();
+        for (auto layer : m_layers)
+        {
+            layer->onImGuiRender();
+        }
+        m_imguiLayer->end();
 
         m_window->onUpdate();
     }
@@ -65,6 +76,12 @@ void Application::onEvent(Event& event)
 
 void Application::quit()
 {
+    for (auto layer : m_layers)
+    {
+        layer->onDetach();
+    }
+    m_imguiLayer->onDetach();
+    
     m_window->close();
 }
 

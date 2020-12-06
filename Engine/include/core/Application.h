@@ -4,6 +4,7 @@
 
 #include <core/Window.h>
 #include <core/Layer.h>
+#include <desktop/ImGuiLayer.h>
 
 // Singleton
 class Application
@@ -30,6 +31,7 @@ private:
     Unique<Window> m_window;
 
     std::vector<Layer*> m_layers;
+    ImGuiLayer* m_imguiLayer;
 };
 
 Application* createApplication();
