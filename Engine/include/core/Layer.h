@@ -8,8 +8,9 @@ public:
     Layer() {};
     virtual ~Layer() = default;
 
-    virtual void update() {};
-    virtual void handleEvent(Event& event) {};
+    virtual void onAttach() {}
+    virtual void onUpdate() {}
+    virtual void onEvent(Event& event) {}
 
 protected:
     

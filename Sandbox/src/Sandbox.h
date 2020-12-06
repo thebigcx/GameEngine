@@ -7,11 +7,11 @@ class Sandbox : public Layer
 public:
     Sandbox();
 
-    void update() override;
-    void handleEvent(Event& event) override;
+    void onAttach() override;
+    void onUpdate() override;
+    void onEvent(Event& event) override;
 
 private:
-    Shared<SoundSource> m_soundSource;
     Shared<Material> m_cubeMaterial;
 
     Shared<Model> m_model;

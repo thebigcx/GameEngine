@@ -1,5 +1,5 @@
 #include <renderer/MeshFactory.h>
-#include <renderer/Vertex.h>
+#include <renderer/Renderer2D.h>
 #include <renderer/Model.h>
 
 Shared<Mesh> MeshFactory::textMesh()

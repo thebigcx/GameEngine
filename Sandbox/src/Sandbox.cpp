@@ -2,13 +2,15 @@
 
 Sandbox::Sandbox()
 {
+    
+}
+
+void Sandbox::onAttach()
+{
     Application::get().getWindow().setSize(math::uvec2(1280, 720));
 
     Assets::add<Texture2D>("texture", Texture2D::create("Sandbox/assets/terrain.png"));
     Assets::add<Texture2D>("grass", Texture2D::create("Sandbox/assets/grass.png"));
-
-    m_soundSource = SoundSource::loadFile("Sandbox/assets/monkeys.mp3");
-    SoundEngine::play(m_soundSource, true);
 
     m_font = TrueTypeFont::create("Sandbox/assets/minecraftia.ttf", 48);
 
@@ -74,7 +76,7 @@ Sandbox::Sandbox()
     //Application::get().setCursorEnabled(false);
 }
 
-void Sandbox::update()
+void Sandbox::onUpdate()
 {
     Timer timer;
 
@@ -118,7 +120,7 @@ void Sandbox::update()
     Renderer::endFrame();
 }
 
-void Sandbox::handleEvent(Event& event)
+void Sandbox::onEvent(Event& event)
 {
     m_perspectiveCamera.onEvent(event);
     m_orthoCamera.onEvent(event);

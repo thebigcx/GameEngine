@@ -41,7 +41,7 @@ void Application::run()
 
         for (auto layer : m_layers)
         {
-            layer->update();
+            layer->onUpdate();
         }
 
         m_window->onUpdate();
@@ -55,7 +55,7 @@ void Application::onEvent(Event& event)
 
     for (auto& layer : m_layers)
     {
-        layer->handleEvent(event);
+        layer->onEvent(event);
     }
 }
 
@@ -67,6 +67,7 @@ void Application::quit()
 void Application::addLayer(Layer* layer)
 {
     m_layers.push_back(layer);
+    layer->onAttach();
 }
 
 Application& Application::get()

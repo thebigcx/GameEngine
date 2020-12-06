@@ -8,9 +8,16 @@
 #include <renderer/Mesh.h>
 #include <renderer/IRenderable2D.h>
 #include <renderer/Framebuffer.h>
-#include <renderer/Vertex.h>
 #include <maths/rect.h>
 #include <util/OrthographicCamera.h>
+
+struct Vertex
+{
+    math::vec3 position;
+    math::vec2 texCoord;
+    math::vec4 color;
+    float texIndex;
+};
 
 struct Renderer2DData
 {
