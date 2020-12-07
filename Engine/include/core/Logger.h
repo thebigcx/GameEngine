@@ -14,10 +14,20 @@ public:
         std::cout << "[WARNING] " << getFormat(str, args...) << "\n";
     }
 
+    void warn(const std::string& str)
+    {
+        std::cout << "[WARNING] " << str << "\n";
+    }
+
     template<typename ...Args>
     void error(const std::string& str, Args... args)
     {
         std::cout << "[ERROR] " << getFormat(str, args...) << "\n";
+    }
+
+    void error(const std::string& str)
+    {
+        std::cout << "[ERROR] " << str << "\n";
     }
 
     template<typename ...Args>
@@ -26,10 +36,20 @@ public:
         std::cout << "[INFO] " << getFormat(str, args...) << "\n";
     }
 
+    void info(const std::string& str)
+    {
+        std::cout << "[INFO] " << str << "\n";
+    }
+
     template<typename ...Args>
     void critical(const std::string& str, Args... args)
     {
         std::cout << "[CRITICAL] " << getFormat(str, args...) << "\n";
+    }
+
+    void critical(const std::string& str)
+    {
+        std::cout << "[CRITICAL] " << str << "\n";
     }
 
     template<typename ...Args>

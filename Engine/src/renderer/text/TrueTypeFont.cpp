@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 
 #include <renderer/text/TrueTypeFont.h>
-#include <core/Console.h>
+#include <core/Logger.h>
 
 TrueTypeFont::TrueTypeFont()
 {
@@ -26,13 +26,13 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
 
     if (FT_Init_FreeType(&library))
     {
-        Console::err("Could not initialise FreeType.");
+        Logger::getCoreLogger()->error("Could not initialize FreeType.");
         return;
     }
 
     if (FT_New_Face(library, path.c_str(), 0, &face))
     {
-        Console::err("Could not create font face (check file path).");
+        Logger::getCoreLogger()->error("Could not load font: %s", path);
         return;
     }
 
@@ -46,7 +46,7 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
     {
         if (FT_Load_Char(face, i, FT_LOAD_RENDER))
         {
-            Console::err("Could not load character: " + static_cast<char>(i));
+            Logger::getCoreLogger()->error("Could not load character: %s" + static_cast<char>(i));
         }
 
         w += g->bitmap.width;

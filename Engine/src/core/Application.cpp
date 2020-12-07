@@ -1,6 +1,5 @@
 #include <core/Application.h>
 
-#include <core/Console.h>
 #include <sound/SoundEngine.h>
 #include <maths/math.h>
 #include <core/Input.h>
@@ -97,7 +96,7 @@ Application& Application::get()
 {
     if (m_instance == nullptr)
     {
-        Console::err("Application instance is undefined!");
+        Logger::getCoreLogger()->error("Application instance is undefined!");
     }
 
     return *m_instance;

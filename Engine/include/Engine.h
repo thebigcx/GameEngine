@@ -1,7 +1,6 @@
 #pragma once
 
 #include <core/Window.h>
-#include <core/Console.h>
 #include <core/Application.h>
 #include <core/Cursor.h>
 #include <core/Input.h>

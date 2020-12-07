@@ -5,7 +5,7 @@
 #include <typeindex>
 
 #include <renderer/Texture2D.h>
-#include <core/Console.h>
+#include <core/Logger.h>
 
 class IAssetList
 {
@@ -33,7 +33,7 @@ public:
     {
         if (!exists(key))
         {
-            Console::errf("Asset does not exist: %s", key);
+            Logger::getCoreLogger()->error("Asset does not exist: %s", key);
         }
 
         return m_assets.at(key);
@@ -84,7 +84,7 @@ public:
     {
         if (!listExists<T>())
         {
-            Console::err("Could not retrieve asset (check key).");
+            Logger::getCoreLogger()->error("Asset List does not exist.");
         }
 
         return getList<T>()->get(key);
