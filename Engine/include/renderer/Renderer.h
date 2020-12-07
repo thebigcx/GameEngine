@@ -23,7 +23,7 @@ public:
     static void startFrame();
     static void endFrame();
 
-    static void windowResize(WindowResizedEvent& event);
+    static void windowResize(WindowResizeEvent& event);
 
 private:
     static RendererData m_data;

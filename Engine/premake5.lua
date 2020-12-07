@@ -30,4 +30,4 @@ project "GameEngine"
         "vendor"
     }
 
-    optimize "On"
+    --optimize "On"

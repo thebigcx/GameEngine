@@ -171,7 +171,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
         flushBatch();
     }
 
-    Transform t = { position, rotation, size, origin };
+    Transform t = { math::vec3(position, 0), math::vec3(0, 0, rotation), math::vec3(size, 1), math::vec3(origin, 0) };
     math::mat4 transform = t.matrix();
     
     // Populate the vertices array with the sprite's vertices

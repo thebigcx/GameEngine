@@ -20,7 +20,8 @@ project "Sandbox"
         "%{wks.location}/Engine/vendor/glfw/include",
 		"%{wks.location}/Engine/vendor/assimp/include",
         "%{wks.location}/Engine/vendor/maths",
-        "%{wks.location}/Engine/vendor/stb_image/include"
+		"%{wks.location}/Engine/vendor/stb_image/include",
+		"%{wks.location}/Engine/vendor",
 	}
 	
 	libdirs {
@@ -38,7 +39,7 @@ project "Sandbox"
 		"pthread"
 	}
 	
-	optimize "On"
+	--optimize "On"
 	
 	configuration "Debug"
 	configuration "Release"

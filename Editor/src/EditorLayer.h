@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/Layer.h>
+#include <scene/Scene.h>
 
 class EditorLayer : public Layer
 {
@@ -12,4 +13,7 @@ public:
     void onUpdate() override;
     void onImGuiRender() override;
     void onEvent(Event& event) override;
+
+private:
+    Scene m_scene;
 };

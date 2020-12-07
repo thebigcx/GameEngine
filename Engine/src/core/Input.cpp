@@ -1,6 +1,5 @@
 #include <core/Input.h>
-
-#include <GLFW/glfw3.h>
+#include <core/Application.h>
 
 math::ivec2 Input::getMousePosition()
 {
@@ -14,10 +13,10 @@ bool Input::isMousePressed(MouseButton button)
 {
     auto window = Application::get().getWindow().getNative();
 
-    return glfwGetMouseButton(window, button) == GLFW_PRESS;
+    return glfwGetMouseButton(window, button);
 }
 
 bool Input::isKeyPressed(Key key)
 {
-    return glfwGetKey(Application::get().getWindow().getNative(), key) == GLFW_PRESS;
+    return glfwGetKey(Application::get().getWindow().getNative(), key);
 }

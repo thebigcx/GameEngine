@@ -44,7 +44,7 @@ void Renderer::endFrame()
     RenderCommand::renderIndexed(m_data.fboMesh->vertexArray);
 }
 
-void Renderer::windowResize(WindowResizedEvent& event)
+void Renderer::windowResize(WindowResizeEvent& event)
 {
     m_data.target->resize(event.getWidth(), event.getHeight());
 }

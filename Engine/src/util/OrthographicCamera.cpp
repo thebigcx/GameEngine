@@ -23,10 +23,10 @@ math::mat4 OrthographicCamera::getViewMatrix() const
 void OrthographicCamera::onEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch<WindowResizedEvent>(BIND_EVENT_FN(onWindowResize));
+    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(onWindowResize));
 }
 
-void OrthographicCamera::onWindowResize(WindowResizedEvent& event)
+void OrthographicCamera::onWindowResize(WindowResizeEvent& event)
 {
     m_projectionMatrix = math::ortho(0.f, (float)event.getWidth(), 0.f, (float)event.getHeight(), -1.f, 1.f);
 }

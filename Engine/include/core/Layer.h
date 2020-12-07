@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/Event.h>
+class Event;
 
 class Layer
 {

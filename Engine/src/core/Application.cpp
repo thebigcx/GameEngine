@@ -37,7 +37,7 @@ Application::~Application()
 
 void Application::run()
 {
-    while (m_window->isOpen())
+    while (m_running)
     {
         Time::update();
 
@@ -48,12 +48,12 @@ void Application::run()
             layer->onUpdate();
         }
 
-        m_imguiLayer->begin();
+        //m_imguiLayer->begin();
         for (auto layer : m_layers)
         {
-            layer->onImGuiRender();
+            //layer->onImGuiRender();
         }
-        m_imguiLayer->end();
+        //m_imguiLayer->end();
 
         m_window->onUpdate();
     }
@@ -62,7 +62,8 @@ void Application::run()
 void Application::onEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch<WindowResizedEvent>(BIND_EVENT_FN(Application::onWindowResize));
+    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
+    dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
 
     for (auto& layer : m_layers)
     {
@@ -80,9 +81,9 @@ void Application::quit()
     {
         layer->onDetach();
     }
-    m_imguiLayer->onDetach();
-    
+
     m_window->close();
+    m_running = false;
 }
 
 void Application::addLayer(Layer* layer)
@@ -101,11 +102,15 @@ Application& Application::get()
     return *m_instance;
 }
 
-void Application::onWindowResize(WindowResizedEvent& event)
+bool Application::onWindowResize(WindowResizeEvent& event)
 {
-    glViewport(0, 0, event.getWidth(), event.getHeight());
-
     Renderer::windowResize(event);
+}
+
+bool Application::onWindowClose(WindowCloseEvent& event)
+{
+    quit();
+    return true;
 }
 
 Window& Application::getWindow()

@@ -16,7 +16,7 @@ public:
     inline const math::vec2& getPosition() const { return m_position; }
 
     void onEvent(Event& event);
-    void onWindowResize(WindowResizedEvent& event);
+    void onWindowResize(WindowResizeEvent& event);
 
     math::mat4 getViewMatrix() const;
     inline const math::mat4& getProjectionMatrix() const

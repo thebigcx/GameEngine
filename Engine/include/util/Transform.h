@@ -9,22 +9,26 @@
 
 struct Transform
 {
-    math::vec2 position;
-    float rotation = 0.f;
-    math::vec2 scale = math::vec2(1.f, 1.f);
-    math::vec2 origin;
+    math::vec3 translation;
+    math::vec3 rotation = 0.f;
+    math::vec3 scale = math::vec3(1.f);
+    math::vec3 origin;
 
     math::mat4 matrix() const
     {
         math::mat4 mat(1.f);
 
-        mat = math::translate(mat, math::vec3(position, 0));
+        mat = math::translate(mat, translation);
         
-        mat = math::translate(mat, math::vec3(origin.x, origin.y, 0.f));
-        mat = math::rotate(mat, (float)math::radians(rotation), math::vec3(0, 0, 1));
-        mat = math::translate(mat, math::vec3(-origin.x, -origin.y, 0.f));
+        mat = math::translate(mat, origin);
 
-        mat = math::scale(mat, math::vec3(scale, 1));
+        mat = math::rotate(mat, (float)math::radians(rotation.x), math::vec3(1, 0, 0));
+        mat = math::rotate(mat, (float)math::radians(rotation.y), math::vec3(0, 1, 0));
+        mat = math::rotate(mat, (float)math::radians(rotation.z), math::vec3(0, 0, 1));
+
+        mat = math::translate(mat, math::vec3(-origin.x, -origin.y, -origin.z));
+
+        mat = math::scale(mat, scale);
 
         return mat;
     }

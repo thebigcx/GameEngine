@@ -49,14 +49,14 @@ void ImGuiLayer::end()
 {
     ImGui::EndFrame();
 
-    ImGui::Render();
-    RenderCommand::clear(RenderCommand::defaultClearBits());
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
     auto& io = ImGui::GetIO();
 
     Application& app = Application::get();
     io.DisplaySize = ImVec2((float)app.getWindow().getWidth(), (float)app.getWindow().getHeight());
+
+    ImGui::Render();
+    RenderCommand::clear(RenderCommand::defaultClearBits());
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
@@ -80,7 +80,7 @@ void ImGuiLayer::onEvent(Event& event)
     if (m_blockEvents)
     {
         auto& io = ImGui::GetIO();
-        event.handled |= event.getCategoryFlags() & io.WantCaptureMouse;
-        event.handled |= event.getCategoryFlags() & io.WantCaptureKeyboard;
+        event.handled |= event.categories() & io.WantCaptureMouse;
+        event.handled |= event.categories() & io.WantCaptureKeyboard;
     }
 }

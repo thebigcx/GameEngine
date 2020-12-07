@@ -22,7 +22,6 @@
 #include <renderer/shader/Shader.h>
 #include <renderer/Texture2D.h>
 #include <renderer/VertexArray.h>
-#include <renderer/Transformable.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/Renderer.h>
 #include <renderer/RenderCommand.h>

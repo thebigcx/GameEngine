@@ -19,7 +19,7 @@ public:
     math::mat4 getViewMatrix() const;
 
     void onEvent(Event& event);
-    void onWindowResize(WindowResizedEvent& event);
+    void onWindowResize(WindowResizeEvent& event);
 
     inline constexpr const math::mat4& getProjectionMatrix() const
     {

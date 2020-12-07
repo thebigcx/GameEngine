@@ -1,5 +1,7 @@
 #include "Sandbox.h"
 
+#include <imgui/imgui.h>
+
 Sandbox::Sandbox()
 {
     
@@ -74,6 +76,12 @@ void Sandbox::onAttach()
     //m_model->meshes[0]->material = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
 
     //Application::get().setCursorEnabled(false);
+}
+
+void Sandbox::onImGuiRender()
+{
+    ImGui::Begin("Stats");
+    ImGui::End();
 }
 
 void Sandbox::onDetach()

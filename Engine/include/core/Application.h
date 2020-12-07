@@ -4,6 +4,7 @@
 
 #include <core/Window.h>
 #include <core/Layer.h>
+#include <events/Event.h>
 #include <desktop/ImGuiLayer.h>
 
 // Singleton
@@ -15,7 +16,8 @@ public:
 
     void run();
     void addLayer(Layer* layer);
-    void onWindowResize(WindowResizedEvent& event);
+    bool onWindowResize(WindowResizeEvent& event);
+    bool onWindowClose(WindowCloseEvent& event);
     void quit();
     void setCursorEnabled(bool enabled);
 
@@ -32,6 +34,8 @@ private:
 
     std::vector<Layer*> m_layers;
     ImGuiLayer* m_imguiLayer;
+
+    bool m_running = true;
 };
 
 Application* createApplication();

@@ -26,10 +26,10 @@ math::mat4 PerspectiveCamera::getViewMatrix() const
 void PerspectiveCamera::onEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch<WindowResizedEvent>(BIND_EVENT_FN(onWindowResize));
+    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(onWindowResize));
 }
 
-void PerspectiveCamera::onWindowResize(WindowResizedEvent& event)
+void PerspectiveCamera::onWindowResize(WindowResizeEvent& event)
 {
     m_projectionMatrix = math::perspective((float)math::radians(m_fieldOfView), (float)event.getWidth() / (float)event.getHeight(), 0.1f, m_renderDistance);
 }

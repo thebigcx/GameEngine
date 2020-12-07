@@ -1,19 +1,16 @@
 #pragma once
 
 #include <core/KeyCodes.h>
-#include <core/Application.h>
 #include <maths/vector/vec2.h>
-
-#include <GLFW/glfw3.h>
 
 class Input
 {
 public:
     enum MouseButton
     {
-        Left = GLFW_MOUSE_BUTTON_LEFT,
-        Right = GLFW_MOUSE_BUTTON_RIGHT,
-        Middle = GLFW_MOUSE_BUTTON_MIDDLE
+        Left = 0,
+        Right = 1,
+        Middle = 2
     };
 
     static bool isKeyPressed(Key key);
