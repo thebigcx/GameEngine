@@ -116,6 +116,12 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
     }
 }
 
+static void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    MouseScrollEvent event(xoffset, yoffset);
+    Application::get().onEvent(event);
+}
+
 void EventManager::setupCallbacks()
 {
     auto window = Application::get().getWindow().getNative();
@@ -131,4 +137,5 @@ void EventManager::setupCallbacks()
     glfwSetCharCallback(window, character_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetScrollCallback(window, mouse_scroll_callback);
 }

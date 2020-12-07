@@ -8,7 +8,7 @@
 enum class EventType
 {
     KeyPressed, KeyReleased, KeyTyped, 
-    MousePressed, MouseMoved, MouseReleased, 
+    MousePressed, MouseReleased, MouseMoved, MouseScroll,
     WindowResize, WindowClose, 
     WindowMaximize, WindowUnmaximize, 
     WindowMinimize, WindowUnminimize,
@@ -325,4 +325,32 @@ public:
 private:
     bool m_dragged;
     math::vec2 m_position;
+};
+
+class MouseScrollEvent : public Event
+{
+public:
+    MouseScrollEvent(float xoffset, float yoffset)
+        : m_offset(xoffset, yoffset) {}
+
+    inline int getXOffset() const
+    {
+        return m_offset.x;
+    }
+
+    inline int getYOffset() const
+    {
+        return m_offset.y;
+    }
+
+    inline const math::ivec2& getOffset() const
+    {
+        return m_offset;
+    }
+
+    EVENT_CLASS_TYPE(MouseScroll);
+    EVENT_CLASS_CATEGORY(EventCategory::Mouse);
+
+private:
+    math::ivec2 m_offset;
 };
