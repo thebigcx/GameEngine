@@ -9,6 +9,7 @@ enum class EventType
 {
     KeyPressed, KeyReleased, KeyTyped, 
     MousePressed, MouseReleased, MouseMoved, MouseScroll,
+    MouseEnter, MouseLeave,
     WindowResize, WindowClose, 
     WindowMaximize, WindowUnmaximize, 
     WindowMinimize, WindowUnminimize,
@@ -353,4 +354,22 @@ public:
 
 private:
     math::ivec2 m_offset;
+};
+
+class MouseEnterEvent : public Event
+{
+public:
+    MouseEnterEvent() = default;
+
+    EVENT_CLASS_TYPE(MouseEnter);
+    EVENT_CLASS_CATEGORY(EventCategory::Mouse);
+};
+
+class MouseLeaveEvent : public Event
+{
+public:
+    MouseLeaveEvent() = default;
+
+    EVENT_CLASS_TYPE(MouseLeave);
+    EVENT_CLASS_CATEGORY(EventCategory::Mouse);
 };

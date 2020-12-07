@@ -1,3 +1,5 @@
+#pragma once
+
 #include <events/EventDispatcher.h>
 
 #include <core/Application.h>
@@ -7,83 +9,91 @@
 
 static void windowCloseCallback(GLFWwindow* window)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     WindowCloseEvent event;
-    Application::get().onEvent(event);
+    data.eventCallback(event);
 }
 
 static void framebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     WindowResizeEvent event(width, height);
     Application::get().onEvent(event);
 }
 
 static void windowMaximizeCallback(GLFWwindow* window, int maximized)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     if (maximized)
     {
         WindowMaximizeEvent event;
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
     else
     {
         WindowUnmaximizeEvent event;
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
     
 }
 
 static void windowPosCallback(GLFWwindow* window, int xpos, int ypos)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     WindowPositionEvent event(xpos, ypos);
-    Application::get().onEvent(event);
+    data.eventCallback(event);
 }
 
 static void windowRefreshCallback(GLFWwindow* window)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     WindowRefreshEvent event;
-    Application::get().onEvent(event);
+    data.eventCallback(event);
 }
 
 static void windowFocusCallback(GLFWwindow* window, int focused)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     if (focused)
     {
         WindowFocuseEvent event;
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
     else
     {
         WindowUnfocuseEvent event;
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
 }
 
 static void windowIconifyCallback(GLFWwindow* window, int iconified)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     if (iconified)
     {
         WindowMinimizeEvent event;
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
     else
     {
         WindowUnminimizeEvent event;
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
     
 }
 
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     if (action == GLFW_PRESS)
     {
         KeyPressedEvent event(key, 0, mods);
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
     else if (action == GLFW_RELEASE)
     {
         KeyReleasedEvent event(key);
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
 }
 
@@ -94,63 +104,48 @@ static void characterCallback(GLFWwindow* window, unsigned int codepoint)
 
 static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     MouseMovedEvent event(xpos, ypos, false);
-    Application::get().onEvent(event);
+    data.eventCallback(event);
 }
 
 static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     if (action == GLFW_PRESS)
     {
         double x, y;
         glfwGetCursorPos(window, &x, &y);
         MousePressedEvent event(button, x, y);
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
     else if (action == GLFW_RELEASE)
     {
         double x, y;
         glfwGetCursorPos(window, &x, &y);
         MouseReleasedEvent event(button, x, y);
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
 }
 
 static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     MouseScrollEvent event(xoffset, yoffset);
-    Application::get().onEvent(event);
+    data.eventCallback(event);
 }
 
 static void mouseEnterCallback(GLFWwindow* window, int entered)
 {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     if (entered)
     {
         MouseEnterEvent event;
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
     else
     {
         MouseLeaveEvent event;
-        Application::get().onEvent(event);
+        data.eventCallback(event);
     }
-}
-
-void EventManager::setupCallbacks()
-{
-    auto window = Application::get().getWindow().getNative();
-
-    glfwSetWindowCloseCallback(window, windowCloseCallback);
-    glfwSetWindowMaximizeCallback(window, windowMaximizeCallback);
-    glfwSetWindowPosCallback(window, windowPosCallback);
-    glfwSetWindowRefreshCallback(window, windowRefreshCallback);
-    glfwSetWindowFocusCallback(window, windowFocusCallback);
-    glfwSetWindowIconifyCallback(window, windowIconifyCallback);
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-    glfwSetKeyCallback(window, keyCallback);
-    glfwSetCharCallback(window, characterCallback);
-    glfwSetCursorPosCallback(window, cursorPositionCallback);
-    glfwSetMouseButtonCallback(window, mouseButtonCallback);
-    glfwSetScrollCallback(window, mouseScrollCallback);
-    glfwSetCursorEnterCallback(window, mouseEnterCallback);
 }

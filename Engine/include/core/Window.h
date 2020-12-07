@@ -4,10 +4,17 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <functional>
 
 #include <util/Image.h>
 #include <maths/vector/vec2.h>
 #include <renderer/RenderingContext.h>
+#include <events/Event.h>
+
+struct WindowData
+{
+    std::function<void(Event&)> eventCallback;
+};
 
 class Window
 {
@@ -16,6 +23,8 @@ public:
     ~Window();
 
     bool isOpen();
+
+    void setEventCallback(const std::function<void(Event&)>& function);
 
     void pollEvents();
 
@@ -53,4 +62,6 @@ private:
     Unique<RenderingContext> m_context;
 
     void init(int width, int height, const std::string& title);
+
+    WindowData m_data;
 };

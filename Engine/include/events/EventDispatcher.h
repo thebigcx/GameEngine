@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include <events/Event.h>
 
 class EventManager

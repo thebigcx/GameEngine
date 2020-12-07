@@ -1,11 +1,7 @@
 #include <core/Window.h>
+#include <core/WindowEventCallbacks.h>
 
 #include <iostream>
-
-static void GLFWErrorCallback(int error, const char* description)
-{
-    std::cout << "GLFW error (" << error << "): " << description << "\n";
-}
 
 Window::Window(int width, int height, const std::string& title)
 {
@@ -20,8 +16,6 @@ void Window::init(int width, int height, const std::string& title)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfwSetErrorCallback(GLFWErrorCallback);
-
     m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
     if (m_window == nullptr)
@@ -32,11 +26,25 @@ void Window::init(int width, int height, const std::string& title)
 
     glfwSetWindowSizeLimits(m_window, 200, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
-    glViewport(0, 0, 1920, 1080);
-
     m_context = RenderingContext::create(m_window);
     m_context->init();
     m_context->vsync(true);
+
+    glfwSetWindowUserPointer(m_window, &m_data);
+
+    glfwSetWindowCloseCallback(m_window, windowCloseCallback);
+    glfwSetWindowMaximizeCallback(m_window, windowMaximizeCallback);
+    glfwSetWindowPosCallback(m_window, windowPosCallback);
+    glfwSetWindowRefreshCallback(m_window, windowRefreshCallback);
+    glfwSetWindowFocusCallback(m_window, windowFocusCallback);
+    glfwSetWindowIconifyCallback(m_window, windowIconifyCallback);
+    glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
+    glfwSetKeyCallback(m_window, keyCallback);
+    glfwSetCharCallback(m_window, characterCallback);
+    glfwSetCursorPosCallback(m_window, cursorPositionCallback);
+    glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
+    glfwSetScrollCallback(m_window, mouseScrollCallback);
+    glfwSetCursorEnterCallback(m_window, mouseEnterCallback);
 }
 
 Window::~Window()
@@ -47,6 +55,11 @@ Window::~Window()
 Unique<Window> Window::create(int width, int height, const std::string& title)
 {
     return createUnique<Window>(width, height, title);
+}
+
+void Window::setEventCallback(const std::function<void(Event&)>& callback)
+{
+    m_data.eventCallback = callback;
 }
 
 math::ivec2 Window::getSize() const

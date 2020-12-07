@@ -18,6 +18,7 @@ Application::Application()
     m_instance = this;
 
     m_window = Window::create(1280, 720, "Application");
+    m_window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
     math::random::initSeed();
     SoundEngine::init();
