@@ -14,7 +14,8 @@ enum class EventType
     WindowMaximize, WindowUnmaximize, 
     WindowMinimize, WindowUnminimize,
     WindowPosition, WindowRefresh,
-    WindowFocus, WindowUnfocus
+    WindowFocus, WindowUnfocus,
+    GamepadConnect, GamepadDisconnect
 };
 
 enum class EventCategory
@@ -22,7 +23,8 @@ enum class EventCategory
     Keyboard    = 1 << 0, 
     Mouse       = 1 << 1, 
     MouseButton = 1 << 2, 
-    Window      = 1 << 3
+    Window      = 1 << 3,
+    Gamepad     = 1 << 4
 };
 
 #define EVENT_CLASS_TYPE(evtype) static EventType staticType() { return EventType::evtype; } \
@@ -216,6 +218,24 @@ public:
 
 protected:
     int32_t m_keyCode;
+};
+
+class GamepadConnectEvent : public Event
+{
+public:
+    GamepadConnectEvent() = default;
+
+    EVENT_CLASS_TYPE(GamepadConnect);
+    EVENT_CLASS_CATEGORY(EventCategory::Gamepad);
+};
+
+class GamepadDisconnectEvent : public Event
+{
+public:
+    GamepadDisconnectEvent() = default;
+
+    EVENT_CLASS_TYPE(GamepadDisconnect);
+    EVENT_CLASS_CATEGORY(EventCategory::Gamepad);
 };
 
 class KeyPressedEvent : public KeyEvent

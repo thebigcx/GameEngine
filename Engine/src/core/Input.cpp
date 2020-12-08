@@ -1,5 +1,6 @@
 #include <core/Input.h>
 #include <core/Application.h>
+#include <util/io/Files.h>
 
 math::ivec2 Input::getMousePosition()
 {
@@ -32,4 +33,10 @@ float Input::getGamepadAxis(Gamepad gamepad, GamepadAxis axis)
     int count;
     const float* axes = glfwGetJoystickAxes(static_cast<uint32_t>(gamepad), &count);
     return axes[static_cast<uint32_t>(axis)];
+}
+
+void Input::setGamepadMappingsFromFile(const std::string& path)
+{
+    const char* mappings = Files::readFile(path).c_str();
+    glfwUpdateGamepadMappings(mappings);
 }

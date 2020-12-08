@@ -149,3 +149,19 @@ static void mouseEnterCallback(GLFWwindow* window, int entered)
         data.eventCallback(event);
     }
 }
+
+static void joystickCallback(int jid, int event)
+{
+    WindowData& data = *(WindowData*)glfwGetJoystickUserPointer(jid);
+    if (event == GLFW_CONNECTED)
+    {
+        GamepadConnectEvent event;
+        data.eventCallback(event);
+    }
+    else if (event == GLFW_DISCONNECTED)
+    {
+        GamepadDisconnectEvent event;
+        data.eventCallback(event);
+    }
+    
+}

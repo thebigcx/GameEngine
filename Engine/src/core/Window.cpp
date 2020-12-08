@@ -49,6 +49,10 @@ void Window::init(int width, int height, const std::string& title)
     glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
     glfwSetScrollCallback(m_window, mouseScrollCallback);
     glfwSetCursorEnterCallback(m_window, mouseEnterCallback);
+
+    glfwSetJoystickUserPointer(GLFW_JOYSTICK_1, &m_data); // TODO: support for multiple gamepads
+
+    glfwSetJoystickCallback(joystickCallback);
 }
 
 Window::~Window()

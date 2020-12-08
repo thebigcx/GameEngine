@@ -15,4 +15,5 @@ public:
 
     static bool isGamepadButtonPressed(Gamepad gamepad, GamepadButton button);
     static float getGamepadAxis(Gamepad gamepad, GamepadAxis axis);
+    static void setGamepadMappingsFromFile(const std::string& path);
 };
