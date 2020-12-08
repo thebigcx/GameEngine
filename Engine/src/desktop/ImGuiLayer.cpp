@@ -31,9 +31,9 @@ void ImGuiLayer::onAttach()
     style.WindowRounding = 0.0f;
 	style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 
-    auto window = Application::get().getWindow().getNative();
+    auto& window = Application::get().getWindow();
 
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplGlfw_InitForOpenGL(window.getNative(), true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 }
 
@@ -51,8 +51,6 @@ void ImGuiLayer::begin()
 
 void ImGuiLayer::end()
 {
-    ImGui::EndFrame();
-
     auto& io = ImGui::GetIO();
 
     Application& app = Application::get();

@@ -3,5 +3,5 @@ workspace "Game_Engine"
 	configurations {"Debug", "Release"}
 	
 include "Engine"
-include "Sandbox"
---include "Editor"
+--include "Sandbox"
+include "Editor"

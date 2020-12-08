@@ -14,6 +14,9 @@ public:
     Application();
     ~Application();
 
+    Application(const Application& app) = delete;
+    Application(Application&& app) = delete;
+
     void run();
     void addLayer(Layer* layer);
     bool onWindowResize(WindowResizeEvent& event);

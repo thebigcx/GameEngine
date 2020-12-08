@@ -19,7 +19,7 @@ void EditorLayer::onAttach()
 
 void EditorLayer::onUpdate()
 {
-    
+    RenderCommand::clear(RenderCommand::defaultClearBits());
 }
 
 void EditorLayer::onImGuiRender()

@@ -1,6 +1,7 @@
 #include <scene/ecs/Entity.h>
 
-Entity::Entity(Scene* scene)
+Entity::Entity(EntityRegistry* registery)
+    : m_registry(registery)
 {
 
 }
