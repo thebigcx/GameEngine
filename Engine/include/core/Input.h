@@ -1,21 +1,18 @@
 #pragma once
 
 #include <core/KeyCodes.h>
+#include <core/MouseCodes.h>
+#include <core/GamepadCodes.h>
 #include <maths/vector/vec2.h>
 
 class Input
 {
 public:
-    enum MouseButton
-    {
-        Left = 0,
-        Right = 1,
-        Middle = 2
-    };
-
     static bool isKeyPressed(Key key);
+    static bool isMousePressed(MouseButton button);
 
     static math::ivec2 getMousePosition();
-    
-    static bool isMousePressed(MouseButton button);
+
+    static bool isGamepadButtonPressed(Gamepad gamepad, GamepadButton button);
+    static float getGamepadAxis(Gamepad gamepad, GamepadAxis axis);
 };
