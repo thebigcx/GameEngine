@@ -52,10 +52,16 @@ public:
         std::cout << "[CRITICAL] " << str << "\n";
     }
 
-    template<typename ...Args>
+    template<typename... Args>
     void trace()
     {
         
+    }
+
+    template<typename... Args>
+    std::string format(const std::string& str, Args... args)
+    {
+        return getFormat(str, args...);
     }
 
     static Shared<Logger> getCoreLogger()

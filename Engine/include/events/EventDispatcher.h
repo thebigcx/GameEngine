@@ -1,12 +1,7 @@
 #pragma once
 
 #include <events/Event.h>
-
-class EventManager
-{
-public:
-    static void setupCallbacks();
-};
+#include <core/Logger.h>
 
 class EventDispatcher
 {
@@ -17,6 +12,8 @@ public:
     template<typename T, typename F>
     void dispatch(const F& func)
     {
+        static_assert(IsEvent::detect<T>(), "Not a derived class of Event.");
+        
         if (T::staticType() == m_event.type())
         {
             func(static_cast<T&>(m_event));

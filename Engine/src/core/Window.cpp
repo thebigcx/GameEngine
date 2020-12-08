@@ -10,7 +10,11 @@ Window::Window(int width, int height, const std::string& title)
 
 void Window::init(int width, int height, const std::string& title)
 {
-    glfwInit();
+    bool success = glfwInit();
+    if (!success)
+    {
+        Logger::getCoreLogger()->error("[GLFW] Could not initialize GLFW.");
+    }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -20,7 +24,7 @@ void Window::init(int width, int height, const std::string& title)
 
     if (m_window == nullptr)
     {
-        std::cout << "Failed to create GLFW window.\n";
+        Logger::getCoreLogger()->error("[GLFW] Failed to create window.");
         glfwTerminate();
     }
 

@@ -21,7 +21,6 @@ Application::Application()
 
     math::random::initSeed();
     SoundEngine::init();
-    EventManager::setupCallbacks();
     Renderer::init();
     Time::init();
 
@@ -105,6 +104,7 @@ Application& Application::get()
 bool Application::onWindowResize(WindowResizeEvent& event)
 {
     Renderer::windowResize(event);
+    return false;
 }
 
 bool Application::onWindowClose(WindowCloseEvent& event)

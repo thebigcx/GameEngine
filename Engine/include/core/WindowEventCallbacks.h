@@ -56,12 +56,12 @@ static void windowFocusCallback(GLFWwindow* window, int focused)
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     if (focused)
     {
-        WindowFocuseEvent event;
+        WindowFocusEvent event;
         data.eventCallback(event);
     }
     else
     {
-        WindowUnfocuseEvent event;
+        WindowUnfocusEvent event;
         data.eventCallback(event);
     }
 }

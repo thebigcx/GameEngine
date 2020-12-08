@@ -13,7 +13,4 @@ public:
     virtual void onUpdate() {}
     virtual void onImGuiRender() {}
     virtual void onEvent(Event& event) {}
-
-protected:
-    
 };

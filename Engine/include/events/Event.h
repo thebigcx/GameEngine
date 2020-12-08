@@ -14,7 +14,7 @@ enum class EventType
     WindowMaximize, WindowUnmaximize, 
     WindowMinimize, WindowUnminimize,
     WindowPosition, WindowRefresh,
-    WindowFocuse, WindowUnfocuse
+    WindowFocus, WindowUnfocus
 };
 
 enum class EventCategory
@@ -51,15 +51,30 @@ public:
     virtual EventType type() const = 0;
     virtual uint32_t categories() const = 0;
 
-    bool inCategory(EventCategory category)
+    bool inCategory(EventCategory category) const
     {
-        return categories() & (uint32_t)category;
+        return static_cast<bool>(categories() & static_cast<uint32_t>(category));
     }
 
     bool handled = false;
 
 protected:
     
+};
+
+struct IsEvent
+{
+    static constexpr bool detect(Event* event)
+    {
+        return std::is_base_of<Event, decltype(event)>::value;
+    }
+
+    template<typename T>
+    static constexpr bool detect()
+    {
+        return std::is_base_of<Event, T>::value;
+    }
+
 };
 
 class WindowResizeEvent : public Event
@@ -167,21 +182,21 @@ public:
     EVENT_CLASS_CATEGORY(EventCategory::Window)
 };
 
-class WindowFocuseEvent : public Event
+class WindowFocusEvent : public Event
 {
 public:
-    WindowFocuseEvent() = default;
+    WindowFocusEvent() = default;
 
-    EVENT_CLASS_TYPE(WindowFocuse);
+    EVENT_CLASS_TYPE(WindowFocus);
     EVENT_CLASS_CATEGORY(EventCategory::Window)
 };
 
-class WindowUnfocuseEvent : public Event
+class WindowUnfocusEvent : public Event
 {
 public:
-    WindowUnfocuseEvent() = default;
+    WindowUnfocusEvent() = default;
 
-    EVENT_CLASS_TYPE(WindowUnfocuse);
+    EVENT_CLASS_TYPE(WindowUnfocus);
     EVENT_CLASS_CATEGORY(EventCategory::Window)
 };
 
