@@ -27,6 +27,10 @@ void ImGuiLayer::onAttach()
 
     ImGui::StyleColorsDark();
 
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.WindowRounding = 0.0f;
+	style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
     auto window = Application::get().getWindow().getNative();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -55,7 +59,6 @@ void ImGuiLayer::end()
     io.DisplaySize = ImVec2((float)app.getWindow().getWidth(), (float)app.getWindow().getHeight());
 
     ImGui::Render();
-    RenderCommand::clear(RenderCommand::defaultClearBits());
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

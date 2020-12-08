@@ -31,6 +31,11 @@ Application::Application()
 
 Application::~Application()
 {
+    for (auto& layer : m_layers)
+    {
+        layer->onDetach();
+    }
+    m_window->close();
     Renderer::shutdown();
 }
 
@@ -47,12 +52,12 @@ void Application::run()
             layer->onUpdate();
         }
 
-        //m_imguiLayer->begin();
+        m_imguiLayer->begin();
         for (auto layer : m_layers)
         {
-            //layer->onImGuiRender();
+            layer->onImGuiRender();
         }
-        //m_imguiLayer->end();
+        m_imguiLayer->end();
 
         m_window->onUpdate();
     }
@@ -74,17 +79,6 @@ void Application::onEvent(Event& event)
     }
 }
 
-void Application::quit()
-{
-    for (auto layer : m_layers)
-    {
-        layer->onDetach();
-    }
-
-    m_window->close();
-    m_running = false;
-}
-
 void Application::addLayer(Layer* layer)
 {
     m_layers.push_back(layer);
@@ -101,6 +95,11 @@ Application& Application::get()
     return *m_instance;
 }
 
+void Application::quit()
+{
+    m_running = false;
+}
+
 bool Application::onWindowResize(WindowResizeEvent& event)
 {
     Renderer::windowResize(event);
@@ -109,7 +108,7 @@ bool Application::onWindowResize(WindowResizeEvent& event)
 
 bool Application::onWindowClose(WindowCloseEvent& event)
 {
-    quit();
+    m_running = false;
     return true;
 }
 

@@ -78,12 +78,6 @@ void Sandbox::onAttach()
     //Application::get().setCursorEnabled(false);
 }
 
-void Sandbox::onImGuiRender()
-{
-    ImGui::Begin("Stats");
-    ImGui::End();
-}
-
 void Sandbox::onDetach()
 {
     
