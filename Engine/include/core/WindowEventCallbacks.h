@@ -90,6 +90,11 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         KeyPressedEvent event(key, 0, mods);
         data.eventCallback(event);
     }
+    else if (action == GLFW_REPEAT)
+    {
+        KeyPressedEvent event(key, true, mods);
+        data.eventCallback(event);
+    }
     else if (action == GLFW_RELEASE)
     {
         KeyReleasedEvent event(key);
