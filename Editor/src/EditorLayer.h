@@ -2,6 +2,7 @@
 
 #include <core/Layer.h>
 #include <scene/Scene.h>
+#include <scene/ecs/Registry.h>
 
 class EditorLayer : public Layer
 {
@@ -15,5 +16,6 @@ public:
     void onEvent(Event& event) override;
 
 private:
-    Scene m_scene;
+    //Scene m_scene;
+    EntityRegistry m_registry;
 };

@@ -14,7 +14,9 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::onAttach()
 {
-    
+    auto entity = m_registry.create();
+    entity->addComponent<TransformComponent>();
+    entity->getComponent<TransformComponent>().rotation = math::vec3(10);
 }
 
 void EditorLayer::onUpdate()
@@ -28,7 +30,11 @@ void EditorLayer::onImGuiRender()
     ImGui::ShowDemoWindow(&show);
 
     ImGui::Begin("Hello, world!");
-    ImGui::Text("This is a text.");
+    m_registry.each([=](Entity* entity)
+    {
+        ImGui::Text(std::to_string(entity->getComponent<TransformComponent>().rotation.x).c_str());
+    });
+    
     ImGui::End();
 }
 

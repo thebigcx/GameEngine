@@ -4,12 +4,7 @@
 
 #include <util/Transform.h>
 
-struct Component
-{
-
-};
-
-struct TransformComponent : public Component
+struct TransformComponent
 {
     math::vec3 translation;
     math::vec3 rotation;
