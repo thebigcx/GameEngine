@@ -104,7 +104,7 @@ public:
     template<typename... Components>
     void remove_if_exists(Entity* entity)
     {
-        (internal_remove_if_exists<Components>(entities), ...);
+        (internal_remove_if_exists<Components>(m_entities), ...);
     }
 
     template<typename... Components>
@@ -181,7 +181,7 @@ public:
     {
         for (auto& entity : m_entities)
         {
-            this->remove<Components>(&entity);
+            this->remove<Components...>(&entity);
         }
     }
 
