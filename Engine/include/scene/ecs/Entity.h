@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include <typeindex>
 
-#include <scene/ecs/Component.h>
 #include <core/Logger.h>
 
 class IComponent

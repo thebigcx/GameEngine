@@ -19,7 +19,6 @@ public:
     T& get(Entity* pEntity)
     {
         Entity* entity = m_entities[std::find(m_entities.begin(), m_entities.end(), pEntity) - m_entities.begin()];
-        //return entity->m_registry->get<T>(entity);
         return static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value;
     }
 

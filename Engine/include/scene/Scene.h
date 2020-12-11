@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include <scene/ecs/Registry.h>
+
 class Entity;
 
 class Scene
@@ -11,10 +13,11 @@ public:
     ~Scene();
     
     void onUpdate();
+    void onViewportResize(uint32_t width, uint32_t height);
 
     Entity createEntity();
     void destroyEntity(Entity entity);
 
 private:
-    //std::vector<Entity> m_entities;
+    EntityRegistry m_registry;
 };
