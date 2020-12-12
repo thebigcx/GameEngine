@@ -30,6 +30,14 @@ enum class DepthFunction
     Always, Never
 };
 
+struct RendererCapabilities
+{
+    uint32_t maxTextureUnits;
+    uint32_t maxTextureSize;
+    std::string version;
+    uint32_t shaderVersion;
+};
+
 class RendererAPI
 {
 public:
@@ -43,12 +51,18 @@ public:
     virtual void setBlend(bool enabled) = 0;
     virtual void setBlendFunction(BlendFunction src, BlendFunction dst) = 0;
 
-    //virtual void setDepthFunction(DepthFunction function);
-
     virtual void setClearColor(const math::vec4& color) = 0;
     virtual void clear(uint32_t buffer) = 0;
 
     virtual void renderIndexed(Shared<VertexArray> array, uint32_t count, uint32_t offset) = 0;
 
+    inline constexpr const RendererCapabilities& getCapabilities() const noexcept
+    {
+        return m_capabilities;
+    }
+
     static Unique<RendererAPI> create();
+
+protected:
+    RendererCapabilities m_capabilities;
 };

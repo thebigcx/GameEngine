@@ -1,7 +1,5 @@
 #shader vertex
 
-#version 460 core
-
 layout (location = 0) in vec3 aPos;
 
 out DATA
@@ -23,8 +21,6 @@ void main()
 }
 
 #shader fragment
-
-#version 460 core
 
 in DATA
 {

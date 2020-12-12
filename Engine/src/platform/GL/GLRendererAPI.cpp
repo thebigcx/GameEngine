@@ -21,6 +21,20 @@ void GLRendererAPI::init()
 {
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(messageCallback, 0);
+
+    // Capabilities
+    int maxTextureUnits;
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
+    m_capabilities.maxTextureUnits = maxTextureUnits;
+
+    int maxTextureSize;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    m_capabilities.maxTextureSize = maxTextureSize;
+
+    m_capabilities.version = std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+
+    int shaderVersion;
+    m_capabilities.shaderVersion = std::stoi(reinterpret_cast<const char*>(glGetStringi(GL_SHADING_LANGUAGE_VERSION, 0)));
 }
 
 void GLRendererAPI::setViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

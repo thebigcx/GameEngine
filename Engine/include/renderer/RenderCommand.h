@@ -51,6 +51,11 @@ public:
         return (uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth;
     }
 
+    static RendererCapabilities getCapabilities()
+    {
+        return m_api->getCapabilities();
+    }
+
 private:
     static Unique<RendererAPI> m_api;
 };

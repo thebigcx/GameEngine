@@ -1,6 +1,7 @@
 #include <platform/GL/GLShader.h>
 #include <util/io/Files.h>
 #include <core/Logger.h>
+#include <renderer/RenderCommand.h>
 
 #include <cstring>
 
@@ -83,6 +84,11 @@ ShaderSource GLShader::preProcess(const std::string& source)
                 shaderSource.fragment = source.substr(nextLine, pos - nextLine);
         }
     }
+
+    // Add version to source
+    std::string version = "#version " + std::to_string(RenderCommand::getCapabilities().shaderVersion) + "\n";
+    shaderSource.vertex = version + shaderSource.vertex;
+    shaderSource.fragment = version + shaderSource.fragment;
 
     return shaderSource;
 }
