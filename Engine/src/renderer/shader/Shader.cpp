@@ -13,3 +13,8 @@ Shared<Shader> Shader::createFromSource(const std::string& vertSource, const std
 {
     return createShared<GLShader>(vertSource, fragSource);
 }
+
+Shared<Shader> Shader::createFromFileWithMacros(const std::string& path, const std::unordered_map<std::string, std::string>& macros)
+{
+    return createShared<GLShader>(path, macros);
+}

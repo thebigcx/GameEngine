@@ -17,13 +17,18 @@ void Renderer2D::init()
 
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
     
-    s_data.textureShader = ShaderFactory::textureShader();
+    //s_data.textureShader = ShaderFactory::textureShader();
+    std::unordered_map<std::string, std::string> defines = {
+        { "MAX_TEXTURE_SLOTS", std::to_string(s_data.MAX_TEXTURE_SLOTS) }  
+    };
+    s_data.textureShader = Shader::createFromFileWithMacros("Engine/src/renderer/shader/default/texture.glsl", defines);
+
     s_data.textShader = ShaderFactory::textShader();
 
     m_textMesh = MeshFactory::textMesh();
 
     s_data.whiteTexture = Texture2D::create(1, 1);
-    uint32_t white = 0xffffff;
+    uint32_t white = 0xffffffff;
     s_data.whiteTexture->setData(0, 0, 1, 1, &white);
 
     s_data.vertexBase = new Vertex[s_data.MAX_VERTICES];
@@ -65,13 +70,15 @@ void Renderer2D::init()
     s_data.mesh.vertexArray->setIndexBuffer(s_data.mesh.indexBuffer);
 
     int32_t samplers[s_data.MAX_TEXTURE_SLOTS];
-    for (uint32_t i = 0; i < s_data.MAX_TEXTURE_SLOTS; i++)    
+    for (int32_t i = 0; i < s_data.MAX_TEXTURE_SLOTS; i++)    
     {
         samplers[i] = i;
     }
 
     s_data.textureShader->bind();
-    s_data.textureShader->setIntArray("textures", &samplers[0], s_data.MAX_TEXTURE_SLOTS);
+    s_data.textureShader->setIntArray("textures", samplers, s_data.MAX_TEXTURE_SLOTS);
+
+    s_data.textureSlots[0] = s_data.whiteTexture;
 }
 
 void Renderer2D::shutdown()
@@ -97,7 +104,7 @@ void Renderer2D::endScene()
 
 void Renderer2D::startBatch()
 {
-    s_data.textureSlotIndex = 0;
+    s_data.textureSlotIndex = 1;
     s_data.vertexPointer = s_data.vertexBase;
     s_data.indexCount = 0;
 }
@@ -117,12 +124,12 @@ void Renderer2D::flushBatch()
 
     s_data.mesh.vertexArray->bind();
 
-    size_t dataSize = (size_t)((uint8_t*)s_data.vertexPointer - (uint8_t*)s_data.vertexBase);
+    size_t dataSize = static_cast<size_t>(reinterpret_cast<uint8_t*>(s_data.vertexPointer) - reinterpret_cast<uint8_t*>(s_data.vertexBase));
     s_data.mesh.vertexBuffer->setData(s_data.vertexBase, dataSize);
 
     s_data.textureShader->bind();
     
-    for (unsigned int i = 0; i < s_data.textureSlotIndex; i++)
+    for (uint32_t i = 0; i < s_data.textureSlotIndex; i++)
     {
         s_data.textureSlots[i]->bind(i);
     }
@@ -151,14 +158,28 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     renderSprite(texture, position, size, texRect, rotation, math::vec2(), color);
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)
+void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform, const math::frect& texRect, const math::vec4& color)
 {
+    constexpr size_t quadVertexCount = 4;
+
+    float x1 = texRect.x / texture->getWidth();
+    float y1 = texRect.y / texture->getHeight();
+    float x2 = (texRect.x + texRect.width) / texture->getWidth();
+    float y2 = (texRect.y + texRect.height) / texture->getHeight();
+
+    math::vec2 texCoords[] = {
+        { x1, y1 },
+        { x1, y2 },
+        ( x2, y2 ),
+        { x2, y1 }
+    };
+
     float textureIndex = 0.f;
-    for (unsigned int i = 0; i < s_data.textureSlotIndex; i++)
+    for (uint32_t i = 0; i < s_data.textureSlotIndex; i++)
     {
         if (*(s_data.textureSlots[i]) == *texture)
         {
-            textureIndex = (float)i;
+            textureIndex = static_cast<float>(i);
             break;
         }
     }
@@ -170,7 +191,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
             nextBatch();
         }
 
-        textureIndex = (float)s_data.textureSlotIndex;
+        textureIndex = static_cast<float>(s_data.textureSlotIndex);
         s_data.textureSlots[s_data.textureSlotIndex] = texture;
         s_data.textureSlotIndex++;
     }
@@ -179,30 +200,26 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     {
         flushBatch();
     }
-
-    Transform t = { math::vec3(position, 0), math::vec3(0, 0, rotation), math::vec3(size, 1), math::vec3(origin, 0) };
-    math::mat4 transform = t.matrix();
     
     // Populate the vertices array with the sprite's vertices
-    for (unsigned int i = 0 ; i < 4 ; i++)
+    for (size_t i = 0 ; i < quadVertexCount ; i++)
     {
         math::vec4 pos = transform * math::vec4(s_data.quadPositions[i]);
-        s_data.vertexPointer->position = math::vec3(pos.x, pos.y, 0);
 
-        // Change "origin" of texCoord, then scale it
-        
-        // Reciprocal of size (save division operations)
-        math::vec2 textureSize(1.f / texture->getWidth(), 1.f / texture->getHeight());
-        math::vec2 texCoord = texRect.getPosition() * textureSize;
-        texCoord += s_data.quadPositions[i] * (texRect.getSize() * textureSize);
-
-        s_data.vertexPointer->texCoord = texCoord;
+        s_data.vertexPointer->position = math::vec3(transform * s_data.quadPositions[i]);
+        s_data.vertexPointer->texCoord = texCoords[i];
         s_data.vertexPointer->color = color;
         s_data.vertexPointer->texIndex = textureIndex;
         s_data.vertexPointer++;
     }
 
     s_data.indexCount += 6;
+}
+
+void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)
+{
+    Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size), math::vec3(origin) };
+    renderSprite(texture, transform.matrix(), texRect, color);
 }
 
 void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color)
@@ -212,7 +229,29 @@ void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, 
 
 void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color)
 {
-    renderSprite(s_data.whiteTexture, position, size, math::frect(0, 0, 1, 1), rotation, color);
+    //renderSprite(s_data.whiteTexture, position, size, math::frect(0, 0, 1, 1), rotation, color);
+    Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size), math::vec3(0) }; // TODO: origin
+    renderQuad(transform.matrix(), color);
+}
+
+void Renderer2D::renderQuad(const math::mat4& transform, const math::vec4& color)
+{
+    constexpr size_t quadVertexCount = 4;
+    constexpr float textureIndex = 0.f;
+    math::vec2 texCoords[] = { {0, 0}, {0, 1}, {1, 1}, {1, 0} };
+
+    for (size_t i = 0 ; i < quadVertexCount ; i++)
+    {
+        math::vec4 pos = transform * math::vec4(s_data.quadPositions[i]);
+
+        s_data.vertexPointer->position = math::vec3(transform * s_data.quadPositions[i]);
+        s_data.vertexPointer->texCoord = texCoords[i];
+        s_data.vertexPointer->color = color;
+        s_data.vertexPointer->texIndex = textureIndex;
+        s_data.vertexPointer++;
+    }
+
+    s_data.indexCount += 6;
 }
 
 void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color)

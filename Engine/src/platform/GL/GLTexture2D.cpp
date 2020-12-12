@@ -47,6 +47,8 @@ GLTexture2D::GLTexture2D(const std::string& file)
 
     m_width = image->width;
     m_height = image->height;
+
+    unbind();
 }
 
 GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat)
@@ -67,7 +69,11 @@ GLTexture2D::~GLTexture2D()
 
 void GLTexture2D::setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat)
 {
+    bind();
+
     glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
+    
+    unbind();
 }
 
 void GLTexture2D::setParameter(Parameter parameter, Value value)
@@ -75,12 +81,12 @@ void GLTexture2D::setParameter(Parameter parameter, Value value)
     glTextureParameteri(m_id, (GLenum)parameter, (GLenum)value);
 }
 
-void GLTexture2D::bind(int slot) const
+void GLTexture2D::bind(uint32_t slot) const
 {
     glBindTextureUnit(slot, m_id);
 }
 
-void GLTexture2D::unbind(int slot) const
+void GLTexture2D::unbind(uint32_t slot) const
 {
     glBindTextureUnit(slot, 0);
 }

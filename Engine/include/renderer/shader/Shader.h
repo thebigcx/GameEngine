@@ -33,6 +33,7 @@ public:
 
     static Shared<Shader> createFromFile(const std::string& path);
     static Shared<Shader> createFromSource(const std::string& vertSource, const std::string& fragSource);
+    static Shared<Shader> createFromFileWithMacros(const std::string& path, const std::unordered_map<std::string, std::string>& macros);
 
     virtual void bind() const = 0;
     virtual void unbind() const = 0;

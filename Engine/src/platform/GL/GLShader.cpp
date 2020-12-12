@@ -17,12 +17,38 @@ GLShader::GLShader(const std::string& vertSource, const std::string& fragSource)
     compileShader(source);
 }
 
+GLShader::GLShader(const std::string& path, const std::unordered_map<std::string, std::string>& macros)
+{
+    std::string source = Files::readFile(path);
+    source = processMacros(source, macros);
+    ShaderSource shaderSource = preProcess(source);
+    compileShader(shaderSource);
+}
+
 GLShader::~GLShader()
 {
     if (m_id != 0)
     {
         glDeleteProgram(m_id);
     }
+}
+
+std::string GLShader::processMacros(const std::string& source, const std::unordered_map<std::string, std::string>& macros)
+{
+    std::string result = source;
+
+    for (auto& macro : macros)
+    {
+        size_t pos = source.find(macro.first);
+
+        while (pos != std::string::npos)
+        {
+            result.replace(pos, macro.first.length(), macro.second);
+            pos = result.find(macro.first, pos + macro.second.size());
+        }
+    }
+
+    return result;
 }
 
 ShaderSource GLShader::preProcess(const std::string& source)

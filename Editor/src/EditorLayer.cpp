@@ -40,10 +40,11 @@ void EditorLayer::onUpdate(float dt)
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
     Renderer2D::beginScene(m_camera);
-    //Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(0, 0), math::vec2(100, 100));
+    Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(0, 0), math::vec2(100, 100));
     Renderer2D::renderSprite(Assets::get<Texture2D>("texture_1"), math::vec2(200, 0), math::vec2(200, 200));
-    //Renderer2D::renderQuad(math::vec2(100, 100), math::vec2(100, 100), math::vec4(1, 0, 0, 1));
+    
     Renderer2D::renderSprite(Assets::get<Texture2D>("texture_2"), math::vec2(0, 200), math::vec2(200, 200));
+    Renderer2D::renderQuad(math::vec2(0, 0), math::vec2(200, 200), math::vec4(1, 0, 0, 1));
     Renderer2D::endScene();
 
     m_scene->onUpdate();

@@ -11,7 +11,7 @@ out DATA
 {
     vec2 texCoord;
     vec4 color;
-    float texIndex;
+    flat float texIndex;
 } vs_out;
 
 layout (std140, binding = 2) uniform matrices
@@ -39,13 +39,22 @@ in DATA
     float texIndex;
 } fs_in;
 
-out vec4 fragColor;
+layout (location = 0) out vec4 fragColor;
 
-uniform sampler2D textures[32];
+uniform sampler2D textures[MAX_TEXTURE_SLOTS];
 
 void main()
 {
-    vec4 color = texture(textures[int(fs_in.texIndex)], fs_in.texCoord) * fs_in.color;
+    vec4 color = fs_in.color;
+    for (int i = 0; i < MAX_TEXTURE_SLOTS; i++)
+    {
+        if (i == int(fs_in.texIndex))
+        {
+            color *= texture(textures[i], fs_in.texCoord);
+            break;
+        }
+    }
+
     if (color.a < 0.1)
     {
         discard;

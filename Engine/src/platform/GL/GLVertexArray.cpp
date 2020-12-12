@@ -29,7 +29,6 @@ void GLVertexArray::addVertexBuffer(Shared<VertexBuffer> buffer)
     for (m_attribCount ; m_attribCount < buffer->getLayout().size() ; m_attribCount++)
     {
         GLenum type;
-        std::cout << (uint32_t)buffer->getLayout()[i].type << "\n";
         switch (buffer->getLayout()[i].type)
         {
             using Type = Shader::DataType;

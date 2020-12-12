@@ -14,8 +14,8 @@ public:
     void setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA) override;
     void setParameter(Parameter parameter, Value value) override;
 
-    void bind(int slot = 0) const override;
-    void unbind(int slot = 0) const override;
+    void bind(uint32_t slot = 0) const override;
+    void unbind(uint32_t slot = 0) const override;
 
     float getWidth() const override;
     float getHeight() const override;

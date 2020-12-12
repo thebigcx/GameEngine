@@ -21,10 +21,10 @@ struct Vertex
 
 struct Renderer2DData
 {
-    static const unsigned int MAX_SPRITES = 100000;
-    static const unsigned int MAX_TEXTURE_SLOTS = 32;
-    static const unsigned int MAX_VERTICES = MAX_SPRITES * 4;
-    static const unsigned int MAX_INDICES = MAX_SPRITES * 6;
+    static constexpr uint32_t MAX_SPRITES = 100000;
+    static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
+    static constexpr uint32_t MAX_VERTICES = MAX_SPRITES * 4;
+    static constexpr uint32_t MAX_INDICES = MAX_SPRITES * 6;
 
     uint64_t drawCalls;
 
@@ -38,7 +38,7 @@ struct Renderer2DData
     uint32_t indexCount = 0;
     
     Shared<Texture2D> textureSlots[MAX_TEXTURE_SLOTS];
-    unsigned int textureSlotIndex;
+    uint32_t textureSlotIndex = 1;
 
     OrthographicCamera* camera;
     Mesh mesh;
@@ -77,9 +77,11 @@ public:
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, math::vec4 color);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color);
+    static void renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform, const math::frect& texRect, const math::vec4& color);
     
     static void renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color);
     static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color);
+    static void renderQuad(const math::mat4& transform, const math::vec4& color);
     
     static void endScene();
 

@@ -34,8 +34,8 @@ public:
     virtual void setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA) = 0;
     virtual void setParameter(Parameter parameter, Value value) = 0;
 
-    virtual void bind(int slot = 0) const = 0;
-    virtual void unbind(int slot = 0) const = 0;
+    virtual void bind(uint32_t slot = 0) const = 0;
+    virtual void unbind(uint32_t slot = 0) const = 0;
 
     virtual float getWidth() const = 0;
     virtual float getHeight() const = 0;

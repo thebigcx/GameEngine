@@ -7,6 +7,7 @@ class GLShader : public Shader
 public:
     GLShader(const std::string& path);
     GLShader(const std::string& vertSource, const std::string& fragSource);
+    GLShader(const std::string& path, const std::unordered_map<std::string, std::string>& macros);
     ~GLShader();
 
     void unbind() const override;
@@ -51,6 +52,8 @@ private:
 
     ShaderSource preProcess(const std::string& source);
     bool compileShader(const ShaderSource& source);
+
+    std::string processMacros(const std::string& souce, const std::unordered_map<std::string, std::string>& macros);
 
     std::unordered_map<std::string, uint32_t> m_uniformLocations;
 
