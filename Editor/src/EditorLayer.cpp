@@ -21,7 +21,16 @@ void EditorLayer::onAttach()
     Assets::add<Texture2D>("texture", Texture2D::create("Editor/assets/texture.png"));
     Assets::add<Texture2D>("texture_1", Texture2D::create("Editor/assets/texture_1.png"));
     Assets::add<Texture2D>("texture_2", Texture2D::create("Editor/assets/texture_2.png"));
+
     m_scene = createShared<Scene>();
+
+    auto entity1 = m_scene->getRegistry().create();
+    m_scene->getRegistry().emplace<TagComponent>(entity1, "Entity 1");
+
+    auto entity2 = m_scene->getRegistry().create();
+    m_scene->getRegistry().emplace<TagComponent>(entity2, "Entity 2");
+    m_scene->getRegistry().emplace<TransformComponent>(entity2, math::vec3(100, 100, 0), math::vec3(0), math::vec3(2));
+    m_scene->getRegistry().emplace<CameraComponent>(entity2);
 
     m_sceneHeirarchy.setContext(m_scene);
     m_framebuffer = Framebuffer::create(1280, 720);
@@ -82,6 +91,8 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     ImGui::End();
+
+    m_sceneHeirarchy.onImGuiRender();
     
     ImGui::End();
     ImGui::PopStyleVar();

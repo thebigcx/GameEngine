@@ -18,6 +18,11 @@ public:
     Entity createEntity();
     void destroyEntity(Entity entity);
 
+    EntityRegistry& getRegistry()
+    {
+        return m_registry;
+    }
+
 private:
     EntityRegistry m_registry;
 };

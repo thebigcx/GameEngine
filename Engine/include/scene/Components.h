@@ -3,6 +3,7 @@
 #include <maths/math.h>
 
 #include <util/Transform.h>
+#include <util/OrthographicCameraController.h>
 
 struct TransformComponent
 {
@@ -26,4 +27,9 @@ struct TagComponent
         : tag(str) {}
         
     std::string tag;
+};
+
+struct CameraComponent
+{
+    OrthographicCameraController camera;
 };

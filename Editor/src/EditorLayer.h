@@ -8,7 +8,7 @@
 #include <util/OrthographicCameraController.h>
 #include <renderer/text/TrueTypeFont.h>
 
-#include "SceneHeirarchy.h"
+#include "SceneHierarchy.h"
 
 class EditorLayer : public Layer
 {
@@ -33,5 +33,5 @@ private:
 
     OrthographicCameraController m_camera;
 
-    SceneHeirarchy m_sceneHeirarchy;
+    SceneHierarchy m_sceneHeirarchy;
 };

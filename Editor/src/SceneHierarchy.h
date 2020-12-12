@@ -3,11 +3,14 @@
 #include <scene/Scene.h>
 #include <core/Core.h>
 
-class SceneHeirarchy
+class SceneHierarchy
 {
 public:
-    SceneHeirarchy() = default;
-    SceneHeirarchy(const Shared<Scene>& scene);
+    SceneHierarchy() = default;
+    SceneHierarchy(const Shared<Scene>& scene);
+
+    template<typename T, typename F>
+    void drawComponent(const std::string& name, Entity* entity, const F& func);
     
     void setContext(const Shared<Scene>& context)
     {
