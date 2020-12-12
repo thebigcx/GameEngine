@@ -6,6 +6,8 @@
 #include <renderer/Framebuffer.h>
 #include <maths/vector/vec2.h>
 #include <util/OrthographicCameraController.h>
+#include <renderer/text/TrueTypeFont.h>
+
 #include "SceneHeirarchy.h"
 
 class EditorLayer : public Layer
@@ -24,6 +26,8 @@ public:
 private:
     Shared<Scene> m_scene;
     Shared<Framebuffer> m_framebuffer;
+
+    Shared<TrueTypeFont> m_font;
 
     math::vec2 m_viewportSize;
 

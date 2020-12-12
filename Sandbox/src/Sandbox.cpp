@@ -118,7 +118,7 @@ void Sandbox::onUpdate(float dt)
     Renderer2D::beginScene(m_orthoCamera);
     Renderer2D::renderSprite(Assets::get<Texture2D>("grass"), math::vec2(100, 100), math::vec2(100, 100), math::vec4(1, 1, 1, 1));
     Renderer2D::renderQuad(math::vec2(0, 0), math::vec2(100, 100), math::vec4(0, 1, 0, 1));
-    Renderer2D::renderText("Hello", m_font, math::vec2(0, 0), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
+    Renderer2D::renderText("Hello, world!", m_font, math::vec2(0, 0), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
     Renderer2D::endScene();
 
     Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));

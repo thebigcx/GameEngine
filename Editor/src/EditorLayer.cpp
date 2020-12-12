@@ -27,6 +27,8 @@ void EditorLayer::onAttach()
     m_framebuffer = Framebuffer::create(1280, 720);
     m_viewportSize = math::vec2(1280, 720);
     m_camera.setPosition(math::vec2(0, 0));
+
+    m_font = TrueTypeFont::create("Editor/assets/minecraftia.ttf", 48);
 }
 
 void EditorLayer::onUpdate(float dt)
@@ -46,6 +48,8 @@ void EditorLayer::onUpdate(float dt)
     Renderer2D::renderSprite(Assets::get<Texture2D>("texture_2"), math::vec2(0, 200), math::vec2(200, 200));
     Renderer2D::renderQuad(math::vec2(0, 0), math::vec2(200, 200), math::vec4(1, 0, 0, 1));
     Renderer2D::endScene();
+
+    Renderer2D::renderText("Hello, hello, hello, hello", m_font, math::vec2(0, 0), math::vec4(0, 0, 1, 1));
 
     m_scene->onUpdate();
 

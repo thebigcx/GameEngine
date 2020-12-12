@@ -11,12 +11,18 @@
 #include <maths/rect.h>
 #include <util/OrthographicCamera.h>
 
-struct Vertex
+struct QuadVertex
 {
     math::vec3 position;
     math::vec2 texCoord;
     math::vec4 color;
     float texIndex;
+};
+
+struct GlyphVertex
+{
+    math::vec2 position;
+    math::vec2 texCoord;
 };
 
 struct Renderer2DData
@@ -33,8 +39,8 @@ struct Renderer2DData
     Shared<Shader> textShader;
     Shared<Texture2D> whiteTexture;
 
-    Vertex* vertexBase = nullptr;
-    Vertex* vertexPointer = nullptr;
+    QuadVertex* vertexBase = nullptr;
+    QuadVertex* vertexPointer = nullptr;
     uint32_t indexCount = 0;
     
     Shared<Texture2D> textureSlots[MAX_TEXTURE_SLOTS];
@@ -81,6 +87,7 @@ public:
     
     static void renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color);
     static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color);
+    static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color, const math::vec2& origin);
     static void renderQuad(const math::mat4& transform, const math::vec4& color);
     
     static void endScene();
