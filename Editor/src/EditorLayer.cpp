@@ -31,6 +31,7 @@ void EditorLayer::onAttach()
     m_scene->getRegistry().emplace<TagComponent>(entity2, "Entity 2");
     m_scene->getRegistry().emplace<TransformComponent>(entity2, math::vec3(100, 100, 0), math::vec3(0), math::vec3(2));
     m_scene->getRegistry().emplace<CameraComponent>(entity2);
+    m_scene->getRegistry().emplace<SpriteRendererComponent>(entity2);
 
     m_sceneHeirarchy.setContext(m_scene);
     m_framebuffer = Framebuffer::create(1280, 720);
@@ -49,16 +50,6 @@ void EditorLayer::onUpdate(float dt)
     m_framebuffer->bind();
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
     RenderCommand::clear(RenderCommand::defaultClearBits());
-
-    Renderer2D::beginScene(m_camera);
-    Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(0, 0), math::vec2(100, 100));
-    Renderer2D::renderSprite(Assets::get<Texture2D>("texture_1"), math::vec2(200, 0), math::vec2(200, 200));
-    
-    Renderer2D::renderSprite(Assets::get<Texture2D>("texture_2"), math::vec2(0, 200), math::vec2(200, 200));
-    Renderer2D::renderQuad(math::vec2(0, 0), math::vec2(200, 200), math::vec4(1, 0, 0, 1));
-    Renderer2D::endScene();
-
-    Renderer2D::renderText("Hello, hello, hello, hello", m_font, math::vec2(0, 0), math::vec4(0, 0, 1, 1));
 
     m_scene->onUpdate();
 

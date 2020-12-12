@@ -4,6 +4,7 @@
 
 #include <util/Transform.h>
 #include <util/OrthographicCameraController.h>
+#include <scene/SceneCamera.h>
 
 struct TransformComponent
 {
@@ -31,5 +32,11 @@ struct TagComponent
 
 struct CameraComponent
 {
-    OrthographicCameraController camera;
+    SceneCamera camera;
+    bool primary;
+};
+
+struct SpriteRendererComponent
+{
+    math::vec4 color = { 1.f, 1.f, 1.f, 1.f };
 };

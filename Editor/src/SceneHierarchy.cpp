@@ -31,19 +31,36 @@ void SceneHierarchy::onImGuiRender()
 
             drawComponent<CameraComponent>("Camera", entity, [](auto& component)
             {
-                bool primary;
-            
-                ImGui::Checkbox("Primary", &primary);
+                ImGui::Checkbox("Primary", &component.primary);
+
+                auto& camera = component.camera;
+
+                if (camera.getProjectionType() == ProjectionType::Orthographic)
+                {
+                    float orthoNear;
+                    if (ImGui::DragFloat("Near", &orthoNear))
+                    {
+
+                    }
+
+                    float orthoFar;
+                    if (ImGui::DragFloat("Far", &orthoFar))
+                    {
+                        
+                    }
+                }
+                else if (camera.getProjectionType() == ProjectionType::Perspective)
+                {
+
+                }
+            });
+
+            drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
+            {
+                ImGui::ColorEdit4("Color", &(component.color.x));
             });
 
             ImGui::TreePop();
-        }
-
-        ImGui::ShowDemoWindow();
-
-        if (ImGui::BeginPopupContextItem())
-        {
-            
         }
     });
 
