@@ -106,9 +106,9 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     mesh_->vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec3, "aPos"      },
-        { Shader::DataType::Vec3, "aNormal"   },
-        { Shader::DataType::Vec2, "aTexCoord" }
+        { Shader::DataType::Float3, "aPos"      },
+        { Shader::DataType::Float3, "aNormal"   },
+        { Shader::DataType::Float2, "aTexCoord" }
     };
 
     mesh_->indexBuffer = IndexBuffer::create(indices.size(), IndexDataType::UInt32);

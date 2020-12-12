@@ -81,7 +81,7 @@ void Sandbox::onDetach()
     
 }
 
-void Sandbox::onUpdate()
+void Sandbox::onUpdate(float dt)
 {
     Timer timer;
 
@@ -90,7 +90,7 @@ void Sandbox::onUpdate()
         Application::get().quit();
     }
 
-    m_perspectiveCamera.update();
+    m_perspectiveCamera.update(dt);
 
     Renderer::startFrame();
 

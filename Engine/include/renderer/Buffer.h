@@ -14,7 +14,7 @@ struct BufferElement
         size = dataTypeSize();
     }
 
-    int componentCount() const
+    uint32_t componentCount() const
     {
         switch (type)
         {
@@ -24,31 +24,58 @@ struct BufferElement
             case Type::Bool:
             case Type::Int:
             case Type::Double:
-            case Type::Uint:  return 1;
+            case Type::UInt:  return 1;
 
-            case Type::Vec2:
-            case Type::iVec2:
-            case Type::uVec2:
-            case Type::dVec2:
-            case Type::bVec2: return 2;
+            case Type::Float2:
+            case Type::Int2:
+            case Type::UInt2:
+            case Type::Double2:
+            case Type::Bool2: return 2;
 
-            case Type::Vec3:
-            case Type::iVec3:
-            case Type::uVec3:
-            case Type::dVec3:
-            case Type::bVec3: return 3;
+            case Type::Float3:
+            case Type::Int3:
+            case Type::UInt3:
+            case Type::Double3:
+            case Type::Bool3: return 3;
 
-            case Type::Vec4:
-            case Type::iVec4:
-            case Type::uVec4:
-            case Type::dVec4:
-            case Type::bVec4: return 4;
+            case Type::Float4:
+            case Type::Int4:
+            case Type::UInt4:
+            case Type::Double4:
+            case Type::Bool4: return 4;
+
+            case Type::Mat2:
+            case Type::Mat2x2:
+            case Type::DMat2:
+            case Type::DMat2x2: return 2;
+
+            case Type::Mat2x3:
+            case Type::DMat2x3: return 2;
+
+            case Type::Mat2x4:
+            case Type::DMat2x4: return 2;
+
+            case Type::Mat3x2:
+            case Type::DMat3x2: return 3;
 
             case Type::Mat3:
-            case Type::dMat3: return 9;
+            case Type::Mat3x3:
+            case Type::DMat3: 
+            case Type::DMat3x3: return 3;
+
+            case Type::Mat3x4:
+            case Type::DMat3x4: return 3;
+
+            case Type::Mat4x2:
+            case Type::DMat4x2: return 4;
+
+            case Type::Mat4x3:
+            case Type::DMat4x3: return 4;
 
             case Type::Mat4:
-            case Type::dMat4: return 16;
+            case Type::Mat4x4:
+            case Type::DMat4:
+            case Type::DMat4x4: return 4;
 
             default:          return 0;
         }
@@ -61,34 +88,54 @@ struct BufferElement
             using Type = Shader::DataType;
 
             case Type::Float:
-            case Type::Vec2:
-            case Type::Vec3:
-            case Type::Vec4:
-            case Type::Mat3:
-            case Type::Mat4:  return componentCount() * sizeof(float);
+            case Type::Float2:
+            case Type::Float3:
+            case Type::Float4: return componentCount() * sizeof(float);
+            case Type::Mat2:   return 2 * 2 * sizeof(float);
+            case Type::Mat2x2: return 2 * 2 * sizeof(float);
+            case Type::Mat2x3: return 2 * 3 * sizeof(float);
+            case Type::Mat2x4: return 2 * 4 * sizeof(float);
+            case Type::Mat3x2: return 3 * 2 * sizeof(float);
+            case Type::Mat3:   return 3 * 3 * sizeof(float);
+            case Type::Mat3x3: return 3 * 3 * sizeof(float);
+            case Type::Mat3x4: return 3 * 4 * sizeof(float);
+            case Type::Mat4x2: return 4 * 2 * sizeof(float);
+            case Type::Mat4x3: return 4 * 3 * sizeof(float);
+            case Type::Mat4:   return 4 * 4 * sizeof(float);
+            case Type::Mat4x4: return 4 * 4 * sizeof(float);
 
             case Type::Bool:
-            case Type::bVec2:
-            case Type::bVec3:
-            case Type::bVec4:
+            case Type::Bool2:
+            case Type::Bool3:
+            case Type::Bool4:
             case Type::Int:
-            case Type::iVec2:
-            case Type::iVec3:
-            case Type::iVec4: return componentCount() * sizeof(int);
+            case Type::Int2:
+            case Type::Int3:
+            case Type::Int4: return componentCount() * sizeof(int);
 
-            case Type::Uint:
-            case Type::uVec2:
-            case Type::uVec3:
-            case Type::uVec4: return componentCount() * sizeof(unsigned int);
+            case Type::UInt:
+            case Type::UInt2:
+            case Type::UInt3:
+            case Type::UInt4: return componentCount() * sizeof(uint32_t);
 
             case Type::Double:
-            case Type::dVec2:
-            case Type::dVec3:
-            case Type::dVec4:
-            case Type::dMat3:
-            case Type::dMat4: return componentCount() * sizeof(double);
+            case Type::Double2:
+            case Type::Double3:
+            case Type::Double4:
+            case Type::DMat2:   return 2 * 2 * sizeof(double);
+            case Type::DMat2x2: return 2 * 2 * sizeof(double);
+            case Type::DMat2x3: return 2 * 3 * sizeof(double);
+            case Type::DMat2x4: return 2 * 4 * sizeof(double);
+            case Type::DMat3x2: return 3 * 2 * sizeof(double);
+            case Type::DMat3:   return 3 * 3 * sizeof(double);
+            case Type::DMat3x3: return 3 * 3 * sizeof(double);
+            case Type::DMat3x4: return 3 * 4 * sizeof(double);
+            case Type::DMat4x2: return 4 * 2 * sizeof(double);
+            case Type::DMat4x3: return 4 * 3 * sizeof(double);
+            case Type::DMat4:   return 4 * 4 * sizeof(double);
+            case Type::DMat4x4: return 4 * 4 * sizeof(double);
 
-            default:          return componentCount() * sizeof(float);
+            default:          return 0;
         }
     }
 
@@ -126,12 +173,12 @@ public:
         }
     }
 
-    int size() const
+    uint32_t size() const
     {
         return m_elements.size();
     }
 
-    const BufferElement& operator[](int index) const
+    const BufferElement& operator[](uint32_t index) const
     {
         return m_elements[index];
     }

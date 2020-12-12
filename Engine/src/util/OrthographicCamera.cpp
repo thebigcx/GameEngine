@@ -15,6 +15,11 @@ void OrthographicCamera::translate(const math::vec2& vec)
     m_position += vec;
 }
 
+void OrthographicCamera::translate(float x, float y)
+{
+    m_position += math::vec2(x, y);
+}
+
 math::mat4 OrthographicCamera::getViewMatrix() const
 {
     return math::lookAt(math::vec3(m_position, 1), math::vec3(m_position, -1), math::vec3(0, 1, 0));

@@ -14,7 +14,8 @@ GLTexture2D::GLTexture2D(const std::string& file)
 
     if (image->data)
     {
-        m_internalFormat = GL_SRGB8_ALPHA8;
+        //m_internalFormat = GL_SRGB8_ALPHA8;
+        m_internalFormat = GL_RGBA8;
         m_dataFormat = GL_RGBA;
 
         glTextureStorage2D(m_id, 1, m_internalFormat, image->width, image->height);

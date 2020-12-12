@@ -10,13 +10,14 @@ class OrthographicCamera
 public:
     OrthographicCamera();
 
-    void setPosition(const math::vec2& position);
-    void translate(const math::vec2& vec);
+    virtual void setPosition(const math::vec2& position);
+    virtual void translate(const math::vec2& vec);
+    virtual void translate(float x, float y);
 
     inline const math::vec2& getPosition() const { return m_position; }
 
-    void onEvent(Event& event);
-    void onWindowResize(WindowResizeEvent& event);
+    virtual void onEvent(Event& event);
+    virtual void onWindowResize(WindowResizeEvent& event);
 
     math::mat4 getViewMatrix() const;
     inline const math::mat4& getProjectionMatrix() const

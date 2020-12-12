@@ -32,10 +32,10 @@ void Renderer2D::init()
     s_data.mesh.vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec3,  "aPos"      },
-        { Shader::DataType::Vec2,  "aTexCoord" },
-        { Shader::DataType::Vec4,  "aColor"    },
-        { Shader::DataType::Float, "aTexIndex" }
+        { Shader::DataType::Float3,  "aPos"      },
+        { Shader::DataType::Float2,  "aTexCoord" },
+        { Shader::DataType::Float4,  "aColor"    },
+        { Shader::DataType::Float,   "aTexIndex" }
     };
     
     uint32_t* indices = new uint32_t[s_data.MAX_INDICES];
@@ -63,6 +63,15 @@ void Renderer2D::init()
 
     s_data.mesh.vertexArray->addVertexBuffer(s_data.mesh.vertexBuffer);
     s_data.mesh.vertexArray->setIndexBuffer(s_data.mesh.indexBuffer);
+
+    int32_t samplers[s_data.MAX_TEXTURE_SLOTS];
+    for (uint32_t i = 0; i < s_data.MAX_TEXTURE_SLOTS; i++)    
+    {
+        samplers[i] = i;
+    }
+
+    s_data.textureShader->bind();
+    s_data.textureShader->setIntArray("textures", &samplers[0], s_data.MAX_TEXTURE_SLOTS);
 }
 
 void Renderer2D::shutdown()
@@ -147,7 +156,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2
     float textureIndex = 0.f;
     for (unsigned int i = 0; i < s_data.textureSlotIndex; i++)
     {
-        if (*s_data.textureSlots[i] == *texture)
+        if (*(s_data.textureSlots[i]) == *texture)
         {
             textureIndex = (float)i;
             break;

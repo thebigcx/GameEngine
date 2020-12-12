@@ -7,25 +7,25 @@ PerspectiveCameraController::PerspectiveCameraController()
 
 }
 
-void PerspectiveCameraController::update()
+void PerspectiveCameraController::update(float dt)
 {
     if (Input::isKeyPressed(Key::W))
-        m_position += math::vec3(cos(math::radians(m_pan)), 0, sin(math::radians(m_pan))) * m_speed;
+        m_position += math::vec3(cos(math::radians(m_pan)), 0, sin(math::radians(m_pan))) * m_speed * dt;
     
     if (Input::isKeyPressed(Key::S))
-        m_position -= math::vec3(cos(math::radians(m_pan)), 0, sin(math::radians(m_pan))) * m_speed;
+        m_position -= math::vec3(cos(math::radians(m_pan)), 0, sin(math::radians(m_pan))) * m_speed * dt;
 
     if (Input::isKeyPressed(Key::A))
-        m_position -= math::normalize(math::cross(m_direction, m_up)) * m_speed;
+        m_position -= math::normalize(math::cross(m_direction, m_up)) * m_speed * dt;
 
     if (Input::isKeyPressed(Key::D))
-        m_position += math::normalize(math::cross(m_direction, m_up)) * m_speed;
+        m_position += math::normalize(math::cross(m_direction, m_up)) * m_speed * dt;
 
     if (Input::isKeyPressed(Key::Space))
-        m_position.y += m_speed;
+        m_position.y += m_speed * dt;
 
     if (Input::isKeyPressed(Key::LeftShift))
-        m_position.y -= m_speed;
+        m_position.y -= m_speed * dt;
 
     math::ivec2 mousePos = Input::getMousePosition();
 

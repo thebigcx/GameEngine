@@ -10,8 +10,8 @@ Shared<Mesh> MeshFactory::textMesh()
     text->vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec2, "aPos" },
-        { Shader::DataType::Vec2, "aTexCoord" }
+        { Shader::DataType::Float2, "aPos" },
+        { Shader::DataType::Float2, "aTexCoord" }
     };
     text->indexBuffer = IndexBuffer::create(6 * 200, IndexDataType::UInt32);
 
@@ -31,8 +31,8 @@ Shared<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
     quad->vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec2, "aPos" },
-        { Shader::DataType::Vec2, "aTexCoord" }
+        { Shader::DataType::Float2, "aPos" },
+        { Shader::DataType::Float2, "aTexCoord" }
     };
 
     uint32_t indices[] = {
@@ -66,9 +66,9 @@ Shared<Mesh> MeshFactory::cubeMesh(float size, const Shared<Material>& material)
     quad->vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec3, "aPos" },
-        { Shader::DataType::Vec3, "aNormal" },
-        { Shader::DataType::Vec2, "aTexCoord" }
+        { Shader::DataType::Float3, "aPos" },
+        { Shader::DataType::Float3, "aNormal" },
+        { Shader::DataType::Float2, "aTexCoord" }
     };
 
     uint32_t indices[] = {
@@ -136,7 +136,7 @@ Shared<Mesh> MeshFactory::skyboxMesh()
     box->vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Vec3, "aPos" }
+        { Shader::DataType::Float3, "aPos" }
     };
 
     uint32_t indices[] = {

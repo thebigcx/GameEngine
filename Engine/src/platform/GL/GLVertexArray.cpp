@@ -29,39 +29,60 @@ void GLVertexArray::addVertexBuffer(Shared<VertexBuffer> buffer)
     for (m_attribCount ; m_attribCount < buffer->getLayout().size() ; m_attribCount++)
     {
         GLenum type;
+        std::cout << (uint32_t)buffer->getLayout()[i].type << "\n";
         switch (buffer->getLayout()[i].type)
         {
             using Type = Shader::DataType;
 
             case Type::Float:
-            case Type::Vec2:
-            case Type::Vec3:
-            case Type::Vec4:
+            case Type::Float2:
+            case Type::Float3:
+            case Type::Float4:
+            case Type::Mat2:
+            case Type::Mat2x2:
+            case Type::Mat2x3:
+            case Type::Mat2x4:
+            case Type::Mat3x2:
             case Type::Mat3:
-            case Type::Mat4:    type = GL_FLOAT; break;
+            case Type::Mat3x3:
+            case Type::Mat3x4:
+            case Type::Mat4x2:
+            case Type::Mat4x3:
+            case Type::Mat4:
+            case Type::Mat4x4:  type = GL_FLOAT; break;
 
             case Type::Bool:
-            case Type::bVec2:
-            case Type::bVec3:
-            case Type::bVec4:
+            case Type::Bool2:
+            case Type::Bool3:
+            case Type::Bool4:
             case Type::Int:
-            case Type::iVec2:
-            case Type::iVec3:
-            case Type::iVec4:   type = GL_INT; break;
+            case Type::Int2:
+            case Type::Int3:
+            case Type::Int4:    type = GL_INT; break;
 
-            case Type::Uint:
-            case Type::uVec2:
-            case Type::uVec3:
-            case Type::uVec4:   type = GL_UNSIGNED_INT; break;
+            case Type::UInt:
+            case Type::UInt2:
+            case Type::UInt3:
+            case Type::UInt4: type = GL_UNSIGNED_INT; break;
 
             case Type::Double:
-            case Type::dVec2:
-            case Type::dVec3:
-            case Type::dVec4:
-            case Type::dMat3:
-            case Type::dMat4:   type = GL_DOUBLE; break;
+            case Type::Double2:
+            case Type::Double3:
+            case Type::Double4:
+            case Type::DMat2:
+            case Type::DMat2x2:
+            case Type::DMat2x3:
+            case Type::DMat2x4:
+            case Type::DMat3x2:
+            case Type::DMat3:
+            case Type::DMat3x3:
+            case Type::DMat3x4:
+            case Type::DMat4x2:
+            case Type::DMat4x3:
+            case Type::DMat4:
+            case Type::DMat4x4:  type = GL_DOUBLE; break;
 
-            default:            Logger::getCoreLogger()->error("Unknown GLSL data type."); type = GL_FLOAT; break;
+            default:            Logger::getCoreLogger()->error("Unknown GLSL data type."); type = 0; break;
         }
 
         bool normalized = buffer->getLayout()[i].normalized ? GL_TRUE : GL_FALSE;

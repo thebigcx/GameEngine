@@ -49,7 +49,7 @@ void Application::run()
 
         for (auto layer : m_layers)
         {
-            layer->onUpdate();
+            layer->onUpdate(Time::getDelta());
         }
 
         m_imguiLayer->begin();

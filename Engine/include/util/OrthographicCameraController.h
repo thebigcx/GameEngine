@@ -11,9 +11,20 @@
 class OrthographicCameraController : public OrthographicCamera
 {
 public:
-    OrthographicCameraController();
+    OrthographicCameraController() = default;
 
-    void update();
+    void update(float dt);
+
+
+    void setSpeed(float speed)
+    {
+        m_speed = speed;
+    }
+
+    inline constexpr float getSpeed() const noexcept
+    {
+        return m_speed;
+    }
 
 private:
     float m_speed = 1.f;

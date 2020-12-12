@@ -13,7 +13,7 @@ class PerspectiveCameraController : public PerspectiveCamera
 public:
     PerspectiveCameraController();
 
-    void update();
+    void update(float dt);
 
 private:
     float m_speed = 0.1f;

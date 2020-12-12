@@ -73,13 +73,20 @@ public:
 
     enum class DataType
     {
-        Float, Bool, Int, Uint, Double,
-        Vec2,  Vec3, Vec4,
-        iVec2, iVec3, iVec4,
-        dVec2, dVec3, dVec4,
-        uVec2, uVec3, uVec4,
-        bVec2, bVec3, bVec4,
-        Mat3,  Mat4,
-        dMat3, dMat4
+        Float,  Float2,  Float3,  Float4,
+        Int,    Int2,    Int3,    Int4,
+        UInt,   UInt2,   UInt3,   UInt4,
+        Bool,   Bool2,   Bool3,   Bool4,
+        Double, Double2, Double3, Double4,
+
+        Mat2, Mat3, Mat4,
+        Mat2x2, Mat2x3, Mat2x4, 
+        Mat3x2, Mat3x3, Mat3x4, 
+        Mat4x2, Mat4x3, Mat4x4,
+
+        DMat2, DMat3, DMat4,
+        DMat2x2, DMat2x3, DMat2x4, 
+        DMat3x2, DMat3x3, DMat3x4, 
+        DMat4x2, DMat4x3, DMat4x4
     };
 };

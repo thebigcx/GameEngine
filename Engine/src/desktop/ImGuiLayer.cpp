@@ -37,7 +37,7 @@ void ImGuiLayer::onAttach()
 	ImGui_ImplOpenGL3_Init("#version 460");
 }
 
-void ImGuiLayer::onUpdate()
+void ImGuiLayer::onUpdate(float dt)
 {
 
 }

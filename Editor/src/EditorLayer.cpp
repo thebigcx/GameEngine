@@ -9,6 +9,7 @@
 #include <scene/Components.h>
 #include <renderer/Renderer2D.h>
 #include <renderer/Renderer.h>
+#include <renderer/Assets.h>
 
 EditorLayer::EditorLayer()
 {
@@ -17,6 +18,9 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::onAttach()
 {
+    Assets::add<Texture2D>("texture", Texture2D::create("Editor/assets/texture.png"));
+    Assets::add<Texture2D>("texture_1", Texture2D::create("Editor/assets/texture_1.png"));
+    Assets::add<Texture2D>("texture_2", Texture2D::create("Editor/assets/texture_2.png"));
     m_scene = createShared<Scene>();
 
     m_sceneHeirarchy.setContext(m_scene);
@@ -25,16 +29,21 @@ void EditorLayer::onAttach()
     m_camera.setPosition(math::vec2(0, 0));
 }
 
-void EditorLayer::onUpdate()
+void EditorLayer::onUpdate(float dt)
 {
     m_framebuffer->resize(m_viewportSize.x, m_viewportSize.y);
+
+    m_camera.update(dt);
 
     m_framebuffer->bind();
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
     Renderer2D::beginScene(m_camera);
-    Renderer2D::renderQuad(math::vec2(100, 100), math::vec2(100, 100), math::vec4(1, 0, 0, 1));
+    //Renderer2D::renderSprite(Assets::get<Texture2D>("texture"), math::vec2(0, 0), math::vec2(100, 100));
+    Renderer2D::renderSprite(Assets::get<Texture2D>("texture_1"), math::vec2(200, 0), math::vec2(200, 200));
+    //Renderer2D::renderQuad(math::vec2(100, 100), math::vec2(100, 100), math::vec4(1, 0, 0, 1));
+    Renderer2D::renderSprite(Assets::get<Texture2D>("texture_2"), math::vec2(0, 200), math::vec2(200, 200));
     Renderer2D::endScene();
 
     m_scene->onUpdate();
@@ -60,6 +69,7 @@ void EditorLayer::onImGuiRender()
     ImGui::Begin("Window", &dockspaceOpen, windowFlags);
     ImGui::DockSpace(ImGui::GetID("MyDockSpace"), ImVec2(0.f, 0.f), ImGuiDockNodeFlags_None);
 
+    ImGui::SetNextWindowSize(ImVec2{1280, 720});
     ImGui::Begin("Viewport");
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();

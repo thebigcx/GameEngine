@@ -17,7 +17,7 @@ public:
 
     void onAttach() override;
     void onDetach() override;
-    void onUpdate() override;
+    void onUpdate(float dt) override;
     void onImGuiRender() override;
     void onEvent(Event& event) override;
 
