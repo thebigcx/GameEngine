@@ -31,7 +31,8 @@ private:
     friend class EntityView;
 
 public:
-    Entity(EntityRegistry* registry);
+    Entity(EntityRegistry* registry)
+        : m_registry(registry) {}
     ~Entity()
     {
         

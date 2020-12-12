@@ -12,7 +12,7 @@ public:
     Scene();
     ~Scene();
     
-    void onUpdate();
+    void onUpdateEditor(float dt, EditorCamera& camera);
     void onViewportResize(uint32_t width, uint32_t height);
 
     Entity createEntity();
@@ -23,6 +23,13 @@ public:
         return m_registry;
     }
 
+    Entity* getPrimaryCameraEntity();
+    
+    template<typename T>
+    void onComponentAdded(Entity* entity, T& component);
+
 private:
     EntityRegistry m_registry;
+
+    uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 };

@@ -11,6 +11,8 @@ public:
 
     template<typename T, typename F>
     void drawComponent(const std::string& name, Entity* entity, const F& func);
+
+    void drawProperties(Entity* entity);
     
     void setContext(const Shared<Scene>& context)
     {
@@ -21,4 +23,6 @@ public:
 
 private:
     Shared<Scene> m_context;
+
+    Entity* m_selection;
 };

@@ -27,11 +27,7 @@ private:
     Shared<Scene> m_scene;
     Shared<Framebuffer> m_framebuffer;
 
-    Shared<TrueTypeFont> m_font;
-
     math::vec2 m_viewportSize;
-
-    OrthographicCameraController m_camera;
 
     SceneHierarchy m_sceneHeirarchy;
 };

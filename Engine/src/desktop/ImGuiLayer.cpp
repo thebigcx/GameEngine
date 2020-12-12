@@ -19,10 +19,9 @@ void ImGuiLayer::onAttach()
     auto& io = ImGui::GetIO(); (void)io;
 
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.IniFilename = nullptr;
 
-    io.Fonts->AddFontFromFileTTF("Editor/assets/Roboto.ttf", 18.f);
     io.FontDefault = io.Fonts->AddFontFromFileTTF("Editor/assets/Roboto.ttf", 18.f);
 
     ImGui::StyleColorsDark();

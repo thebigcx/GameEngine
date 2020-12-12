@@ -36,16 +36,11 @@ void EditorLayer::onAttach()
     m_sceneHeirarchy.setContext(m_scene);
     m_framebuffer = Framebuffer::create(1280, 720);
     m_viewportSize = math::vec2(1280, 720);
-    m_camera.setPosition(math::vec2(0, 0));
-
-    m_font = TrueTypeFont::create("Editor/assets/minecraftia.ttf", 48);
 }
 
 void EditorLayer::onUpdate(float dt)
 {
     m_framebuffer->resize(m_viewportSize.x, m_viewportSize.y);
-
-    m_camera.update(dt);
 
     m_framebuffer->bind();
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
@@ -101,5 +96,5 @@ void EditorLayer::onViewportResize(WindowResizeEvent& event)
 
 void EditorLayer::onEvent(Event& event)
 {
-    m_camera.onEvent(event);
+    
 }

@@ -12,59 +12,87 @@ SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
 
 void SceneHierarchy::onImGuiRender()
 {
-    ImGui::Begin("Scene Heirarchy");
-
-    
+    ImGui::Begin("Scene Hierarchy");
 
     m_context->getRegistry().each([&](Entity* entity)
     {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
         bool opened = ImGui::TreeNodeEx(entity->getRegistry()->get<TagComponent>(entity).tag.c_str(), flags);
 
+        if (ImGui::IsItemClicked())
+        {
+            if (m_selection == entity)
+            {
+                m_selection = nullptr;
+            }
+            else
+            {
+                m_selection = entity;
+            }
+        }
+
         if (opened)
-        {   
-            ImGui::Button("Add Component");
-            drawComponent<TransformComponent>("Transform", entity, [](auto& component)
-            {
-                ImGui::Text("Transform goes here...");
-            });
-
-            drawComponent<CameraComponent>("Camera", entity, [](auto& component)
-            {
-                ImGui::Checkbox("Primary", &component.primary);
-
-                auto& camera = component.camera;
-
-                if (camera.getProjectionType() == ProjectionType::Orthographic)
-                {
-                    float orthoNear;
-                    if (ImGui::DragFloat("Near", &orthoNear))
-                    {
-
-                    }
-
-                    float orthoFar;
-                    if (ImGui::DragFloat("Far", &orthoFar))
-                    {
-                        
-                    }
-                }
-                else if (camera.getProjectionType() == ProjectionType::Perspective)
-                {
-
-                }
-            });
-
-            drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
-            {
-                ImGui::ColorEdit4("Color", &(component.color.x));
-            });
-
+        {
             ImGui::TreePop();
         }
     });
 
     ImGui::End();
+
+    ImGui::Begin("Properties");
+
+    m_context->getRegistry().each([&](Entity* entity)
+    {
+        if (m_selection == entity)
+        {
+            drawProperties(entity);
+        }
+    });
+
+    ImGui::ShowDemoWindow();
+
+    ImGui::End();
+    
+}
+
+void SceneHierarchy::drawProperties(Entity* entity)
+{
+    ImGui::Button("Add Component");
+    drawComponent<TransformComponent>("Transform", entity, [](auto& component)
+    {
+        ImGui::Text("Transform goes here...");
+    });
+
+    drawComponent<CameraComponent>("Camera", entity, [](auto& component)
+    {
+        ImGui::Checkbox("Primary", &component.primary);
+
+        auto& camera = component.camera;
+
+        if (camera.getProjectionType() == ProjectionType::Orthographic)
+        {
+            float orthoNear;
+            if (ImGui::DragFloat("Near", &orthoNear))
+            {
+
+            }
+
+            float orthoFar;
+            if (ImGui::DragFloat("Far", &orthoFar))
+            {
+                
+            }
+        }
+        else if (camera.getProjectionType() == ProjectionType::Perspective)
+        {
+
+        }
+    });
+
+    drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
+    {
+        ImGui::ColorEdit4("Color", &(component.color.x));
+    });
 }
 
 template<typename T, typename F>
