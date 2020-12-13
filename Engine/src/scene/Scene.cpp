@@ -29,9 +29,10 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
     Renderer2D::endScene();
 }
 
-SceneEntity Scene::createEntity()
+SceneEntity Scene::createEntity(const std::string& name)
 {
     auto entity = m_registry.create();
+    m_registry.emplace<TagComponent>(entity, name);
     return SceneEntity(entity, this);
 }
 
@@ -43,17 +44,6 @@ void Scene::destroyEntity(SceneEntity& entity)
 
 void Scene::onUpdateRuntime(float dt)
 {
-    /*m_registry.view<NativeScriptComponent>().each<NativeScriptComponent>([&](auto& entity, NativeScriptComponent& script)
-    {
-        if (!script.instance)
-        {
-            script.instance = script.instantiateScript();
-            script.instance->m_entity = entity;
-            script.instance->onCreate();
-        }
-
-        script.instance->onUpdate(dt);
-    });*/
     auto view = m_registry.view<NativeScriptComponent>();
     for (auto& entity : view)
     {

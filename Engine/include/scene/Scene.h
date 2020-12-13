@@ -19,7 +19,7 @@ public:
 
     void onViewportResize(uint32_t width, uint32_t height);
 
-    SceneEntity createEntity();
+    SceneEntity createEntity(const std::string& name);
     void destroyEntity(SceneEntity& entity);
 
     EntityRegistry& getRegistry()

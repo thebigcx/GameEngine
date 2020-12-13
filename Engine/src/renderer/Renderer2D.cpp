@@ -3,6 +3,7 @@
 #include <renderer/MeshFactory.h>
 #include <renderer/shader/ShaderFactory.h>
 #include <maths/matrix/matrix_transform.h>
+#include <maths/matrix/matrix_func.h>
 #include <renderer/RenderCommand.h>
 
 #include <GL/glew.h>
@@ -107,7 +108,7 @@ void Renderer2D::beginScene(EditorCamera& camera)
 void Renderer2D::beginScene(Camera& camera, const math::mat4& transform)
 {
     s_data.matrixData->setData(math::buffer(camera.getProjection()), sizeof(math::mat4), 0);
-    s_data.matrixData->setData(math::buffer(transform), sizeof(math::mat4), sizeof(math::mat4));
+    s_data.matrixData->setData(math::buffer(math::inverse<float>(transform)), sizeof(math::mat4), sizeof(math::mat4));
 
     startBatch();
 }

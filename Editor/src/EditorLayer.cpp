@@ -22,22 +22,22 @@ void EditorLayer::onAttach()
     Assets::add<Texture2D>("texture_1", Texture2D::create("Editor/assets/texture_1.png"));
     Assets::add<Texture2D>("texture_2", Texture2D::create("Editor/assets/texture_2.png"));
 
-    m_scene = createShared<Scene>();
-
-    // TEMP
-    auto entity1 = m_scene->getRegistry().create();
-    m_scene->getRegistry().emplace<TagComponent>(entity1, "Square");
-    m_scene->getRegistry().emplace<SpriteRendererComponent>(entity1);
-    m_scene->getRegistry().emplace<TransformComponent>(entity1, math::vec3(100, 100, 0), math::vec3(0), math::vec3(200));
-
-    auto entity2 = m_scene->getRegistry().create();
-    m_scene->getRegistry().emplace<TagComponent>(entity2, "Camera");
-    m_scene->getRegistry().emplace<TransformComponent>(entity2);
-    m_scene->getRegistry().emplace<CameraComponent>(entity2);
-
-    m_sceneHeirarchy.setContext(m_scene);
     m_framebuffer = Framebuffer::create(1280, 720);
     m_viewportSize = math::vec2(1280, 720);
+
+    m_scene = createShared<Scene>();
+    m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
+
+    m_sceneHeirarchy.setContext(m_scene);
+
+    // TEMP
+    auto entity1 = m_scene->createEntity("Square");
+    entity1.addComponent<SpriteRendererComponent>();
+    entity1.addComponent<TransformComponent>(math::vec3(100, 100, 0), math::vec3(0), math::vec3(200));
+
+    auto entity2 = m_scene->createEntity("Camera");
+    entity2.addComponent<TransformComponent>();
+    entity2.addComponent<CameraComponent>();
 }
 
 void EditorLayer::onUpdate(float dt)
@@ -56,7 +56,7 @@ void EditorLayer::onUpdate(float dt)
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
 
-    if (Input::isKeyPressed(Key::LeftShift))
+    if (Input::isKeyPressed(Key::LeftAlt))
     {
         m_scene->onUpdateRuntime(dt);
     }

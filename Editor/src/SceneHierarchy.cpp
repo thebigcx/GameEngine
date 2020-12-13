@@ -52,8 +52,7 @@ void SceneHierarchy::onImGuiRender()
     {
         if (ImGui::MenuItem("Create Empty Entity"))
         {
-            auto entity = m_context->getRegistry().create();
-            m_context->getRegistry().emplace<TagComponent>(entity, "Untitled Entity");
+            m_context->createEntity("Untitled Entity");
         }
 
         ImGui::EndPopup();
