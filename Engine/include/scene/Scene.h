@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <scene/ecs/Registry.h>
+#include <scene/EditorCamera.h>
 
 class Entity;
 

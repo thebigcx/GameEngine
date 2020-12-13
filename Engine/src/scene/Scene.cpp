@@ -1,5 +1,6 @@
 #include <scene/Scene.h>
 #include <scene/Components.h>
+#include <renderer/Renderer2D.h>
 
 Scene::Scene()
 {
@@ -13,7 +14,17 @@ Scene::~Scene()
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
-    
+    //Renderer2D::beginScene(camera);
+    OrthographicCamera cam;
+    Renderer2D::beginScene(cam);
+
+    auto view = m_registry.view<SpriteRendererComponent, TransformComponent>();
+    for (auto& entity : view)
+    {
+        Renderer2D::renderQuad(view.get<TransformComponent>(entity).getTransform(), view.get<SpriteRendererComponent>(entity).color);
+    }
+
+    Renderer2D::endScene();
 }
 
 Entity* Scene::getPrimaryCameraEntity()

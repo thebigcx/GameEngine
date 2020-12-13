@@ -29,5 +29,7 @@ private:
 
     math::vec2 m_viewportSize;
 
+    EditorCamera m_editorCamera;
+
     SceneHierarchy m_sceneHeirarchy;
 };

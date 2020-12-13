@@ -14,6 +14,11 @@ public:
 
     void setViewportSize(uint32_t width, uint32_t height);
 
+    float getNear() const { return m_near; }
+    float getFar() const { return m_far; }
+    void setNear(float near) { m_near = near; }
+    void setFar(float far) { m_far = far; }
+
     math::vec3 getRightDirection();
 
     inline constexpr const math::mat4& getProjectionMatrix() const noexcept
@@ -26,8 +31,6 @@ public:
         return m_view;
     }
 
-    math::mat4 getViewMatrix();
-
     math::vec2 panSpeed() const;
 
     void updateProjection();
@@ -38,7 +41,7 @@ private:
 
     float m_fov, m_aspect, m_near, m_far;
 
-    math::vec2 m_viewportSize;
+    math::uvec2 m_viewportSize;
 
     float m_distance;
 

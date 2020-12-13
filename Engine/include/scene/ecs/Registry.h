@@ -56,6 +56,16 @@ public:
         {
             delete component.second;
         }
+
+        for (unsigned int i = 0; i < m_entities.size(); i++)
+        {
+            if (&m_entities[i] == entity)
+            {
+                m_entities.erase(m_entities.begin() + i);
+            }
+        }
+
+        entity = nullptr;
     }
 
     template<typename T>
@@ -63,7 +73,7 @@ public:
     {
         if (has<T>(entity))
         {
-            Logger::getCoreLogger()->error("Entity already has specified component.");
+            Logger::getCoreLogger()->warn("Entity already has specified component.");
         }
         else
         {
@@ -78,7 +88,7 @@ public:
     {
         if (has<T>(entity))
         {
-            Logger::getCoreLogger()->error("Entity already has specified component.");
+            Logger::getCoreLogger()->warn("Entity already has specified component.");
         }
         else
         {
@@ -194,13 +204,28 @@ public:
         m_entities.clear();
     }
 
-    template<typename T>
+    /*template<typename T>
     EntityView view()
     {
         std::vector<Entity*> entities;
         for (auto& entity : m_entities)
         {
             if (has<T>(&entity))
+            {
+                entities.push_back(&entity);
+            }
+        }
+
+        return EntityView(entities);
+    }*/
+
+    template<typename... Components>
+    EntityView view()
+    {
+        std::vector<Entity*> entities;
+        for (auto& entity : m_entities)
+        {
+            if (has<Components...>(&entity))
             {
                 entities.push_back(&entity);
             }

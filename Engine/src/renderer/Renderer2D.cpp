@@ -90,8 +90,16 @@ void Renderer2D::beginScene(OrthographicCamera& camera)
     s_data.camera = &camera;
     s_data.drawCalls = 0;
 
-    s_data.matrixData->setData(math::buffer(s_data.camera->getProjectionMatrix()), sizeof(math::mat4), 0);
-    s_data.matrixData->setData(math::buffer(s_data.camera->getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
+    s_data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
+    s_data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
+
+    startBatch();
+}
+
+void Renderer2D::beginScene(EditorCamera& camera)
+{
+    s_data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
+    s_data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
 
     startBatch();
 }

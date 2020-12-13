@@ -45,6 +45,11 @@ void EditorCamera::setViewportSize(uint32_t width, uint32_t height)
     m_viewportSize = { width, height };
 }
 
+math::vec3 EditorCamera::getRightDirection()
+{
+    
+}
+
 void EditorCamera::updateView()
 {
     m_view = math::lookAt(m_position, m_position + m_focalPoint, m_up);

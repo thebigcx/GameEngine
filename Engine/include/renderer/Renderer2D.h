@@ -10,6 +10,7 @@
 #include <renderer/Framebuffer.h>
 #include <maths/rect.h>
 #include <util/OrthographicCamera.h>
+#include <scene/EditorCamera.h>
 
 struct QuadVertex
 {
@@ -77,6 +78,7 @@ public:
     static void flushBatch();
 
     static void beginScene(OrthographicCamera& camera);
+    static void beginScene(EditorCamera& camera);
 
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color);

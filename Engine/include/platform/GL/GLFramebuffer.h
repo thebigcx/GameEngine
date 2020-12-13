@@ -15,6 +15,15 @@ public:
     void bind() const override;
     void unbind() const override;
 
+    inline uint32_t getWidth() const override
+    {
+        return m_width;
+    }
+    inline uint32_t getHeight() const override
+    {
+        return m_height;
+    }
+
     inline uint32_t getColorAttachment() const override
     {
         return m_colorAttachment;

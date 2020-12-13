@@ -29,7 +29,7 @@ void EditorLayer::onAttach()
 
     auto entity2 = m_scene->getRegistry().create();
     m_scene->getRegistry().emplace<TagComponent>(entity2, "Entity 2");
-    m_scene->getRegistry().emplace<TransformComponent>(entity2, math::vec3(100, 100, 0), math::vec3(0), math::vec3(2));
+    m_scene->getRegistry().emplace<TransformComponent>(entity2, math::vec3(100, 100, 0), math::vec3(0), math::vec3(200));
     m_scene->getRegistry().emplace<CameraComponent>(entity2);
     m_scene->getRegistry().emplace<SpriteRendererComponent>(entity2);
 
@@ -40,13 +40,20 @@ void EditorLayer::onAttach()
 
 void EditorLayer::onUpdate(float dt)
 {
-    m_framebuffer->resize(m_viewportSize.x, m_viewportSize.y);
+    m_editorCamera.onUpdate(dt);
+
+    if (m_framebuffer->getWidth() != m_viewportSize.x || m_framebuffer->getHeight() != m_viewportSize.y)
+    {
+        m_editorCamera.setViewportSize(m_viewportSize.x, m_viewportSize.y);
+        m_framebuffer->resize(m_viewportSize.x, m_viewportSize.y);
+    }
+    
 
     m_framebuffer->bind();
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
-    m_scene->onUpdate();
+    m_scene->onUpdateEditor(dt, m_editorCamera);
 
     m_framebuffer->unbind();
 }
@@ -96,5 +103,5 @@ void EditorLayer::onViewportResize(WindowResizeEvent& event)
 
 void EditorLayer::onEvent(Event& event)
 {
-    
+    m_editorCamera.onEvent(event);
 }

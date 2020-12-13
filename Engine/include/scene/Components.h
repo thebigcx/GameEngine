@@ -5,9 +5,13 @@
 #include <util/Transform.h>
 #include <util/OrthographicCameraController.h>
 #include <scene/SceneCamera.h>
+#include <scene/ScriptableEntity.h>
 
 struct TransformComponent
 {
+    TransformComponent()
+        : scale(1.f) {}
+
     TransformComponent(const math::vec3& translation, const math::vec3& rotation, const math::vec3& scale)
         : translation(translation), rotation(rotation), scale(scale) {}
 
@@ -39,4 +43,27 @@ struct CameraComponent
 struct SpriteRendererComponent
 {
     math::vec4 color = { 1.f, 1.f, 1.f, 1.f };
+};
+
+struct NativeScriptComponent
+{
+    ScriptableEntity* instance = nullptr;
+
+    ScriptableEntity*(*instantiateScript)();
+    void (*destroyScript)(NativeScriptComponent*);
+
+    template<typename T>
+    void bind()
+    {
+        instantiateScript = []()
+        {
+            return static_cast<ScriptableEntity*>(new T());
+        };
+
+        destroyScript = [](NativeScriptComponent* component)
+        {
+            delete component->instance;
+            component->instance = nullptr;
+        };
+    }
 };

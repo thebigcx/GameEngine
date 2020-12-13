@@ -18,12 +18,32 @@ public:
         return m_projectionType;
     }
 
+    inline void setProjectionType(ProjectionType type)
+    {
+        m_projectionType = type;
+        calculateProjection();
+    }
+
     void setOrthographic(float size, float near, float far);
     void setPerspective(float verticalFov, float near, float far);
 
     void calculateProjection();
 
     void setViewportSize(uint32_t width, uint32_t height);
+
+    float getOrthoSize() const { return m_orthoSize; }
+    float getOrthoNear() const { return m_orthoNear; }
+    float getOrthoFar() const { return m_orthoFar; }
+    void setOrthoSize(float size) { m_orthoSize = size; }
+    void setOrthoNear(float near) { m_orthoNear = near; }
+    void setOrthoFar(float far) { m_orthoFar = far; }
+
+    float getPerspectiveFov() const { return m_perspectiveFov; }
+    float getPerspectiveNear() const { return m_perspectiveNear; }
+    float getPerspectiveFar() const { return m_perspectiveFar; }
+    void setPerspectiveFov(float fov) { m_perspectiveFov = fov; }
+    void setPerspectiveNear(float near) { m_perspectiveNear = near; }
+    void setPerspectiveFar(float far) { m_perspectiveFar = far; }
 
 private:
     ProjectionType m_projectionType = ProjectionType::Orthographic;
