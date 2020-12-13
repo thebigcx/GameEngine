@@ -79,6 +79,7 @@ public:
 
     static void beginScene(OrthographicCamera& camera);
     static void beginScene(EditorCamera& camera);
+    static void beginScene(Camera& camera, const math::mat4& transform);
 
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color);

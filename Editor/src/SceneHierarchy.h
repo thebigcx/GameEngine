@@ -2,6 +2,7 @@
 
 #include <scene/Scene.h>
 #include <core/Core.h>
+#include <scene/SceneEntity.h>
 
 class SceneHierarchy
 {
@@ -10,9 +11,9 @@ public:
     SceneHierarchy(const Shared<Scene>& scene);
 
     template<typename T, typename F>
-    void drawComponent(const std::string& name, Entity* entity, const F& func);
+    void drawComponent(const std::string& name, SceneEntity& entity, const F& func);
 
-    void drawProperties(Entity* entity);
+    void drawProperties(SceneEntity& entity);
     
     void setContext(const Shared<Scene>& context)
     {
@@ -24,5 +25,5 @@ public:
 private:
     Shared<Scene> m_context;
 
-    Entity* m_selection;
+    SceneEntity m_selection;
 };

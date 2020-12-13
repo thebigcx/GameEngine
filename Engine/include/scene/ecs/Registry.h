@@ -22,6 +22,9 @@ public:
         return static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value;
     }
 
+    template<typename T, typename Func>
+    void each(const Func& func);
+
     std::vector<Entity*>::iterator begin() { return m_entities.begin(); }
     std::vector<Entity*>::iterator end()   { return m_entities.end(); }
     std::vector<Entity*>::const_iterator begin() const { return m_entities.begin(); }

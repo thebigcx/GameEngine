@@ -24,14 +24,16 @@ void EditorLayer::onAttach()
 
     m_scene = createShared<Scene>();
 
+    // TEMP
     auto entity1 = m_scene->getRegistry().create();
-    m_scene->getRegistry().emplace<TagComponent>(entity1, "Entity 1");
+    m_scene->getRegistry().emplace<TagComponent>(entity1, "Square");
+    m_scene->getRegistry().emplace<SpriteRendererComponent>(entity1);
+    m_scene->getRegistry().emplace<TransformComponent>(entity1, math::vec3(100, 100, 0), math::vec3(0), math::vec3(200));
 
     auto entity2 = m_scene->getRegistry().create();
-    m_scene->getRegistry().emplace<TagComponent>(entity2, "Entity 2");
-    m_scene->getRegistry().emplace<TransformComponent>(entity2, math::vec3(100, 100, 0), math::vec3(0), math::vec3(200));
+    m_scene->getRegistry().emplace<TagComponent>(entity2, "Camera");
+    m_scene->getRegistry().emplace<TransformComponent>(entity2);
     m_scene->getRegistry().emplace<CameraComponent>(entity2);
-    m_scene->getRegistry().emplace<SpriteRendererComponent>(entity2);
 
     m_sceneHeirarchy.setContext(m_scene);
     m_framebuffer = Framebuffer::create(1280, 720);
@@ -53,7 +55,17 @@ void EditorLayer::onUpdate(float dt)
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
-    m_scene->onUpdateEditor(dt, m_editorCamera);
+
+    if (Input::isKeyPressed(Key::LeftShift))
+    {
+        m_scene->onUpdateRuntime(dt);
+    }
+    else
+    {
+        m_scene->onUpdateEditor(dt, m_editorCamera);
+    }
+    
+    //m_scene->onUpdateEditor(dt, m_editorCamera);
 
     m_framebuffer->unbind();
 }
@@ -103,5 +115,7 @@ void EditorLayer::onViewportResize(WindowResizeEvent& event)
 
 void EditorLayer::onEvent(Event& event)
 {
+    EventDispatcher dispatcher(event);
+    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(EditorLayer::onViewportResize));
     m_editorCamera.onEvent(event);
 }

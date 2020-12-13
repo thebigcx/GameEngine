@@ -34,16 +34,16 @@ public:
     float getOrthoSize() const { return m_orthoSize; }
     float getOrthoNear() const { return m_orthoNear; }
     float getOrthoFar() const { return m_orthoFar; }
-    void setOrthoSize(float size) { m_orthoSize = size; }
-    void setOrthoNear(float near) { m_orthoNear = near; }
-    void setOrthoFar(float far) { m_orthoFar = far; }
+    void setOrthoSize(float size) { m_orthoSize = size; calculateProjection(); }
+    void setOrthoNear(float near) { m_orthoNear = near; calculateProjection(); }
+    void setOrthoFar(float far) { m_orthoFar = far; calculateProjection(); }
 
     float getPerspectiveFov() const { return m_perspectiveFov; }
     float getPerspectiveNear() const { return m_perspectiveNear; }
     float getPerspectiveFar() const { return m_perspectiveFar; }
-    void setPerspectiveFov(float fov) { m_perspectiveFov = fov; }
-    void setPerspectiveNear(float near) { m_perspectiveNear = near; }
-    void setPerspectiveFar(float far) { m_perspectiveFar = far; }
+    void setPerspectiveFov(float fov) { m_perspectiveFov = fov; calculateProjection(); }
+    void setPerspectiveNear(float near) { m_perspectiveNear = near; calculateProjection(); }
+    void setPerspectiveFar(float far) { m_perspectiveFar = far; calculateProjection(); }
 
 private:
     ProjectionType m_projectionType = ProjectionType::Orthographic;

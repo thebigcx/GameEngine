@@ -6,6 +6,7 @@
 #include <scene/EditorCamera.h>
 
 class Entity;
+class SceneEntity;
 
 class Scene
 {
@@ -14,20 +15,22 @@ public:
     ~Scene();
     
     void onUpdateEditor(float dt, EditorCamera& camera);
+    void onUpdateRuntime(float dt);
+
     void onViewportResize(uint32_t width, uint32_t height);
 
-    Entity createEntity();
-    void destroyEntity(Entity entity);
+    SceneEntity createEntity();
+    void destroyEntity(SceneEntity& entity);
 
     EntityRegistry& getRegistry()
     {
         return m_registry;
     }
 
-    Entity* getPrimaryCameraEntity();
+    SceneEntity getPrimaryCameraEntity();
     
     template<typename T>
-    void onComponentAdded(Entity* entity, T& component);
+    void onComponentAdded(SceneEntity& entity, T& component);
 
 private:
     EntityRegistry m_registry;

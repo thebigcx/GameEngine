@@ -3,6 +3,7 @@
 #include <imgui/imgui.h>
 
 #include <scene/Components.h>
+#include <scene/SceneEntity.h>
 
 SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
     : m_context(scene)
@@ -14,10 +15,11 @@ void SceneHierarchy::onImGuiRender()
 {
     ImGui::Begin("Scene Hierarchy");
 
-    m_context->getRegistry().each([&](Entity* entity)
+    m_context->getRegistry().each([&](Entity* entityHandle)
     {
+        SceneEntity entity = { entityHandle, m_context.get() };
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
-        bool opened = ImGui::TreeNodeEx(entity->getRegistry()->get<TagComponent>(entity).tag.c_str(), flags);
+        bool opened = ImGui::TreeNodeEx(entity.getComponent<TagComponent>().tag.c_str(), flags);
 
         bool deleted = false;
         if (ImGui::BeginPopupContextItem())
@@ -32,14 +34,7 @@ void SceneHierarchy::onImGuiRender()
 
         if (ImGui::IsItemClicked())
         {
-            if (m_selection == entity)
-            {
-                m_selection = nullptr;
-            }
-            else
-            {
-                m_selection = entity;
-            }
+            m_selection = entity;
         }
 
         if (opened)
@@ -49,7 +44,7 @@ void SceneHierarchy::onImGuiRender()
 
         if (deleted)
         {
-            m_context->getRegistry().destroy(entity);
+            m_context->destroyEntity(entity);
         }
     });
 
@@ -68,21 +63,16 @@ void SceneHierarchy::onImGuiRender()
 
     ImGui::Begin("Properties");
 
-    m_context->getRegistry().each([&](Entity* entity)
+    if (m_selection)
     {
-        if (m_selection == entity)
-        {
-            drawProperties(entity);
-        }
-    });
+        drawProperties(m_selection);
+    }
 
     ImGui::End();
-
-    ImGui::ShowDemoWindow();
     
 }
 
-void SceneHierarchy::drawProperties(Entity* entity)
+void SceneHierarchy::drawProperties(SceneEntity& entity)
 {
     if (ImGui::Button("Add Component"))
     {
@@ -93,19 +83,19 @@ void SceneHierarchy::drawProperties(Entity* entity)
     {
         if (ImGui::MenuItem("Transform Component"))
         {
-            m_context->getRegistry().emplace<TransformComponent>(entity);
+            entity.addComponent<TransformComponent>();
             ImGui::CloseCurrentPopup();
         }
 
         if (ImGui::MenuItem("Sprite Renderer"))
         {
-            m_context->getRegistry().emplace<SpriteRendererComponent>(entity);
+            entity.addComponent<SpriteRendererComponent>();
             ImGui::CloseCurrentPopup();
         }
 
         if (ImGui::MenuItem("Camera Component"))
         {
-            m_context->getRegistry().emplace<CameraComponent>(entity);
+            entity.addComponent<CameraComponent>();
             ImGui::CloseCurrentPopup();
         }
 
@@ -159,30 +149,42 @@ void SceneHierarchy::drawProperties(Entity* entity)
         if (camera.getProjectionType() == ProjectionType::Orthographic)
         {
             float size = camera.getOrthoSize();
-            ImGui::DragFloat("Size", &size);
-            camera.setOrthoSize(size);
+            if (ImGui::DragFloat("Size", &size))
+            {
+                camera.setOrthoSize(size);
+            }
 
             float near = camera.getOrthoNear();
-            ImGui::DragFloat("Near", &near);
-            camera.setOrthoNear(near);
+            if (ImGui::DragFloat("Near", &near))
+            {
+                camera.setOrthoNear(near);
+            }
 
             float far = camera.getOrthoFar();
-            ImGui::DragFloat("Far", &far);
-            camera.setOrthoFar(far);
+            if (ImGui::DragFloat("Far", &far))
+            {
+                camera.setOrthoFar(far);
+            }
         }
         else if (camera.getProjectionType() == ProjectionType::Perspective)
         {
             float fov = camera.getPerspectiveFov();
-            ImGui::DragFloat("FOV", &fov);
-            camera.setPerspectiveFov(fov);
+            if (ImGui::DragFloat("FOV", &fov))
+            {
+                camera.setPerspectiveFov(fov);
+            }
 
             float near = camera.getPerspectiveNear();
-            ImGui::DragFloat("Near", &near);
-            camera.setPerspectiveNear(near);
+            if (ImGui::DragFloat("Near", &near))
+            {
+                camera.setPerspectiveNear(near);
+            }
 
             float far = camera.getPerspectiveFar();
-            ImGui::DragFloat("Far", &far);
-            camera.setPerspectiveFar(far);
+            if (ImGui::DragFloat("Far", &far))
+            {
+                camera.setPerspectiveFar(far);
+            }
         }
     });
 
@@ -193,14 +195,14 @@ void SceneHierarchy::drawProperties(Entity* entity)
 }
 
 template<typename T, typename F>
-void SceneHierarchy::drawComponent(const std::string& name, Entity* entity, const F& func)
+void SceneHierarchy::drawComponent(const std::string& name, SceneEntity& entity, const F& func)
 {
-    if (!entity->getRegistry()->has<T>(entity))
+    if (!entity.hasComponent<T>())
     {
         return;
     }
 
-    auto& component = entity->getRegistry()->get<T>(entity);
+    auto& component = entity.getComponent<T>();
 
     float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.f;
     auto available = ImGui::GetContentRegionAvail();
@@ -235,6 +237,6 @@ void SceneHierarchy::drawComponent(const std::string& name, Entity* entity, cons
 
     if (deleted)
     {
-        m_context->getRegistry().remove<T>(entity);
+        entity.removeComponent<T>();
     }
 }

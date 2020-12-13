@@ -1,6 +1,6 @@
 #pragma once
 
-#include <scene/ecs/Entity.h>
+#include <scene/SceneEntity.h>
 
 class ScriptableEntity
 {
@@ -10,7 +10,7 @@ public:
     template<typename T>
     T& getComponent()
     {
-        return m_entity->getRegistry()->get<T>(m_entity);
+        return m_entity.getComponent<T>();
     }
 
 protected:
@@ -19,6 +19,6 @@ protected:
     virtual void onUpdate(float dt) {}
 
 private:
-    Entity* m_entity;
+    SceneEntity m_entity;
     friend class Scene;
 };
