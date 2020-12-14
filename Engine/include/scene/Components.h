@@ -8,6 +8,7 @@
 #include <scene/ScriptableEntity.h>
 #include <renderer/Texture2D.h>
 #include <renderer/text/TrueTypeFont.h>
+#include <renderer/Mesh.h>
 
 struct TransformComponent
 {
@@ -79,4 +80,9 @@ struct NativeScriptComponent
             component->instance = nullptr;
         };
     }
+};
+
+struct MeshComponent
+{
+    Shared<Mesh> mesh;
 };

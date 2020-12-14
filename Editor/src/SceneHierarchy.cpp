@@ -195,7 +195,15 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
     drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
     {
         ImGui::ColorEdit4("Color", &(component.color.x));
-        ImGui::Text("File selection window goes here...");
+        //ImGui::Text("File selection window goes here...");
+        char buf[128];
+        strcpy(buf, component.texture->getPath().c_str());
+        ImGui::InputText("Texture Path", buf, 128);
+
+        if (std::string(buf) != component.texture->getPath())
+        {
+            component.texture = Texture2D::create(std::string(buf));
+        }
 
         ImGui::Checkbox("Using Texture Region", &component.usingTexRect);
         ImGui::DragFloat("X", &component.textureRect.x);

@@ -18,13 +18,13 @@ Scene::~Scene()
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
-    //Renderer2D::beginScene(camera);
+    Renderer2D::beginScene(camera);
     //OrthographicCamera cam;
     //Renderer2D::beginScene(cam);
-    auto cam = getPrimaryCameraEntity();
-    if (cam)
+    //auto cam = getPrimaryCameraEntity();
+    //if (cam)
     {
-        Renderer2D::beginScene(cam.getComponent<CameraComponent>().camera, cam.getComponent<TransformComponent>().getTransform());
+        //Renderer2D::beginScene(cam.getComponent<CameraComponent>().camera, cam.getComponent<TransformComponent>().getTransform());
 
         this->render2DEntities();
 

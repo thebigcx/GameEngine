@@ -43,6 +43,7 @@ void EditorCamera::onEvent(Event& event)
 void EditorCamera::setViewportSize(uint32_t width, uint32_t height)
 {
     m_viewportSize = { width, height };
+    updateProjection();
 }
 
 math::vec3 EditorCamera::getRightDirection()
@@ -52,12 +53,14 @@ math::vec3 EditorCamera::getRightDirection()
 
 void EditorCamera::updateView()
 {
-    m_view = math::lookAt(m_position, m_position + m_focalPoint, m_up);
+    //m_position = calculatePosition();
+
+
 }
 
 void EditorCamera::updateProjection()
 {
-    m_aspect = m_viewportSize.x / m_viewportSize.y;
+    m_aspect = static_cast<float>(m_viewportSize.x) / static_cast<float>(m_viewportSize.y);
     m_projection = math::perspective(static_cast<float>(math::radians(m_fov)), m_aspect, m_near, m_far);
 }
 

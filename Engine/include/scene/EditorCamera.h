@@ -2,6 +2,7 @@
 
 #include <util/Camera.h>
 #include <events/Event.h>
+#include <maths/quat/quat.h>
 
 class EditorCamera : public Camera
 {
