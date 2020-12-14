@@ -6,6 +6,8 @@
 #include <util/OrthographicCameraController.h>
 #include <scene/SceneCamera.h>
 #include <scene/ScriptableEntity.h>
+#include <renderer/Texture2D.h>
+#include <renderer/text/TrueTypeFont.h>
 
 struct TransformComponent
 {
@@ -43,6 +45,17 @@ struct CameraComponent
 struct SpriteRendererComponent
 {
     math::vec4 color = { 1.f, 1.f, 1.f, 1.f };
+    Shared<Texture2D> texture;
+
+    bool usingTexRect = false;
+    math::frect textureRect;
+};
+
+struct TextRendererComponent
+{
+    math::vec4 color;
+    Shared<TrueTypeFont> font;
+    std::string text;
 };
 
 struct NativeScriptComponent

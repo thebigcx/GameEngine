@@ -31,13 +31,57 @@ void EditorLayer::onAttach()
     m_sceneHeirarchy.setContext(m_scene);
 
     // TEMP
+
+    class CameraController : public ScriptableEntity
+    {
+    public:
+        virtual void onCreate() override
+        {
+
+        }
+
+        virtual void onDestroy() override
+        {
+
+        }
+
+        virtual void onUpdate(float dt) override
+        {
+            auto& translation = getComponent<TransformComponent>().translation;
+
+            float speed = 0.5f;
+
+            if (Input::isKeyPressed(Key::A))
+            {
+                translation.x -= speed * dt;
+            }
+            if (Input::isKeyPressed(Key::D))
+            {
+                translation.x += speed * dt;
+            }
+            if (Input::isKeyPressed(Key::W))
+            {
+                translation.y += speed * dt;
+            }
+            if (Input::isKeyPressed(Key::S))
+            {
+                translation.y -= speed * dt;
+            }
+        }
+    };
+
     auto entity1 = m_scene->createEntity("Square");
-    entity1.addComponent<SpriteRendererComponent>();
+    auto& comp = entity1.addComponent<SpriteRendererComponent>();
+    comp.texture = Texture2D::create("Editor/assets/texture.png");
     entity1.addComponent<TransformComponent>(math::vec3(100, 100, 0), math::vec3(0), math::vec3(200));
+
+    entity1.addComponent<NativeScriptComponent>().bind<CameraController>();
 
     auto entity2 = m_scene->createEntity("Camera");
     entity2.addComponent<TransformComponent>();
     entity2.addComponent<CameraComponent>();
+
+    // TEMP
 }
 
 void EditorLayer::onUpdate(float dt)

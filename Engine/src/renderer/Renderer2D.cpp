@@ -154,11 +154,6 @@ void Renderer2D::flushBatch()
     s_data.drawCalls++;
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size)
-{
-    renderSprite(texture, position, size, math::frect(0, 0, texture->getWidth(), texture->getHeight()), 0, math::vec4(1, 1, 1, 1));
-}
-
 void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color)
 {
     renderSprite(texture, position, size, math::frect(0, 0, texture->getWidth(), texture->getHeight()), 0, color);
@@ -230,6 +225,11 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4
     }
 
     s_data.indexCount += 6;
+}
+
+void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform)
+{
+    renderSprite(texture, transform, math::frect(0, 0, texture->getWidth(), texture->getHeight()), math::vec4(1, 1, 1, 1));
 }
 
 void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)

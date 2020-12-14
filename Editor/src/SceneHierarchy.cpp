@@ -68,7 +68,6 @@ void SceneHierarchy::onImGuiRender()
     }
 
     ImGui::End();
-    
 }
 
 void SceneHierarchy::drawProperties(SceneEntity& entity)
@@ -95,6 +94,12 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         if (ImGui::MenuItem("Camera Component"))
         {
             entity.addComponent<CameraComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+
+        if (ImGui::MenuItem("Text Renderer"))
+        {
+            entity.addComponent<TextRendererComponent>();
             ImGui::CloseCurrentPopup();
         }
 
@@ -190,6 +195,24 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
     drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
     {
         ImGui::ColorEdit4("Color", &(component.color.x));
+        ImGui::Text("File selection window goes here...");
+
+        ImGui::Checkbox("Using Texture Region", &component.usingTexRect);
+        ImGui::DragFloat("X", &component.textureRect.x);
+        ImGui::DragFloat("Y", &component.textureRect.y);
+        ImGui::DragFloat("Width", &component.textureRect.width);
+        ImGui::DragFloat("Height", &component.textureRect.height);
+        
+    });
+
+    drawComponent<TextRendererComponent>("Text Renderer", entity, [](auto& component)
+    {
+        ImGui::ColorEdit4("Color", &component.color.x);
+        ImGui::Text("Font selection window goes here...");
+
+        char buf[128];
+        ImGui::InputText("String", buf, 128);
+        component.text = std::string(buf);
     });
 }
 

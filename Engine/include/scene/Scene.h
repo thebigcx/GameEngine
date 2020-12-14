@@ -36,4 +36,6 @@ private:
     EntityRegistry m_registry;
 
     uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
+
+    void render2DEntities();
 };

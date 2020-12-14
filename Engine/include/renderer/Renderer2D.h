@@ -81,13 +81,13 @@ public:
     static void beginScene(EditorCamera& camera);
     static void beginScene(Camera& camera, const math::mat4& transform);
 
-    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size);
-    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color);
+    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(1));
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, math::vec4 color);
     static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color);
-    static void renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform, const math::frect& texRect, const math::vec4& color);
-    
+    static void renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform, const math::frect& texRect, const math::vec4& color = math::vec4(1));
+    static void renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform);
+
     static void renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color);
     static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color);
     static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color, const math::vec2& origin);

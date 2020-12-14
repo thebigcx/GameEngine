@@ -3,6 +3,8 @@
 #include <renderer/Renderer2D.h>
 #include <maths/matrix/matrix_func.h>
 #include <scene/SceneEntity.h>
+#include <renderer/Renderer3D.h>
+#include <renderer/MeshFactory.h>
 
 Scene::Scene()
 {
@@ -17,16 +19,42 @@ Scene::~Scene()
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
     //Renderer2D::beginScene(camera);
-    OrthographicCamera cam;
-    Renderer2D::beginScene(cam);
+    //OrthographicCamera cam;
+    //Renderer2D::beginScene(cam);
+    auto cam = getPrimaryCameraEntity();
+    if (cam)
+    {
+        Renderer2D::beginScene(cam.getComponent<CameraComponent>().camera, cam.getComponent<TransformComponent>().getTransform());
 
+        this->render2DEntities();
+
+        Renderer2D::endScene();
+    }
+        
+}
+
+void Scene::render2DEntities()
+{
     auto view = m_registry.view<SpriteRendererComponent, TransformComponent>();
     for (auto& entity : view)
     {
-        Renderer2D::renderQuad(view.get<TransformComponent>(entity).getTransform(), view.get<SpriteRendererComponent>(entity).color);
+        auto& sprite = view.get<SpriteRendererComponent>(entity);
+        if (sprite.texture != nullptr)
+        {
+            if (sprite.usingTexRect)
+            {
+                Renderer2D::renderSprite(sprite.texture, view.get<TransformComponent>(entity).getTransform(), sprite.textureRect);
+            }
+            else
+            {
+                Renderer2D::renderSprite(sprite.texture, view.get<TransformComponent>(entity).getTransform());
+            }
+        }
+        else
+        {
+            Renderer2D::renderQuad(view.get<TransformComponent>(entity).getTransform(), sprite.color);
+        }
     }
-
-    Renderer2D::endScene();
 }
 
 SceneEntity Scene::createEntity(const std::string& name)
@@ -79,11 +107,7 @@ void Scene::onUpdateRuntime(float dt)
     {
         Renderer2D::beginScene(*camera, transform);
 
-        auto view = m_registry.view<SpriteRendererComponent, TransformComponent>();
-        for (auto& entity : view)
-        {
-            Renderer2D::renderQuad(view.get<TransformComponent>(entity).getTransform(), view.get<SpriteRendererComponent>(entity).color);
-        }
+        this->render2DEntities();
 
         Renderer2D::endScene();
     }
@@ -139,4 +163,16 @@ template<>
 void Scene::onComponentAdded<SpriteRendererComponent>(SceneEntity& entity, SpriteRendererComponent& component)
 {
     
+}
+
+template<>
+void Scene::onComponentAdded<NativeScriptComponent>(SceneEntity& entity, NativeScriptComponent& component)
+{
+
+}
+
+template<>
+void Scene::onComponentAdded<TextRendererComponent>(SceneEntity& entity, TextRendererComponent& component)
+{
+
 }
