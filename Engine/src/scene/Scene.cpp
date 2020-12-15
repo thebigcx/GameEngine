@@ -19,8 +19,6 @@ Scene::~Scene()
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
     Renderer2D::beginScene(camera);
-    //OrthographicCamera cam;
-    //Renderer2D::beginScene(cam);
     //auto cam = getPrimaryCameraEntity();
     //if (cam)
     {

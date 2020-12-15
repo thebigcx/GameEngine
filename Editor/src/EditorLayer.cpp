@@ -24,7 +24,7 @@ void EditorLayer::onAttach()
 
     m_framebuffer = Framebuffer::create(1280, 720);
     m_viewportSize = math::vec2(1280, 720);
-    m_editorCamera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 1000.f);
+    m_editorCamera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
 
     m_scene = createShared<Scene>();
     m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
@@ -74,7 +74,7 @@ void EditorLayer::onAttach()
     auto entity1 = m_scene->createEntity("Square");
     auto& comp = entity1.addComponent<SpriteRendererComponent>();
     comp.texture = Texture2D::create("Editor/assets/texture.png");
-    entity1.addComponent<TransformComponent>(math::vec3(0, 0, 0), math::vec3(0), math::vec3(200));
+    entity1.addComponent<TransformComponent>(math::vec3(0, 0, 0), math::vec3(0), math::vec3(1));
 
     entity1.addComponent<NativeScriptComponent>().bind<CameraController>();
 
