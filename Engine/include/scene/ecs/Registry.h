@@ -18,7 +18,14 @@ public:
     template<typename T>
     T& get(Entity* pEntity)
     {
-        Entity* entity = m_entities[std::find(m_entities.begin(), m_entities.end(), pEntity) - m_entities.begin()];
+        auto it = std::find(m_entities.begin(), m_entities.end(), pEntity);
+
+        if (it == m_entities.end())
+        {
+            Logger::getCoreLogger()->error("Entity does not have specified component! (Registry::view::get)");
+        }
+
+        Entity* entity = m_entities.at(std::distance(m_entities.begin(), it));
         return static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value;
     }
 
@@ -76,7 +83,7 @@ public:
     {
         if (has<T>(entity))
         {
-            Logger::getCoreLogger()->warn("Entity already has specified component.");
+            Logger::getCoreLogger()->warn("Entity already has specified component. (Registry::emplace)");
         }
         else
         {
@@ -91,7 +98,7 @@ public:
     {
         if (has<T>(entity))
         {
-            Logger::getCoreLogger()->warn("Entity already has specified component.");
+            Logger::getCoreLogger()->warn("Entity already has specified component. (Registry::emplace)");
         }
         else
         {
@@ -138,6 +145,11 @@ public:
     template<typename T>
     T& get(Entity* entity)
     {
+        if (!has<T>(entity))
+        {
+            Logger::getCoreLogger()->error("Entity does not have specified component! (Registry::get)");
+        }
+
         return static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value;
     }
 
@@ -170,6 +182,12 @@ public:
     template<typename T, typename F>
     void patch(Entity* entity, F func)
     {
+        if (!has<T>(entity))
+        {
+            Logger::getCoreLogger()->error("Cannot patch a component that does not exist!");
+            return;
+        }
+
         func(static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value);
     }
 

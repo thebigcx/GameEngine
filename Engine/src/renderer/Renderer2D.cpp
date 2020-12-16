@@ -217,7 +217,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4
     {
         math::vec4 pos = transform * math::vec4(s_data.quadPositions[i]);
 
-        s_data.vertexPointer->position = math::vec3(transform * math::vec4(s_data.quadPositions[i]));
+        s_data.vertexPointer->position = math::vec3(transform * math::vec4(s_data.quadPositions[i], 0, 1));
         s_data.vertexPointer->texCoord = texCoords[i];
         s_data.vertexPointer->color = color;
         s_data.vertexPointer->texIndex = textureIndex;

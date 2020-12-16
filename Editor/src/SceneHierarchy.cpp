@@ -18,6 +18,8 @@ void SceneHierarchy::onImGuiRender()
 
     m_context->getRegistry().each([&](Entity* entityHandle)
     {
+        ImGui::PushID(entityHandle);
+
         SceneEntity entity = { entityHandle, m_context.get() };
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
         bool opened = ImGui::TreeNodeEx(entity.getComponent<TagComponent>().tag.c_str(), flags);
@@ -45,8 +47,14 @@ void SceneHierarchy::onImGuiRender()
 
         if (deleted)
         {
+            if (m_selection == entity)
+            {
+                m_selection = SceneEntity::createNull(m_context.get());
+            }
             m_context->destroyEntity(entity);
         }
+
+        ImGui::PopID();
     });
 
     if (ImGui::BeginPopupContextWindow(0, 1, false))
@@ -58,6 +66,16 @@ void SceneHierarchy::onImGuiRender()
 
         ImGui::EndPopup();
     }
+    /*ImGuiPopupFlags flags = ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems;
+    if (ImGui::BeginPopupContextItem(0, flags))
+    {
+        if (ImGui::MenuItem("Create Empty Entity"))
+        {
+            m_context->createEntity("Untitled Entity");
+        }
+
+        ImGui::EndPopup();
+    }*/
 
     ImGui::End();
 
@@ -253,8 +271,17 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
     drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
     {
         ImGui::ColorEdit4("Color", &(component.color.x));
+
+        if (component.texture == nullptr)
+        {
+            component.texture = Texture2D::create(1, 1);
+            uint32_t white = 0xffffffff;
+            component.texture->setData(0, 0, 1, 1, &white);
+        }
+
         char buf[128];
         strcpy(buf, component.texture->getPath().c_str());
+
         ImGui::InputText("Texture Path", buf, 128);
 
         if (std::string(buf) != component.texture->getPath())

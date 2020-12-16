@@ -19,6 +19,8 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::onAttach()
 {
+    Application::get().getWindow().setSize(math::uvec2(1920, 1080));
+
     Assets::add<Texture2D>("texture", Texture2D::create("Editor/assets/texture.png"));
     Assets::add<Texture2D>("texture_1", Texture2D::create("Editor/assets/texture_1.png"));
     Assets::add<Texture2D>("texture_2", Texture2D::create("Editor/assets/texture_2.png"));
@@ -34,7 +36,6 @@ void EditorLayer::onAttach()
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
 
     m_sceneHeirarchy.setContext(m_scene);
-    //m_scene->getMaterials().push_back(Material::create(Renderer3D::data.modelShader));
 
     // TEMP
 
@@ -103,12 +104,6 @@ void EditorLayer::onUpdate(float dt)
     m_framebuffer->bind();
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
     RenderCommand::clear(RenderCommand::defaultClearBits());
-
-    if (Input::isKeyPressed(Key::Space))
-    {
-        m_playingScene = !m_playingScene;
-    }
-
 
     if (m_playingScene)
     {

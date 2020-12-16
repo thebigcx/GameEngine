@@ -5,3 +5,8 @@ SceneEntity::SceneEntity(Entity* entity, Scene* scene)
 {
 
 }
+
+SceneEntity SceneEntity::createNull(Scene* scene)
+{
+    return SceneEntity(nullptr, scene);
+}

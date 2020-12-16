@@ -46,6 +46,8 @@ public:
         return !(*this == other);
     }
 
+    static SceneEntity createNull(Scene* scene);
+
     operator bool() const { return m_entityHandle != nullptr; }
 
 private:

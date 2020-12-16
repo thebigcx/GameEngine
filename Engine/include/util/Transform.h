@@ -10,7 +10,7 @@
 struct Transform
 {
     math::vec3 translation;
-    math::vec3 rotation = 0.f;
+    math::vec3 rotation;
     math::vec3 scale = math::vec3(1.f);
     math::vec3 origin;
 
