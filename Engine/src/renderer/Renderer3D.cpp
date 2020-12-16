@@ -61,6 +61,23 @@ void Renderer3D::beginScene(PerspectiveCamera& camera)
     //data.lightingData->setData(&camPos.x, 16, 48);
 }
 
+void Renderer3D::beginScene(EditorCamera& camera)
+{
+    if (data.sceneStarted)
+    {
+        Logger::getCoreLogger()->error("beginScene() must be called before endScene()!");
+    }
+
+    data.sceneStarted = true;
+    //data.camera = &camera;
+
+    data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
+    data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
+
+    data.modelShader->bind();
+    data.modelShader->setFloat3("cameraPos", camera.calculatePosition());
+}
+
 void Renderer3D::endScene()
 {
     data.sceneStarted = false;
@@ -82,9 +99,8 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
 
     RenderCommand::setDepthTesting(true);
 
-    mesh->material->bind();
-    mesh->material->getShader()->setMatrix4("transform", transform);
-    mesh->material->getShader()->setFloat("material.shininess", mesh->material->shininess);
+    mesh->materials[0]->bind();
+    mesh->materials[0]->getShader()->setMatrix4("transform", transform);
 
     mesh->vertexArray->bind();
 
@@ -102,9 +118,8 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
 
     for (auto& mesh : model->meshes)
     {
-        mesh->material->bind();
-        mesh->material->getShader()->setMatrix4("transform", transform);
-        mesh->material->getShader()->setFloat("material.shininess", mesh->material->shininess);
+        mesh->materials[0]->bind();
+        mesh->materials[0]->getShader()->setMatrix4("transform", transform);
 
         mesh->vertexArray->bind();
 

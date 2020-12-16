@@ -4,6 +4,7 @@
 
 #include <scene/Components.h>
 #include <scene/SceneEntity.h>
+#include <renderer/Model.h>
 
 SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
     : m_context(scene)
@@ -68,6 +69,20 @@ void SceneHierarchy::onImGuiRender()
     }
 
     ImGui::End();
+
+    ImGui::Begin("Materials");
+
+    if (m_selection)
+    {
+        if (m_selection.hasComponent<MeshComponent>())
+        {
+            drawMaterials(m_selection);
+        }
+    }
+
+    ImGui::End();
+
+    drawSceneRenderer();
 }
 
 void SceneHierarchy::drawProperties(SceneEntity& entity)
@@ -111,6 +126,30 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         if (ImGui::MenuItem("Box Collider 2D"))
         {
             entity.addComponent<BoxCollider2DComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        
+        if (ImGui::MenuItem("Mesh"))
+        {
+            entity.addComponent<MeshComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+
+        if (ImGui::MenuItem("Sky Light"))
+        {
+            entity.addComponent<SkyLightComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+
+        if (ImGui::MenuItem("Directional Light"))
+        {
+            entity.addComponent<DirectionalLightComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+
+        if (ImGui::MenuItem("Point Light"))
+        {
+            entity.addComponent<PointLightComponent>();
             ImGui::CloseCurrentPopup();
         }
 
@@ -232,6 +271,46 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         ImGui::InputText("String", buf, 128);
         component.text = std::string(buf);
     });
+
+    drawComponent<MeshComponent>("Mesh", entity, [](auto& component)
+    {
+        char buf[128];
+        strcpy(buf, component.filePath.c_str());
+        if (ImGui::InputText("File Path", buf, 128))
+            component.filePath = std::string(buf);
+
+        // TODO: refactor mesh/model system
+        if (ImGui::Button("Load"))
+        {
+            Shared<Model> model = Model::loadModel(component.filePath);
+            component.mesh = model->meshes[0];
+            component.materials.push_back(component.mesh->materials[0]);
+        }
+    });
+
+    drawComponent<SkyLightComponent>("Sky Light", entity, [](auto& component)
+    {
+        ImGui::PushID("Skylight");
+        ImGui::DragFloat("Intensity", &component.intensity, 0.01f, 0.f);
+        ImGui::PopID();
+    });
+
+    drawComponent<DirectionalLightComponent>("Directional Light", entity, [](auto& component)
+    {
+        ImGui::PushID("Directionallight");
+        ImGui::ColorEdit3("Radiance", &component.radiance.x);
+        ImGui::DragFloat("Intensity", &component.intensity, 0.01f, 0.f);
+        ImGui::PopID();
+    });
+
+    drawComponent<PointLightComponent>("Point Light", entity, [](auto& component)
+    {
+        ImGui::PushID("Pointlight");
+        ImGui::ColorEdit4("Radiance", &component.radiance.x);
+        ImGui::DragFloat("Intensity", &component.intensity, 0.01f, 0.f);
+        ImGui::DragFloat("Attenuation", &component.attenuation, 0.01f, 0.f);
+        ImGui::PopID();
+    });
 }
 
 template<typename T, typename F>
@@ -279,4 +358,82 @@ void SceneHierarchy::drawComponent(const std::string& name, SceneEntity& entity,
     {
         entity.removeComponent<T>();
     }
+}
+
+void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
+{
+    char buf[128];
+    strcpy(buf, texture->getPath().c_str());
+    ImGui::InputText("Texture", buf, 128);
+
+    if (ImGui::Button("Load"))
+    {
+        texture = Texture2D::create(std::string(buf));
+    }
+}
+
+void SceneHierarchy::drawMaterials(SceneEntity& entity)
+{
+    for (auto& material : entity.getComponent<MeshComponent>().materials)
+    {
+        char buf[128];
+        strcpy(buf, "material");
+        ImGui::InputText("Name", buf, 128);
+
+        if (ImGui::CollapsingHeader("Albedo"))
+        {
+            ImGui::Image((void*)material->albedoMap->getId(), ImVec2{50, 50});
+            ImGui::SameLine();
+
+            textureSelect(material->albedoMap);
+
+            ImGui::SameLine();
+            ImGui::Checkbox("Use", &material->usingAlbedoMap);
+            ImGui::SameLine();
+            ImGui::ColorEdit4("Color", &material->albedoColor.x);
+        }
+
+        if (ImGui::CollapsingHeader("Normals"))
+        {
+            ImGui::Image((void*)material->normalMap->getId(), ImVec2{50, 50});
+            ImGui::SameLine();
+
+            textureSelect(material->normalMap);
+
+            ImGui::Checkbox("Use", &material->usingNormalMap);
+        }
+
+        if (ImGui::CollapsingHeader("Metalness"))
+        {
+            ImGui::Image((void*)material->metalnessMap->getId(), ImVec2{50, 50});
+            ImGui::SameLine();
+
+            textureSelect(material->metalnessMap);
+
+            ImGui::SameLine();
+            ImGui::Checkbox("Use", &material->usingMetalnessMap);
+            ImGui::SameLine();
+            ImGui::SliderFloat("Value", &material->metalness, 0.f, 100.f);
+        }
+
+        if (ImGui::CollapsingHeader("Roughness"))
+        {
+            ImGui::Image((void*)material->roughnessMap->getId(), ImVec2{50, 50});
+            ImGui::SameLine();
+
+            textureSelect(material->roughnessMap);
+
+            ImGui::SameLine();
+            ImGui::Checkbox("Use", &material->usingRoughnessMap);
+            ImGui::SameLine();
+            ImGui::SliderFloat("Valu", &material->roughness, 0.f, 100.f);
+        }
+    }
+}
+
+void SceneHierarchy::drawSceneRenderer()
+{
+    ImGui::Begin("Scene Renderer");
+
+    ImGui::End();
 }

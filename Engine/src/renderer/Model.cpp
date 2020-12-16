@@ -37,11 +37,9 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     }
 }
 
-// TODO: multiple materials
 Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-    std::vector<Shared<Texture2D>> textures;
-    //std::vector<Shared<Material>> materials;
+    std::vector<Shared<Material>> materials;
     std::vector<ModelVertex> vertices;
     std::vector<uint32_t> indices;
 
@@ -82,23 +80,45 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
     if (mesh->mMaterialIndex > 0)
     {
-        //Shared<Material> material = Material::create(Renderer3D::data.modelShader);
         aiMaterial* aimaterial = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<Shared<Texture2D>> diffuseMaps = loadMaterialTextures(aimaterial, aiTextureType_DIFFUSE, "texture_diffuse");
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        /*for (auto& texture : diffuseMaps)
-        {
-            material->setTexture(texture);
-        }*/
+        Shared<Material> material = Material::create(Renderer3D::data.modelShader); // TODO: material shaders
 
-        std::vector<Shared<Texture2D>> specularMaps = loadMaterialTextures(aimaterial, aiTextureType_SPECULAR, "texture_specular");
-        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        /*for (auto& texture : specularMaps)
+        auto albedos = loadMaterialTextures(aimaterial, aiTextureType_DIFFUSE);
+        if (albedos.size() > 0)
         {
-            material->setTexture(texture);
+            material->albedoMap = albedos[0];
         }
 
-        materials.push_back(material);*/
+        auto normals = loadMaterialTextures(aimaterial, aiTextureType_NORMALS);
+        if (normals.size() > 0)
+        {
+            material->normalMap = normals[0];
+        }
+
+        auto metalnesses = loadMaterialTextures(aimaterial, aiTextureType_REFLECTION);
+        if (metalnesses.size() > 0)
+        {
+            material->metalnessMap = metalnesses[0];
+        }
+
+        material->metalness = 0.f;
+
+        auto roughnesses = loadMaterialTextures(aimaterial, aiTextureType_SHININESS);
+        if (roughnesses.size() > 0)
+        {
+            material->roughnessMap = roughnesses[0];
+        }
+
+        float roughness = 0.f;
+        aiGetMaterialFloat(scene->mMaterials[0], AI_MATKEY_SHININESS, &roughness);
+        if (roughness == 0.f)
+        {
+            roughness = 16.f;
+        }
+
+        material->roughness = roughness;
+
+        materials.push_back(material);
     }
 
     Shared<Mesh> mesh_ = createShared<Mesh>();
@@ -121,27 +141,12 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     mesh_->vertexArray->addVertexBuffer(mesh_->vertexBuffer);
     mesh_->vertexArray->setIndexBuffer(mesh_->indexBuffer);
 
-    Shared<Material> material = Material::create(Renderer3D::data.modelShader);
-    for (auto& texture : textures)
-    {
-        material->setTexture(texture);
-    }
-
-    float shininess = 0.f;
-    aiGetMaterialFloat(scene->mMaterials[0], AI_MATKEY_SHININESS, &shininess);
-    if (shininess == 0.f)
-    {
-        shininess = 16.f;
-    }
-
-    material->shininess = shininess;
-
-    mesh_->material = material;
+    mesh_->materials = materials;
 
     return mesh_;
 }
 
-std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)
+std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type)
 {
     std::vector<Shared<Texture2D>> textures;
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)

@@ -10,6 +10,7 @@
 #include <renderer/Skybox.h>
 
 #include <util/PerspectiveCamera.h>
+#include <scene/EditorCamera.h>
 
 struct Renderer3DData
 {
@@ -34,6 +35,7 @@ public:
     static void shutdown();
 
     static void beginScene(PerspectiveCamera& camera);
+    static void beginScene(EditorCamera& camera);
 
     static void submit(const Shared<Mesh>& mesh, const math::mat4& transform);
     static void submit(const Shared<Model>& model, const math::mat4& transform);

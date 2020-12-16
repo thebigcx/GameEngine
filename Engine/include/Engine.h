@@ -36,12 +36,6 @@
 #include <renderer/TextureCube.h>
 
 #include <maths/math.h>
-#include <maths/rect.h>
-#include <maths/vector/vec2.h>
-#include <maths/vector/vec3.h>
-#include <maths/vector/vec4.h>
-#include <maths/matrix/mat3x3.h>
-#include <maths/matrix/mat4x4.h>
 
 #include <sound/SoundEngine.h>
 #include <sound/SoundSource.h>

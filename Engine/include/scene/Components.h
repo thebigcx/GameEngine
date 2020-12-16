@@ -9,6 +9,7 @@
 #include <renderer/Texture2D.h>
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Mesh.h>
+#include <renderer/Lights.h>
 
 struct TransformComponent
 {
@@ -85,9 +86,29 @@ struct NativeScriptComponent
 struct MeshComponent
 {
     Shared<Mesh> mesh;
+    std::vector<Shared<Material>> materials;
+    std::string filePath;
 };
 
 struct BoxCollider2DComponent
 {
     math::frect box;
+};
+
+struct DirectionalLightComponent
+{
+    math::vec3 radiance = math::vec3(1.f);
+    float intensity = 0.5f;
+};
+
+struct SkyLightComponent
+{
+    float intensity = 0.5f;
+};
+
+struct PointLightComponent
+{
+    math::vec3 radiance = math::vec3(1.f);
+    float intensity = 0.5f;
+    float attenuation = 0.5f;
 };

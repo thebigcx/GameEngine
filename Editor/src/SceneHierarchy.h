@@ -22,8 +22,14 @@ public:
 
     void onImGuiRender();
 
+    void drawMaterials(SceneEntity& entity);
+
+    void drawSceneRenderer();
+
 private:
     Shared<Scene> m_context;
 
     SceneEntity m_selection;
+
+    void textureSelect(Shared<Texture2D>& texture);
 };

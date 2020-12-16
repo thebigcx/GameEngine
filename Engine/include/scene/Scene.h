@@ -4,6 +4,7 @@
 
 #include <scene/ecs/Registry.h>
 #include <scene/EditorCamera.h>
+#include <renderer/Material.h>
 
 class Entity;
 class SceneEntity;

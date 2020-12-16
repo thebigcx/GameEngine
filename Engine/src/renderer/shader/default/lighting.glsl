@@ -35,10 +35,13 @@ void main()
 
 struct Material
 {
-    sampler2D diffuse;
+    sampler2D albedo;
     sampler2D specular;
 
-    float shininess;
+    vec4 albedoColor;
+
+    float roughness;
+    float metalness;
 };
 
 struct DirLight
@@ -119,7 +122,7 @@ void main()
 
     vec3 result = calcDirLight(dirLight, norm, viewDir);
 
-    result += skyLight * vec3(texture(material.diffuse, fs_in.texCoord));
+    result += skyLight * vec3(texture(material.albedo, fs_in.texCoord));
     
     for (int i = 0; i < numPointLights; i++)
         result += calcPointLight(pointLights[i], norm, fs_in.fragPos, viewDir);
@@ -127,7 +130,8 @@ void main()
     for (int i = 0; i < numSpotLights; i++)
         result += calcSpotLight(spotLights[i], norm, fs_in.fragPos, viewDir);
 
-    FragColor = vec4(result, 1.0);
+    //FragColor = vec4(result, 1.0);
+    FragColor = vec4(texture(material.albedo, fs_in.texCoord) * material.albedoColor);
 }
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir)
@@ -181,9 +185,9 @@ LightValues calculateLight(vec3 lightDir, vec3 normal, vec3 viewDir, vec3 lightD
     float diff = max(dot(normal, lightDir), 0.0);
 
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.roughness);
 
-    values.diffuse  = lightDiffuse  * diff * vec3(texture(material.diffuse, fs_in.texCoord));
+    values.diffuse  = lightDiffuse  * diff * vec3(texture(material.albedo, fs_in.texCoord) * material.albedoColor);
     values.specular = lightSpecular * spec * vec3(texture(material.specular, fs_in.texCoord));
 
     return values;

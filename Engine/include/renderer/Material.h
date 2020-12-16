@@ -9,8 +9,6 @@
 class Material
 {
 public:
-    void setTexture(const Shared<Texture2D>& texture);
-
     void bind() const;
     void unbind() const;
 
@@ -21,10 +19,20 @@ public:
 
     static Shared<Material> create(const Shared<Shader>& shader);
 
-    float shininess = 0.f;
+    bool usingMetalnessMap = false;
+    bool usingRoughnessMap = false;
+    bool usingAlbedoMap = true;
+    bool usingNormalMap = false;
+
+    float metalness = 0.f;
+    float roughness = 0.f;
+    Shared<Texture2D> albedoMap;
+    Shared<Texture2D> normalMap;
+    Shared<Texture2D> metalnessMap;
+    Shared<Texture2D> roughnessMap;
+
+    math::vec4 albedoColor;
 
 private:
     Shared<Shader> m_shader;
-    std::vector<Shared<Texture2D>> m_textures;
-    //Shared<Texture2D> m_texture;
 };

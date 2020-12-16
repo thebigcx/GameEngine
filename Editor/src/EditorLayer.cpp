@@ -30,7 +30,7 @@ void EditorLayer::onAttach()
     m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
 
     m_sceneHeirarchy.setContext(m_scene);
-    m_materialsPanel.setContext(m_scene);
+    //m_scene->getMaterials().push_back(Material::create(Renderer3D::data.modelShader));
 
     // TEMP
 
@@ -147,7 +147,6 @@ void EditorLayer::onImGuiRender()
     ImGui::End();
 
     m_sceneHeirarchy.onImGuiRender();
-    m_materialsPanel.onImGuiRender();
     
     ImGui::End();
     ImGui::PopStyleVar();

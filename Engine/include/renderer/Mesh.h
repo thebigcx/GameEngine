@@ -14,5 +14,6 @@ public:
     Shared<VertexBuffer> vertexBuffer;
     Shared<IndexBuffer> indexBuffer;
     Shared<VertexArray> vertexArray;
-    Shared<Material> material;
+    //Shared<Material> material;
+    std::vector<Shared<Material>> materials;
 };

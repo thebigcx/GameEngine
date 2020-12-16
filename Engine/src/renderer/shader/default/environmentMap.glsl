@@ -42,7 +42,8 @@ out vec4 FragColor;
 
 struct Material
 {
-    float shininess;
+    float roughness;
+    float metalness;
 };
 
 uniform Material material;

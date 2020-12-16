@@ -18,6 +18,21 @@ Scene::~Scene()
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
+    Renderer3D::beginScene(camera);
+
+    auto view = m_registry.view<MeshComponent, TransformComponent>();
+    for (auto& entityID : view)
+    {
+        SceneEntity entity = { entityID, this };
+        if (!entity.getComponent<MeshComponent>().mesh)
+        {
+            continue;
+        }
+        Renderer3D::submit(entity.getComponent<MeshComponent>().mesh, entity.getComponent<TransformComponent>().getTransform());
+    }
+
+    Renderer3D::endScene();
+
     Renderer2D::beginScene(camera);
     this->render2DEntities();
 
@@ -169,15 +184,19 @@ void Scene::onComponentAdded<CameraComponent>(SceneEntity& entity, CameraCompone
 
 template<>
 void Scene::onComponentAdded<TransformComponent>(SceneEntity& entity, TransformComponent& component) {}
-
 template<>
 void Scene::onComponentAdded<SpriteRendererComponent>(SceneEntity& entity, SpriteRendererComponent& component) {}
-
 template<>
 void Scene::onComponentAdded<NativeScriptComponent>(SceneEntity& entity, NativeScriptComponent& component) {}
-
 template<>
 void Scene::onComponentAdded<TextRendererComponent>(SceneEntity& entity, TextRendererComponent& component) {}
-
 template<>
 void Scene::onComponentAdded<BoxCollider2DComponent>(SceneEntity& entity, BoxCollider2DComponent& component) {}
+template<>
+void Scene::onComponentAdded<MeshComponent>(SceneEntity& entity, MeshComponent& component) {}
+template<>
+void Scene::onComponentAdded<SkyLightComponent>(SceneEntity& entity, SkyLightComponent& component) {}
+template<>
+void Scene::onComponentAdded<DirectionalLightComponent>(SceneEntity& entity, DirectionalLightComponent& component) {}
+template<>
+void Scene::onComponentAdded<PointLightComponent>(SceneEntity& entity, PointLightComponent& component) {}

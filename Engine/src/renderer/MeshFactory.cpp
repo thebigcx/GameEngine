@@ -141,7 +141,7 @@ Shared<Mesh> MeshFactory::cubeMesh(float size, const Shared<Material>& material)
     quad->vertexArray->addVertexBuffer(quad->vertexBuffer);
     quad->vertexArray->setIndexBuffer(quad->indexBuffer);
 
-    quad->material = material;
+    quad->materials.push_back(material);
 
     return quad;
 }

@@ -91,7 +91,7 @@ math::vec2 EditorCamera::panSpeed() const
 
 float EditorCamera::zoomSpeed() const
 {
-    float dist = m_distance * 0.2f;
+    float dist = m_distance * 0.5f;
     dist = std::max(dist, 0.f);
     float speed = dist * dist;
     speed = std::min(speed, 100.f);
@@ -100,7 +100,7 @@ float EditorCamera::zoomSpeed() const
 
 float EditorCamera::rotationSpeed() const
 {
-    return 0.8f;
+    return 1.5f;
 }
 
 void EditorCamera::mousePan(const math::vec2& delta)

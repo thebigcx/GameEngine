@@ -20,8 +20,9 @@ void Sandbox::onAttach()
 
     m_cubeMaterial = Material::create(Renderer3D::data.modelShader);
     //m_cubeMaterial = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
-    m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
-    m_cubeMaterial->shininess = 16.f;
+    //m_cubeMaterial->setTexture(Assets::get<Texture2D>("grass"));
+    m_cubeMaterial->albedoMap = Assets::get<Texture2D>("grass");
+    m_cubeMaterial->metalness = 16.f;
 
     lights.setSkylight(0.01f);
 
@@ -69,8 +70,9 @@ void Sandbox::onAttach()
 
     //m_model = Model::loadModel("Sandbox/assets/model/backpack.obj");
     m_model = Model::loadModel("Sandbox/assets/sphere.obj");
-    m_model->meshes[0]->material = Material::create(Renderer3D::data.modelShader);
-    m_model->meshes[0]->material->setTexture(Assets::get<Texture2D>("grass"));
+    m_model->meshes[0]->materials[0] = Material::create(Renderer3D::data.modelShader);
+    //m_model->meshes[0]->material->setTexture(Assets::get<Texture2D>("grass"));
+    m_model->meshes[0]->materials[0]->albedoMap = Assets::get<Texture2D>("grass");
     //m_model->meshes[0]->material = Material::create(Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl"));
 
     //Application::get().setCursorEnabled(false);

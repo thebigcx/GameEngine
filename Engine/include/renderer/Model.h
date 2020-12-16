@@ -30,7 +30,7 @@ private:
 
     void processNode(aiNode* node, const aiScene* scene);
     Shared<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Shared<Texture2D>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
+    std::vector<Shared<Texture2D>> loadMaterialTextures(aiMaterial* mat, aiTextureType type);
 
     std::vector<Shared<Texture2D>> m_texturesLoaded;
 };
