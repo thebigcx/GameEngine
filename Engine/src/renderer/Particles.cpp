@@ -16,7 +16,7 @@ void ParticleSystem::update()
         particles[i].life -= 0.001 * dt;
         particles[i].color.a = particles[i].life;
 
-        particles[i].position += particles[i].velocity * dt * 0.05;
+        particles[i].position += particles[i].velocity * dt * 0.05f;
 
         if (particles[i].life <= 0)
         {

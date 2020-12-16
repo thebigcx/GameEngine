@@ -18,7 +18,7 @@ Shared<Image> ImageLoader::loadImageImpl(const std::string& file)
 
     if (!image->data)
     {
-        Logger::getCoreLogger()->error("Image does not exist or contains corrupted data: %s", file);
+        Logger::getCoreLogger()->error("Image does not exist or contains corrupted data: %s", file.c_str());
     }
 
     image->width = width;

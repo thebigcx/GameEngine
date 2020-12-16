@@ -8,7 +8,7 @@
 #include <renderer/Mesh.h>
 #include <renderer/IRenderable2D.h>
 #include <renderer/Framebuffer.h>
-#include <maths/rect.h>
+#include <maths/rect/rect.h>
 #include <util/OrthographicCamera.h>
 #include <scene/EditorCamera.h>
 

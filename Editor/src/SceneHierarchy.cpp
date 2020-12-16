@@ -72,6 +72,11 @@ void SceneHierarchy::onImGuiRender()
 
 void SceneHierarchy::drawProperties(SceneEntity& entity)
 {
+    char buf[128];
+    strcpy(buf, entity.getComponent<TagComponent>().tag.c_str());
+    ImGui::InputText("Name", buf, 128);
+    entity.getComponent<TagComponent>().tag = std::string(buf);
+
     if (ImGui::Button("Add Component"))
     {
         ImGui::OpenPopup("AddComponent");
@@ -100,6 +105,12 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         if (ImGui::MenuItem("Text Renderer"))
         {
             entity.addComponent<TextRendererComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+
+        if (ImGui::MenuItem("Box Collider 2D"))
+        {
+            entity.addComponent<BoxCollider2DComponent>();
             ImGui::CloseCurrentPopup();
         }
 
@@ -195,7 +206,6 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
     drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
     {
         ImGui::ColorEdit4("Color", &(component.color.x));
-        //ImGui::Text("File selection window goes here...");
         char buf[128];
         strcpy(buf, component.texture->getPath().c_str());
         ImGui::InputText("Texture Path", buf, 128);
@@ -208,8 +218,8 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         ImGui::Checkbox("Using Texture Region", &component.usingTexRect);
         ImGui::DragFloat("X", &component.textureRect.x);
         ImGui::DragFloat("Y", &component.textureRect.y);
-        ImGui::DragFloat("Width", &component.textureRect.width);
-        ImGui::DragFloat("Height", &component.textureRect.height);
+        ImGui::DragFloat("Width", &component.textureRect.w);
+        ImGui::DragFloat("Height", &component.textureRect.h);
         
     });
 

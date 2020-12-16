@@ -68,7 +68,7 @@ void EditorCamera::updateView()
     m_position = calculatePosition();
 
     math::quat orientation = getOrientation();
-    m_view = math::translate(math::mat4(1.f), m_position) * math::mat4_cast(orientation);
+    m_view = math::translate(math::mat4(1.f), m_position) * math::to_mat4(orientation);
     m_view = math::inverse<float>(m_view);
 }
 

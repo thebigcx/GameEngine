@@ -4,7 +4,7 @@
 
 #include <core/Core.h>
 #include <util/Time.h>
-#include <maths/rect.h>
+#include <maths/rect/rect.h>
 #include <renderer/Texture2D.h>
 
 class Animation

@@ -77,6 +77,6 @@ private:
     {
         char tmp[1024];
         snprintf(tmp, 1024, format.c_str(), args...);
-        return tmp;
+        return std::string(tmp);
     }
 };

@@ -17,6 +17,7 @@ protected:
     virtual void onCreate() {}
     virtual void onDestroy() {}
     virtual void onUpdate(float dt) {}
+    virtual void onCollide2D() {}
 
 private:
     SceneEntity m_entity;

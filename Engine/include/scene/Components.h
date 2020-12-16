@@ -86,3 +86,8 @@ struct MeshComponent
 {
     Shared<Mesh> mesh;
 };
+
+struct BoxCollider2DComponent
+{
+    math::frect box;
+};

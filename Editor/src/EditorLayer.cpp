@@ -30,6 +30,7 @@ void EditorLayer::onAttach()
     m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
 
     m_sceneHeirarchy.setContext(m_scene);
+    m_materialsPanel.setContext(m_scene);
 
     // TEMP
 
@@ -50,7 +51,7 @@ void EditorLayer::onAttach()
         {
             auto& translation = getComponent<TransformComponent>().translation;
 
-            float speed = 0.5f;
+            float speed = 0.05f;
 
             if (Input::isKeyPressed(Key::A))
             {
@@ -100,17 +101,20 @@ void EditorLayer::onUpdate(float dt)
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
+    if (Input::isKeyPressed(Key::Space))
+    {
+        m_playingScene = !m_playingScene;
+    }
 
-    /*if (Input::isKeyPressed(Key::LeftAlt))
+
+    if (m_playingScene)
     {
         m_scene->onUpdateRuntime(dt);
     }
     else
     {
         m_scene->onUpdateEditor(dt, m_editorCamera);
-    }*/
-    
-    m_scene->onUpdateEditor(dt, m_editorCamera);
+    }
 
     m_framebuffer->unbind();
 }
@@ -143,6 +147,7 @@ void EditorLayer::onImGuiRender()
     ImGui::End();
 
     m_sceneHeirarchy.onImGuiRender();
+    m_materialsPanel.onImGuiRender();
     
     ImGui::End();
     ImGui::PopStyleVar();

@@ -175,8 +175,8 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4
 
     float x1 = texRect.x / texture->getWidth();
     float y1 = texRect.y / texture->getHeight();
-    float x2 = (texRect.x + texRect.width) / texture->getWidth();
-    float y2 = (texRect.y + texRect.height) / texture->getHeight();
+    float x2 = (texRect.x + texRect.w) / texture->getWidth();
+    float y2 = (texRect.y + texRect.h) / texture->getHeight();
 
     math::vec2 texCoords[] = {
         { x1, y1 },
@@ -217,7 +217,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4
     {
         math::vec4 pos = transform * math::vec4(s_data.quadPositions[i]);
 
-        s_data.vertexPointer->position = math::vec3(transform * s_data.quadPositions[i]);
+        s_data.vertexPointer->position = math::vec3(transform * math::vec4(s_data.quadPositions[i]));
         s_data.vertexPointer->texCoord = texCoords[i];
         s_data.vertexPointer->color = color;
         s_data.vertexPointer->texIndex = textureIndex;
@@ -262,7 +262,7 @@ void Renderer2D::renderQuad(const math::mat4& transform, const math::vec4& color
 
     for (size_t i = 0 ; i < quadVertexCount ; i++)
     {
-        s_data.vertexPointer->position = math::vec3(transform * s_data.quadPositions[i]);
+        s_data.vertexPointer->position = math::vec3(transform * math::vec4(s_data.quadPositions[i]));
         s_data.vertexPointer->texCoord = texCoords[i];
         s_data.vertexPointer->color = color;
         s_data.vertexPointer->texIndex = textureIndex;
@@ -279,7 +279,7 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
 
 void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color)
 {
-    math::vec2 scale = size / font->getCharacterSize();
+    math::vec2 scale = size / (float)font->getCharacterSize();
 
     int x = position.x;
     int y = position.y;

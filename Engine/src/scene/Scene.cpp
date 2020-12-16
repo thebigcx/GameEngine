@@ -19,16 +19,9 @@ Scene::~Scene()
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
     Renderer2D::beginScene(camera);
-    //auto cam = getPrimaryCameraEntity();
-    //if (cam)
-    {
-        //Renderer2D::beginScene(cam.getComponent<CameraComponent>().camera, cam.getComponent<TransformComponent>().getTransform());
+    this->render2DEntities();
 
-        this->render2DEntities();
-
-        Renderer2D::endScene();
-    }
-        
+    Renderer2D::endScene();
 }
 
 void Scene::render2DEntities()
@@ -70,6 +63,28 @@ void Scene::destroyEntity(SceneEntity& entity)
 
 void Scene::onUpdateRuntime(float dt)
 {
+    // Game logic updating
+    auto colliders = m_registry.view<BoxCollider2DComponent, NativeScriptComponent>();
+    for (auto& entityID : colliders)
+    {
+        SceneEntity entity = { entityID, this };
+        for (auto& otherID : colliders)
+        {
+            SceneEntity other = { otherID, this };
+            if (entity == other)
+                continue;
+
+            if (math::intersects(entity.getComponent<BoxCollider2DComponent>().box, other.getComponent<BoxCollider2DComponent>().box))
+            {
+                if (entity.getComponent<NativeScriptComponent>().instance)
+                    entity.getComponent<NativeScriptComponent>().instance->onCollide2D();
+
+                if (other.getComponent<NativeScriptComponent>().instance)
+                    other.getComponent<NativeScriptComponent>().instance->onCollide2D();
+            }
+        }
+    }
+
     auto view = m_registry.view<NativeScriptComponent>();
     for (auto& entity : view)
     {
@@ -85,6 +100,7 @@ void Scene::onUpdateRuntime(float dt)
         script.instance->onUpdate(dt);
     }
 
+    // Rendering
     Camera* camera = nullptr;
     math::mat4 transform;
 
@@ -152,25 +168,16 @@ void Scene::onComponentAdded<CameraComponent>(SceneEntity& entity, CameraCompone
 }
 
 template<>
-void Scene::onComponentAdded<TransformComponent>(SceneEntity& entity, TransformComponent& component)
-{
-    
-}
+void Scene::onComponentAdded<TransformComponent>(SceneEntity& entity, TransformComponent& component) {}
 
 template<>
-void Scene::onComponentAdded<SpriteRendererComponent>(SceneEntity& entity, SpriteRendererComponent& component)
-{
-    
-}
+void Scene::onComponentAdded<SpriteRendererComponent>(SceneEntity& entity, SpriteRendererComponent& component) {}
 
 template<>
-void Scene::onComponentAdded<NativeScriptComponent>(SceneEntity& entity, NativeScriptComponent& component)
-{
-
-}
+void Scene::onComponentAdded<NativeScriptComponent>(SceneEntity& entity, NativeScriptComponent& component) {}
 
 template<>
-void Scene::onComponentAdded<TextRendererComponent>(SceneEntity& entity, TextRendererComponent& component)
-{
+void Scene::onComponentAdded<TextRendererComponent>(SceneEntity& entity, TextRendererComponent& component) {}
 
-}
+template<>
+void Scene::onComponentAdded<BoxCollider2DComponent>(SceneEntity& entity, BoxCollider2DComponent& component) {}
