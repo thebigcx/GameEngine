@@ -5,6 +5,7 @@
 #include <scene/ecs/Registry.h>
 #include <scene/EditorCamera.h>
 #include <renderer/Material.h>
+#include <renderer/Lights.h>
 
 class Entity;
 class SceneEntity;
@@ -31,7 +32,10 @@ public:
     SceneEntity getPrimaryCameraEntity();
     
     template<typename T>
-    void onComponentAdded(SceneEntity& entity, T& component);
+    void onComponentAdded(SceneEntity& entity, T& component)
+    {
+
+    }
 
 private:
     EntityRegistry m_registry;
@@ -39,4 +43,6 @@ private:
     uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 
     void render2DEntities();
+
+    LightSetup m_setup;
 };

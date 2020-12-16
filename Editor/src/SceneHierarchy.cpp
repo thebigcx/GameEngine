@@ -83,6 +83,14 @@ void SceneHierarchy::onImGuiRender()
     ImGui::End();
 
     drawSceneRenderer();
+
+    ImGui::Begin("Debug");
+
+    ImGui::End();
+
+    ImGui::Begin("Environment");
+
+    ImGui::End();
 }
 
 void SceneHierarchy::drawProperties(SceneEntity& entity)
@@ -332,14 +340,26 @@ void SceneHierarchy::drawComponent(const std::string& name, SceneEntity& entity,
     flags |= ImGuiTreeNodeFlags_CollapsingHeader;
     bool opened = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.c_str());
 
-    ImGui::SameLine(available.x - lineHeight * 0.5f);
+    /*ImGui::SameLine(available.x - lineHeight * 0.5f);
     if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }));
     {
-        //ImGui::OpenPopup("ComponentSettings");
+        std::cout << "Clicked\n";
+        ImGui::OpenPopup("");
     }
 
     bool deleted = false;
-    if (ImGui::BeginPopup("ComponentSettings"))
+    if (ImGui::BeginPopup(""))
+    {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+            deleted = true;
+        }
+
+        ImGui::EndPopup();
+    }*/
+
+    bool deleted = false;
+    if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::MenuItem("Remove Component"))
         {
@@ -434,6 +454,16 @@ void SceneHierarchy::drawMaterials(SceneEntity& entity)
 void SceneHierarchy::drawSceneRenderer()
 {
     ImGui::Begin("Scene Renderer");
+
+    if (ImGui::CollapsingHeader("Shadows"))
+    {
+
+    }
+
+    if (ImGui::CollapsingHeader("Bloom"))
+    {
+
+    }
 
     ImGui::End();
 }

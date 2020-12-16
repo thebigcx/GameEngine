@@ -5,9 +5,9 @@
 
 #include <iostream>
 
-Shared<Texture2D> Texture2D::create(const std::string& file)
+Shared<Texture2D> Texture2D::create(const std::string& file, bool isSRGB)
 {
-    return createShared<GLTexture2D>(file);
+    return createShared<GLTexture2D>(file, isSRGB);
 }
 
 Shared<Texture2D> Texture2D::create(int width, int height, GLenum dataFormat)

@@ -1,10 +1,10 @@
 #include <scene/Scene.h>
-#include <scene/Components.h>
 #include <renderer/Renderer2D.h>
 #include <maths/matrix/matrix_func.h>
 #include <scene/SceneEntity.h>
 #include <renderer/Renderer3D.h>
 #include <renderer/MeshFactory.h>
+#include <scene/Components.h>
 
 Scene::Scene()
 {
@@ -18,6 +18,34 @@ Scene::~Scene()
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
+    LightSetup setup;
+    {
+        auto view = m_registry.view<SkyLightComponent>();
+        for (auto& entity : view)
+            setup.setSkylight(view.get<SkyLightComponent>(entity).intensity);
+        
+        view = m_registry.view<DirectionalLightComponent, TransformComponent>();
+        for (auto& entity : view)
+        {
+            auto& dirLight = view.get<DirectionalLightComponent>(entity);
+            auto& transform = view.get<TransformComponent>(entity);
+            setup.setDirectionalLight({ transform.rotation, dirLight.radiance, dirLight.intensity, 1.f });
+        }
+
+        std::vector<PointLight> pointLights;
+        view = m_registry.view<PointLightComponent, TransformComponent>();
+        for (auto& entity : view)
+        {
+            auto& pointLight = view.get<PointLightComponent>(entity);
+            auto& transform = view.get<TransformComponent>(entity);
+            pointLights.push_back({ transform.translation, pointLight.radiance, pointLight.intensity, 1.f, pointLight.attenuation });
+        }
+
+        setup.setPointLights(pointLights);
+    }
+
+    Renderer3D::setLights(setup);
+
     Renderer3D::beginScene(camera);
 
     auto view = m_registry.view<MeshComponent, TransformComponent>();
@@ -170,33 +198,8 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
     }
 }
 
-template<typename T>
-void Scene::onComponentAdded(SceneEntity& entity, T& component)
-{
-    Logger::getCoreLogger()->error("Unknown component type: %s", typeid(T).name());
-}
-
 template<>
 void Scene::onComponentAdded<CameraComponent>(SceneEntity& entity, CameraComponent& component)
 {
     component.camera.setViewportSize(m_viewportWidth, m_viewportHeight);
 }
-
-template<>
-void Scene::onComponentAdded<TransformComponent>(SceneEntity& entity, TransformComponent& component) {}
-template<>
-void Scene::onComponentAdded<SpriteRendererComponent>(SceneEntity& entity, SpriteRendererComponent& component) {}
-template<>
-void Scene::onComponentAdded<NativeScriptComponent>(SceneEntity& entity, NativeScriptComponent& component) {}
-template<>
-void Scene::onComponentAdded<TextRendererComponent>(SceneEntity& entity, TextRendererComponent& component) {}
-template<>
-void Scene::onComponentAdded<BoxCollider2DComponent>(SceneEntity& entity, BoxCollider2DComponent& component) {}
-template<>
-void Scene::onComponentAdded<MeshComponent>(SceneEntity& entity, MeshComponent& component) {}
-template<>
-void Scene::onComponentAdded<SkyLightComponent>(SceneEntity& entity, SkyLightComponent& component) {}
-template<>
-void Scene::onComponentAdded<DirectionalLightComponent>(SceneEntity& entity, DirectionalLightComponent& component) {}
-template<>
-void Scene::onComponentAdded<PointLightComponent>(SceneEntity& entity, PointLightComponent& component) {}

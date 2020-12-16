@@ -34,4 +34,7 @@ private:
     SceneHierarchy m_sceneHeirarchy;
 
     bool m_playingScene = false;
+
+    Shared<Texture2D> m_scenePlayButton;
+    Shared<Texture2D> m_sceneStopButton;
 };

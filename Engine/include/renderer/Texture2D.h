@@ -28,7 +28,7 @@ public:
 
     virtual ~Texture2D() = default;
 
-    static Shared<Texture2D> create(const std::string& file);
+    static Shared<Texture2D> create(const std::string& file, bool isSRGB = false);
     static Shared<Texture2D> create(int width, int height, GLenum dataFormat = GL_RGBA8);
 
     virtual void setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA) = 0;

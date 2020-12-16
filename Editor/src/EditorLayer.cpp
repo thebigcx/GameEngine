@@ -10,6 +10,7 @@
 #include <renderer/Renderer2D.h>
 #include <renderer/Renderer.h>
 #include <renderer/Assets.h>
+#include <renderer/MeshFactory.h>
 
 EditorLayer::EditorLayer()
 {
@@ -28,6 +29,9 @@ void EditorLayer::onAttach()
 
     m_scene = createShared<Scene>();
     m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
+
+    m_scenePlayButton = Texture2D::create("Editor/assets/scene_play.png");
+    m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
 
     m_sceneHeirarchy.setContext(m_scene);
     //m_scene->getMaterials().push_back(Material::create(Renderer3D::data.modelShader));
@@ -95,7 +99,6 @@ void EditorLayer::onUpdate(float dt)
         m_editorCamera.setViewportSize(m_viewportSize.x, m_viewportSize.y);
         m_framebuffer->resize(m_viewportSize.x, m_viewportSize.y);
     }
-    
 
     m_framebuffer->bind();
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
@@ -136,6 +139,22 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Window", &dockspaceOpen, windowFlags);
     ImGui::DockSpace(ImGui::GetID("MyDockSpace"), ImVec2(0.f, 0.f), ImGuiDockNodeFlags_None);
+
+    windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
+    ImGui::Begin("Scene Settings", &dockspaceOpen, windowFlags);
+
+    //ImGui::Button("Heelo");
+    if (ImGui::ImageButton((void*)m_scenePlayButton->getId(), ImVec2{30, 30}))
+    {
+        m_playingScene = true;
+    }
+    ImGui::SameLine();
+    if (ImGui::ImageButton((void*)m_sceneStopButton->getId(), ImVec2{30, 30}))
+    {
+        m_playingScene = false;
+    }
+
+    ImGui::End();
 
     ImGui::SetNextWindowSize(ImVec2{1280, 720});
     ImGui::Begin("Viewport");

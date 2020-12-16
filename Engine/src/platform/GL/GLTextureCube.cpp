@@ -42,7 +42,6 @@ uint32_t GLTextureCube::loadFromMultipleFiles(const std::string* files)
 
     for (unsigned int i = 0; i < 6; i++)
     {
-        //auto image = ImageLoader::loadOpenGLImage(files[i]);
         auto image = ImageLoader::loadImage(files[i]);
 
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 

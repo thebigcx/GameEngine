@@ -7,7 +7,7 @@
 class GLTexture2D : public Texture2D
 {
 public:
-    GLTexture2D(const std::string& path);
+    GLTexture2D(const std::string& path, bool isSRGB = false);
     GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat = GL_RGBA8);
     ~GLTexture2D();
 
