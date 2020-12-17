@@ -13,8 +13,9 @@ void EditorCamera::onUpdate(float dt)
 {
     if (Input::isKeyPressed(Key::LeftAlt))
     {
-        math::vec2 mouse(Input::getMousePosition().x, m_viewportSize.y - Input::getMousePosition().y);
-        math::vec2 delta = (mouse - m_lastMousePosition) * 0.0003f;
+        math::vec2 mouse(Input::getMousePosition().x, Input::getMousePosition().y);
+        math::vec2 delta = (mouse - m_lastMousePosition) * 0.003f;
+        delta.y = -delta.y; // Flip y-axis
         m_lastMousePosition = mouse;
 
         if (Input::isMousePressed(MouseButton::Left))
@@ -100,7 +101,7 @@ float EditorCamera::zoomSpeed() const
 
 float EditorCamera::rotationSpeed() const
 {
-    return 1.5f;
+    return 0.5f;
 }
 
 void EditorCamera::mousePan(const math::vec2& delta)
@@ -113,7 +114,8 @@ void EditorCamera::mousePan(const math::vec2& delta)
 
 void EditorCamera::mouseRotate(const math::vec2& delta)
 {
-    float yawSign = getUpDirection().y < 0 ? -1.f : 1.f;
+    //float yawSign = getUpDirection().y < 0 ? -1.f : 1.f;
+    float yawSign = 1.f;
     m_yaw += yawSign * delta.x * rotationSpeed();
     m_pitch += delta.y * rotationSpeed();
 }
@@ -137,7 +139,7 @@ bool EditorCamera::onMouseScroll(MouseScrollEvent& event)
 
 math::quat EditorCamera::getOrientation()
 {
-    return math::quat(1.f, -m_pitch, -m_yaw, 0.f);
+    return math::quat(math::vec3(-m_pitch, -m_yaw, 0.f));
 }
 
 math::vec3 EditorCamera::calculatePosition()

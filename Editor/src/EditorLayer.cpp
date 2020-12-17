@@ -157,7 +157,7 @@ void EditorLayer::onImGuiRender()
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
     ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
-    
+
     // ImGuizmo
     SceneEntity& entity = m_sceneHeirarchy.getSelectedEntity();
     if (entity && m_gizmoType != -1)
@@ -174,6 +174,8 @@ void EditorLayer::onImGuiRender()
 
         auto& tc = entity.getComponent<TransformComponent>();
         math::mat4 transform = tc.getTransform();
+
+        ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
 
         bool snap = Input::isKeyPressed(Key::LeftControl);
         float snapValue = 0.5f;
