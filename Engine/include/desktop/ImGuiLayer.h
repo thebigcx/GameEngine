@@ -15,6 +15,8 @@ public:
     void begin();
     void end();
 
+    void blockEvents(bool block = true);
+
 private:
     bool m_blockEvents = false;
 };

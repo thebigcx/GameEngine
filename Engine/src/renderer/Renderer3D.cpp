@@ -82,12 +82,12 @@ void Renderer3D::endScene()
 {
     data.sceneStarted = false;
 
-    glDepthFunc(GL_LEQUAL);
+    /*glDepthFunc(GL_LEQUAL);
     data.skyboxShader->bind();
     data.skyboxMesh->vertexArray->bind();
     data.environment->getCubemap()->bind();
     RenderCommand::renderIndexed(data.skyboxMesh->vertexArray);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LESS);*/
 }
 
 void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)

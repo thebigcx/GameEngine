@@ -32,10 +32,7 @@ public:
     SceneEntity getPrimaryCameraEntity();
     
     template<typename T>
-    void onComponentAdded(SceneEntity& entity, T& component)
-    {
-
-    }
+    void onComponentAdded(SceneEntity& entity, T& component);
 
 private:
     EntityRegistry m_registry;

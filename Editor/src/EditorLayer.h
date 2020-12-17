@@ -18,7 +18,6 @@ class EditorLayer : public Layer
 public:
     EditorLayer();
 
-    void onViewportResize(WindowResizeEvent& event);
     bool onKeyPressed(KeyPressedEvent& event);
 
     void onAttach() override;
@@ -32,6 +31,9 @@ private:
     Shared<Framebuffer> m_framebuffer;
 
     math::vec2 m_viewportSize;
+
+    bool m_viewportFocused;
+    bool m_viewportHovered;
 
     EditorCamera m_editorCamera;
 

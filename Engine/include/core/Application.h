@@ -26,6 +26,8 @@ public:
 
     void onEvent(Event& event);
 
+    inline constexpr ImGuiLayer* getImGuiLayer() const { return m_imguiLayer; }
+
     Window& getWindow();
 
     static Application& get();

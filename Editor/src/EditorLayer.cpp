@@ -36,7 +36,7 @@ void EditorLayer::onAttach()
 
     m_sceneHeirarchy.setContext(m_scene);
 
-    /*
+    /*    
 
     class CameraController : public ScriptableEntity
     {
@@ -86,8 +86,9 @@ void EditorLayer::onAttach()
     auto entity2 = m_scene->createEntity("Camera");
     entity2.addComponent<TransformComponent>();
     entity2.addComponent<CameraComponent>();
+    entity2.getComponent<CameraComponent>().primary = true;
 
-    */
+    */    
 }
 
 void EditorLayer::onUpdate(float dt)
@@ -98,6 +99,7 @@ void EditorLayer::onUpdate(float dt)
     {
         m_editorCamera.setViewportSize(m_viewportSize.x, m_viewportSize.y);
         m_framebuffer->resize(m_viewportSize.x, m_viewportSize.y);
+        m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
     }
 
     m_framebuffer->bind();
@@ -154,6 +156,10 @@ void EditorLayer::onImGuiRender()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
     ImGui::Begin("Viewport");
 
+    m_viewportFocused = ImGui::IsWindowFocused();
+    m_viewportHovered = ImGui::IsWindowHovered();
+    Application::get().getImGuiLayer()->blockEvents(!m_viewportFocused && !m_viewportHovered);
+
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
@@ -191,7 +197,7 @@ void EditorLayer::onImGuiRender()
             }
 
             float snapValues[] = { snapValue, snapValue, snapValue };
-
+            
             ImGuizmo::Manipulate(math::buffer(view), math::buffer(projection), (ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, math::buffer(transform), nullptr, snap ? snapValues : nullptr);
         
             if (ImGuizmo::IsUsing())
@@ -222,15 +228,9 @@ void EditorLayer::onDetach()
     
 }
 
-void EditorLayer::onViewportResize(WindowResizeEvent& event)
-{
-    m_scene->onViewportResize(event.getWidth(), event.getHeight());
-}
-
 void EditorLayer::onEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(EditorLayer::onViewportResize));
     dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::onKeyPressed));
     m_editorCamera.onEvent(event);
 }

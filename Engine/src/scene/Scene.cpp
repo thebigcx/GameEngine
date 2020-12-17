@@ -149,12 +149,13 @@ void Scene::onUpdateRuntime(float dt)
 
     {
         auto view = m_registry.view<TransformComponent, CameraComponent>();
-        for (auto& entity : view)
+        for (auto& entityID : view)
         {
-            if (entity->getRegistry()->get<CameraComponent>(entity).primary)
+            SceneEntity entity = { entityID, this };
+            if (entity.getComponent<CameraComponent>().primary)
             {
-                camera = &(entity->getRegistry()->get<CameraComponent>(entity).camera);
-                transform = entity->getRegistry()->get<TransformComponent>(entity).getTransform();
+                camera = &(entity.getComponent<CameraComponent>().camera);
+                transform = entity.getComponent<TransformComponent>().getTransform();
                 break;
             }
         }
@@ -203,3 +204,14 @@ void Scene::onComponentAdded<CameraComponent>(SceneEntity& entity, CameraCompone
 {
     component.camera.setViewportSize(m_viewportWidth, m_viewportHeight);
 }
+
+template<> void Scene::onComponentAdded<TransformComponent>(SceneEntity& entity, TransformComponent& component) {}
+template<> void Scene::onComponentAdded<SpriteRendererComponent>(SceneEntity& entity, SpriteRendererComponent& component) {}
+template<> void Scene::onComponentAdded<BoxCollider2DComponent>(SceneEntity& entity, BoxCollider2DComponent& component) {}
+template<> void Scene::onComponentAdded<NativeScriptComponent>(SceneEntity& entity, NativeScriptComponent& component) {}
+template<> void Scene::onComponentAdded<TagComponent>(SceneEntity& entity, TagComponent& component) {}
+template<> void Scene::onComponentAdded<TextRendererComponent>(SceneEntity& entity, TextRendererComponent& component) {}
+template<> void Scene::onComponentAdded<MeshComponent>(SceneEntity& entity, MeshComponent& component) {}
+template<> void Scene::onComponentAdded<SkyLightComponent>(SceneEntity& entity, SkyLightComponent& component) {}
+template<> void Scene::onComponentAdded<PointLightComponent>(SceneEntity& entity, PointLightComponent& component) {}
+template<> void Scene::onComponentAdded<DirectionalLightComponent>(SceneEntity& entity, DirectionalLightComponent& component) {}

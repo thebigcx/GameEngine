@@ -102,8 +102,19 @@ void SceneHierarchy::onImGuiRender()
 
     ImGui::Begin("Environment");
 
+    float exposure;
+    ImGui::SliderFloat("Exposure", &exposure, 0.f, 5.f);
+
     ImGui::End();
 }
+
+#define ADD_COMPONENT(type, str) if (!entity.hasComponent<type>())\
+                                {\
+                                    if (ImGui::MenuItem(str)) {\
+                                        entity.addComponent<type>();\
+                                        ImGui::CloseCurrentPopup();\
+                                    }\
+                                }
 
 void SceneHierarchy::drawProperties(SceneEntity& entity)
 {
@@ -119,59 +130,14 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 
     if (ImGui::BeginPopup("AddComponent"))
     {
-        if (ImGui::MenuItem("Transform Component"))
-        {
-            entity.addComponent<TransformComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        if (ImGui::MenuItem("Sprite Renderer"))
-        {
-            entity.addComponent<SpriteRendererComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        if (ImGui::MenuItem("Camera Component"))
-        {
-            entity.addComponent<CameraComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        if (ImGui::MenuItem("Text Renderer"))
-        {
-            entity.addComponent<TextRendererComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        if (ImGui::MenuItem("Box Collider 2D"))
-        {
-            entity.addComponent<BoxCollider2DComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        
-        if (ImGui::MenuItem("Mesh"))
-        {
-            entity.addComponent<MeshComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        if (ImGui::MenuItem("Sky Light"))
-        {
-            entity.addComponent<SkyLightComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        if (ImGui::MenuItem("Directional Light"))
-        {
-            entity.addComponent<DirectionalLightComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        if (ImGui::MenuItem("Point Light"))
-        {
-            entity.addComponent<PointLightComponent>();
-            ImGui::CloseCurrentPopup();
-        }
+        ADD_COMPONENT(TransformComponent, "Transform");
+        ADD_COMPONENT(SpriteRendererComponent, "Sprite Renderer");
+        ADD_COMPONENT(CameraComponent, "Camera");
+        ADD_COMPONENT(BoxCollider2DComponent, "Box Collider 2D");
+        ADD_COMPONENT(MeshComponent, "Mesh");
+        ADD_COMPONENT(SkyLightComponent, "Sky Light");
+        ADD_COMPONENT(DirectionalLightComponent, "Directional Light");
+        ADD_COMPONENT(PointLightComponent, "Point Light");
 
         ImGui::EndPopup();
     }

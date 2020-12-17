@@ -84,3 +84,8 @@ void ImGuiLayer::onEvent(Event& event)
         event.handled |= event.categories() & io.WantCaptureKeyboard;
     }
 }
+
+void ImGuiLayer::blockEvents(bool block)
+{
+    m_blockEvents = block;
+}
