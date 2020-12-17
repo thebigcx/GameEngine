@@ -39,7 +39,7 @@ project "Sandbox"
 		"pthread"
 	}
 	
-	--optimize "On"
+	optimize "On"
 	
 	configuration "Debug"
 	configuration "Release"

@@ -14,7 +14,8 @@ project "GameEngine"
         "vendor/imgui/backends/imgui_impl_glfw.cpp",
         "vendor/imgui/backends/imgui_impl_opengl3.cpp",
         "vendor/stb_image/src/stb_image/stb_image.cpp",
-        "vendor/dr_libs/src/dr_libs/dr_libs.c"
+        "vendor/dr_libs/src/dr_libs/dr_libs.c",
+        "vendor/imguizmo/*.cpp"
     }
 
     includedirs {

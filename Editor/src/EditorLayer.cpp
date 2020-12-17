@@ -1,6 +1,5 @@
 #include "EditorLayer.h"
 
-#include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
@@ -158,6 +157,48 @@ void EditorLayer::onImGuiRender()
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
     ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+    
+    // ImGuizmo
+    SceneEntity& entity = m_sceneHeirarchy.getSelectedEntity();
+    if (entity && m_gizmoType != -1)
+    {
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+
+        float windowWidth = (float)ImGui::GetWindowWidth();
+        float windowHeight = (float)ImGui::GetWindowHeight();
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+        const math::mat4& projection = m_editorCamera.getProjectionMatrix();
+        const math::mat4& view = m_editorCamera.getViewMatrix();
+
+        auto& tc = entity.getComponent<TransformComponent>();
+        math::mat4 transform = tc.getTransform();
+
+        bool snap = Input::isKeyPressed(Key::LeftControl);
+        float snapValue = 0.5f;
+        
+        if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
+        {
+            snapValue = 45.f;
+        }
+
+        float snapValues[] = { snapValue, snapValue, snapValue };
+
+        ImGuizmo::Manipulate(math::buffer(view), math::buffer(projection), (ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, math::buffer(transform), nullptr, snap ? snapValues : nullptr);
+    
+        if (ImGuizmo::IsUsing())
+        {
+            math::vec3 translation, rotation, scale;
+            math::decompose_transform(transform, translation, rotation, scale);
+
+            math::vec3 deltaRotation = math::degrees(rotation) - tc.rotation;
+            tc.translation = translation;
+            tc.rotation += deltaRotation;
+            tc.scale = scale;
+        }
+    }
+    
     ImGui::End();
 
     m_sceneHeirarchy.onImGuiRender();
@@ -180,5 +221,27 @@ void EditorLayer::onEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
     dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(EditorLayer::onViewportResize));
+    dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::onKeyPressed));
     m_editorCamera.onEvent(event);
+}
+
+bool EditorLayer::onKeyPressed(KeyPressedEvent& event)
+{
+    switch ((Key)event.getKeyCode())
+    {
+        case Key::Q:
+            m_gizmoType = -1;
+            break;
+        case Key::W:
+            m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+            break;
+        case Key::E:
+            m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+            break;
+        case Key::R:
+            m_gizmoType = ImGuizmo::OPERATION::SCALE;
+            break;
+    }
+
+    return false;
 }

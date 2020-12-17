@@ -3,6 +3,7 @@
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
+#include <imguizmo/ImGuizmo.h>
 
 #include <core/Application.h>
 #include <renderer/RenderCommand.h>
@@ -44,6 +45,7 @@ void ImGuiLayer::begin()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+    ImGuizmo::BeginFrame();
 }
 
 void ImGuiLayer::end()

@@ -8,6 +8,9 @@
 #include <util/OrthographicCameraController.h>
 #include <renderer/text/TrueTypeFont.h>
 
+#include <imgui/imgui.h>
+#include <imguizmo/ImGuizmo.h>
+
 #include "SceneHierarchy.h"
 
 class EditorLayer : public Layer
@@ -16,6 +19,7 @@ public:
     EditorLayer();
 
     void onViewportResize(WindowResizeEvent& event);
+    bool onKeyPressed(KeyPressedEvent& event);
 
     void onAttach() override;
     void onDetach() override;
@@ -37,4 +41,6 @@ private:
 
     Shared<Texture2D> m_scenePlayButton;
     Shared<Texture2D> m_sceneStopButton;
+
+    uint32_t m_gizmoType;
 };

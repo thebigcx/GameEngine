@@ -26,6 +26,11 @@ public:
 
     void drawSceneRenderer();
 
+    SceneEntity& getSelectedEntity()
+    {
+        return m_selection;
+    }
+
 private:
     Shared<Scene> m_context;
 
