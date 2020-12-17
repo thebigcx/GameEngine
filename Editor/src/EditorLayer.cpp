@@ -159,23 +159,24 @@ void EditorLayer::onImGuiRender()
     ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
 
     // ImGuizmo
+
+    const math::mat4& projection = m_editorCamera.getProjectionMatrix();
+    const math::mat4& view = m_editorCamera.getViewMatrix();
+
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::SetDrawlist();
+
+    float windowWidth = (float)ImGui::GetWindowWidth();
+    float windowHeight = (float)ImGui::GetWindowHeight();
+    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+    ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
+
     SceneEntity& entity = m_sceneHeirarchy.getSelectedEntity();
     if (entity && m_gizmoType != -1)
     {
-        ImGuizmo::SetOrthographic(false);
-        ImGuizmo::SetDrawlist();
-
-        float windowWidth = (float)ImGui::GetWindowWidth();
-        float windowHeight = (float)ImGui::GetWindowHeight();
-        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-
-        const math::mat4& projection = m_editorCamera.getProjectionMatrix();
-        const math::mat4& view = m_editorCamera.getViewMatrix();
-
         auto& tc = entity.getComponent<TransformComponent>();
         math::mat4 transform = tc.getTransform();
-
-        ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
 
         bool snap = Input::isKeyPressed(Key::LeftControl);
         float snapValue = 0.5f;
