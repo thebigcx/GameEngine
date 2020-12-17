@@ -3,8 +3,54 @@
 #include <vector>
 #include <functional>
 #include <typeindex>
+#include <unordered_map>
+#include <typeindex>
 
-#include <scene/ecs/Entity.h>
+#include <core/Logger.h>
+
+class IComponent
+{
+public:
+    virtual ~IComponent() = default;
+};
+
+template<typename T>
+class Component : public IComponent
+{
+public:
+    template<typename... Args>
+    Component(Args... args) 
+    : value(args...) {};
+
+    T value;
+};
+
+class EntityRegistry;
+
+class Entity
+{
+private:
+    friend class EntityRegistry;
+    friend class EntityView;
+
+public:
+    Entity(EntityRegistry* registry)
+        : m_registry(registry) {}
+    ~Entity()
+    {
+        
+    }
+
+    EntityRegistry* getRegistry()
+    {
+        return m_registry;
+    }
+
+private:
+    EntityRegistry* m_registry;
+
+    std::unordered_map<std::type_index, IComponent*> m_components;
+};
 
 class EntityView
 {
@@ -191,13 +237,6 @@ public:
         func(static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value);
     }
 
-    /*template<typename... Components>
-    std::tuple<Components...> get(Entity* entity)
-    {
-        std::tuple<Components...> components;
-        (internal_get<Components>(entity), ...);
-    }*/
-
     void each(const std::function<void(Entity* entity)>& fn)
     {
         for (auto& entity : m_entities)
@@ -224,21 +263,6 @@ public:
 
         m_entities.clear();
     }
-
-    /*template<typename T>
-    EntityView view()
-    {
-        std::vector<Entity*> entities;
-        for (auto& entity : m_entities)
-        {
-            if (has<T>(&entity))
-            {
-                entities.push_back(&entity);
-            }
-        }
-
-        return EntityView(entities);
-    }*/
 
     template<typename... Components>
     EntityView view()
@@ -293,3 +317,15 @@ private:
         return static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value;
     }
 };
+
+template<typename T, typename Func>
+void EntityView::each(const Func& func)
+{
+    for (auto& entity : m_entities)
+    {
+        if (entity->getRegistry()->has<T>(entity))
+        {
+            func(entity, entity->getRegistry()->get<T>(entity));
+        }
+    }
+}

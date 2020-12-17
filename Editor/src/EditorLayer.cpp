@@ -36,7 +36,7 @@ void EditorLayer::onAttach()
 
     m_sceneHeirarchy.setContext(m_scene);
 
-    // TEMP
+    /*
 
     class CameraController : public ScriptableEntity
     {
@@ -87,7 +87,7 @@ void EditorLayer::onAttach()
     entity2.addComponent<TransformComponent>();
     entity2.addComponent<CameraComponent>();
 
-    // TEMP
+    */
 }
 
 void EditorLayer::onUpdate(float dt)
@@ -135,22 +135,23 @@ void EditorLayer::onImGuiRender()
     ImGui::DockSpace(ImGui::GetID("MyDockSpace"), ImVec2(0.f, 0.f), ImGuiDockNodeFlags_None);
 
     windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0, 0});
     ImGui::Begin("Scene Settings", &dockspaceOpen, windowFlags);
 
-    //ImGui::Button("Heelo");
-    if (ImGui::ImageButton((void*)m_scenePlayButton->getId(), ImVec2{30, 30}))
+    if (ImGui::ImageButton(reinterpret_cast<void*>(m_scenePlayButton->getId()), ImVec2{30, 30}))
     {
         m_playingScene = true;
     }
     ImGui::SameLine();
-    if (ImGui::ImageButton((void*)m_sceneStopButton->getId(), ImVec2{30, 30}))
+    if (ImGui::ImageButton(reinterpret_cast<void*>(m_sceneStopButton->getId()), ImVec2{30, 30}))
     {
         m_playingScene = false;
     }
 
     ImGui::End();
+    ImGui::PopStyleVar();
 
-    ImGui::SetNextWindowSize(ImVec2{1280, 720});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
     ImGui::Begin("Viewport");
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -159,50 +160,56 @@ void EditorLayer::onImGuiRender()
     ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
 
     // ImGuizmo
+    // TODO: create own gizmo library
 
-    const math::mat4& projection = m_editorCamera.getProjectionMatrix();
-    const math::mat4& view = m_editorCamera.getViewMatrix();
-
-    ImGuizmo::SetOrthographic(false);
-    ImGuizmo::SetDrawlist();
-
-    float windowWidth = (float)ImGui::GetWindowWidth();
-    float windowHeight = (float)ImGui::GetWindowHeight();
-    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-
-    ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
-
-    SceneEntity& entity = m_sceneHeirarchy.getSelectedEntity();
-    if (entity && m_gizmoType != -1)
+    if (!m_playingScene)
     {
-        auto& tc = entity.getComponent<TransformComponent>();
-        math::mat4 transform = tc.getTransform();
+        const math::mat4& projection = m_editorCamera.getProjectionMatrix();
+        const math::mat4& view = m_editorCamera.getViewMatrix();
 
-        bool snap = Input::isKeyPressed(Key::LeftControl);
-        float snapValue = 0.5f;
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+
+        float windowWidth = (float)ImGui::GetWindowWidth();
+        float windowHeight = (float)ImGui::GetWindowHeight();
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+        ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
+
+        SceneEntity& entity = m_sceneHeirarchy.getSelectedEntity();
+        if (entity && m_gizmoType != -1 && entity.hasComponent<TransformComponent>())
+        {
+            auto& tc = entity.getComponent<TransformComponent>();
+            math::mat4 transform = tc.getTransform();
+
+            bool snap = Input::isKeyPressed(Key::LeftControl);
+            float snapValue = 0.5f;
+            
+            if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
+            {
+                snapValue = 45.f;
+            }
+
+            float snapValues[] = { snapValue, snapValue, snapValue };
+
+            ImGuizmo::Manipulate(math::buffer(view), math::buffer(projection), (ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, math::buffer(transform), nullptr, snap ? snapValues : nullptr);
         
-        if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
-        {
-            snapValue = 45.f;
+            if (ImGuizmo::IsUsing())
+            {
+                math::vec3 translation, rotation, scale;
+                math::decompose_transform(transform, translation, rotation, scale);
+
+                math::vec3 deltaRotation = math::degrees(rotation) - tc.rotation;
+                tc.translation = translation;
+                tc.rotation += deltaRotation;
+                tc.scale = scale;
+            }
         }
 
-        float snapValues[] = { snapValue, snapValue, snapValue };
-
-        ImGuizmo::Manipulate(math::buffer(view), math::buffer(projection), (ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, math::buffer(transform), nullptr, snap ? snapValues : nullptr);
-    
-        if (ImGuizmo::IsUsing())
-        {
-            math::vec3 translation, rotation, scale;
-            math::decompose_transform(transform, translation, rotation, scale);
-
-            math::vec3 deltaRotation = math::degrees(rotation) - tc.rotation;
-            tc.translation = translation;
-            tc.rotation += deltaRotation;
-            tc.scale = scale;
-        }
     }
     
     ImGui::End();
+    ImGui::PopStyleVar();
 
     m_sceneHeirarchy.onImGuiRender();
     

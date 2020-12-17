@@ -16,6 +16,7 @@ void SceneHierarchy::onImGuiRender()
 {
     ImGui::Begin("Scene Hierarchy");
 
+    SceneEntity deletedEntity;
     m_context->getRegistry().each([&](Entity* entityHandle)
     {
         ImGui::PushID(entityHandle);
@@ -44,38 +45,31 @@ void SceneHierarchy::onImGuiRender()
         {
             ImGui::TreePop();
         }
-
+        
         if (deleted)
         {
-            if (m_selection == entity)
-            {
-                m_selection = SceneEntity::createNull(m_context.get());
-            }
-            m_context->destroyEntity(entity);
+            m_selection = SceneEntity::createNull(m_context.get());
+            deletedEntity = entity;
         }
 
         ImGui::PopID();
     });
 
+    if (deletedEntity)
+    {
+        m_context->destroyEntity(deletedEntity);
+    }
+
     if (ImGui::BeginPopupContextWindow(0, 1, false))
     {
         if (ImGui::MenuItem("Create Empty Entity"))
         {
-            m_context->createEntity("Untitled Entity");
+            auto entity = m_context->createEntity("Untitled Entity");
+            m_selection = entity;
         }
 
         ImGui::EndPopup();
     }
-    /*ImGuiPopupFlags flags = ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems;
-    if (ImGui::BeginPopupContextItem(0, flags))
-    {
-        if (ImGui::MenuItem("Create Empty Entity"))
-        {
-            m_context->createEntity("Untitled Entity");
-        }
-
-        ImGui::EndPopup();
-    }*/
 
     ImGui::End();
 
@@ -429,7 +423,7 @@ void SceneHierarchy::drawMaterials(SceneEntity& entity)
 
         if (ImGui::CollapsingHeader("Albedo"))
         {
-            ImGui::Image((void*)material->albedoMap->getId(), ImVec2{50, 50});
+            ImGui::Image(reinterpret_cast<void*>(material->albedoMap->getId()), ImVec2{50, 50});
             ImGui::SameLine();
 
             textureSelect(material->albedoMap);
@@ -442,7 +436,7 @@ void SceneHierarchy::drawMaterials(SceneEntity& entity)
 
         if (ImGui::CollapsingHeader("Normals"))
         {
-            ImGui::Image((void*)material->normalMap->getId(), ImVec2{50, 50});
+            ImGui::Image(reinterpret_cast<void*>(material->normalMap->getId()), ImVec2{50, 50});
             ImGui::SameLine();
 
             textureSelect(material->normalMap);
@@ -452,7 +446,7 @@ void SceneHierarchy::drawMaterials(SceneEntity& entity)
 
         if (ImGui::CollapsingHeader("Metalness"))
         {
-            ImGui::Image((void*)material->metalnessMap->getId(), ImVec2{50, 50});
+            ImGui::Image(reinterpret_cast<void*>(material->metalnessMap->getId()), ImVec2{50, 50});
             ImGui::SameLine();
 
             textureSelect(material->metalnessMap);
@@ -465,7 +459,7 @@ void SceneHierarchy::drawMaterials(SceneEntity& entity)
 
         if (ImGui::CollapsingHeader("Roughness"))
         {
-            ImGui::Image((void*)material->roughnessMap->getId(), ImVec2{50, 50});
+            ImGui::Image(reinterpret_cast<void*>(material->roughnessMap->getId()), ImVec2{50, 50});
             ImGui::SameLine();
 
             textureSelect(material->roughnessMap);

@@ -14,12 +14,17 @@ Application* Application::m_instance = nullptr;
 
 Application::Application()
 {
+    if (m_instance != nullptr)
+    {
+        Logger::getCoreLogger()->critical("Multiple instances of Application class!");
+    }
+
     m_instance = this;
 
     m_window = Window::create(1280, 720, "Application");
     m_window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
-    math::random::initSeed();
+    math::random::init_seed();
     SoundEngine::init();
     Renderer::init();
     Time::init();

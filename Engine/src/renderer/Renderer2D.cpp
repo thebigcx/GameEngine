@@ -234,7 +234,7 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4
 
 void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)
 {
-    Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size), math::vec3(origin) };
+    Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size) };
     renderSprite(texture, transform.matrix(), texRect, color);
 }
 
@@ -250,7 +250,7 @@ void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, 
 
 void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color, const math::vec2& origin)
 {
-    Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size), math::vec3(origin) };
+    Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size) };
     renderQuad(transform.matrix(), color);
 }
 

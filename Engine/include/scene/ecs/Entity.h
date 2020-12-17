@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+/*#include <unordered_map>
 #include <typeindex>
 
 #include <core/Logger.h>
@@ -49,4 +49,4 @@ private:
     EntityRegistry* m_registry;
 
     std::unordered_map<std::type_index, IComponent*> m_components;
-};
+};*/
