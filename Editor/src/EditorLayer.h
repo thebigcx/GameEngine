@@ -12,6 +12,7 @@
 #include <imguizmo/ImGuizmo.h>
 
 #include "SceneHierarchy.h"
+#include "MaterialsPanel.h"
 
 class EditorLayer : public Layer
 {
@@ -38,6 +39,7 @@ private:
     EditorCamera m_editorCamera;
 
     SceneHierarchy m_sceneHeirarchy;
+    MaterialsPanel m_materialsPanel;
 
     bool m_playingScene = false;
 

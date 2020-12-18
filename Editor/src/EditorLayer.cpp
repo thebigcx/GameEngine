@@ -35,6 +35,7 @@ void EditorLayer::onAttach()
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
 
     m_sceneHeirarchy.setContext(m_scene);
+    m_materialsPanel.setContext(m_scene);
 
     /*    
 
@@ -218,6 +219,7 @@ void EditorLayer::onImGuiRender()
     ImGui::PopStyleVar();
 
     m_sceneHeirarchy.onImGuiRender();
+    m_materialsPanel.onImGuiRender(m_sceneHeirarchy.getSelectedEntity());
     
     ImGui::End();
     ImGui::PopStyleVar();

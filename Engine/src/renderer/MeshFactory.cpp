@@ -1,6 +1,7 @@
 #include <renderer/MeshFactory.h>
 #include <renderer/Renderer2D.h>
 #include <renderer/Model.h>
+#include <maths/constants.h>
 
 Shared<Mesh> MeshFactory::textMesh()
 {
@@ -208,4 +209,99 @@ Shared<Mesh> MeshFactory::skyboxMesh()
     box->vertexArray->setIndexBuffer(box->indexBuffer);
 
     return box;
+}
+
+Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
+{
+    std::vector<uint32_t> indices;
+    std::vector<ModelVertex> vertices;
+
+    float PI = math::pi<float>();
+
+    float x, y, z, xy;
+    float nx, ny, nz, lengthInv = 1.f / radius;
+    float u, v;
+
+    float sectorStep = 2 * PI / sectors;
+    float stackStep = PI / stacks;
+    float sectorAngle, stackAngle;
+
+    for (int i = 0; i <= stacks; ++i)
+    {
+        stackAngle = PI / 2.f - i * stackStep;
+        xy = radius * cosf(stackAngle);
+        z = radius * sinf(stackAngle);
+
+        for (int j = 0; j <= sectors; ++j)
+        { // TODO: change loop indices (++j)
+            ModelVertex vertex;
+
+            sectorAngle = j * sectorStep;
+
+            x = xy * cosf(sectorAngle);
+            y = xy * sinf(sectorAngle);
+
+            vertex.position = { x, y, z };
+
+            nx = x * lengthInv;
+            ny = y * lengthInv;
+            nz = z * lengthInv;
+
+            vertex.normal = { nx, ny, nz };
+
+            u = static_cast<float>(j) / sectors;
+            v = static_cast<float>(i) / stacks;
+
+            vertex.uv = { u, v };
+
+            vertices.push_back(vertex);
+        }
+    }
+
+    // Indices
+    int k1, k2;
+    for (int i = 0; i < stacks; ++i)
+    {
+        k1 = i * (sectors + 1);
+        k2 = k1 + sectors + 1;
+
+        for (int j = 0; j < sectors; ++j, ++k1, ++k2)
+        {
+            if (i != 0)
+            {
+                indices.push_back(k1);
+                indices.push_back(k2);
+                indices.push_back(k1 + 1);
+            }
+
+            if (i != (stacks - 1))
+            {
+                indices.push_back(k1 + 1);
+                indices.push_back(k2);
+                indices.push_back(k2 + 1);
+            }
+        }
+    }
+
+    auto sphere = createShared<Mesh>();
+
+    sphere->vertexArray = VertexArray::create();
+    sphere->vertexArray->bind();
+
+    BufferLayout layout = {
+        { Shader::DataType::Float3, "aPos" },
+        { Shader::DataType::Float3, "aNormal" },
+        { Shader::DataType::Float2, "aTexCoord" }
+    };
+
+    sphere->indexBuffer = IndexBuffer::create(indices.size(), IndexDataType::UInt32);
+    sphere->indexBuffer->setData(&indices[0], indices.size());
+
+    sphere->vertexBuffer = VertexBuffer::create(sizeof(ModelVertex) * vertices.size());
+    sphere->vertexBuffer->setData(&vertices[0], sizeof(ModelVertex) * vertices.size());
+    sphere->vertexBuffer->setLayout(layout);
+    sphere->vertexArray->addVertexBuffer(sphere->vertexBuffer);
+    sphere->vertexArray->setIndexBuffer(sphere->indexBuffer);
+
+    return sphere;
 }

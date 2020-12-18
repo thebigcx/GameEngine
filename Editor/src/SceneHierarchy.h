@@ -3,11 +3,12 @@
 #include <scene/Scene.h>
 #include <core/Core.h>
 #include <scene/SceneEntity.h>
+#include <renderer/Framebuffer.h>
 
 class SceneHierarchy
 {
 public:
-    SceneHierarchy() = default;
+    SceneHierarchy();
     SceneHierarchy(const Shared<Scene>& scene);
 
     template<typename T, typename F>

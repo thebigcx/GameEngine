@@ -5,6 +5,15 @@
 #include <scene/Components.h>
 #include <scene/SceneEntity.h>
 #include <renderer/Model.h>
+#include <renderer/RenderCommand.h>
+#include <renderer/Renderer3D.h>
+#include <util/PerspectiveCamera.h>
+#include <renderer/MeshFactory.h>
+
+SceneHierarchy::SceneHierarchy()
+{
+    
+}
 
 SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
     : m_context(scene)
@@ -82,7 +91,7 @@ void SceneHierarchy::onImGuiRender()
 
     ImGui::End();
 
-    ImGui::Begin("Materials");
+    /*ImGui::Begin("Materials");
 
     if (m_selection)
     {
@@ -92,7 +101,7 @@ void SceneHierarchy::onImGuiRender()
         }
     }
 
-    ImGui::End();
+    ImGui::End();*/
 
     drawSceneRenderer();
 
@@ -381,61 +390,7 @@ void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
 
 void SceneHierarchy::drawMaterials(SceneEntity& entity)
 {
-    for (auto& material : entity.getComponent<MeshComponent>().materials)
-    {
-        char buf[128];
-        strcpy(buf, "material");
-        ImGui::InputText("Name", buf, 128);
-
-        if (ImGui::CollapsingHeader("Albedo"))
-        {
-            ImGui::Image(reinterpret_cast<void*>(material->albedoMap->getId()), ImVec2{50, 50});
-            ImGui::SameLine();
-
-            textureSelect(material->albedoMap);
-
-            ImGui::SameLine();
-            ImGui::Checkbox("Use", &material->usingAlbedoMap);
-            ImGui::SameLine();
-            ImGui::ColorEdit4("Color", &material->albedoColor.x);
-        }
-
-        if (ImGui::CollapsingHeader("Normals"))
-        {
-            ImGui::Image(reinterpret_cast<void*>(material->normalMap->getId()), ImVec2{50, 50});
-            ImGui::SameLine();
-
-            textureSelect(material->normalMap);
-
-            ImGui::Checkbox("Use", &material->usingNormalMap);
-        }
-
-        if (ImGui::CollapsingHeader("Metalness"))
-        {
-            ImGui::Image(reinterpret_cast<void*>(material->metalnessMap->getId()), ImVec2{50, 50});
-            ImGui::SameLine();
-
-            textureSelect(material->metalnessMap);
-
-            ImGui::SameLine();
-            ImGui::Checkbox("Use", &material->usingMetalnessMap);
-            ImGui::SameLine();
-            ImGui::SliderFloat("Value", &material->metalness, 0.f, 100.f);
-        }
-
-        if (ImGui::CollapsingHeader("Roughness"))
-        {
-            ImGui::Image(reinterpret_cast<void*>(material->roughnessMap->getId()), ImVec2{50, 50});
-            ImGui::SameLine();
-
-            textureSelect(material->roughnessMap);
-
-            ImGui::SameLine();
-            ImGui::Checkbox("Use", &material->usingRoughnessMap);
-            ImGui::SameLine();
-            ImGui::SliderFloat("Valu", &material->roughness, 0.f, 100.f);
-        }
-    }
+    
 }
 
 void SceneHierarchy::drawSceneRenderer()
