@@ -101,7 +101,7 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
             material->metalnessMap = metalnesses[0];
         }
 
-        material->metalness = 0.f;
+        //material->metalness = 0.f;
 
         auto roughnesses = loadMaterialTextures(aimaterial, aiTextureType_SHININESS);
         if (roughnesses.size() > 0)
@@ -109,14 +109,7 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
             material->roughnessMap = roughnesses[0];
         }
 
-        float roughness = 0.f;
-        aiGetMaterialFloat(scene->mMaterials[0], AI_MATKEY_SHININESS, &roughness);
-        if (roughness == 0.f)
-        {
-            roughness = 16.f;
-        }
-
-        material->roughness = roughness;
+        //material->roughness = roughness;
 
         materials.push_back(material);
     }

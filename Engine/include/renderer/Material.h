@@ -12,11 +12,6 @@ public:
     void bind() const;
     void unbind() const;
 
-    Shared<Shader> getShader() const
-    {
-        return m_shader;
-    }
-
     static Shared<Material> create(const Shared<Shader>& shader);
 
     bool usingMetalnessMap = false;
@@ -33,6 +28,5 @@ public:
 
     math::vec4 albedoColor;
 
-private:
-    Shared<Shader> m_shader;
+    Shared<Shader> shader;
 };

@@ -2,12 +2,12 @@
 
 void Material::bind() const
 {
-    m_shader->bind();
+    shader->bind();
 
     if (usingAlbedoMap)
     {
         albedoMap->bind(0);
-        m_shader->setFloat4("material.albedoColor", albedoColor);
+        shader->setFloat4("material.albedoColor", albedoColor);
     }
 
     if (usingNormalMap)
@@ -19,25 +19,16 @@ void Material::bind() const
     {
         metalnessMap->bind(2);
     }
-    else
-    {
-        m_shader->setFloat("material.metalness", metalness);
-    }
 
     if (usingRoughnessMap)
     {
         roughnessMap->bind(3);
     }
-    else
-    {
-        m_shader->setFloat("material.roughness", roughness);
-    }
-    
 }
 
 void Material::unbind() const
 {
-    m_shader->unbind();
+    shader->unbind();
 
     if (usingAlbedoMap)
     {
@@ -64,7 +55,7 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
 {
     auto material = createShared<Material>();
 
-    material->m_shader = shader;
+    material->shader = shader;
 
     uint32_t white = 0xffffffff;
     

@@ -94,7 +94,8 @@ void Sandbox::onUpdate(float dt)
 
     m_perspectiveCamera.update(dt);
 
-    Renderer::startFrame();
+    //Renderer::startFrame();
+    RenderCommand::clear(RenderCommand::defaultClearBits());
 
     Renderer3D::beginScene(m_perspectiveCamera);
 
@@ -125,7 +126,7 @@ void Sandbox::onUpdate(float dt)
 
     Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));
 
-    Renderer::endFrame();
+    //Renderer::endFrame();
 }
 
 void Sandbox::onEvent(Event& event)

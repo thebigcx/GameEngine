@@ -20,11 +20,18 @@ public:
     void onImGuiRender(SceneEntity& selectedEntity);
 
 private:
+    void init();
+
+    void renderMaterialPreview(const Shared<Material>& material);
+
+private:
     Shared<Scene> m_context;
     Shared<Framebuffer> m_materialPreviewViewport;
     Shared<Mesh> m_sphereMesh;
+    
+    LightSetup m_lightSetup;
 
     EditorCamera m_camera;
 
-    void renderMaterialPreview(const Shared<Material>& material);
+    
 };

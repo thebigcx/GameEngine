@@ -16,8 +16,6 @@ struct Renderer3DData
 {
     Shared<Shader> modelShader;
 
-    PerspectiveCamera* camera;
-
     bool sceneStarted = false;
     Shared<UniformBuffer> lightingData;
 

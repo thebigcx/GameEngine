@@ -131,7 +131,6 @@ void main()
         result += calcSpotLight(spotLights[i], norm, fs_in.fragPos, viewDir);
 
     FragColor = vec4(result, 1.0);
-    //FragColor = vec4(texture(material.albedo, fs_in.texCoord) * material.albedoColor);
 }
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir)
