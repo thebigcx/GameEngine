@@ -5,6 +5,8 @@
 #include <scene/SceneEntity.h>
 #include <renderer/Framebuffer.h>
 
+#include "FileSelectWindow.h"
+
 class SceneHierarchy
 {
 public:

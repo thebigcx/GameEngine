@@ -23,7 +23,6 @@ public:
     static Shared<Model> loadModel(const std::string& file);
 
     std::vector<Shared<Mesh>> meshes;
-    Shared<Mesh> modelmesh;
 
 private:
     std::string m_directory;

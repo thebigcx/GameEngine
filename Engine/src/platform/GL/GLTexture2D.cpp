@@ -50,6 +50,7 @@ GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
     else
     {
         Logger::getCoreLogger()->error("Image is corrupted or contains unknown formatted data!");
+        m_path = "";
     }
 
     m_width = image->width;

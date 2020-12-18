@@ -7,6 +7,8 @@
 #include <renderer/Renderer3D.h>
 #include <scene/Components.h>
 
+#include "FileSelectWindow.h"
+
 MaterialsPanel::MaterialsPanel()
 {
     init();
@@ -25,19 +27,30 @@ void MaterialsPanel::init()
     m_camera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
     m_sphereMesh = MeshFactory::sphereMesh(2.f, 36, 18);
 
-    m_lightSetup.setSkylight(0.3);
+    m_lightSetup.setSkylight(0.03);
     m_lightSetup.setDirectionalLight({ math::vec3(0, -1, 0), math::vec3(1, 1, 1), 0.5, 0.6f });
+    std::vector<PointLight> lights = {
+        { math::vec3(1, 1.3, 1.3), math::vec3(1, 1, 1), 1.f, 1.f, 1.f }
+    };
+    m_lightSetup.setPointLights(lights);
 }
 
-void textureSelect(Shared<Texture2D>& texture)
+void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
 {
-    char buf[128];
-    strcpy(buf, texture->getPath().c_str());
-    ImGui::InputText("Texture", buf, 128);
-
-    //if (ImGui::Button("Load"))
+    if (ImGui::Button("..."))
     {
-        texture = Texture2D::create(std::string(buf));
+        FileSelectWindow::open();
+    }
+
+    if (FileSelectWindow::isOpen())
+    {
+        if (!FileSelectWindow::display())
+        {
+            if (FileSelectWindow::madeSelection())
+            {
+                texture = Texture2D::create(FileSelectWindow::getSelection());
+            }
+        }
     }
 }
 
@@ -47,19 +60,13 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
 
     ImGui::Begin("Materials");
 
-    if (!selectedEntity)
+    if (!selectedEntity || !selectedEntity.hasComponent<MeshComponent>() || !selectedEntity.getComponent<MeshComponent>().mesh)
     {
         ImGui::End();
         return;
     }
 
-    if (!selectedEntity.hasComponent<MeshComponent>())
-    {
-        ImGui::End();
-        return;
-    }
-
-    for (auto& material : selectedEntity.getComponent<MeshComponent>().materials)
+    for (auto& material : selectedEntity.getComponent<MeshComponent>().mesh->materials)
     {
         char buf[128];
         strcpy(buf, "material");

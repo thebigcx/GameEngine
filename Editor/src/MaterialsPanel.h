@@ -24,6 +24,8 @@ private:
 
     void renderMaterialPreview(const Shared<Material>& material);
 
+    void textureSelect(Shared<Texture2D>& texture);
+
 private:
     Shared<Scene> m_context;
     Shared<Framebuffer> m_materialPreviewViewport;
@@ -33,5 +35,5 @@ private:
 
     EditorCamera m_camera;
 
-    
+    std::unordered_map<int, std::string> m_texturePathInputs;
 };

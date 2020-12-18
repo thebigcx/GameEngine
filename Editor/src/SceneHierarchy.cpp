@@ -91,18 +91,6 @@ void SceneHierarchy::onImGuiRender()
 
     ImGui::End();
 
-    /*ImGui::Begin("Materials");
-
-    if (m_selection)
-    {
-        if (m_selection.hasComponent<MeshComponent>())
-        {
-            drawMaterials(m_selection);
-        }
-    }
-
-    ImGui::End();*/
-
     drawSceneRenderer();
 
     ImGui::Begin("Debug");
@@ -237,7 +225,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         }
     });
 
-    drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
+    drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [&](auto& component)
     {
         ImGui::ColorEdit4("Color", &(component.color.x));
 
@@ -248,15 +236,17 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
             component.texture->setData(0, 0, 1, 1, &white);
         }
 
-        char buf[128];
-        strcpy(buf, component.texture->getPath().c_str());
-
-        ImGui::InputText("Texture Path", buf, 128);
-
-        if (std::string(buf) != component.texture->getPath())
+        if (component.texture->getPath() == "")
         {
-            component.texture = Texture2D::create(std::string(buf));
+            ImGui::Text("<empty_texture>");
         }
+        else
+        {
+            ImGui::Text(component.texture->getPath().c_str());
+        }
+        
+        ImGui::SameLine();
+        textureSelect(component.texture);
 
         ImGui::Checkbox("Using Texture Region", &component.usingTexRect);
         ImGui::DragFloat("X", &component.textureRect.x);
@@ -278,17 +268,35 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 
     drawComponent<MeshComponent>("Mesh", entity, [](auto& component)
     {
-        char buf[128];
-        strcpy(buf, component.filePath.c_str());
-        if (ImGui::InputText("File Path", buf, 128))
-            component.filePath = std::string(buf);
-
-        // TODO: refactor mesh/model system
-        if (ImGui::Button("Load"))
+        if (component.filePath == "")
         {
-            Shared<Model> model = Model::loadModel(component.filePath);
-            component.mesh = model->meshes[0];
-            component.materials.push_back(component.mesh->materials[0]);
+            ImGui::Text("<empty_mesh>");
+        }
+        else
+        {
+            ImGui::Text(component.filePath.c_str());
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("..."))
+        {
+            FileSelectWindow::open();
+        }
+
+        if (FileSelectWindow::isOpen())
+        {
+            if (!FileSelectWindow::display())
+            {
+                if (FileSelectWindow::madeSelection())
+                {
+                    component.filePath = FileSelectWindow::getSelection();
+                    Shared<Model> model = Model::loadModel(component.filePath);
+                    if (model->meshes.size() > 0)
+                    {
+                        component.mesh = model->meshes[0];
+                    }
+                }
+            }
         }
     });
 
@@ -378,13 +386,20 @@ void SceneHierarchy::drawComponent(const std::string& name, SceneEntity& entity,
 
 void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
 {
-    char buf[128];
-    strcpy(buf, texture->getPath().c_str());
-    ImGui::InputText("Texture", buf, 128);
-
-    if (ImGui::Button("Load"))
+    if (ImGui::Button("..."))
     {
-        texture = Texture2D::create(std::string(buf));
+        FileSelectWindow::open();
+    }
+
+    if (FileSelectWindow::isOpen())
+    {
+        if (!FileSelectWindow::display())
+        {
+            if (FileSelectWindow::madeSelection())
+            {
+                texture = Texture2D::create(FileSelectWindow::getSelection());
+            }
+        }
     }
 }
 
