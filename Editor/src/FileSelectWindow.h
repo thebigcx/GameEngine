@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <filesystem>
 
 #include <core/Core.h>
@@ -14,8 +15,14 @@ public:
     static void recurseTree(const std::filesystem::path& path, int level);
 
     static std::string getSelection();
-    static bool isOpen()
+
+    template<typename... Args>
+    static bool selectFile(const std::string& title, Args... args)
     {
+        m_title = title;
+
+        m_acceptedFileTypes = { args... };
+
         return m_isOpen;
     }
 
@@ -26,6 +33,9 @@ public:
 
     static void open()
     {
+        // Reset states
+        m_madeSelection = false;
+        m_selection = "";
         m_isOpen = true;
     }
 
@@ -35,4 +45,11 @@ private:
 
     static bool m_madeSelection;
     static bool m_isOpen;
+
+    static std::string m_title;
+
+    static std::vector<std::string> m_acceptedFileTypes;
+    static int m_acceptedFileTypeSelected;
+
+    static std::string m_searchQuery;
 };

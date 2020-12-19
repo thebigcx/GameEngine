@@ -103,6 +103,8 @@ void SceneHierarchy::onImGuiRender()
     ImGui::SliderFloat("Exposure", &exposure, 0.f, 5.f);
 
     ImGui::End();
+
+    ImGui::ShowDemoWindow();
 }
 
 #define ADD_COMPONENT(type, str) if (!entity.hasComponent<type>())\
@@ -235,15 +237,19 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
             uint32_t white = 0xffffffff;
             component.texture->setData(0, 0, 1, 1, &white);
         }
-
+        
+        char buf[128];
         if (component.texture->getPath() == "")
         {
-            ImGui::Text("<empty_texture>");
+            strcpy(buf, "<empty_texture>");
         }
         else
         {
-            ImGui::Text(component.texture->getPath().c_str());
+            strcpy(buf, component.texture->getPath().c_str());
         }
+
+        ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
+        ImGui::InputText("", buf, 128, flags);
         
         ImGui::SameLine();
         textureSelect(component.texture);
@@ -268,14 +274,18 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 
     drawComponent<MeshComponent>("Mesh", entity, [](auto& component)
     {
+        char buf[128];
         if (component.filePath == "")
         {
-            ImGui::Text("<empty_mesh>");
+            strcpy(buf, "<empty_mesh>");
         }
         else
         {
-            ImGui::Text(component.filePath.c_str());
+            strcpy(buf, component.filePath.c_str());
         }
+
+        ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
+        ImGui::InputText("", buf, 128, flags);
 
         ImGui::SameLine();
         if (ImGui::Button("..."))
@@ -283,7 +293,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
             FileSelectWindow::open();
         }
 
-        if (FileSelectWindow::isOpen())
+        if (FileSelectWindow::selectFile("Choose mesh..."))
         {
             if (!FileSelectWindow::display())
             {
@@ -391,7 +401,7 @@ void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
         FileSelectWindow::open();
     }
 
-    if (FileSelectWindow::isOpen())
+    if (FileSelectWindow::selectFile("Choose texture...", ".png", ".jpg", ".jpeg"))
     {
         if (!FileSelectWindow::display())
         {
