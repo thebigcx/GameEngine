@@ -8,7 +8,7 @@ Shared<Model> Model::loadModel(const std::string& file)
     auto model = createShared<Model>();
 
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
@@ -64,6 +64,10 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
         {
             vertex.uv = math::vec2(0.f);
         }
+
+        vertex.tangent.x = mesh->mTangents[i].x;
+        vertex.tangent.y = mesh->mTangents[i].y;
+        vertex.tangent.z = mesh->mTangents[i].z;
 
         vertices.push_back(vertex);
     }
@@ -121,7 +125,8 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     BufferLayout layout = {
         { Shader::DataType::Float3, "aPos"      },
         { Shader::DataType::Float3, "aNormal"   },
-        { Shader::DataType::Float2, "aTexCoord" }
+        { Shader::DataType::Float2, "aTexCoord" },
+        { Shader::DataType::Float3, "aTangent"  }
     };
 
     mesh_->indexBuffer = IndexBuffer::create(indices.size(), IndexDataType::UInt32);

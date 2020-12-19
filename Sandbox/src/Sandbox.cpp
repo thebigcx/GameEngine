@@ -110,9 +110,9 @@ void Sandbox::onUpdate(float dt)
     }
 
     Renderer3D::data.modelShader->bind();
-    Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());
-    Renderer3D::data.modelShader->setFloat3("spotLights[0].direction", m_perspectiveCamera.getDirection());
-    //Renderer3D::data.modelShader->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
+    //Renderer3D::data.modelShader->setFloat3("spotLights[0].position", m_perspectiveCamera.getPosition());
+    //Renderer3D::data.modelShader->setFloat3("spotLights[0].direction", m_perspectiveCamera.getDirection());
+    Renderer3D::data.modelShader->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
 
     Renderer3D::submit(mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.f, 4.f)));
 

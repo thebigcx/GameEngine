@@ -3,12 +3,14 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
+layout (location = 3) in vec3 aTangent;
 
 out DATA
 {
     vec2 texCoord;
     vec3 normal;
     vec3 fragPos;
+    mat3 TBN;
 } vs_out;
 
 layout (std140, binding = 0) uniform matrices
@@ -21,6 +23,12 @@ uniform mat4 transform = mat4(1.f);
 
 void main()
 {
+    vec3 T = normalize(vec3(transform * vec4(aTangent, 0.0)));
+    vec3 N = normalize(vec3(transform * vec4(aNormal, 0.0)));
+    T = normalize(T - dot(T, N) * N);
+    vec3 B = cross(N, T);
+    vs_out.TBN = mat3(T, B, N);
+
     vs_out.normal = aNormal;
     vs_out.texCoord = aTexCoord;
     vs_out.fragPos = vec3(transform * vec4(aPos, 1.0));
@@ -39,6 +47,8 @@ struct Material
     sampler2D metallic;
     sampler2D roughness;
     sampler2D ao;
+
+    bool usingNormal;
 };
 
 struct PointLight
@@ -53,6 +63,7 @@ in DATA
     vec2 texCoord;
     vec3 normal;
     vec3 fragPos;
+    mat3 TBN;
 } fs_in;
 
 out vec4 fragColor;
@@ -111,15 +122,26 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
+vec3 getNormalFromNormalMap()
+{
+    vec3 normal = texture(material.normal, fs_in.texCoord).rgb;
+    normal = normal * 2.0 - 1.0;
+    normal = normalize(fs_in.TBN * normal);
+    return normal;
+}
+
 void main()
 {
-    vec3 N = normalize(fs_in.normal);
     vec3 V = normalize(cameraPos - fs_in.fragPos);
 
     vec4 albedoSample = texture(material.albedo, fs_in.texCoord);
 
     vec3 albedo = vec3(pow(albedoSample.r, 2.2), pow(albedoSample.g, 2.2), pow(albedoSample.b, 2.2));
-    //vec3 normal = getNormalFromNormalMap();
+    vec3 normal;
+    if (material.usingNormal)
+        normal = getNormalFromNormalMap();
+    else
+        normal = fs_in.normal;
     float metallic  = texture(material.metallic, fs_in.texCoord).r;
     float roughness = texture(material.roughness, fs_in.texCoord).r;
     float ao        = texture(material.ao, fs_in.texCoord).r;
@@ -138,7 +160,7 @@ void main()
         vec3 radiance = pointLights[i].radiance * attenuation;
 
         float NDF = distributionGGX(H, V, roughness);
-        float G = geometrySmith(N, V, L, roughness);
+        float G = geometrySmith(normal, V, L, roughness);
         vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
         vec3 kS = F;
@@ -146,11 +168,13 @@ void main()
         kD *= 1.0 - metallic;
 
         vec3 numerator = NDF * G * F;
-        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+        float denominator = 4.0 * max(dot(normal, V), 0.0) * max(dot(normal, L), 0.0);
         vec3 specular = numerator / max(denominator, 0.001);
 
-        float NdotL = max(dot(N, L), 0.0);
+        float NdotL = max(dot(normal, L), 0.0);
         Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+
+        Lo *= pointLights[i].intensity;
     }
 
     vec3 ambient = skyLight * albedo * ao;

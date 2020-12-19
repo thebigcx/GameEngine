@@ -16,7 +16,7 @@ public:
     void update(float dt);
 
 private:
-    float m_speed = 0.1f;
+    float m_speed = 0.01f;
 
     math::ivec2 m_lastMousePos;
 

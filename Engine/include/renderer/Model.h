@@ -15,6 +15,7 @@ struct ModelVertex
     math::vec3 position;
     math::vec3 normal;
     math::vec2 uv;
+    math::vec3 tangent;
 };
 
 class Model

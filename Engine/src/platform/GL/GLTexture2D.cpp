@@ -27,8 +27,10 @@ GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
 
         glTextureStorage2D(m_id, 1, m_internalFormat, image->width, image->height);
 
-        glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        //glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
         glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

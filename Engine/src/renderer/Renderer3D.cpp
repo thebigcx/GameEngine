@@ -165,7 +165,7 @@ void Renderer3D::setLights(const LightSetup& setup)
 
         data.modelShader->setFloat3("pointLights[" + index + "].position",  light.position);
         data.modelShader->setFloat3("pointLights[" + index + "].radiance",   light.color);
-        //data.modelShader->setFloat("pointLights[" + index + "].intensity",  light.intensity);
+        data.modelShader->setFloat("pointLights[" + index + "].intensity",  light.intensity);
         //data.modelShader->setFloat("pointLights[" + index + "].specular",  light.specular);
         //data.modelShader->setFloat("pointLights[" + index + "].attenuation", light.attenuation);
         /*data.lightingData->setData(&(light.position.x), sizeof(PointLight), counter);

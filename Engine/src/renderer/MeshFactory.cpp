@@ -258,6 +258,21 @@ Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
         }
     }
 
+    // Tangents
+    /*for (int i = 0; i < vertices.size(); i += 3)
+    {
+        math::vec3 tangent = calculateTangent(vertices[i    ].position, 
+                                              vertices[i + 1].position, 
+                                              vertices[i + 2].position,
+                                              vertices[i    ].uv, 
+                                              vertices[i + 1].uv, 
+                                              vertices[i + 2].uv);
+        
+        vertices[i    ].tangent = tangent;
+        vertices[i + 1].tangent = tangent;
+        vertices[i + 2].tangent = tangent;
+    }*/
+
     // Indices
     int k1, k2;
     for (int i = 0; i < stacks; ++i)
@@ -272,6 +287,17 @@ Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
                 indices.push_back(k1);
                 indices.push_back(k2);
                 indices.push_back(k1 + 1);
+
+                math::vec3 tangent = calculateTangent(vertices[k1].position, 
+                                                      vertices[k2].position, 
+                                                      vertices[k1 + 1].position,
+                                                      vertices[k1].uv, 
+                                                      vertices[k2].uv, 
+                                                      vertices[k1 + 1].uv);
+                
+                vertices[k1].tangent = tangent;
+                vertices[k2].tangent = tangent;
+                vertices[k1 + 1].tangent = tangent;
             }
 
             if (i != (stacks - 1))
@@ -289,9 +315,10 @@ Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
     sphere->vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Float3, "aPos" },
-        { Shader::DataType::Float3, "aNormal" },
-        { Shader::DataType::Float2, "aTexCoord" }
+        { Shader::DataType::Float3, "aPos"      },
+        { Shader::DataType::Float3, "aNormal"   },
+        { Shader::DataType::Float2, "aTexCoord" },
+        { Shader::DataType::Float3, "aTangent"  }
     };
 
     sphere->indexBuffer = IndexBuffer::create(indices.size(), IndexDataType::UInt32);
@@ -304,4 +331,27 @@ Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
     sphere->vertexArray->setIndexBuffer(sphere->indexBuffer);
 
     return sphere;
+}
+
+math::vec3 MeshFactory::calculateTangent(
+    const math::vec3& pos1,
+    const math::vec3& pos2, 
+    const math::vec3& pos3,
+    const math::vec2& uv1,
+    const math::vec2& uv2,
+    const math::vec2& uv3)
+{
+    math::vec3 edge1 = pos2 - pos1;
+    math::vec3 edge2 = pos3 - pos1;
+    math::vec2 deltaUV1 = uv2 - uv1;
+    math::vec2 deltaUV2 = uv3 - uv1;
+
+    float f = 1.f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+    math::vec3 tangent;
+    tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+    tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+    tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+
+    return tangent;
 }

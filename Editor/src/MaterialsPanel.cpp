@@ -6,6 +6,8 @@
 #include <renderer/MeshFactory.h>
 #include <renderer/Renderer3D.h>
 #include <scene/Components.h>
+#include <maths/quaternion/qua.h>
+#include <maths/quaternion/qua_func.h>
 
 #include "FileSelectWindow.h"
 
@@ -187,7 +189,7 @@ void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
     Renderer3D::setLights(m_lightSetup);
 
     Renderer3D::beginScene(m_camera);
-    Renderer3D::submit(m_sphereMesh, math::mat4(1.f));
+    Renderer3D::submit(m_sphereMesh, math::to_mat4(math::quat(math::vec3(math::radians(-80), 0, 0))));
     Renderer3D::endScene();
 
     m_materialPreviewViewport->unbind();

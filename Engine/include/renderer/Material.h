@@ -18,6 +18,7 @@ public:
     bool usingRoughnessMap = false;
     bool usingAlbedoMap = true;
     bool usingNormalMap = false;
+    bool usingAmbientOcclusionMap = false;
 
     float metalness = 0.f;
     float roughness = 0.f;
@@ -25,6 +26,7 @@ public:
     Shared<Texture2D> normalMap;
     Shared<Texture2D> metalnessMap;
     Shared<Texture2D> roughnessMap;
+    Shared<Texture2D> ambientOcclusionMap;
 
     math::vec4 albedoColor;
 
