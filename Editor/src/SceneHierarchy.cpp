@@ -103,8 +103,6 @@ void SceneHierarchy::onImGuiRender()
     ImGui::SliderFloat("Exposure", &exposure, 0.f, 5.f);
 
     ImGui::End();
-
-    ImGui::ShowDemoWindow();
 }
 
 #define ADD_COMPONENT(type, str) if (!entity.hasComponent<type>())\
@@ -293,7 +291,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
             FileSelectWindow::open();
         }
 
-        if (FileSelectWindow::selectFile("Choose mesh..."))
+        if (FileSelectWindow::selectFile("Choose mesh...", ".obj", ".fbx", ".blend", ".3ds"))
         {
             if (!FileSelectWindow::display())
             {
@@ -401,7 +399,7 @@ void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
         FileSelectWindow::open();
     }
 
-    if (FileSelectWindow::selectFile("Choose texture...", ".png", ".jpg", ".jpeg"))
+    if (FileSelectWindow::selectFile("Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
     {
         if (!FileSelectWindow::display())
         {

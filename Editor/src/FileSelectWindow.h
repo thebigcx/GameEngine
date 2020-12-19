@@ -52,4 +52,7 @@ private:
     static int m_acceptedFileTypeSelected;
 
     static std::string m_searchQuery;
+
+    static Shared<Texture2D> m_folderIcon;
+    static Shared<Texture2D> m_fileIcon;
 };

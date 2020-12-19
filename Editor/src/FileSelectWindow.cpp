@@ -1,10 +1,12 @@
 #include "FileSelectWindow.h"
 
 #include <filesystem>
+#include <algorithm>
 
 #include <imgui/imgui.h>
 
 #include <maths/random.h>
+#include <core/Logger.h>
 
 std::filesystem::path FileSelectWindow::m_workingPath = std::filesystem::current_path();
 std::filesystem::path FileSelectWindow::m_selection;
@@ -14,9 +16,17 @@ std::string FileSelectWindow::m_title = "";
 std::vector<std::string> FileSelectWindow::m_acceptedFileTypes;
 int FileSelectWindow::m_acceptedFileTypeSelected;
 std::string FileSelectWindow::m_searchQuery = "";
+Shared<Texture2D> FileSelectWindow::m_folderIcon = nullptr;
+Shared<Texture2D> FileSelectWindow::m_fileIcon = nullptr;
 
 bool FileSelectWindow::display()
 {
+    if (m_folderIcon == nullptr)
+    {
+        m_folderIcon = Texture2D::create("Editor/assets/folder_icon.png");
+        m_fileIcon = Texture2D::create("Editor/assets/file_icon.png");
+    }
+
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
     bool open = true;
 
@@ -35,7 +45,14 @@ bool FileSelectWindow::display()
         
         ImGui::BeginChild("", ImVec2{ImGui::GetContentRegionAvailWidth(), ImGui::GetWindowSize().y - 130});
 
-        recurseTree(m_workingPath, 0);
+        try
+        {
+            recurseTree(m_workingPath, 0);
+        }
+        catch (std::filesystem::filesystem_error e)
+        {
+            std::cout << "[FILESYSTEM] " << e.what() << "\n";
+        }
 
         ImGui::EndChild();
 
@@ -65,7 +82,7 @@ bool FileSelectWindow::display()
         }
 
         ImGui::SetNextItemWidth(100);
-        if (ImGui::BeginCombo("AcceptedFileTypes", current))
+        if (ImGui::BeginCombo("", current))
         {
             for (unsigned int i = 0; i < m_acceptedFileTypes.size(); i++)
             {
@@ -105,11 +122,19 @@ bool FileSelectWindow::display()
 
 void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
 {
-    if (ImGui::Selectable("[Dir] .."))
+    bool parentOpened = ImGui::Selectable("##..");
+
+    ImGui::SameLine(0, 0);
+    ImGui::Image(reinterpret_cast<void*>(m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    ImGui::SameLine();
+    ImGui::Text("..");
+
+    if (parentOpened)
     {
         m_workingPath = m_workingPath.parent_path();
     }
 
+    // Directories and files should be seperated
     std::vector<std::filesystem::directory_entry> directories;
     std::vector<std::filesystem::directory_entry> files;
 
@@ -121,6 +146,7 @@ void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
         }
         else if (std::filesystem::is_regular_file(entry.status()))
         {
+            // Check if file fits search query
             if (m_searchQuery != "")
             {
                 if (std::string(entry.path().filename()).substr(0, m_searchQuery.size()) == m_searchQuery)
@@ -149,10 +175,29 @@ void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
         }
     }
 
+    // Sort files and directories alphabetically
+    std::sort(directories.begin(), directories.end(), [&](auto dir1, auto dir2)
+    {
+        return std::string(dir1.path().filename()) < std::string(dir2.path().filename());
+    });
+
+    std::sort(files.begin(), files.end(), [&](auto file1, auto file2)
+    {
+        return std::string(file1.path().filename()) < std::string(file2.path().filename());
+    });
+
     for (auto& dir : directories)
     {
-        std::string name = std::string("[Dir] ") + dir.path().filename().c_str();
-        if (ImGui::Selectable(name.c_str()))
+        std::string name = dir.path().filename().c_str();
+
+        bool opened = ImGui::Selectable((std::string("##") + name).c_str());
+
+        ImGui::SameLine(0, 0);
+        ImGui::Image(reinterpret_cast<void*>(m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::SameLine();
+        ImGui::Text(name.c_str());
+
+        if (opened)
         {
             m_workingPath = dir.path();
         }
@@ -160,8 +205,16 @@ void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
 
     for (auto& file : files)
     {
-        std::string name = std::string("[File] ") + file.path().filename().c_str();
-        if (ImGui::Selectable(name.c_str()))
+        std::string name = file.path().filename().c_str();
+
+        bool opened = ImGui::Selectable((std::string("##") + name).c_str());
+
+        ImGui::SameLine(0, 0);
+        ImGui::Image(reinterpret_cast<void*>(m_fileIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::SameLine();
+        ImGui::Text(name.c_str());
+
+        if (opened)
         {
             m_selection = std::filesystem::relative(file);
         }

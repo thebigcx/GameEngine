@@ -42,7 +42,7 @@ void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
         FileSelectWindow::open();
     }
 
-    if (FileSelectWindow::selectFile("Choose texture..."))
+    if (FileSelectWindow::selectFile("Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
     {
         if (!FileSelectWindow::display())
         {
