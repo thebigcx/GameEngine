@@ -288,11 +288,12 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         ImGui::SameLine();
         if (ImGui::Button("..."))
         {
-            FileSelectWindow::open();
+            FileSelectWindow::open(&component);
         }
 
-        if (FileSelectWindow::selectFile("Choose mesh...", ".obj", ".fbx", ".blend", ".3ds"))
+        if (FileSelectWindow::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds"))
         {
+            //std::cout << "mesh\n";
             if (!FileSelectWindow::display())
             {
                 if (FileSelectWindow::madeSelection())
@@ -396,10 +397,10 @@ void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
 {
     if (ImGui::Button("..."))
     {
-        FileSelectWindow::open();
+        FileSelectWindow::open(&texture);
     }
 
-    if (FileSelectWindow::selectFile("Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
+    if (FileSelectWindow::selectFile(&texture, "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
     {
         if (!FileSelectWindow::display())
         {

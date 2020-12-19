@@ -37,17 +37,18 @@ void MaterialsPanel::init()
 
 void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
 {
-    if (ImGui::Button("..."))
+    if (ImGui::ImageButton(reinterpret_cast<void*>(texture->getId()), ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
     {
-        FileSelectWindow::open();
+        FileSelectWindow::open(&texture);
     }
 
-    if (FileSelectWindow::selectFile("Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
+    if (FileSelectWindow::selectFile(&texture, "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
     {
         if (!FileSelectWindow::display())
         {
             if (FileSelectWindow::madeSelection())
             {
+                std::cout << FileSelectWindow::getSelection() << "\n";
                 texture = Texture2D::create(FileSelectWindow::getSelection());
             }
         }
@@ -101,9 +102,6 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
         {
             ImGui::PushID("Albedo");
 
-            ImGui::Image(reinterpret_cast<void*>(material->albedoMap->getId()), ImVec2{50, 50});
-            ImGui::SameLine();
-
             textureSelect(material->albedoMap);
 
             ImGui::SameLine();
@@ -118,9 +116,6 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
         {
             ImGui::PushID("Normals");
 
-            ImGui::Image(reinterpret_cast<void*>(material->normalMap->getId()), ImVec2{50, 50});
-            ImGui::SameLine();
-
             textureSelect(material->normalMap);
 
             ImGui::Checkbox("Use", &material->usingNormalMap);
@@ -131,9 +126,6 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
         if (ImGui::CollapsingHeader("Metalness"))
         {
             ImGui::PushID("Metalness");
-
-            ImGui::Image(reinterpret_cast<void*>(material->metalnessMap->getId()), ImVec2{50, 50});
-            ImGui::SameLine();
 
             textureSelect(material->metalnessMap);
 
@@ -148,9 +140,6 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
         if (ImGui::CollapsingHeader("Roughness"))
         {
             ImGui::PushID("Roughness");
-
-            ImGui::Image(reinterpret_cast<void*>(material->roughnessMap->getId()), ImVec2{50, 50});
-            ImGui::SameLine();
 
             textureSelect(material->roughnessMap);
 

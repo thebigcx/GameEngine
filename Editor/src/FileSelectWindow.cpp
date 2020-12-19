@@ -8,46 +8,49 @@
 #include <maths/random.h>
 #include <core/Logger.h>
 
-std::filesystem::path FileSelectWindow::m_workingPath = std::filesystem::current_path();
-std::filesystem::path FileSelectWindow::m_selection;
-bool FileSelectWindow::m_madeSelection = false;
-bool FileSelectWindow::m_isOpen = false;
-std::string FileSelectWindow::m_title = "";
-std::vector<std::string> FileSelectWindow::m_acceptedFileTypes;
-int FileSelectWindow::m_acceptedFileTypeSelected;
-std::string FileSelectWindow::m_searchQuery = "";
-Shared<Texture2D> FileSelectWindow::m_folderIcon = nullptr;
-Shared<Texture2D> FileSelectWindow::m_fileIcon = nullptr;
+FileSelectWindow FileSelectWindow::m_instance;
+
+FileSelectWindow::FileSelectWindow()
+    : m_workingPath(std::filesystem::current_path())
+{
+
+}
 
 bool FileSelectWindow::display()
 {
-    if (m_folderIcon == nullptr)
+    if (!m_instance.m_id)
     {
-        m_folderIcon = Texture2D::create("Editor/assets/folder_icon.png");
-        m_fileIcon = Texture2D::create("Editor/assets/file_icon.png");
+        m_instance.m_id = &m_instance;
+    }
+    ImGui::PushID(m_instance.m_id);
+
+    if (m_instance.m_folderIcon == nullptr)
+    {
+        m_instance.m_folderIcon = Texture2D::create("Editor/assets/folder_icon.png");
+        m_instance.m_fileIcon = Texture2D::create("Editor/assets/file_icon.png");
     }
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
     bool open = true;
 
-    ImGui::OpenPopup(m_title.c_str());
+    ImGui::OpenPopup(m_instance.m_title.c_str());
 
-    if (ImGui::BeginPopupModal(m_title.c_str(), &open, flags))
+    if (ImGui::BeginPopupModal(m_instance.m_title.c_str(), &open, flags))
     {
         ImGui::Text("Search:");
         ImGui::SameLine();
 
         char buf[128];
 
-        strcpy(buf, m_searchQuery.c_str());
+        strcpy(buf, m_instance.m_searchQuery.c_str());
         ImGui::InputText("", buf, 128);
-        m_searchQuery = buf;
+        m_instance.m_searchQuery = buf;
         
-        ImGui::BeginChild("", ImVec2{ImGui::GetContentRegionAvailWidth(), ImGui::GetWindowSize().y - 130});
+        ImGui::BeginChild("##explorer", ImVec2{ImGui::GetContentRegionAvailWidth(), ImGui::GetWindowSize().y - 130});
 
         try
         {
-            recurseTree(m_workingPath, 0);
+            recurseTree(m_instance.m_workingPath, 0);
         }
         catch (std::filesystem::filesystem_error e)
         {
@@ -60,7 +63,7 @@ bool FileSelectWindow::display()
         ImGui::SameLine();
 
         memset(buf, 0, 128);
-        strcpy(buf, m_selection.c_str());
+        strcpy(buf, m_instance.m_selection.c_str());
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
         ImGui::InputText("File Name:", buf, 128, flags);
 
@@ -68,28 +71,28 @@ bool FileSelectWindow::display()
 
         const char* current;
 
-        if (m_acceptedFileTypes.size() == 0)
+        if (m_instance.m_acceptedFileTypes.size() == 0)
         {
             current = "<any>";
         }
-        else if (m_acceptedFileTypeSelected >= m_acceptedFileTypes.size())
+        else if (m_instance.m_acceptedFileTypeSelected >= m_instance.m_acceptedFileTypes.size())
         {
             current = "";
         }
         else
         {
-            current = m_acceptedFileTypes[m_acceptedFileTypeSelected].c_str();
+            current = m_instance.m_acceptedFileTypes[m_instance.m_acceptedFileTypeSelected].c_str();
         }
 
         ImGui::SetNextItemWidth(100);
-        if (ImGui::BeginCombo("", current))
+        if (ImGui::BeginCombo("##acceptedFileFormats", current))
         {
-            for (unsigned int i = 0; i < m_acceptedFileTypes.size(); i++)
+            for (unsigned int i = 0; i < m_instance.m_acceptedFileTypes.size(); i++)
             {
-                bool isSelected = current == m_acceptedFileTypes[i];
-                if (ImGui::Selectable(m_acceptedFileTypes[i].c_str(), isSelected))
+                bool isSelected = current == m_instance.m_acceptedFileTypes[i];
+                if (ImGui::Selectable(m_instance.m_acceptedFileTypes[i].c_str(), isSelected))
                 {
-                    m_acceptedFileTypeSelected = i;
+                    m_instance.m_acceptedFileTypeSelected = i;
                 }
 
                 if (isSelected)
@@ -100,24 +103,25 @@ bool FileSelectWindow::display()
 
             ImGui::EndCombo();
         }
-
+        
         if (ImGui::Button("Cancel"))
         {
-            m_madeSelection = false;
-            m_isOpen = false;
+            m_instance.m_madeSelection = false;
+            m_instance.m_isOpen = false;
         }
         ImGui::SameLine();
         if (ImGui::Button("Ok"))
         {
-            m_madeSelection = true;
-            m_isOpen = false;
+            m_instance.m_madeSelection = true;
+            m_instance.m_isOpen = false;
         }
 
         ImGui::EndPopup();
     }
     
+    ImGui::PopID();
 
-    return m_isOpen;
+    return m_instance.m_isOpen;
 }
 
 void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
@@ -125,13 +129,13 @@ void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
     bool parentOpened = ImGui::Selectable("##..");
 
     ImGui::SameLine(0, 0);
-    ImGui::Image(reinterpret_cast<void*>(m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    ImGui::Image(reinterpret_cast<void*>(m_instance.m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     ImGui::SameLine();
     ImGui::Text("..");
 
     if (parentOpened)
     {
-        m_workingPath = m_workingPath.parent_path();
+        m_instance.m_workingPath = m_instance.m_workingPath.parent_path();
     }
 
     // Directories and files should be seperated
@@ -147,15 +151,15 @@ void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
         else if (std::filesystem::is_regular_file(entry.status()))
         {
             // Check if file fits search query
-            if (m_searchQuery != "")
+            if (m_instance.m_searchQuery != "")
             {
-                if (std::string(entry.path().filename()).substr(0, m_searchQuery.size()) == m_searchQuery)
+                if (std::string(entry.path().filename()).substr(0, m_instance.m_searchQuery.size()) == m_instance.m_searchQuery)
                 {
-                    if (m_acceptedFileTypes.size() == 0)
+                    if (m_instance.m_acceptedFileTypes.size() == 0)
                     {
                         files.push_back(entry);
                     }
-                    else if (m_acceptedFileTypes[m_acceptedFileTypeSelected] == entry.path().extension())
+                    else if (m_instance.m_acceptedFileTypes[m_instance.m_acceptedFileTypeSelected] == entry.path().extension())
                     {
                         files.push_back(entry);
                     }
@@ -163,11 +167,11 @@ void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
             }
             else
             {
-                if (m_acceptedFileTypes.size() == 0)
+                if (m_instance.m_acceptedFileTypes.size() == 0)
                 {
                     files.push_back(entry);
                 }
-                else if (m_acceptedFileTypes[m_acceptedFileTypeSelected] == entry.path().extension())
+                else if (m_instance.m_acceptedFileTypes[m_instance.m_acceptedFileTypeSelected] == entry.path().extension())
                 {
                     files.push_back(entry);
                 }
@@ -193,13 +197,13 @@ void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
         bool opened = ImGui::Selectable((std::string("##") + name).c_str());
 
         ImGui::SameLine(0, 0);
-        ImGui::Image(reinterpret_cast<void*>(m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::Image(reinterpret_cast<void*>(m_instance.m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::SameLine();
         ImGui::Text(name.c_str());
 
         if (opened)
         {
-            m_workingPath = dir.path();
+            m_instance.m_workingPath = dir.path();
         }
     }
 
@@ -210,18 +214,18 @@ void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
         bool opened = ImGui::Selectable((std::string("##") + name).c_str());
 
         ImGui::SameLine(0, 0);
-        ImGui::Image(reinterpret_cast<void*>(m_fileIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::Image(reinterpret_cast<void*>(m_instance.m_fileIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::SameLine();
         ImGui::Text(name.c_str());
 
         if (opened)
         {
-            m_selection = std::filesystem::relative(file);
+            m_instance.m_selection = std::filesystem::relative(file);
         }
     }
 }
 
 std::string FileSelectWindow::getSelection()
 {
-    return std::string(m_selection.c_str());
+    return std::string(m_instance.m_selection.c_str());
 }

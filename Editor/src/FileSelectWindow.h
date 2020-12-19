@@ -9,6 +9,10 @@
 
 class FileSelectWindow
 {
+private:
+    FileSelectWindow();
+    ~FileSelectWindow() = default;
+
 public:
     static bool display();
 
@@ -17,42 +21,53 @@ public:
     static std::string getSelection();
 
     template<typename... Args>
-    static bool selectFile(const std::string& title, Args... args)
+    static bool selectFile(const void* id, const std::string& title = "Choose file", Args... args)
     {
-        m_title = title;
+        if (m_instance.m_id != id)
+        {
+            return false;
+        }
+        m_instance.m_title = title;
+        m_instance.m_acceptedFileTypes = { args... };
 
-        m_acceptedFileTypes = { args... };
-
-        return m_isOpen;
+        return m_instance.m_isOpen;
     }
 
     static bool madeSelection()
     {
-        return m_madeSelection;
+        return m_instance.m_madeSelection;
     }
 
-    static void open()
+    static void open(const void* id)
     {
         // Reset states
-        m_madeSelection = false;
-        m_selection = "";
-        m_isOpen = true;
+        m_instance.m_id = id;
+
+        m_instance.m_madeSelection = false;
+        m_instance.m_selection = "";
+        m_instance.m_isOpen = true;
+        m_instance.m_workingPath = std::filesystem::current_path();
     }
 
 private:
-    static std::filesystem::path m_workingPath;
-    static std::filesystem::path m_selection;
+    static FileSelectWindow m_instance;
 
-    static bool m_madeSelection;
-    static bool m_isOpen;
+private:
+    std::filesystem::path m_workingPath;
+    std::filesystem::path m_selection;
 
-    static std::string m_title;
+    bool m_madeSelection;
+    bool m_isOpen;
 
-    static std::vector<std::string> m_acceptedFileTypes;
-    static int m_acceptedFileTypeSelected;
+    std::string m_title;
 
-    static std::string m_searchQuery;
+    std::vector<std::string> m_acceptedFileTypes;
+    int m_acceptedFileTypeSelected;
 
-    static Shared<Texture2D> m_folderIcon;
-    static Shared<Texture2D> m_fileIcon;
+    std::string m_searchQuery;
+
+    Shared<Texture2D> m_folderIcon;
+    Shared<Texture2D> m_fileIcon;
+
+    const void* m_id = 0;
 };
