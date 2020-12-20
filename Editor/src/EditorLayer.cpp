@@ -90,12 +90,6 @@ void EditorLayer::onAttach()
     entity2.getComponent<CameraComponent>().primary = true;
 
     */
-
-    auto entity1 = m_scene->createEntity("Donut");
-    auto& comp = entity1.addComponent<MeshComponent>();
-    //auto model = Model::loadModel("Sandbox/assets/Donut.obj");
-    //comp.mesh = model->meshes[0];
-    comp.filePath = "Sandbox/assets/Donut.obj";
 }
 
 void EditorLayer::onUpdate(float dt)

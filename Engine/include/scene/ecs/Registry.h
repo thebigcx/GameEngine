@@ -7,6 +7,7 @@
 #include <typeindex>
 
 #include <core/Logger.h>
+#include <core/Core.h>
 
 class IComponent
 {
@@ -34,20 +35,22 @@ private:
     friend class EntityView;
 
 public:
-    Entity(EntityRegistry* registry)
-        : m_registry(registry) {}
-    ~Entity()
+    Entity(EntityRegistry* parent);
+    ~Entity();
+
+    const Shared<EntityRegistry>& getChildren()
     {
-        
+        return m_children;
     }
 
-    EntityRegistry* getRegistry()
+    EntityRegistry* getParent()
     {
-        return m_registry;
+        return m_parent;
     }
 
 private:
-    EntityRegistry* m_registry;
+    EntityRegistry* m_parent;
+    Shared<EntityRegistry> m_children;
 
     std::unordered_map<std::type_index, IComponent*> m_components;
 };
@@ -92,7 +95,7 @@ class EntityRegistry
 public:
     EntityRegistry()
     {
-
+        
     }
 
     ~EntityRegistry()
@@ -142,6 +145,10 @@ public:
     template<typename T, typename... Args>
     T& emplace(Entity* entity, Args... args)
     {
+        if (entity == nullptr)
+        {
+            Logger::getCoreLogger()->error("Entity is null! (Registry::emplace)");
+        }
         if (has<T>(entity))
         {
             Logger::getCoreLogger()->warn("Entity already has specified component. (Registry::emplace)");
@@ -323,9 +330,9 @@ void EntityView::each(const Func& func)
 {
     for (auto& entity : m_entities)
     {
-        if (entity->getRegistry()->has<T>(entity))
+        if (entity->getParent()->has<T>(entity))
         {
-            func(entity, entity->getRegistry()->get<T>(entity));
+            func(entity, entity->getParent()->get<T>(entity));
         }
     }
 }

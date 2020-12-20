@@ -12,7 +12,7 @@ public:
     template<typename T, typename... Args>
     T& addComponent(Args... args)
     {
-        T& component = m_scene->getRegistry().emplace<T>(m_entityHandle, args...);
+        T& component = m_entityHandle->getParent()->emplace<T>(m_entityHandle, args...);
         m_scene->onComponentAdded<T>(*this, component);
         return component;
     }
@@ -20,19 +20,30 @@ public:
     template<typename T>
     T& getComponent()
     {
-        return m_scene->getRegistry().get<T>(m_entityHandle);
+        return m_entityHandle->getParent()->get<T>(m_entityHandle);
     }
 
     template<typename T>
     bool hasComponent()
     {
-        return m_scene->getRegistry().has<T>(m_entityHandle);
+        return m_entityHandle->getParent()->has<T>(m_entityHandle);
     }
 
     template<typename T>
     void removeComponent()
     {
-        m_scene->getRegistry().remove<T>(m_entityHandle);
+        m_entityHandle->getParent()->remove<T>(m_entityHandle);
+    }
+
+    std::vector<SceneEntity> getChildren()
+    {
+        std::vector<SceneEntity> children;
+        /*m_entityHandle->getChildren()->each([&](Entity* entityID)
+        {
+            children.push_back(SceneEntity(entityID, m_scene));
+        });*/
+
+        return children;
     }
 
     bool operator==(const SceneEntity& other)

@@ -33,6 +33,16 @@ void SceneHierarchy::onImGuiRender()
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_CollapsingHeader;
     if (ImGui::TreeNodeEx("Game Objects", flags))
     {
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (ImGui::MenuItem("Create Game Object"))
+            {
+                auto entity = m_context->createEntity("Untitled Entity");
+                m_selection = entity;
+            }
+
+            ImGui::EndPopup();
+        }
         SceneEntity deletedEntity;
         m_context->getRegistry().each([&](Entity* entityHandle)
         {
@@ -87,7 +97,7 @@ void SceneHierarchy::onImGuiRender()
             if (ImGui::MenuItem("Create Empty Entity"))
             {
                 auto entity = m_context->createEntity("Untitled Entity");
-                m_selection = entity;
+                //m_selection = entity;
             }
 
             if (ImGui::MenuItem("Import 3D Model"))
