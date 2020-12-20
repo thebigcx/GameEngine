@@ -9,28 +9,24 @@
 
 struct PointLight
 {
-    math::vec3 position, color;
+    math::vec3 position;
+    math::vec3 radiance;
     float intensity;
-    float specular;
-    float attenuation;
 };
 
 struct DirectionalLight
 {
-    alignas(16) math::vec3 direction;
-    alignas(16) math::vec3 color;
-    alignas(4) float intensity;
-    alignas(4) float specular;
+    math::vec3 direction;
+    math::vec3 radiance;
+    float intensity;
 };
 
 struct SpotLight
 {
-    math::vec3 position, direction, color;
+    math::vec3 position, direction, radiance;
     float cutoff;
     float outerCutoff;
     float intensity;
-    float specular;
-    float attenuation;
 };
 
 class LightSetup
@@ -96,17 +92,4 @@ private:
     std::vector<PointLight> m_pointLights;
     std::vector<SpotLight> m_spotLights;
     float m_skyLight = 0;
-};
-
-struct alignas(16) LightStruct
-{
-    alignas(64) DirectionalLight dirLight;
-    //PointLight pointLights[64];
-    //SpotLight spotLights[64];
-
-    //int numPointLights;
-    //int numSpotLights;
-
-    alignas(16) math::vec3 cameraPos;
-    alignas(4) float skyLight;
 };

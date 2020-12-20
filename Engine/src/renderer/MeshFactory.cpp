@@ -258,21 +258,6 @@ Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
         }
     }
 
-    // Tangents
-    /*for (int i = 0; i < vertices.size(); i += 3)
-    {
-        math::vec3 tangent = calculateTangent(vertices[i    ].position, 
-                                              vertices[i + 1].position, 
-                                              vertices[i + 2].position,
-                                              vertices[i    ].uv, 
-                                              vertices[i + 1].uv, 
-                                              vertices[i + 2].uv);
-        
-        vertices[i    ].tangent = tangent;
-        vertices[i + 1].tangent = tangent;
-        vertices[i + 2].tangent = tangent;
-    }*/
-
     // Indices
     int k1, k2;
     for (int i = 0; i < stacks; ++i)
@@ -305,6 +290,17 @@ Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
                 indices.push_back(k1 + 1);
                 indices.push_back(k2);
                 indices.push_back(k2 + 1);
+
+                math::vec3 tangent = calculateTangent(vertices[k1 + 1].position, 
+                                                      vertices[k2].position, 
+                                                      vertices[k2 + 1].position,
+                                                      vertices[k1 + 1].uv, 
+                                                      vertices[k2].uv, 
+                                                      vertices[k2 + 1].uv);
+                
+                vertices[k1 + 1].tangent = tangent;
+                vertices[k2].tangent = tangent;
+                vertices[k2 + 1].tangent = tangent;
             }
         }
     }

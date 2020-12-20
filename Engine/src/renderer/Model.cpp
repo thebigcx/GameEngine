@@ -93,7 +93,7 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
             material->albedoMap = albedos[0];
         }
 
-        auto normals = loadMaterialTextures(aimaterial, aiTextureType_NORMALS);
+        auto normals = loadMaterialTextures(aimaterial, aiTextureType_HEIGHT);
         if (normals.size() > 0)
         {
             material->normalMap = normals[0];
@@ -105,15 +105,17 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
             material->metalnessMap = metalnesses[0];
         }
 
-        //material->metalness = 0.f;
-
         auto roughnesses = loadMaterialTextures(aimaterial, aiTextureType_SHININESS);
         if (roughnesses.size() > 0)
         {
             material->roughnessMap = roughnesses[0];
         }
 
-        //material->roughness = roughness;
+        auto aos = loadMaterialTextures(aimaterial, aiTextureType_AMBIENT);
+        if (aos.size() > 0)
+        {
+            material->ambientOcclusionMap = aos[0];
+        }
 
         materials.push_back(material);
     }

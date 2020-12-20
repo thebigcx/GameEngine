@@ -1,8 +1,16 @@
 #include <renderer/Material.h>
+#include <renderer/Renderer3D.h>
 
 void Material::bind() const
 {
-    shader->bind();
+    if (shader)
+    {
+        shader->bind();
+    }
+    else
+    {
+        return;
+    }
 
     if (usingAlbedoMap)
     {
@@ -25,29 +33,63 @@ void Material::bind() const
     {
         metalnessMap->bind(2);
         shader->setInt("material.metallic", 2);
+        shader->setInt("material.usingMetalness", 1);
     }
+    else
+    {
+        shader->setInt("material.usingMetalness", 0);
+    }
+    
 
     if (usingRoughnessMap)
     {
         roughnessMap->bind(3);
         shader->setInt("material.roughness", 3);
+        shader->setInt("material.usingRoughness", 1);
     }
+    else
+    {
+        shader->setInt("material.usingRoughness", 0);
+    }
+    
 
     if (usingAmbientOcclusionMap)
     {
         ambientOcclusionMap->bind(4);
         shader->setInt("material.ao", 4);
+        shader->setInt("material.usingAo", 1);
+    }
+    else
+    {
+        shader->setInt("material.usingAo", 0);
+    }
+    
+
+    if (usingDepthMap)
+    {
+        depthMap->bind(5);
+        shader->setInt("material.depth", 5);
+        shader->setInt("material.usingDepth", 1);
+    }
+    else
+    {
+        shader->setInt("material.usingDepth", 0);
     }
 }
 
 void Material::unbind() const
 {
-    shader->unbind();
+    if (shader)
+    {
+        shader->unbind();
+    }
 
     albedoMap->unbind(0);
     normalMap->unbind(1);
     metalnessMap->unbind(2);
     roughnessMap->unbind(3);
+    ambientOcclusionMap->unbind(4);
+    depthMap->unbind(5);
 }
 
 Shared<Material> Material::create(const Shared<Shader>& shader)
@@ -74,7 +116,15 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
     material->ambientOcclusionMap = Texture2D::create(1, 1);
     material->ambientOcclusionMap->setData(0, 0, 1, 1, &white);
 
+    material->depthMap = Texture2D::create(1, 1);
+    material->depthMap->setData(0, 0, 1, 1, &white);
+
     material->albedoColor = math::vec4(1, 1, 1, 1);
 
     return material;
+}
+
+Shared<Material> Material::create()
+{
+    return Material::create(Renderer3D::data.modelShader);
 }

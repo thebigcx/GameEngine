@@ -29,7 +29,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
         {
             auto& dirLight = view.get<DirectionalLightComponent>(entity);
             auto& transform = view.get<TransformComponent>(entity);
-            setup.setDirectionalLight({ transform.rotation, dirLight.radiance, dirLight.intensity, 1.f });
+            setup.setDirectionalLight({ transform.rotation, dirLight.radiance, dirLight.intensity });
         }
 
         std::vector<PointLight> pointLights;
@@ -38,7 +38,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
         {
             auto& pointLight = view.get<PointLightComponent>(entity);
             auto& transform = view.get<TransformComponent>(entity);
-            pointLights.push_back({ transform.translation, pointLight.radiance, pointLight.intensity, 1.f, pointLight.attenuation });
+            pointLights.push_back({ transform.translation, pointLight.radiance, pointLight.intensity });
         }
 
         setup.setPointLights(pointLights);

@@ -29,10 +29,10 @@ void MaterialsPanel::init()
     m_camera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
     m_sphereMesh = MeshFactory::sphereMesh(2.f, 36, 18);
 
-    m_lightSetup.setSkylight(0.03);
-    m_lightSetup.setDirectionalLight({ math::vec3(0, -1, 0), math::vec3(1, 1, 1), 0.5, 0.6f });
+    m_lightSetup.setSkylight(0.1);
+    m_lightSetup.setDirectionalLight({ math::vec3(0, -1, 0), math::vec3(1, 1, 1), 0.5 });
     std::vector<PointLight> lights = {
-        { math::vec3(1, 1.3, 1.3), math::vec3(1, 1, 1), 1.f, 1.f, 1.f }
+        { math::vec3(1, 1.3, 1.3), math::vec3(1, 1, 1), 1.f }
     };
     m_lightSetup.setPointLights(lights);
 }
@@ -69,7 +69,18 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
         return;
     }
 
-    for (auto& material : selectedEntity.getComponent<MeshComponent>().mesh->materials)
+    auto& materials = selectedEntity.getComponent<MeshComponent>().mesh->materials;
+
+    if (materials.size() == 0)
+    {
+        if (ImGui::Button("Create Material"))
+        {
+            materials.push_back(Material::create());
+        }
+
+    }
+
+    for (auto& material : materials)
     {
         char buf[128];
         strcpy(buf, "material");
@@ -120,6 +131,7 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
 
             textureSelect(material->normalMap);
 
+            ImGui::SameLine();
             ImGui::Checkbox("Use", &material->usingNormalMap);
 
             ImGui::PopID();
@@ -133,8 +145,6 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
 
             ImGui::SameLine();
             ImGui::Checkbox("Use", &material->usingMetalnessMap);
-            ImGui::SameLine();
-            ImGui::SliderFloat("Value", &material->metalness, 0.f, 100.f);
 
             ImGui::PopID();
         }
@@ -147,8 +157,30 @@ void MaterialsPanel::onImGuiRender(SceneEntity& selectedEntity)
 
             ImGui::SameLine();
             ImGui::Checkbox("Use", &material->usingRoughnessMap);
+
+            ImGui::PopID();
+        }
+
+        if (ImGui::CollapsingHeader("Ambient Occlusion"))
+        {
+            ImGui::PushID("AmbientOcclusion");
+
+            textureSelect(material->ambientOcclusionMap);
+
             ImGui::SameLine();
-            ImGui::SliderFloat("Valu", &material->roughness, 0.f, 100.f);
+            ImGui::Checkbox("Use", &material->usingAmbientOcclusionMap);
+
+            ImGui::PopID();
+        }
+
+        if (ImGui::CollapsingHeader("Depth Map"))
+        {
+            ImGui::PushID("DepthMap");
+
+            textureSelect(material->depthMap);
+
+            ImGui::SameLine();
+            ImGui::Checkbox("Use", &material->usingDepthMap);
 
             ImGui::PopID();
         }

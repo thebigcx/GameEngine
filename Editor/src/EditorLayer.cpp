@@ -93,8 +93,8 @@ void EditorLayer::onAttach()
 
     auto entity1 = m_scene->createEntity("Donut");
     auto& comp = entity1.addComponent<MeshComponent>();
-    auto model = Model::loadModel("Sandbox/assets/Donut.obj");
-    comp.mesh = model->meshes[0];
+    //auto model = Model::loadModel("Sandbox/assets/Donut.obj");
+    //comp.mesh = model->meshes[0];
     comp.filePath = "Sandbox/assets/Donut.obj";
 }
 
@@ -187,7 +187,7 @@ void EditorLayer::onImGuiRender()
         float windowHeight = (float)ImGui::GetWindowHeight();
         ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-        ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
+        //ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
 
         SceneEntity& entity = m_sceneHeirarchy.getSelectedEntity();
         if (entity && m_gizmoType != -1 && entity.hasComponent<TransformComponent>())

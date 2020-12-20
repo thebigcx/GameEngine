@@ -12,6 +12,7 @@ public:
     void bind() const;
     void unbind() const;
 
+    static Shared<Material> create();
     static Shared<Material> create(const Shared<Shader>& shader);
 
     bool usingMetalnessMap = false;
@@ -19,6 +20,7 @@ public:
     bool usingAlbedoMap = true;
     bool usingNormalMap = false;
     bool usingAmbientOcclusionMap = false;
+    bool usingDepthMap = false;
 
     float metalness = 0.f;
     float roughness = 0.f;
@@ -27,6 +29,7 @@ public:
     Shared<Texture2D> metalnessMap;
     Shared<Texture2D> roughnessMap;
     Shared<Texture2D> ambientOcclusionMap;
+    Shared<Texture2D> depthMap;
 
     math::vec4 albedoColor;
 
