@@ -23,7 +23,7 @@ public:
         m_context = context;
     }
 
-    void recurseTree();
+    void recurseTree(SceneEntity entity);
 
     void onImGuiRender();
 
@@ -40,6 +40,7 @@ private:
     Shared<Scene> m_context;
 
     SceneEntity m_selection;
+    SceneEntity m_deletedEntity;
 
     void textureSelect(Shared<Texture2D>& texture);
 };

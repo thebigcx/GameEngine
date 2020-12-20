@@ -111,6 +111,8 @@ public:
 
     void destroy(Entity* entity)
     {
+        entity->m_children->clear();
+
         for (auto& component : entity->m_components)
         {
             delete component.second;

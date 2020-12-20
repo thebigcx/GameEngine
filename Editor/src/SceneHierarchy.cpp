@@ -21,9 +21,44 @@ SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
 
 }
 
-void SceneHierarchy::recurseTree()
+void SceneHierarchy::recurseTree(SceneEntity entity)
 {
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
+    bool entityExpanded = ImGui::TreeNodeEx(entity.getComponent<TagComponent>().tag.c_str(), flags);
     
+    bool deleted = false;
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::MenuItem("Delete Entity"))
+        {
+            deleted = true;
+        }
+
+        if (ImGui::MenuItem("Create Child"))
+        {
+            entity.addChild("Untitled Child Entity");
+        }
+
+        ImGui::EndPopup();
+    }
+
+    if (deleted)
+    {
+        m_selection = SceneEntity::createNull(m_context.get());
+        m_deletedEntity = entity;
+    }
+
+    if (entityExpanded)
+    {
+        for (auto& entity : entity.getChildren())
+        {
+            recurseTree(entity);
+        }
+
+        
+        
+        ImGui::TreePop();
+    }
 }
 
 void SceneHierarchy::onImGuiRender()
@@ -31,22 +66,27 @@ void SceneHierarchy::onImGuiRender()
     ImGui::Begin("Scene Hierarchy");
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_CollapsingHeader;
-    if (ImGui::TreeNodeEx("Game Objects", flags))
-    {
-        if (ImGui::BeginPopupContextItem())
-        {
-            if (ImGui::MenuItem("Create Game Object"))
-            {
-                auto entity = m_context->createEntity("Untitled Entity");
-                m_selection = entity;
-            }
+    bool gameObjectsOpen = ImGui::TreeNodeEx("Game Objects", flags);
 
-            ImGui::EndPopup();
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::MenuItem("Create Game Object"))
+        {
+            auto entity = m_context->createEntity("Untitled Entity");
+            m_selection = entity;
         }
-        SceneEntity deletedEntity;
+
+        ImGui::EndPopup();
+    }
+
+    if (gameObjectsOpen)
+    {   
+        m_deletedEntity = SceneEntity::createNull(m_context.get());
         m_context->getRegistry().each([&](Entity* entityHandle)
         {
-            ImGui::PushID(entityHandle);
+            recurseTree(SceneEntity(entityHandle, m_context.get()));
+
+            /*ImGui::PushID(entityHandle);
 
             SceneEntity entity = { entityHandle, m_context.get() };
             flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
@@ -62,7 +102,7 @@ void SceneHierarchy::onImGuiRender()
 
                 if (ImGui::MenuItem("Create Child"))
                 {
-
+                    entity.addChild("Untitled Child Entity");
                 }
 
                 ImGui::EndPopup();
@@ -84,12 +124,12 @@ void SceneHierarchy::onImGuiRender()
                 deletedEntity = entity;
             }
 
-            ImGui::PopID();
+            ImGui::PopID();*/
         });
 
-        if (deletedEntity)
+        if (m_deletedEntity)
         {
-            m_context->destroyEntity(deletedEntity);
+            m_context->destroyEntity(m_deletedEntity);
         }
 
         if (ImGui::BeginPopupContextWindow(0, 1, false))

@@ -38,13 +38,15 @@ public:
     std::vector<SceneEntity> getChildren()
     {
         std::vector<SceneEntity> children;
-        /*m_entityHandle->getChildren()->each([&](Entity* entityID)
+        m_entityHandle->getChildren()->each([&](Entity* entityID)
         {
             children.push_back(SceneEntity(entityID, m_scene));
-        });*/
+        });
 
         return children;
     }
+
+    void addChild(const std::string& name);
 
     bool operator==(const SceneEntity& other)
     {
