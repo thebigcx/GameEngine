@@ -49,6 +49,11 @@ public:
         m_instance.m_workingPath = std::filesystem::current_path();
     }
 
+    static std::string getFilename()
+    {
+        return "filename";
+    }
+
 private:
     static FileSelectWindow m_instance;
 

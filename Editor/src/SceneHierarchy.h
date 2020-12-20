@@ -23,6 +23,8 @@ public:
         m_context = context;
     }
 
+    void recurseTree();
+
     void onImGuiRender();
 
     void drawMaterials(SceneEntity& entity);

@@ -48,7 +48,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 
     Renderer3D::beginScene(camera);
 
-    auto view = m_registry.view<MeshComponent, TransformComponent>();
+    /*auto view = m_registry.view<MeshComponent, TransformComponent>();
     for (auto& entityID : view)
     {
         SceneEntity entity = { entityID, this };
@@ -57,6 +57,18 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
             continue;
         }
         Renderer3D::submit(entity.getComponent<MeshComponent>().mesh, entity.getComponent<TransformComponent>().getTransform());
+    }*/
+    auto view = m_registry.view<MeshRendererComponent, MeshComponent, TransformComponent>();
+    for (auto& entityID : view)
+    {
+        SceneEntity entity = { entityID, this };
+        if (!entity.getComponent<MeshComponent>().mesh)
+        {
+            continue;
+        }
+        Renderer3D::submit(entity.getComponent<MeshComponent>().mesh, 
+                           entity.getComponent<TransformComponent>().getTransform(), 
+                           entity.getComponent<MeshRendererComponent>().materials[0]);
     }
 
     Renderer3D::endScene();
@@ -215,3 +227,4 @@ template<> void Scene::onComponentAdded<MeshComponent>(SceneEntity& entity, Mesh
 template<> void Scene::onComponentAdded<SkyLightComponent>(SceneEntity& entity, SkyLightComponent& component) {}
 template<> void Scene::onComponentAdded<PointLightComponent>(SceneEntity& entity, PointLightComponent& component) {}
 template<> void Scene::onComponentAdded<DirectionalLightComponent>(SceneEntity& entity, DirectionalLightComponent& component) {}
+template<> void Scene::onComponentAdded<MeshRendererComponent>(SceneEntity& entity, MeshRendererComponent& component) {}

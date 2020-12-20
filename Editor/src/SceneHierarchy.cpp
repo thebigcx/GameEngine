@@ -21,63 +21,106 @@ SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
 
 }
 
+void SceneHierarchy::recurseTree()
+{
+    
+}
+
 void SceneHierarchy::onImGuiRender()
 {
     ImGui::Begin("Scene Hierarchy");
 
-    SceneEntity deletedEntity;
-    m_context->getRegistry().each([&](Entity* entityHandle)
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_CollapsingHeader;
+    if (ImGui::TreeNodeEx("Game Objects", flags))
     {
-        ImGui::PushID(entityHandle);
-
-        SceneEntity entity = { entityHandle, m_context.get() };
-        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
-        bool opened = ImGui::TreeNodeEx(entity.getComponent<TagComponent>().tag.c_str(), flags);
-
-        bool deleted = false;
-        if (ImGui::BeginPopupContextItem())
+        SceneEntity deletedEntity;
+        m_context->getRegistry().each([&](Entity* entityHandle)
         {
-            if (ImGui::MenuItem("Delete Entity"))
+            ImGui::PushID(entityHandle);
+
+            SceneEntity entity = { entityHandle, m_context.get() };
+            flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
+            bool opened = ImGui::TreeNodeEx(entity.getComponent<TagComponent>().tag.c_str(), flags);
+
+            bool deleted = false;
+            if (ImGui::BeginPopupContextItem())
             {
-                deleted = true;
+                if (ImGui::MenuItem("Delete Entity"))
+                {
+                    deleted = true;
+                }
+
+                if (ImGui::MenuItem("Create Child"))
+                {
+
+                }
+
+                ImGui::EndPopup();
+            }
+
+            if (ImGui::IsItemClicked())
+            {
+                m_selection = entity;
+            }
+
+            if (opened)
+            {
+                ImGui::TreePop();
+            }
+            
+            if (deleted)
+            {
+                m_selection = SceneEntity::createNull(m_context.get());
+                deletedEntity = entity;
+            }
+
+            ImGui::PopID();
+        });
+
+        if (deletedEntity)
+        {
+            m_context->destroyEntity(deletedEntity);
+        }
+
+        if (ImGui::BeginPopupContextWindow(0, 1, false))
+        {
+            if (ImGui::MenuItem("Create Empty Entity"))
+            {
+                auto entity = m_context->createEntity("Untitled Entity");
+                m_selection = entity;
+            }
+
+            if (ImGui::MenuItem("Import 3D Model"))
+            {
+                FileSelectWindow::open(reinterpret_cast<const void*>("modelload"));
+            }
+
+            if (FileSelectWindow::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds"))
+            {
+                if (!FileSelectWindow::display())
+                {
+                    if (FileSelectWindow::madeSelection())
+                    {
+                        Shared<Model> model = Model::loadModel(FileSelectWindow::getSelection());
+
+                        if (model->meshes.size() > 0)
+                        {
+                            auto entity = m_context->createEntity(FileSelectWindow::getFilename());
+
+                            auto& mesh = entity.addComponent<MeshComponent>();
+
+                            mesh.mesh = model->meshes[0]; // TODO: load all meshes
+                            mesh.filePath = FileSelectWindow::getSelection();
+                            auto& meshRenderer = entity.addComponent<MeshRendererComponent>();
+                            meshRenderer.materials = model->meshes[0]->materials;
+
+                        }
+                    }
+                }
             }
 
             ImGui::EndPopup();
         }
-
-        if (ImGui::IsItemClicked())
-        {
-            m_selection = entity;
-        }
-
-        if (opened)
-        {
-            ImGui::TreePop();
-        }
-        
-        if (deleted)
-        {
-            m_selection = SceneEntity::createNull(m_context.get());
-            deletedEntity = entity;
-        }
-
-        ImGui::PopID();
-    });
-
-    if (deletedEntity)
-    {
-        m_context->destroyEntity(deletedEntity);
-    }
-
-    if (ImGui::BeginPopupContextWindow(0, 1, false))
-    {
-        if (ImGui::MenuItem("Create Empty Entity"))
-        {
-            auto entity = m_context->createEntity("Untitled Entity");
-            m_selection = entity;
-        }
-
-        ImGui::EndPopup();
     }
 
     ImGui::End();

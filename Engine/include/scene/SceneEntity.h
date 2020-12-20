@@ -1,6 +1,5 @@
 #pragma once
 
-#include <scene/ecs/Entity.h>
 #include <scene/Scene.h>
 
 class SceneEntity
@@ -53,6 +52,7 @@ public:
 private:
     Scene* m_scene;
     Entity* m_entityHandle = nullptr;
+    
 
     friend class Scene;
 };

@@ -37,6 +37,7 @@ public:
 
     static void submit(const Shared<Mesh>& mesh, const math::mat4& transform);
     static void submit(const Shared<Model>& model, const math::mat4& transform);
+    static void submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material);
 
     static void setLights(const LightSetup& setup);
     static void setEnvironment(const Shared<Skybox>& environment);

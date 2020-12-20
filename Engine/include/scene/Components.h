@@ -112,3 +112,8 @@ struct PointLightComponent
     float intensity = 0.5f;
     float attenuation = 0.5f;
 };
+
+struct MeshRendererComponent
+{
+    std::vector<Shared<Material>> materials;
+};

@@ -123,6 +123,23 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
     }
 }
 
+void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material)
+{
+    if (!data.sceneStarted)
+    {
+        Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
+    }
+
+    RenderCommand::setDepthTesting(true);
+
+    material->bind();
+    material->shader->setMatrix4("transform", transform);
+
+    mesh->vertexArray->bind();
+
+    RenderCommand::renderIndexed(mesh->vertexArray);
+}
+
 void Renderer3D::setLights(const LightSetup& setup)
 {
     data.modelShader->bind();
