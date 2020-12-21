@@ -80,20 +80,24 @@ void MaterialsPanel::onImGuiRender()
                     Assets::getList<Material>()->getInternalList().insert(std::move(nh));
                 }
 
-                const char* shaders[] = { "Standard" };
-                const char* currentShader = shaders[0];
-                if (ImGui::BeginCombo("Shader", currentShader))
+                std::string currentShader = "";
+
+                for (auto& shader : Assets::getList<Shader>()->getInternalList())
                 {
-                    for (unsigned int i = 0; i < 2; i++)
+                    if (shader.second == material->shader)
                     {
-                        bool isSelected = currentShader == shaders[i];
-                        if (ImGui::Selectable(shaders[i], isSelected))
+                        currentShader = shader.first;
+                    }
+                }
+
+                if (ImGui::BeginCombo("Shader", currentShader.c_str()))
+                {
+                    for (auto& shader : Assets::getList<Shader>()->getInternalList())
+                    {
+                        bool isSelected = currentShader == shader.first;
+                        if (ImGui::Selectable(shader.first.c_str(), isSelected))
                         {
-                            currentShader = shaders[i];
-                            if (std::string(currentShader) == std::string("Standard"))
-                            {
-                                material->shader = Assets::get<Shader>("pbr");
-                            }
+                            material->shader = shader.second;
                         }
 
                         if (isSelected)
@@ -230,12 +234,22 @@ void MaterialsPanel::onImGuiRender()
                 ImGui::TreePop();
             }
         }
-
+        
         if (ImGui::Button("Create Shader"))
         {
-            Shared<Shader> shader;
-            shaderSelect(shader);
-            Assets::add<Shader>("New Shader", shader);
+            FileSelectWindow::open("createNewShader");
+        }
+
+        if (FileSelectWindow::selectFile("createNewShader", "Choose shader...", ".glsl")) // TODO: select frag and vert shaders as multi-select in FileSelectWindow
+        {
+            if (!FileSelectWindow::display())
+            {
+                if (FileSelectWindow::madeSelection())
+                {
+                    std::string name = std::string("shader_") + std::to_string(Assets::getAssetCount<Shader>());
+                    Assets::add<Shader>(name, Shader::createFromFile(FileSelectWindow::getSelection()));
+                }
+            }
         }
     }
 

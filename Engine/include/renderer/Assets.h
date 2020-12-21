@@ -133,7 +133,7 @@ public:
     }
 
     template<typename T>
-    static int getAssetCount()
+    static unsigned int getAssetCount()
     {
         return getList<T>()->getAssetCount();
     }
