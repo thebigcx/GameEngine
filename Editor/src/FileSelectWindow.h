@@ -16,7 +16,7 @@ private:
 public:
     static bool display();
 
-    static void recurseTree(const std::filesystem::path& path, int level);
+    static void renderDirectory(const std::filesystem::path& path);
 
     static std::string getSelection();
 

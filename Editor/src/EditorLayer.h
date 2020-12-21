@@ -46,5 +46,5 @@ private:
     Shared<Texture2D> m_scenePlayButton;
     Shared<Texture2D> m_sceneStopButton;
 
-    uint32_t m_gizmoType;
+    uint32_t m_gizmoType = 0;
 };

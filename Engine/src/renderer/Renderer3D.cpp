@@ -4,6 +4,8 @@
 #include <renderer/RenderCommand.h>
 #include <renderer/shader/ShaderFactory.h>
 #include <renderer/MeshFactory.h>
+#include <renderer/Renderer.h>
+#include <renderer/Assets.h>
 
 Renderer3DData Renderer3D::data;
 
@@ -11,7 +13,9 @@ void Renderer3D::init()
 {
     math::ivec2 windowSize = Application::get().getWindow().getSize();
     
-    data.modelShader = Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl");
+    //data.modelShader = Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl");
+    Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
+    data.modelShader = Assets::get<Shader>("pbr");
 
     data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
 
@@ -97,6 +101,7 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
 
     mesh->materials[0]->bind();
     mesh->materials[0]->shader->setMatrix4("transform", transform);
+    mesh->materials[0]->shader->setFloat("exposure", Renderer::hdrExposure);
 
     mesh->vertexArray->bind();
 
@@ -116,6 +121,7 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
     {
         mesh->materials[0]->bind();
         mesh->materials[0]->shader->setMatrix4("transform", transform);
+        mesh->materials[0]->shader->setFloat("exposure", Renderer::hdrExposure);
 
         mesh->vertexArray->bind();
 
@@ -179,8 +185,8 @@ void Renderer3D::setLights(const LightSetup& setup)
         data.modelShader->setFloat("spotLights[" + index + "].outerCutoff", light.outerCutoff);*/
     }
 
-    Renderer3D::data.modelShader->setInt("numPointLights", pointLights.size());
-    //Renderer3D::data.modelShader->setInt("numSpotLights", spotLights.size());
+    Assets::get<Shader>("pbr")->setInt("numPointLights", pointLights.size());
+    //Assets::get<Shader>("pbr")->setInt("numSpotLights", spotLights.size());
 }
 
 void Renderer3D::setEnvironment(const Shared<Skybox>& environment)

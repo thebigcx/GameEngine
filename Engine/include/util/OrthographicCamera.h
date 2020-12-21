@@ -9,6 +9,7 @@ class OrthographicCamera
 {
 public:
     OrthographicCamera();
+    virtual ~OrthographicCamera() = default;
 
     virtual void setPosition(const math::vec2& position);
     virtual void translate(const math::vec2& vec);

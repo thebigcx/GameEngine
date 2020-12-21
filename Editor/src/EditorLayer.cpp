@@ -37,6 +37,8 @@ void EditorLayer::onAttach()
     m_sceneHeirarchy.setContext(m_scene);
     m_materialsPanel.setContext(m_scene);
 
+    Assets::add<Material>("default", Material::create(Assets::get<Shader>("pbr")));
+
     /*    
 
     class CameraController : public ScriptableEntity
@@ -219,7 +221,7 @@ void EditorLayer::onImGuiRender()
     ImGui::PopStyleVar();
 
     m_sceneHeirarchy.onImGuiRender();
-    m_materialsPanel.onImGuiRender(m_sceneHeirarchy.getSelectedEntity());
+    m_materialsPanel.onImGuiRender();
     
     ImGui::End();
     ImGui::PopStyleVar();
@@ -252,6 +254,8 @@ bool EditorLayer::onKeyPressed(KeyPressedEvent& event)
             break;
         case Key::R:
             m_gizmoType = ImGuizmo::OPERATION::SCALE;
+            break;
+        default:
             break;
     }
 

@@ -48,11 +48,20 @@ public:
         return m_parent;
     }
 
+    std::vector<Entity*> getAbsolutePath()
+    {
+        std::vector<Entity*> path;
+        recurseAbsolutePath(this, path);
+        return path;
+    }
+
 private:
     EntityRegistry* m_parent;
     Shared<EntityRegistry> m_children;
 
     std::unordered_map<std::type_index, IComponent*> m_components;
+
+    void recurseAbsolutePath(Entity* current, std::vector<Entity*>& path);
 };
 
 class EntityView
@@ -96,6 +105,12 @@ public:
     EntityRegistry()
     {
         
+    }
+
+    EntityRegistry(Entity* parent)
+        : m_parent(parent)
+    {
+
     }
 
     ~EntityRegistry()
@@ -153,7 +168,7 @@ public:
         }
         if (has<T>(entity))
         {
-            Logger::getCoreLogger()->warn("Entity already has specified component. (Registry::emplace)");
+            Logger::getCoreLogger()->warn("Entity already has specified component: %s (Registry::emplace)", typeid(T).name());
         }
         else
         {
@@ -202,7 +217,7 @@ public:
     {
         if (!has<T>(entity))
         {
-            Logger::getCoreLogger()->error("Entity does not have specified component! (Registry::get)");
+            Logger::getCoreLogger()->error("Entity does not have specified component: %s (Registry::get)", typeid(T).name());
         }
 
         return static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value;
@@ -288,8 +303,30 @@ public:
         return EntityView(entities);
     }
 
+    template<typename... Components>
+    EntityView recurse_view()
+    {
+        std::vector<Entity*> entities;
+        for (auto& entity : m_entities)
+        {
+            internal_recurse_view(&entity, entities);
+            if (has<Components...>(&entity))
+            {
+                entities.push_back(&entity);
+            }
+        }
+
+        return EntityView(entities);
+    }
+
+    Entity* owned_by()
+    {
+        return m_parent;
+    }
+
 private:
     std::vector<Entity> m_entities;
+    Entity* m_parent = nullptr;
 
     template<typename T>
     void internal_remove(Entity* entity)
@@ -309,6 +346,7 @@ private:
     template<typename T>
     void internal_has(Entity* entity, bool& check)
     {
+        if (!entity) { return; }
         if (!check) return; // All components must be present
         check = entity->m_components.find(typeid(T)) != entity->m_components.end();
     }
@@ -316,6 +354,7 @@ private:
     template<typename T>
     void internal_any(Entity* entity, bool& check)
     {
+        if (!entity) { return; }
         if (check) return; // Only one component required
         check = entity->m_components.find(typeid(T)) != entity->m_components.end();
     }
@@ -324,6 +363,19 @@ private:
     T& internal_get(Entity* entity)
     {
         return static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value;
+    }
+
+    template<typename... Components>
+    void internal_recurse_view(Entity* parent, std::vector<Entity*>& entities)
+    {
+        for (auto& entity : parent->getChildren()->m_entities)
+        {
+            internal_recurse_view(&entity, entities);
+            if (has<Components...>(&entity))
+            {
+                entities.push_back(&entity);
+            }
+        }
     }
 };
 

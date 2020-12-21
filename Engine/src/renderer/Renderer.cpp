@@ -4,6 +4,7 @@
 #include <core/Application.h>
 
 RendererData Renderer::m_data;
+float Renderer::hdrExposure = 1.f;
 
 void Renderer::init()
 {

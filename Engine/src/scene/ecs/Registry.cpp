@@ -10,3 +10,13 @@ Entity::~Entity()
 {
     
 }
+
+void Entity::recurseAbsolutePath(Entity* current, std::vector<Entity*>& path)
+{
+    if (current == nullptr) // Root
+    {
+        return;
+    }
+    path.insert(path.begin(), current);
+    recurseAbsolutePath(getParent()->owned_by(), path);
+}

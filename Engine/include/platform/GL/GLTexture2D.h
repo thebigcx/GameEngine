@@ -20,7 +20,7 @@ public:
     float getWidth() const override;
     float getHeight() const override;
 
-    unsigned int getId() const override;
+    uint32_t getId() const override;
 
     const std::string& getPath() const;
 
@@ -28,7 +28,7 @@ public:
     bool operator!=(const Texture2D& other) override;
 
 private:
-    unsigned int m_id = 0;
+    uint32_t m_id = 0;
 
     bool m_mipmapped = false;
     GLenum m_internalFormat;

@@ -2,8 +2,24 @@
 
 #include <iostream>
 #include <chrono>
+#include <cstdarg>
+#include <cstdio>
 
 #include <core/Core.h>
+
+#ifdef _DEBUG
+bool _trace(char* format, ...)
+{
+    char buffer[1000];
+
+    va_list argptr;
+    va_start(argptr, format);
+    vsnprintf(buffer, 1000, format, argptr);
+    va_end(argptr);
+
+    std::clog << buffer << std::flush;
+}
+#endif
 
 class Logger
 {

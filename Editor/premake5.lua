@@ -7,6 +7,9 @@ project "Editor"
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Editor"
 	objdir "%{wks.location}/obj/%{cfg.buildcfg}/Editor"
 
+	symbols "On"
+	buildoptions "-Wall -Wextra"
+
 	files {
 		"**.cpp",
 		"**.h"

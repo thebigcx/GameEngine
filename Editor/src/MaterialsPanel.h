@@ -17,7 +17,7 @@ public:
         m_context = context;
     }
 
-    void onImGuiRender(SceneEntity& selectedEntity);
+    void onImGuiRender();
 
 private:
     void init();

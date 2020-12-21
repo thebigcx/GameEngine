@@ -51,9 +51,12 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
         vertex.position.y = mesh->mVertices[i].y;
         vertex.position.z = mesh->mVertices[i].z;
 
-        vertex.normal.x = mesh->mNormals[i].x;
-        vertex.normal.y = mesh->mNormals[i].y;
-        vertex.normal.z = mesh->mNormals[i].z;
+        if (mesh->mNormals != nullptr)
+        {
+            vertex.normal.x = mesh->mNormals[i].x;
+            vertex.normal.y = mesh->mNormals[i].y;
+            vertex.normal.z = mesh->mNormals[i].z;
+        }
 
         if (mesh->mTextureCoords[0])
         {
@@ -65,9 +68,12 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
             vertex.uv = math::vec2(0.f);
         }
 
-        vertex.tangent.x = mesh->mTangents[i].x;
-        vertex.tangent.y = mesh->mTangents[i].y;
-        vertex.tangent.z = mesh->mTangents[i].z;
+        if (mesh->mTangents != nullptr)
+        {
+            vertex.tangent.x = mesh->mTangents[i].x;
+            vertex.tangent.y = mesh->mTangents[i].y;
+            vertex.tangent.z = mesh->mTangents[i].z;
+        }
 
         vertices.push_back(vertex);
     }
@@ -85,39 +91,59 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     if (mesh->mMaterialIndex > 0)
     {
         aiMaterial* aimaterial = scene->mMaterials[mesh->mMaterialIndex];
-        Shared<Material> material = Material::create(Renderer3D::data.modelShader); // TODO: material shaders
 
         auto albedos = loadMaterialTextures(aimaterial, aiTextureType_DIFFUSE);
-        if (albedos.size() > 0)
-        {
-            material->albedoMap = albedos[0];
-        }
-
         auto normals = loadMaterialTextures(aimaterial, aiTextureType_HEIGHT);
-        if (normals.size() > 0)
-        {
-            material->normalMap = normals[0];
-        }
-
         auto metalnesses = loadMaterialTextures(aimaterial, aiTextureType_REFLECTION);
-        if (metalnesses.size() > 0)
-        {
-            material->metalnessMap = metalnesses[0];
-        }
-
         auto roughnesses = loadMaterialTextures(aimaterial, aiTextureType_SHININESS);
-        if (roughnesses.size() > 0)
-        {
-            material->roughnessMap = roughnesses[0];
-        }
-
         auto aos = loadMaterialTextures(aimaterial, aiTextureType_AMBIENT);
-        if (aos.size() > 0)
-        {
-            material->ambientOcclusionMap = aos[0];
-        }
 
-        materials.push_back(material);
+        for (int i = 0; i < albedos.size(); i++)
+        {
+            auto material = Material::create(Assets::get<Shader>("pbr")); // TODO: material shaders
+
+            if (i >= albedos.size())
+                material->usingAlbedoMap = false;
+            else
+            {
+                material->albedoMap = albedos.at(i);
+                material->usingAlbedoMap = true;
+            }
+
+            if (i >= normals.size())
+                material->usingNormalMap = false;
+            else
+            {
+                material->normalMap = normals.at(i);
+                material->usingNormalMap = true;
+            }
+
+            if (i >= metalnesses.size())
+                material->usingMetalnessMap = false;
+            else
+            {
+                material->metalnessMap = metalnesses.at(i);
+                material->usingMetalnessMap = true;
+            }
+
+            if (i >= roughnesses.size())
+                material->usingRoughnessMap = false;
+            else
+            {
+                material->roughnessMap = roughnesses.at(i);
+                material->usingRoughnessMap = true;
+            }
+
+            if (i >= aos.size())
+                material->usingAmbientOcclusionMap = false;
+            else
+            {
+                material->ambientOcclusionMap = aos.at(i);
+                material->usingAmbientOcclusionMap = true;
+            }
+
+            materials.push_back(material);
+        }
     }
 
     Shared<Mesh> mesh_ = createShared<Mesh>();
@@ -160,7 +186,8 @@ std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTe
         bool skip = false;
         for (unsigned int j = 0; j < m_texturesLoaded.size(); j++)
         {
-            if (std::strcmp(m_texturesLoaded[j]->getPath().data(), str.C_Str()) != 0)
+            std::string texture = m_directory + "/" + std::string(str.C_Str());
+            if (std::strcmp(m_texturesLoaded[j]->getPath().c_str(), texture.c_str()) == 0)
             {
                 textures.push_back(m_texturesLoaded[j]);
                 skip = true;

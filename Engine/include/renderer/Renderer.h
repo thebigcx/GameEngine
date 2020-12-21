@@ -25,6 +25,8 @@ public:
 
     static void windowResize(WindowResizeEvent& event);
 
+    static float hdrExposure;
+
 private:
     static RendererData m_data;
 };

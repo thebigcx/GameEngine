@@ -9,6 +9,7 @@ class PerspectiveCamera
 {
 public:
     PerspectiveCamera();
+    virtual ~PerspectiveCamera() = default;
 
     virtual void setPosition(const math::vec3& position);
     virtual void setPosition(float x, float y, float z);

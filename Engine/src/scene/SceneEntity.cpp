@@ -12,8 +12,9 @@ SceneEntity SceneEntity::createNull(Scene* scene)
     return SceneEntity(nullptr, scene);
 }
 
-void SceneEntity::addChild(const std::string& name)
+Entity* SceneEntity::addChild(const std::string& name)
 {
     auto entity = m_entityHandle->getChildren()->create();
     entity->getParent()->emplace<TagComponent>(entity, name);
+    return entity;
 }

@@ -96,7 +96,10 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
 {
     auto material = createShared<Material>();
 
-    material->shader = shader;
+    if (shader)
+    {
+        material->shader = shader;
+    }
 
     uint32_t white = 0xffffffff;
     uint32_t black = 0x00000000;
@@ -126,5 +129,5 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
 
 Shared<Material> Material::create()
 {
-    return Material::create(Renderer3D::data.modelShader);
+    return Material::create(nullptr);
 }

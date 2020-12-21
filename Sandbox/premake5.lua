@@ -7,6 +7,8 @@ project "Sandbox"
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Sandbox"
 	objdir "%{wks.location}/obj/%{cfg.buildcfg}/Sandbox"
 
+	symbols "On"
+
 	files {
 		"**.cpp",
 		"**.h"

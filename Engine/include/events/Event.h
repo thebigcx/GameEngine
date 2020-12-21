@@ -205,7 +205,7 @@ public:
 class KeyEvent : public Event
 {
 public:
-    KeyEvent(int32_t keyCode, EventType type)
+    KeyEvent(int32_t keyCode)
         : m_keyCode(keyCode) {}
 
     inline int32_t getKeyCode() const
@@ -242,7 +242,7 @@ class KeyPressedEvent : public KeyEvent
 {
 public:
     KeyPressedEvent(int32_t button, int32_t repeat, int32_t mods)
-        : KeyEvent(button, EventType::KeyPressed), m_repeat(repeat), m_mods(mods) {}
+        : KeyEvent(button), m_repeat(repeat), m_mods(mods) {}
 
     inline int32_t getRepeat() const
     {
@@ -269,7 +269,7 @@ class KeyReleasedEvent : public KeyEvent
 {
 public:
     KeyReleasedEvent(int32_t button)
-        : KeyEvent(button, EventType::KeyReleased) {}
+        : KeyEvent(button) {}
 
     EVENT_CLASS_TYPE(KeyReleased);
 };
@@ -309,7 +309,7 @@ public:
     EVENT_CLASS_CATEGORY(EventCategory::MouseButton)
 
 protected:
-    MouseButtonEvent(int32_t button, float x, float y, EventType type)
+    MouseButtonEvent(int32_t button, float x, float y)
         : m_button(button), m_position(x, y) {}
 
     int32_t m_button;
@@ -320,7 +320,7 @@ class MousePressedEvent : public MouseButtonEvent
 {
 public:
     MousePressedEvent(int32_t button, float x, float y)
-        : MouseButtonEvent(button, x, y, EventType::MousePressed) {}
+        : MouseButtonEvent(button, x, y) {}
 
     EVENT_CLASS_TYPE(MousePressed);
 };
@@ -329,7 +329,7 @@ class MouseReleasedEvent : public MouseButtonEvent
 {
 public:
     MouseReleasedEvent(int32_t button, float x, float y)
-        : MouseButtonEvent(button, x, y, EventType::MouseReleased) {}
+        : MouseButtonEvent(button, x, y) {}
 
     EVENT_CLASS_TYPE(MouseReleased);
 };

@@ -50,7 +50,7 @@ bool FileSelectWindow::display()
 
         try
         {
-            recurseTree(m_instance.m_workingPath, 0);
+            renderDirectory(m_instance.m_workingPath);
         }
         catch (std::filesystem::filesystem_error e)
         {
@@ -124,7 +124,7 @@ bool FileSelectWindow::display()
     return m_instance.m_isOpen;
 }
 
-void FileSelectWindow::recurseTree(const std::filesystem::path& path, int level)
+void FileSelectWindow::renderDirectory(const std::filesystem::path& path)
 {
     bool parentOpened = ImGui::Selectable("##..");
 

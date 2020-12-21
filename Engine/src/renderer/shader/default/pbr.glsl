@@ -85,6 +85,7 @@ uniform int numPointLights;
 //uniform vec3 lightColors[MAX_LIGHTS];
 
 uniform float skyLight;
+uniform float exposure;
 
 float PI = 3.1415926535897932384626433832795028841971693993751058209749445923;
 
@@ -132,8 +133,6 @@ vec3 getNormalFromNormalMap(vec2 texCoord)
 {
     vec3 normal = texture(material.normal, texCoord).rgb;
     normal = normal * 2.0 - 1.0;
-    //mat3 TBN = transpose(fs_in.TBN);
-    //normal = normalize(TBN * normal);
     return normal;
 }
 
@@ -191,9 +190,13 @@ void main()
 
     vec3 normal;
     if (material.usingNormal)
+    {
         normal = getNormalFromNormalMap(texCoord);
+    }
     else
-        normal = normalize(fs_in.normal);
+    {
+        normal = normalize(TBN * fs_in.normal);
+    }
 
     float metallic = 1.f;
     if (material.usingMetallic)
@@ -251,8 +254,9 @@ void main()
     vec3 ambient = skyLight * albedo * ao;
     vec3 color = ambient + Lo;
 
-    color = color / (color + vec3(1.0));
-    color = pow(color, vec3(1.0 / 2.2));
+    vec3 mapped = vec3(1.0) - exp(-color * exposure);
 
-    fragColor = vec4(color, 1.0);
+    mapped = pow(mapped, vec3(1.0 / 2.2));
+
+    fragColor = vec4(mapped, 1.0);
 }

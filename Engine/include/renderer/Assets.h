@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <typeindex>
+#include <vector>
 
 #include <renderer/Texture2D.h>
 #include <core/Logger.h>
@@ -52,6 +53,16 @@ public:
     int getAssetCount() override
     {
         return m_assets.size();
+    }
+
+    typename std::unordered_map<std::string, Shared<T>>::iterator begin() { return m_assets.begin(); }
+    typename std::unordered_map<std::string, Shared<T>>::iterator end()   { return m_assets.end(); }
+    typename std::unordered_map<std::string, Shared<T>>::const_iterator begin() const { return m_assets.begin(); }
+    typename std::unordered_map<std::string, Shared<T>>::const_iterator end()   const { return m_assets.end(); }
+
+    const std::unordered_map<std::string, Shared<T>>& getInternalList() const
+    {
+        return m_assets;
     }
 
 private:
@@ -121,8 +132,11 @@ public:
         m_instance.m_lists.clear();
     }
 
-private:
-    std::unordered_map<std::type_index, IAssetList*> m_lists;
+    template<typename T>
+    static int getAssetCount()
+    {
+        return getList<T>()->getAssetCount();
+    }
 
     template<typename T>
     static AssetList<T>* getList()
@@ -135,6 +149,9 @@ private:
     {
         return m_instance.m_lists.find(typeid(T)) != m_instance.m_lists.end();
     }
+
+private:
+    std::unordered_map<std::type_index, IAssetList*> m_lists;
 
     static Assets m_instance;
 };

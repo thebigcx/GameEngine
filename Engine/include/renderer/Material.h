@@ -34,4 +34,24 @@ public:
     math::vec4 albedoColor;
 
     Shared<Shader> shader;
+
+    bool operator==(const Material& other)
+    {
+        return other.albedoMap == albedoMap && 
+               other.normalMap == normalMap && 
+               other.metalnessMap == metalnessMap && 
+               other.roughnessMap == roughnessMap &&
+               other.ambientOcclusionMap == ambientOcclusionMap &&
+               other.depthMap == ambientOcclusionMap;
+    }
+
+    bool operator!=(const Material& other)
+    {
+        return other.albedoMap != albedoMap || 
+               other.normalMap != normalMap || 
+               other.metalnessMap != metalnessMap || 
+               other.roughnessMap != roughnessMap ||
+               other.ambientOcclusionMap != ambientOcclusionMap ||
+               other.depthMap != ambientOcclusionMap;
+    }
 };

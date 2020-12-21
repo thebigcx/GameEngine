@@ -17,9 +17,9 @@ public:
     Shared<IndexBuffer> getIndexBuffer() const;
 
 private:
-    unsigned int m_id = 0;
+    uint32_t m_id = 0;
 
-    int m_attribCount = 0;
+    uint32_t m_attribCount = 0;
 
     Shared<IndexBuffer> m_pIndexBuffer;
 };

@@ -27,8 +27,6 @@ public:
 
     void onImGuiRender();
 
-    void drawMaterials(SceneEntity& entity);
-
     void drawSceneRenderer();
 
     SceneEntity& getSelectedEntity()

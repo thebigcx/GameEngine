@@ -26,6 +26,7 @@ public:
     template<typename T>
     bool hasComponent()
     {
+        if (!m_entityHandle) return false;
         return m_entityHandle->getParent()->has<T>(m_entityHandle);
     }
 
@@ -46,7 +47,12 @@ public:
         return children;
     }
 
-    void addChild(const std::string& name);
+    Entity* addChild(const std::string& name);
+
+    const Entity* getHandle() const
+    {
+        return m_entityHandle;
+    }
 
     bool operator==(const SceneEntity& other)
     {
@@ -63,7 +69,7 @@ public:
     operator bool() const { return m_entityHandle != nullptr; }
 
 private:
-    Scene* m_scene;
+    Scene* m_scene = nullptr;
     Entity* m_entityHandle = nullptr;
     
 

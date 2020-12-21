@@ -9,6 +9,8 @@
 #include <renderer/Renderer3D.h>
 #include <util/PerspectiveCamera.h>
 #include <renderer/MeshFactory.h>
+#include <renderer/Renderer.h>
+#include <renderer/Assets.h>
 
 SceneHierarchy::SceneHierarchy()
 {
@@ -18,25 +20,38 @@ SceneHierarchy::SceneHierarchy()
 SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
     : m_context(scene)
 {
-
+    
 }
 
 void SceneHierarchy::recurseTree(SceneEntity entity)
 {
+    ImGui::PushID(entity.getHandle());
+
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
-    bool entityExpanded = ImGui::TreeNodeEx(entity.getComponent<TagComponent>().tag.c_str(), flags);
+    const char* tag;
+    if (!entity.hasComponent<TagComponent>())
+        return;
+    else
+        tag = entity.getComponent<TagComponent>().tag.c_str();
+    
+    bool entityExpanded = ImGui::TreeNodeEx(tag, flags);
+
+    if (ImGui::IsItemClicked())
+    {
+        m_selection = entity;
+    }
     
     bool deleted = false;
     if (ImGui::BeginPopupContextItem())
     {
-        if (ImGui::MenuItem("Delete Entity"))
-        {
-            deleted = true;
-        }
-
         if (ImGui::MenuItem("Create Child"))
         {
-            entity.addChild("Untitled Child Entity");
+            entity.addChild("Untitled Child");
+        }
+
+        if (ImGui::MenuItem("Delete Game Object"))
+        {
+            deleted = true;
         }
 
         ImGui::EndPopup();
@@ -54,11 +69,12 @@ void SceneHierarchy::recurseTree(SceneEntity entity)
         {
             recurseTree(entity);
         }
-
         
         
         ImGui::TreePop();
     }
+
+    ImGui::PopID();
 }
 
 void SceneHierarchy::onImGuiRender()
@@ -72,11 +88,65 @@ void SceneHierarchy::onImGuiRender()
     {
         if (ImGui::MenuItem("Create Game Object"))
         {
-            auto entity = m_context->createEntity("Untitled Entity");
+            auto entity = m_context->createEntity("Untitled Game Object");
             m_selection = entity;
         }
 
+        if (ImGui::MenuItem("Import 3D Model"))
+        {
+            FileSelectWindow::open(reinterpret_cast<const void*>("modelload"));
+        }
+
         ImGui::EndPopup();
+    }
+
+    if (FileSelectWindow::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds"))
+    {
+        if (!FileSelectWindow::display())
+        {
+            if (FileSelectWindow::madeSelection())
+            {
+                Shared<Model> model = Model::loadModel(FileSelectWindow::getSelection());
+
+                auto entity = m_context->createEntity("Model");
+
+                std::vector<Shared<Material>> materialsLoaded;
+                for (auto& mesh : model->meshes)
+                {
+                    auto childID = entity.addChild("Mesh");
+                    SceneEntity child(childID, m_context.get());
+
+                    child.addComponent<MeshComponent>();
+                    child.getComponent<MeshComponent>().mesh = mesh;
+                    child.getComponent<MeshComponent>().filePath = FileSelectWindow::getSelection();
+                    child.addComponent<TransformComponent>();
+
+                    auto& meshRenderer = child.addComponent<MeshRendererComponent>();
+                    meshRenderer.materials = mesh->materials;
+
+                    int index = Assets::getAssetCount<Material>() - 1;
+                    for (auto& material : mesh->materials)
+                    {
+                        bool needToLoad = true;
+                        for (auto& materialLoaded : materialsLoaded)
+                        {
+                            if (material == materialLoaded)
+                            {
+                                needToLoad = false;
+                                break;
+                            }
+                        }
+
+                        if (needToLoad)
+                        {
+                            Assets::add<Material>(std::string("material_") + std::to_string(index), material);
+                            materialsLoaded.push_back(material);
+                            index++;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     if (gameObjectsOpen)
@@ -85,46 +155,6 @@ void SceneHierarchy::onImGuiRender()
         m_context->getRegistry().each([&](Entity* entityHandle)
         {
             recurseTree(SceneEntity(entityHandle, m_context.get()));
-
-            /*ImGui::PushID(entityHandle);
-
-            SceneEntity entity = { entityHandle, m_context.get() };
-            flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
-            bool opened = ImGui::TreeNodeEx(entity.getComponent<TagComponent>().tag.c_str(), flags);
-
-            bool deleted = false;
-            if (ImGui::BeginPopupContextItem())
-            {
-                if (ImGui::MenuItem("Delete Entity"))
-                {
-                    deleted = true;
-                }
-
-                if (ImGui::MenuItem("Create Child"))
-                {
-                    entity.addChild("Untitled Child Entity");
-                }
-
-                ImGui::EndPopup();
-            }
-
-            if (ImGui::IsItemClicked())
-            {
-                m_selection = entity;
-            }
-
-            if (opened)
-            {
-                ImGui::TreePop();
-            }
-            
-            if (deleted)
-            {
-                m_selection = SceneEntity::createNull(m_context.get());
-                deletedEntity = entity;
-            }
-
-            ImGui::PopID();*/
         });
 
         if (m_deletedEntity)
@@ -132,11 +162,11 @@ void SceneHierarchy::onImGuiRender()
             m_context->destroyEntity(m_deletedEntity);
         }
 
-        if (ImGui::BeginPopupContextWindow(0, 1, false))
+        /*if (ImGui::BeginPopupContextWindow(0, 1, false))
         {
-            if (ImGui::MenuItem("Create Empty Entity"))
+            if (ImGui::MenuItem("Create Empty Game Object"))
             {
-                auto entity = m_context->createEntity("Untitled Entity");
+                auto entity = m_context->createEntity("Untitled Game Object");
                 //m_selection = entity;
             }
 
@@ -170,16 +200,17 @@ void SceneHierarchy::onImGuiRender()
             }
 
             ImGui::EndPopup();
-        }
+        }*/
     }
 
     ImGui::End();
 
     ImGui::Begin("Properties");
 
-    if (m_selection)
+    if (m_selection.getHandle() != nullptr)
     {
-        drawProperties(m_selection);
+        if (m_selection.hasComponent<TagComponent>())
+            drawProperties(m_selection);
     }
 
     ImGui::End();
@@ -192,8 +223,9 @@ void SceneHierarchy::onImGuiRender()
 
     ImGui::Begin("Environment");
 
-    float exposure;
+    float exposure = Renderer::hdrExposure;
     ImGui::SliderFloat("Exposure", &exposure, 0.f, 5.f);
+    Renderer::hdrExposure = exposure;
 
     ImGui::End();
 }
@@ -228,6 +260,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         ADD_COMPONENT(SkyLightComponent, "Sky Light");
         ADD_COMPONENT(DirectionalLightComponent, "Directional Light");
         ADD_COMPONENT(PointLightComponent, "Point Light");
+        ADD_COMPONENT(MeshRendererComponent, "Mesh Renderer");
 
         ImGui::EndPopup();
     }
@@ -363,7 +396,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         component.text = std::string(buf);
     });
 
-    drawComponent<MeshComponent>("Mesh", entity, [](auto& component)
+    drawComponent<MeshComponent>("Mesh", entity, [&entity](auto& component)
     {
         char buf[128];
         if (component.filePath == "")
@@ -386,7 +419,6 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 
         if (FileSelectWindow::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds"))
         {
-            //std::cout << "mesh\n";
             if (!FileSelectWindow::display())
             {
                 if (FileSelectWindow::madeSelection())
@@ -396,6 +428,8 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
                     if (model->meshes.size() > 0)
                     {
                         component.mesh = model->meshes[0];
+                        std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
+                        Assets::add<Material>(name, model->meshes[0]->materials[0]);
                     }
                 }
             }
@@ -425,6 +459,82 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         ImGui::DragFloat("Attenuation", &component.attenuation, 0.01f, 0.f);
         ImGui::PopID();
     });
+
+    drawComponent<MeshRendererComponent>("Mesh Renderer", entity, [](auto& component)
+    {
+        if (ImGui::TreeNode("Materials"))
+        {
+            char buf[128];
+            strcpy(buf, std::to_string(component.materials.size()).c_str());
+            
+            if (ImGui::InputText("Size", buf, 128)) // TODO: update on enter key pressed
+            {
+                if (std::string(buf).find_first_not_of("0123456789 ") == std::string::npos && std::string(buf).size() > 0)
+                {
+                    int materialCount = std::stoi(buf);
+
+                    if (materialCount < 10)
+                    {
+                        if (materialCount > component.materials.size())
+                        {
+                            component.materials.insert(component.materials.end(), materialCount - component.materials.size(), nullptr);
+                        }
+                        else if (materialCount < component.materials.size())
+                        {
+                            for (unsigned int i = 0; i < component.materials.size() - materialCount; i++)
+                            {
+                                component.materials.pop_back();
+                            }
+                        }
+                    }
+                }
+            }
+
+            int element = 0;
+            for (auto& material : component.materials)
+            {
+                ImGui::PushID(&material);
+
+                ImGui::Columns(2);
+                ImGui::Text((std::string("Material ") + std::to_string(element)).c_str());
+                ImGui::NextColumn();
+                
+                std::vector<const char*> materialNames;
+                for (auto& asset : Assets::getList<Material>()->getInternalList())
+                {
+                    materialNames.push_back(asset.first.c_str());
+                }
+
+                const char* currentMaterial = materialNames[0];
+                if (ImGui::BeginCombo("##materialCombo", currentMaterial))
+                {
+                    for (unsigned int i = 0; i < materialNames.size(); i++)
+                    {
+                        bool isSelected = currentMaterial == materialNames[i];
+                        if (ImGui::Selectable(materialNames[i], isSelected))
+                        {
+                            currentMaterial = materialNames[i];
+                            material = Assets::get<Material>(currentMaterial);
+                        }
+
+                        if (isSelected)
+                        {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+
+                    ImGui::EndCombo();
+                }
+                
+                ImGui::NextColumn();
+                element++;
+
+                ImGui::PopID();
+            }
+
+            ImGui::TreePop();
+        }
+    });
 }
 
 template<typename T, typename F>
@@ -437,8 +547,8 @@ void SceneHierarchy::drawComponent(const std::string& name, SceneEntity& entity,
 
     auto& component = entity.getComponent<T>();
 
-    float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.f;
-    auto available = ImGui::GetContentRegionAvail();
+    //float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.f;
+    //auto available = ImGui::GetContentRegionAvail();
 
     ImGui::Separator();
 
@@ -503,11 +613,6 @@ void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
             }
         }
     }
-}
-
-void SceneHierarchy::drawMaterials(SceneEntity& entity)
-{
-    
 }
 
 void SceneHierarchy::drawSceneRenderer()
