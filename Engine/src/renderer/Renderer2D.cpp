@@ -70,7 +70,7 @@ void Renderer2D::init()
     s_data.mesh.vertexArray->setIndexBuffer(s_data.mesh.indexBuffer);
 
     int32_t samplers[s_data.MAX_TEXTURE_SLOTS];
-    for (int32_t i = 0; i < s_data.MAX_TEXTURE_SLOTS; i++)    
+    for (int32_t i = 0; i < static_cast<int32_t>(s_data.MAX_TEXTURE_SLOTS); i++)    
     {
         samplers[i] = i;
     }

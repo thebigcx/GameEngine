@@ -102,36 +102,50 @@ Shared<Mesh> MeshFactory::cubeMesh(float size, const Shared<Material>& material)
     float hSize = size / 2.f;
 
     ModelVertex vertices[] = {
-        {math::vec3(-hSize, -hSize,  hSize), math::vec3( 0,  0,  1), math::vec2(0, 0)}, // Front
-        {math::vec3(-hSize,  hSize,  hSize), math::vec3( 0,  0,  1), math::vec2(0, 1)},
-        {math::vec3( hSize,  hSize,  hSize), math::vec3( 0,  0,  1), math::vec2(1, 1)},
-        {math::vec3( hSize, -hSize,  hSize), math::vec3( 0,  0,  1), math::vec2(1, 0)},
+        {math::vec3(-hSize, -hSize,  hSize), math::vec3( 0,  0,  1), math::vec2(0, 0), math::vec3(0)}, // Front
+        {math::vec3(-hSize,  hSize,  hSize), math::vec3( 0,  0,  1), math::vec2(0, 1), math::vec3(0)},
+        {math::vec3( hSize,  hSize,  hSize), math::vec3( 0,  0,  1), math::vec2(1, 1), math::vec3(0)},
+        {math::vec3( hSize, -hSize,  hSize), math::vec3( 0,  0,  1), math::vec2(1, 0), math::vec3(0)},
 
-        {math::vec3(-hSize, -hSize, -hSize), math::vec3( 0,  0, -1), math::vec2(0, 0)}, // Back
-        {math::vec3(-hSize,  hSize, -hSize), math::vec3( 0,  0, -1), math::vec2(0, 1)},
-        {math::vec3( hSize,  hSize, -hSize), math::vec3( 0,  0, -1), math::vec2(1, 1)},
-        {math::vec3( hSize, -hSize, -hSize), math::vec3( 0,  0, -1), math::vec2(1, 0)},
+        {math::vec3(-hSize, -hSize, -hSize), math::vec3( 0,  0, -1), math::vec2(0, 0), math::vec3(0)}, // Back
+        {math::vec3(-hSize,  hSize, -hSize), math::vec3( 0,  0, -1), math::vec2(0, 1), math::vec3(0)},
+        {math::vec3( hSize,  hSize, -hSize), math::vec3( 0,  0, -1), math::vec2(1, 1), math::vec3(0)},
+        {math::vec3( hSize, -hSize, -hSize), math::vec3( 0,  0, -1), math::vec2(1, 0), math::vec3(0)},
 
-        {math::vec3(-hSize,  hSize, -hSize), math::vec3( 0,  1,  0), math::vec2(0, 0)}, // Top
-        {math::vec3(-hSize,  hSize,  hSize), math::vec3( 0,  1,  0), math::vec2(0, 1)},
-        {math::vec3( hSize,  hSize,  hSize), math::vec3( 0,  1,  0), math::vec2(1, 1)},
-        {math::vec3( hSize,  hSize, -hSize), math::vec3( 0,  1,  0), math::vec2(1, 0)},
+        {math::vec3(-hSize,  hSize, -hSize), math::vec3( 0,  1,  0), math::vec2(0, 0), math::vec3(0)}, // Top
+        {math::vec3(-hSize,  hSize,  hSize), math::vec3( 0,  1,  0), math::vec2(0, 1), math::vec3(0)},
+        {math::vec3( hSize,  hSize,  hSize), math::vec3( 0,  1,  0), math::vec2(1, 1), math::vec3(0)},
+        {math::vec3( hSize,  hSize, -hSize), math::vec3( 0,  1,  0), math::vec2(1, 0), math::vec3(0)},
 
-        {math::vec3(-hSize, -hSize, -hSize), math::vec3( 0, -1,  0), math::vec2(0, 0)}, // Bottom
-        {math::vec3(-hSize, -hSize,  hSize), math::vec3( 0, -1,  0), math::vec2(0, 1)},
-        {math::vec3( hSize, -hSize,  hSize), math::vec3( 0, -1,  0), math::vec2(1, 1)},
-        {math::vec3( hSize, -hSize, -hSize), math::vec3( 0, -1,  0), math::vec2(1, 0)},
+        {math::vec3(-hSize, -hSize, -hSize), math::vec3( 0, -1,  0), math::vec2(0, 0), math::vec3(0)}, // Bottom
+        {math::vec3(-hSize, -hSize,  hSize), math::vec3( 0, -1,  0), math::vec2(0, 1), math::vec3(0)},
+        {math::vec3( hSize, -hSize,  hSize), math::vec3( 0, -1,  0), math::vec2(1, 1), math::vec3(0)},
+        {math::vec3( hSize, -hSize, -hSize), math::vec3( 0, -1,  0), math::vec2(1, 0), math::vec3(0)},
 
-        {math::vec3(-hSize, -hSize, -hSize), math::vec3(-1,  0,  0), math::vec2(0, 0)}, // Left
-        {math::vec3(-hSize,  hSize, -hSize), math::vec3(-1,  0,  0), math::vec2(0, 1)},
-        {math::vec3(-hSize,  hSize,  hSize), math::vec3(-1,  0,  0), math::vec2(1, 1)},
-        {math::vec3(-hSize, -hSize,  hSize), math::vec3(-1,  0,  0), math::vec2(1, 0)},
+        {math::vec3(-hSize, -hSize, -hSize), math::vec3(-1,  0,  0), math::vec2(0, 0), math::vec3(0)}, // Left
+        {math::vec3(-hSize,  hSize, -hSize), math::vec3(-1,  0,  0), math::vec2(0, 1), math::vec3(0)},
+        {math::vec3(-hSize,  hSize,  hSize), math::vec3(-1,  0,  0), math::vec2(1, 1), math::vec3(0)},
+        {math::vec3(-hSize, -hSize,  hSize), math::vec3(-1,  0,  0), math::vec2(1, 0), math::vec3(0)},
 
-        {math::vec3( hSize, -hSize, -hSize), math::vec3( 1,  0,  0), math::vec2(0, 0)}, // Right
-        {math::vec3( hSize,  hSize, -hSize), math::vec3( 1,  0,  0), math::vec2(0, 1)},
-        {math::vec3( hSize,  hSize,  hSize), math::vec3( 1,  0,  0), math::vec2(1, 1)},
-        {math::vec3( hSize, -hSize,  hSize), math::vec3( 1,  0,  0), math::vec2(1, 0)}
+        {math::vec3( hSize, -hSize, -hSize), math::vec3( 1,  0,  0), math::vec2(0, 0), math::vec3(0)}, // Right
+        {math::vec3( hSize,  hSize, -hSize), math::vec3( 1,  0,  0), math::vec2(0, 1), math::vec3(0)},
+        {math::vec3( hSize,  hSize,  hSize), math::vec3( 1,  0,  0), math::vec2(1, 1), math::vec3(0)},
+        {math::vec3( hSize, -hSize,  hSize), math::vec3( 1,  0,  0), math::vec2(1, 0), math::vec3(0)}
     };
+
+    for (unsigned int i = 0; i < 36; i += 3)
+    {
+        math::vec3 tangent = calculateTangent(vertices[indices[i    ]].position,
+                                              vertices[indices[i + 1]].position,
+                                              vertices[indices[i + 2]].position,
+                                              vertices[i    ].uv,
+                                              vertices[i + 1].uv,
+                                              vertices[i + 2].uv);
+
+        vertices[indices[i]].tangent = tangent;
+        vertices[indices[i + 1]].tangent = tangent;
+        vertices[indices[i + 2]].tangent = tangent;
+    }
 
     quad->indexBuffer = IndexBuffer::create(36, IndexDataType::UInt32);
     quad->indexBuffer->setData(indices, 36);

@@ -242,7 +242,8 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 {
     char buf[128];
     strcpy(buf, entity.getComponent<TagComponent>().tag.c_str());
-    ImGui::InputText("Name", buf, 128);
+    ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+    ImGui::InputText("Name", buf, 128, flags);
     entity.getComponent<TagComponent>().tag = std::string(buf);
 
     if (ImGui::Button("Add Component"))
@@ -392,7 +393,8 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         ImGui::Text("Font selection window goes here...");
 
         char buf[128];
-        ImGui::InputText("String", buf, 128);
+        ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+        ImGui::InputText("String", buf, 128, flags);
         component.text = std::string(buf);
     });
 
@@ -466,36 +468,40 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         {
             char buf[128];
             strcpy(buf, std::to_string(component.materials.size()).c_str());
-            
-            if (ImGui::InputText("Size", buf, 128)) // TODO: update on enter key pressed
-            {
-                if (std::string(buf).find_first_not_of("0123456789 ") == std::string::npos && std::string(buf).size() > 0)
-                {
-                    int materialCount = std::stoi(buf);
 
-                    if (materialCount < 10)
+            ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+            if (ImGui::InputText("Size", buf, 128, flags))
+            {
+                bool isInteger = std::string(buf).find_first_not_of("0123456789 ") == std::string::npos;
+
+                if (isInteger && std::string(buf).size() > 0)
+                {
+                    unsigned int materialCount = std::stoi(buf);
+
+                    if (materialCount > 10)
+                        materialCount = 10;
+
+                    if (materialCount > component.materials.size())
                     {
-                        if (materialCount > component.materials.size())
+                        component.materials.insert(component.materials.end(), materialCount - component.materials.size(), Material::create());
+                    }
+                    else if (materialCount < component.materials.size())
+                    {
+                        for (size_t i = 0; i < component.materials.size() - materialCount; i++)
                         {
-                            component.materials.insert(component.materials.end(), materialCount - component.materials.size(), nullptr);
-                        }
-                        else if (materialCount < component.materials.size())
-                        {
-                            for (unsigned int i = 0; i < component.materials.size() - materialCount; i++)
-                            {
-                                component.materials.pop_back();
-                            }
+                            component.materials.pop_back();
                         }
                     }
                 }
             }
+
+            ImGui::Columns(2);
 
             int element = 0;
             for (auto& material : component.materials)
             {
                 ImGui::PushID(&material);
 
-                ImGui::Columns(2);
                 ImGui::Text((std::string("Material ") + std::to_string(element)).c_str());
                 ImGui::NextColumn();
                 
@@ -531,6 +537,8 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 
                 ImGui::PopID();
             }
+            
+            ImGui::Columns(1);
 
             ImGui::TreePop();
         }

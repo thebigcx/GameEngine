@@ -21,7 +21,7 @@ class Component : public IComponent
 public:
     template<typename... Args>
     Component(Args... args) 
-    : value(args...) {};
+        : value(args...) {}
 
     T value;
 };

@@ -51,7 +51,6 @@ void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
         {
             if (FileSelectWindow::madeSelection())
             {
-                std::cout << FileSelectWindow::getSelection() << "\n";
                 texture = Texture2D::create(FileSelectWindow::getSelection());
             }
         }
@@ -64,156 +63,215 @@ void MaterialsPanel::onImGuiRender()
 
     ImGui::Begin("Materials");
 
-    /*if (!selectedEntity || !selectedEntity.hasComponent<MeshRendererComponent>())
+    if (ImGui::CollapsingHeader("Materials"))
     {
-        ImGui::End();
-        return;
-    }
-
-    auto& materials = selectedEntity.getComponent<MeshRendererComponent>().materials;
-
-    if (materials.size() == 0)
-    {
-        if (ImGui::Button("Create Material"))
+        for (auto& asset : Assets::getList<Material>()->getInternalList())
         {
-            materials.push_back(Material::create());
-        }
-
-    }*/
-
-    //for (auto& material : materials)
-    for (auto& asset : Assets::getList<Material>()->getInternalList())
-    {
-        if (ImGui::TreeNodeEx(asset.first.c_str()))
-        {
-            auto& material = asset.second;
-            char buf[128];
-            strcpy(buf, asset.first.c_str());
-            ImGui::InputText("Name", buf, 128);
-
-            const char* shaders[] = { "Standard" };
-            const char* currentShader = shaders[0];
-            if (ImGui::BeginCombo("Shader", currentShader))
+            if (ImGui::TreeNodeEx(asset.first.c_str()))
             {
-                for (unsigned int i = 0; i < 2; i++)
+                auto& material = asset.second;
+                char buf[128];
+                strcpy(buf, asset.first.c_str());
+                ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+                if (ImGui::InputText("Name", buf, 128, flags))
                 {
-                    bool isSelected = currentShader == shaders[i];
-                    if (ImGui::Selectable(shaders[i], isSelected))
+                    auto nh = Assets::getList<Material>()->getInternalList().extract(asset.first);
+                    nh.key() = std::string(buf);
+                    Assets::getList<Material>()->getInternalList().insert(std::move(nh));
+                }
+
+                const char* shaders[] = { "Standard" };
+                const char* currentShader = shaders[0];
+                if (ImGui::BeginCombo("Shader", currentShader))
+                {
+                    for (unsigned int i = 0; i < 2; i++)
                     {
-                        currentShader = shaders[i];
-                        if (std::string(currentShader) == std::string("Standard"))
+                        bool isSelected = currentShader == shaders[i];
+                        if (ImGui::Selectable(shaders[i], isSelected))
                         {
-                            material->shader = Assets::get<Shader>("pbr");
+                            currentShader = shaders[i];
+                            if (std::string(currentShader) == std::string("Standard"))
+                            {
+                                material->shader = Assets::get<Shader>("pbr");
+                            }
+                        }
+
+                        if (isSelected)
+                        {
+                            ImGui::SetItemDefaultFocus();
                         }
                     }
 
-                    if (isSelected)
-                    {
-                        ImGui::SetItemDefaultFocus();
-                    }
+                    ImGui::EndCombo();
                 }
 
-                ImGui::EndCombo();
-            }
-
-            if (ImGui::CollapsingHeader("Albedo"))
-            {
-                ImGui::PushID("Albedo");
-
-                textureSelect(material->albedoMap);
-
-                ImGui::SameLine();
-                ImGui::Checkbox("Use", &material->usingAlbedoMap);
-                ImGui::SameLine();
-                ImGui::ColorEdit4("Color", &material->albedoColor.x);
-
-                ImGui::PopID();
-            }
-
-            if (ImGui::CollapsingHeader("Normals"))
-            {
-                ImGui::PushID("Normals");
-
-                textureSelect(material->normalMap);
-
-                ImGui::SameLine();
-                ImGui::Checkbox("Use", &material->usingNormalMap);
-
-                ImGui::PopID();
-            }
-
-            if (ImGui::CollapsingHeader("Metalness"))
-            {
-                ImGui::PushID("Metalness");
-
-                textureSelect(material->metalnessMap);
-
-                ImGui::SameLine();
-                ImGui::Checkbox("Use", &material->usingMetalnessMap);
-
-                ImGui::PopID();
-            }
-
-            if (ImGui::CollapsingHeader("Roughness"))
-            {
-                ImGui::PushID("Roughness");
-
-                textureSelect(material->roughnessMap);
-
-                ImGui::SameLine();
-                ImGui::Checkbox("Use", &material->usingRoughnessMap);
-
-                ImGui::PopID();
-            }
-
-            if (ImGui::CollapsingHeader("Ambient Occlusion"))
-            {
-                ImGui::PushID("AmbientOcclusion");
-
-                textureSelect(material->ambientOcclusionMap);
-
-                ImGui::SameLine();
-                ImGui::Checkbox("Use", &material->usingAmbientOcclusionMap);
-
-                ImGui::PopID();
-            }
-
-            if (ImGui::CollapsingHeader("Depth Map"))
-            {
-                ImGui::PushID("DepthMap");
-
-                textureSelect(material->depthMap);
-
-                ImGui::SameLine();
-                ImGui::Checkbox("Use", &material->usingDepthMap);
-
-                ImGui::PopID();
-            }
-            
-            if (ImGui::CollapsingHeader("Preview"))
-            {
-                if (m_sphereMesh->materials.size() == 0)
+                if (ImGui::CollapsingHeader("Albedo"))
                 {
-                    m_sphereMesh->materials.push_back(material);
-                }
-                else
-                {
-                    m_sphereMesh->materials.at(0) = material;
+                    ImGui::PushID("Albedo");
+
+                    textureSelect(material->albedoMap);
+
+                    ImGui::SameLine();
+                    ImGui::Checkbox("Use", &material->usingAlbedoMap);
+                    ImGui::SameLine();
+                    ImGui::ColorEdit4("Color", &material->albedoColor.x);
+
+                    ImGui::PopID();
                 }
 
-                renderMaterialPreview(material);
+                if (ImGui::CollapsingHeader("Normals"))
+                {
+                    ImGui::PushID("Normals");
+
+                    textureSelect(material->normalMap);
+
+                    ImGui::SameLine();
+                    ImGui::Checkbox("Use", &material->usingNormalMap);
+
+                    ImGui::PopID();
+                }
+
+                if (ImGui::CollapsingHeader("Metalness"))
+                {
+                    ImGui::PushID("Metalness");
+
+                    textureSelect(material->metalnessMap);
+
+                    ImGui::SameLine();
+                    ImGui::Checkbox("Use", &material->usingMetalnessMap);
+
+                    ImGui::PopID();
+                }
+
+                if (ImGui::CollapsingHeader("Roughness"))
+                {
+                    ImGui::PushID("Roughness");
+
+                    textureSelect(material->roughnessMap);
+
+                    ImGui::SameLine();
+                    ImGui::Checkbox("Use", &material->usingRoughnessMap);
+
+                    ImGui::PopID();
+                }
+
+                if (ImGui::CollapsingHeader("Ambient Occlusion"))
+                {
+                    ImGui::PushID("AmbientOcclusion");
+
+                    textureSelect(material->ambientOcclusionMap);
+
+                    ImGui::SameLine();
+                    ImGui::Checkbox("Use", &material->usingAmbientOcclusionMap);
+
+                    ImGui::PopID();
+                }
+
+                if (ImGui::CollapsingHeader("Depth Map"))
+                {
+                    ImGui::PushID("DepthMap");
+
+                    textureSelect(material->depthMap);
+
+                    ImGui::SameLine();
+                    ImGui::Checkbox("Use", &material->usingDepthMap);
+
+                    ImGui::PopID();
+                }
+                
+                if (ImGui::CollapsingHeader("Preview"))
+                {
+                    renderMaterialPreview(material);
+                }
+
+                ImGui::TreePop();
+
+            }
+        }
+    }
+
+    if (ImGui::CollapsingHeader("Shaders"))
+    {
+        for (auto& shader : Assets::getList<Shader>()->getInternalList())
+        {
+            bool opened = ImGui::TreeNodeEx(shader.first.c_str());
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::MenuItem("Change Name"))
+                {
+                    ImGui::OpenPopup("Change Shader Name");
+                }
+
+                ImGui::EndPopup();
             }
 
-            ImGui::TreePop();
+            if (ImGui::BeginPopupModal("Change Shader Name"))
+            {
+                char buf[128];
+                strcpy(buf, shader.first.c_str());
+                ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+                if (ImGui::InputText("##changeShaderName", buf, flags))
+                {
+                    //ImGui::CloseCurrentPopup();
+                }
+                
+                ImGui::EndPopup();
+            }
 
+            if (opened)
+            {
+                ImGui::PushID(&shader.second);
+
+                shaderSelect(shader.second);
+
+                ImGui::PopID();
+
+                ImGui::TreePop();
+            }
+        }
+
+        if (ImGui::Button("Create Shader"))
+        {
+            Shared<Shader> shader;
+            shaderSelect(shader);
+            Assets::add<Shader>("New Shader", shader);
         }
     }
 
     ImGui::End();
 }
 
+void MaterialsPanel::shaderSelect(Shared<Shader>& shader)
+{
+    if (ImGui::Button("Load"))
+    {
+        FileSelectWindow::open(&shader);
+    }
+
+    if (FileSelectWindow::selectFile(&shader, "Choose shader...", ".glsl")) // TODO: select frag and vert shaders as multi-select in FileSelectWindow
+    {
+        if (!FileSelectWindow::display())
+        {
+            if (FileSelectWindow::madeSelection())
+            {
+                shader = Shader::createFromFile(FileSelectWindow::getSelection());
+            }
+        }
+    }
+}
+
 void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
 {
+    if (m_sphereMesh->materials.size() == 0)
+    {
+        m_sphereMesh->materials.push_back(material);
+    }
+    else
+    {
+        m_sphereMesh->materials.at(0) = material;
+    }
+
     auto availWidth = ImGui::GetContentRegionAvailWidth();
     ImVec2 size = { availWidth, availWidth / 2 };
 

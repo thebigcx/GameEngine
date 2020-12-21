@@ -60,7 +60,7 @@ public:
     typename std::unordered_map<std::string, Shared<T>>::const_iterator begin() const { return m_assets.begin(); }
     typename std::unordered_map<std::string, Shared<T>>::const_iterator end()   const { return m_assets.end(); }
 
-    const std::unordered_map<std::string, Shared<T>>& getInternalList() const
+    std::unordered_map<std::string, Shared<T>>& getInternalList()
     {
         return m_assets;
     }

@@ -98,7 +98,7 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
         auto roughnesses = loadMaterialTextures(aimaterial, aiTextureType_SHININESS);
         auto aos = loadMaterialTextures(aimaterial, aiTextureType_AMBIENT);
 
-        for (int i = 0; i < albedos.size(); i++)
+        for (size_t i = 0; i < albedos.size(); i++)
         {
             auto material = Material::create(Assets::get<Shader>("pbr")); // TODO: material shaders
 

@@ -25,6 +25,7 @@ private:
     void renderMaterialPreview(const Shared<Material>& material);
 
     void textureSelect(Shared<Texture2D>& texture);
+    void shaderSelect(Shared<Shader>& shader);
 
 private:
     Shared<Scene> m_context;
