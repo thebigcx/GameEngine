@@ -280,8 +280,6 @@ void EditorLayer::onImGuiRender()
     
     ImGui::End();
     ImGui::PopStyleVar();
-
-    ImGui::ShowDemoWindow();
 }
 
 void EditorLayer::onDetach()

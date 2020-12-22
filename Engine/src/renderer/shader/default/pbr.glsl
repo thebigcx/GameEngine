@@ -65,6 +65,13 @@ struct PointLight
     float attenuation;
 };
 
+struct DirectionalLight
+{
+    vec3 direction;
+    vec3 radiance;
+    float intensity;
+};
+
 in DATA
 {
     vec2 texCoord;
@@ -80,6 +87,7 @@ uniform vec3 cameraPos;
 uniform Material material;
 
 uniform PointLight pointLights[MAX_LIGHTS];
+uniform DirectionalLight directionalLight;
 uniform int numPointLights;
 
 //uniform vec3 lightPositions[MAX_LIGHTS];
@@ -223,6 +231,9 @@ void main()
     vec3 fragPos = TBN * fs_in.fragPos;
 
     vec3 Lo = vec3(0);
+
+    // ----------------------------Point Lights-------------------------------------
+
     for (int i = 0; i < numPointLights; i++)
     {
         vec3 lightPos = TBN * pointLights[i].position;
@@ -250,6 +261,31 @@ void main()
         Lo += (kD * albedo / PI + specular) * radiance * NdotL;
 
         Lo *= pointLights[i].intensity;
+    }
+    
+    // ----------------------------Directional Light-------------------------------------
+    {
+        vec3 L = TBN * normalize(-directionalLight.direction);
+        vec3 H = normalize(V + L);
+
+        vec3 radiance = directionalLight.radiance;
+
+        float NDF = distributionGGX(H, V, roughness);
+        float G = geometrySmith(normal, V, L, roughness);
+        vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
+
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS;
+        kD *= 1.0 - metallic;
+
+        vec3 numerator = NDF * G * F;
+        float denominator = 4.0 * max(dot(normal, V), 0.0) * max(dot(normal, L), 0.0);
+        vec3 specular = numerator / max(denominator, 0.001);
+
+        float NdotL = max(dot(normal, L), 0.0);
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+
+        Lo *= directionalLight.intensity;
     }
 
     vec3 ambient = skyLight * albedo * ao;

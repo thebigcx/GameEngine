@@ -113,7 +113,7 @@ void SceneHierarchy::onImGuiRender()
                 int meshID = 0;
                 for (auto& mesh : model->meshes)
                 {
-                    auto childID = entity.addChild("Mesh");
+                    auto childID = entity.addChild(std::string("Mesh_") + std::to_string(meshID));
                     SceneEntity child(childID, m_context.get());
 
                     child.addComponent<MeshComponent>();

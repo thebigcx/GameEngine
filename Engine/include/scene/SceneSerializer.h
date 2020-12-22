@@ -11,6 +11,9 @@ public:
     static Shared<Scene> loadScene(const std::string& path);
 
 private:
-    static SceneEntity loadGameObject(YAML::Node& node, const Shared<Scene>& scene, const std::string& name);
+    static SceneEntity loadGameObject(YAML::Node& node, EntityRegistry& registry, const Shared<Scene>& scene, const std::string& name);
     static void saveGameObject(SceneEntity& entity, YAML::Node& node);
+
+    static void saveChildRecurse(SceneEntity& parent, YAML::Node& node);
+    static void loadChildRecurse(YAML::Node& node, EntityRegistry& registry, const Shared<Scene>& scene, const std::string& name);
 };

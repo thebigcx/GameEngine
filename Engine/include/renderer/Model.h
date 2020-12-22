@@ -25,6 +25,8 @@ public:
 
     std::vector<Shared<Mesh>> meshes;
 
+    std::string path;
+
 private:
     std::string m_directory;
 

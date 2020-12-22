@@ -2,6 +2,8 @@
 #include <scene/SceneEntity.h>
 #include <scene/Components.h>
 #include <renderer/Model.h>
+#include <renderer/Assets.h>
+#include <util/Timer.h>
 
 #include <fstream>
 
@@ -38,15 +40,34 @@ Shared<Scene> SceneSerializer::loadScene(const std::string& path)
     {
         auto object = gameObjects[it->first];
 
-        loadGameObject(object, scene, it->first.as<std::string>());
+        loadGameObject(object, scene->getRegistry(), scene, it->first.as<std::string>());
     }
     
     return scene;
 }
 
-SceneEntity SceneSerializer::loadGameObject(YAML::Node& node, const Shared<Scene>& scene, const std::string& name)
+#define TEXTURE_CHECK(asset, path)\
+bool needToLoad = true;\
+for (auto& ass : Assets::getList<Texture2D>()->getInternalList())\
+{\
+    if (ass.second->getPath == path)\
+    {\
+        asset = Assets::get<Texture2D>(ass.first);\
+        needToLoad = false;\
+        break;\
+    }\
+}\
+if (needToLoad)\
+{\
+    asset = Texture2D::create(path);\
+    Assets::add<Texture2D>(path, asset);\
+}\
+
+SceneEntity SceneSerializer::loadGameObject(YAML::Node& node, EntityRegistry& registry, const Shared<Scene>& scene, const std::string& name)
 {
-    auto object = scene->createEntity(name);
+    auto entity = registry.create();
+    registry.emplace<TagComponent>(entity, name);
+    SceneEntity object(entity, scene.get());
 
     if (node["Transform"])
     {
@@ -108,36 +129,59 @@ SceneEntity SceneSerializer::loadGameObject(YAML::Node& node, const Shared<Scene
     {
         auto& mesh = object.addComponent<MeshComponent>();
 
-        mesh.filePath = node["Mesh"].as<std::string>();
-        mesh.meshID = node["Mesh ID"].as<uint32_t>();
+        mesh.filePath = node["Mesh"]["Mesh"].as<std::string>();
+        mesh.meshID = node["Mesh"]["Mesh ID"].as<uint32_t>();
+        
+        bool needToLoad = true;
+        if (Assets::listExists<Model>())
+        {
+            for (auto& model : Assets::getList<Model>()->getInternalList())
+            {
+                if (model.second->path == mesh.filePath)
+                {
+                    mesh.mesh = model.second->meshes[mesh.meshID];// TODO: add ID
+                    needToLoad = false;
+                    break;
+                }
+            }
+        }
 
-        auto model = Model::loadModel(mesh.filePath); // TODO: refactor model loading in some way, especially single mesh loading
-        if (model->meshes.size() > 0)
-            mesh.mesh = model->meshes[0];
+        if (needToLoad)
+        {
+            auto model = Model::loadModel(mesh.filePath); // TODO: refactor model loading in some way, especially single mesh loading
+            model->path = mesh.filePath;
+            Assets::add<Model>(mesh.filePath, model);
+            if (model->meshes.size() > 0)
+            {
+                mesh.mesh = model->meshes[mesh.meshID];
+            }
+        }
     }
 
     if (node["Mesh Renderer"])
     {
         auto& meshRenderer = object.addComponent<MeshRendererComponent>();
 
-        int i = 0;
-        while (node["Materials"][i])
+        for (int i = 0; i < node["Mesh Renderer"]["Material Count"].as<int>(); i++)
         {
-            Shared<Material> material = Material::create(Shader::createFromFile(node["Materials"][i]["Shader"].as<std::string>()));
+            auto meshRendererNode = node["Mesh Renderer"]["Materials"][i];
+            //Shared<Material> material = Material::create(Shader::createFromFile(meshRendererNode["Shader"].as<std::string>()));
+            Shared<Material> material = Material::create(); // TODO: sort out this situation
+            //TODO: better Assets class integration
+            
+            //material->albedoMap = Texture2D::create(meshRendererNode["Albedo"].as<std::string>());
+            //material->normalMap = Texture2D::create(meshRendererNode["Normal"].as<std::string>());
+            //material->metalnessMap = Texture2D::create(meshRendererNode["Metallic"].as<std::string>());
+            //material->roughnessMap = Texture2D::create(meshRendererNode["Roughness"].as<std::string>());
+            //material->ambientOcclusionMap = Texture2D::create(meshRendererNode["Ambient Occlusion"].as<std::string>());
+            //material->depthMap = Texture2D::create(meshRendererNode["Depth"].as<std::string>());
 
-            material->albedoMap = Texture2D::create(node["Materials"][i]["Albedo"].as<std::string>());
-            material->normalMap = Texture2D::create(node["Materials"][i]["Normal"].as<std::string>());
-            material->metalnessMap = Texture2D::create(node["Materials"][i]["Metallic"].as<std::string>());
-            material->roughnessMap = Texture2D::create(node["Materials"][i]["Roughness"].as<std::string>());
-            material->ambientOcclusionMap = Texture2D::create(node["Materials"][i]["Ambient Occlusion"].as<std::string>());
-            material->depthMap = Texture2D::create(node["Materials"][i]["Depth"].as<std::string>());
-
-            material->usingAlbedoMap = node["Materials"][i]["Using Albedo"].as<bool>();
-            material->usingNormalMap = node["Materials"][i]["Using Normal"].as<bool>();
-            material->usingMetalnessMap = node["Materials"][i]["Using Metallic"].as<bool>();
-            material->usingRoughnessMap = node["Materials"][i]["Using Roughness"].as<bool>();
-            material->usingAmbientOcclusionMap = node["Materials"][i]["Using Ambient Occlusion"].as<bool>();
-            material->usingDepthMap = node["Materials"][i]["Using Depth"].as<bool>();
+            material->usingAlbedoMap = meshRendererNode["Using Albedo"].as<bool>();
+            material->usingNormalMap = meshRendererNode["Using Normal"].as<bool>();
+            material->usingMetalnessMap = meshRendererNode["Using Metallic"].as<bool>();
+            material->usingRoughnessMap = meshRendererNode["Using Roughness"].as<bool>();
+            material->usingAmbientOcclusionMap = meshRendererNode["Using Ambient Occlusion"].as<bool>();
+            material->usingDepthMap = meshRendererNode["Using Depth"].as<bool>();
 
             meshRenderer.materials.push_back(material);
         }
@@ -171,6 +215,21 @@ SceneEntity SceneSerializer::loadGameObject(YAML::Node& node, const Shared<Scene
 
         light.intensity = node["Point Light"]["Intensity"].as<float>();
         light.attenuation = node["Point Light"]["Attenuation"].as<float>();
+    }
+
+    if (node["Children"])
+    {
+        auto childrenNode = node["Children"];
+        loadChildRecurse(childrenNode, *entity->getChildren(), scene, name);
+    }
+}
+
+void SceneSerializer::loadChildRecurse(YAML::Node& node, EntityRegistry& registry, const Shared<Scene>& scene, const std::string& name)
+{
+    for (YAML::const_iterator it = node.begin(); it != node.end(); it++)
+    {
+        YAML::Node nextNode = node[it->first];
+        loadGameObject(nextNode, registry, scene, name);
     }
 }
 
@@ -322,5 +381,18 @@ void SceneSerializer::saveGameObject(SceneEntity& entity, YAML::Node& node)
         auto light = node["Sky Light"];
 
         light["Intensity"] = comp.intensity;
+    }
+
+    auto childrenNode = node["Children"];
+    saveChildRecurse(entity, childrenNode);
+}
+
+void SceneSerializer::saveChildRecurse(SceneEntity& parent, YAML::Node& node)
+{
+    for (auto& child : parent.getChildren())
+    {
+        auto nextNode = node[child.getComponent<TagComponent>().tag];
+        std::cout << child.getComponent<TagComponent>().tag << "\n";
+        saveGameObject(child, nextNode);
     }
 }
