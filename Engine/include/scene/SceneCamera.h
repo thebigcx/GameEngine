@@ -45,6 +45,8 @@ public:
     void setPerspectiveNear(float near) { m_perspectiveNear = near; calculateProjection(); }
     void setPerspectiveFar(float far) { m_perspectiveFar = far; calculateProjection(); }
 
+    float getAspect() const { return m_aspect; }
+
 private:
     ProjectionType m_projectionType = ProjectionType::Orthographic;
 

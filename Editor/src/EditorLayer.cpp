@@ -10,6 +10,7 @@
 #include <renderer/Renderer.h>
 #include <renderer/Assets.h>
 #include <renderer/MeshFactory.h>
+#include <scene/SceneSerializer.h>
 
 EditorLayer::EditorLayer()
 {
@@ -29,13 +30,11 @@ void EditorLayer::onAttach()
     m_editorCamera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
 
     m_scene = createShared<Scene>();
-    m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
+    m_sceneHeirarchy.setContext(m_scene);
+    m_materialsPanel.setContext(m_scene);
 
     m_scenePlayButton = Texture2D::create("Editor/assets/scene_play.png");
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
-
-    m_sceneHeirarchy.setContext(m_scene);
-    m_materialsPanel.setContext(m_scene);
 
     Assets::add<Material>("default", Material::create(Assets::get<Shader>("pbr")));
 
@@ -121,6 +120,49 @@ void EditorLayer::onUpdate(float dt)
     m_framebuffer->unbind();
 }
 
+void EditorLayer::drawMenuBar()
+{
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Open", "Ctrl+O"))
+            {
+                FileSelectWindow::open("loadScene");
+            }
+
+            if (ImGui::MenuItem("Save", "Ctrl+S"))
+            {
+                //SceneSerializer::saveScene(m_scene, "");
+            }
+
+            if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+            {
+                //SceneSerializer::saveScene(m_scene, "");
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
+
+    if (FileSelectWindow::selectFile("loadScene", "Choose scene...", ".yaml"))
+    {
+        if (!FileSelectWindow::display())
+        {
+            if (FileSelectWindow::madeSelection())
+            {
+                m_scene = SceneSerializer::loadScene(FileSelectWindow::getSelection());
+                m_sceneHeirarchy.setContext(m_scene);
+                m_materialsPanel.setContext(m_scene); // TODO: add a callback system to make this better
+            }
+        }
+    }
+
+    
+}
+
 void EditorLayer::onImGuiRender()
 {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -138,6 +180,8 @@ void EditorLayer::onImGuiRender()
 
     ImGui::Begin("Window", &dockspaceOpen, windowFlags);
     ImGui::DockSpace(ImGui::GetID("MyDockSpace"), ImVec2(0.f, 0.f), ImGuiDockNodeFlags_None);
+
+    drawMenuBar();
 
     windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0, 0});
@@ -225,6 +269,8 @@ void EditorLayer::onImGuiRender()
     
     ImGui::End();
     ImGui::PopStyleVar();
+
+    ImGui::ShowDemoWindow();
 }
 
 void EditorLayer::onDetach()

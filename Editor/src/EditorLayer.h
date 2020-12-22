@@ -28,6 +28,9 @@ public:
     void onEvent(Event& event) override;
 
 private:
+    void drawMenuBar();
+
+private:
     Shared<Scene> m_scene;
     Shared<Framebuffer> m_framebuffer;
 

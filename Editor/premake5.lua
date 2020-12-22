@@ -25,7 +25,8 @@ project "Editor"
         "%{wks.location}/Engine/vendor/maths",
 		"%{wks.location}/Engine/vendor/stb_image/include",
 		"%{wks.location}/Engine/vendor",
-		"%{wks.location}/Engine/vendor/imgui"
+		"%{wks.location}/Engine/vendor/imgui",
+		"%{wks.location}/Engine/vendor/yaml"
 	}
 	
 	libdirs {
@@ -40,7 +41,8 @@ project "Editor"
 		"openal",
 		"freetype",
 		"assimp",
-		"pthread"
+		"pthread",
+		"yaml-cpp"
 	}
 	
 	optimize "On"

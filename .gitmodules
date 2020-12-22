@@ -17,3 +17,6 @@
 [submodule "Engine/vendor/imguizmo"]
 	path = Engine/vendor/imguizmo
 	url = https://github.com/thebigcx/ImGuizmo.git
+[submodule "Engine/vendor/yaml"]
+	path = Engine/vendor/yaml
+	url = https://github.com/thebigcx/yaml-cpp.git
