@@ -115,6 +115,5 @@ struct PointLightComponent
 
 struct MeshRendererComponent
 {
-    //std::vector<Shared<Material>> materials;
     std::vector<Shared<Material>> materials;
 };

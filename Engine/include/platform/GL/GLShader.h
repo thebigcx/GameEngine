@@ -47,6 +47,11 @@ public:
 
     inline uint32_t getId() const override { return m_id; }
 
+    inline const std::string& getPath() const override
+    {
+        return m_path;
+    }
+
 private:
     uint32_t m_id = 0;
 
@@ -58,4 +63,6 @@ private:
     std::unordered_map<std::string, uint32_t> m_uniformLocations;
 
     uint32_t getUniformLocation(const std::string& uniform);
+
+    std::string m_path = "";
 };

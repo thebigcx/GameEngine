@@ -39,7 +39,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
         {
             auto& pointLight = view.get<PointLightComponent>(entity);
             auto& transform = view.get<TransformComponent>(entity);
-            pointLights.push_back({ transform.translation, pointLight.radiance, pointLight.intensity });
+            pointLights.push_back({ transform.translation, pointLight.radiance, pointLight.intensity, pointLight.attenuation });
         }
 
         setup.setPointLights(pointLights);

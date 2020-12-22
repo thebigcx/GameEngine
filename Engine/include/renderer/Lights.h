@@ -12,6 +12,7 @@ struct PointLight
     math::vec3 position;
     math::vec3 radiance;
     float intensity;
+    float attenuation;
 };
 
 struct DirectionalLight

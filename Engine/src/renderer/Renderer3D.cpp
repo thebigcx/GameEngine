@@ -177,6 +177,7 @@ void Renderer3D::setLights(const LightSetup& setup)
         data.modelShader->setFloat3("pointLights[" + index + "].position",  light.position);
         data.modelShader->setFloat3("pointLights[" + index + "].radiance",   light.radiance);
         data.modelShader->setFloat("pointLights[" + index + "].intensity",  light.intensity);
+        data.modelShader->setFloat("pointLights[" + index + "].attenuation", light.attenuation);
     }
 
     auto& spotLights = setup.getSpotLights();

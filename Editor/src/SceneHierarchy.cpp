@@ -110,6 +110,7 @@ void SceneHierarchy::onImGuiRender()
 
                 auto entity = m_context->createEntity("Model");
 
+                int meshID = 0;
                 for (auto& mesh : model->meshes)
                 {
                     auto childID = entity.addChild("Mesh");
@@ -117,6 +118,7 @@ void SceneHierarchy::onImGuiRender()
 
                     child.addComponent<MeshComponent>();
                     child.getComponent<MeshComponent>().mesh = mesh;
+                    child.getComponent<MeshComponent>().meshID = meshID;
                     child.getComponent<MeshComponent>().filePath = FileSelectWindow::getSelection();
                     child.addComponent<TransformComponent>();
 
@@ -147,6 +149,8 @@ void SceneHierarchy::onImGuiRender()
 
                         i++;
                     }
+
+                    meshID++;
                 }
 
                 m_selection = entity;
@@ -384,6 +388,16 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
             FileSelectWindow::open(&component);
         }
 
+        memset(buf, 0, 128);
+        strcpy(buf, std::to_string(component.meshID).c_str());
+        flags = ImGuiInputTextFlags_EnterReturnsTrue;
+        if (ImGui::InputText("ID", buf, 128, flags))
+        {
+            int meshID = std::stoi(std::string(buf));
+            component.meshID = meshID;
+        }
+
+
         if (FileSelectWindow::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds"))
         {
             if (!FileSelectWindow::display())
@@ -392,11 +406,21 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
                 {
                     component.filePath = FileSelectWindow::getSelection();
                     Shared<Model> model = Model::loadModel(component.filePath);
-                    if (model->meshes.size() > 0)
+
+                    if (model->meshes.size() < component.meshID && component.meshID > 0)
                     {
-                        component.mesh = model->meshes[0];
-                        std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
-                        Assets::add<Material>(name, model->meshes[0]->materials[0]);
+                        if (model->meshes.size() > 0)
+                        {
+                            component.mesh = model->meshes[component.meshID];
+                            
+                            std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
+                            Assets::add<Material>(name, model->meshes[component.meshID]->materials[0]);
+
+                            if (entity.hasComponent<MeshRendererComponent>())
+                            {
+                                entity.getComponent<MeshRendererComponent>().materials.push_back(model->meshes[component.meshID]->materials[0]);
+                            }
+                        }
                     }
                 }
             }

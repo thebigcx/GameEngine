@@ -62,6 +62,7 @@ struct PointLight
     vec3 position;
     vec3 radiance;
     float intensity;
+    float attenuation;
 };
 
 in DATA
@@ -230,7 +231,7 @@ void main()
         vec3 H = normalize(V + L);
 
         float distance = length(lightPos - fragPos);
-        float attenuation = 1.0 / (distance * distance);
+        float attenuation = 1.0 / (distance * distance) * pointLights[i].attenuation;
         vec3 radiance = pointLights[i].radiance * attenuation;
 
         float NDF = distributionGGX(H, V, roughness);

@@ -71,6 +71,7 @@ public:
     virtual void setMatrix4(const std::string& name, const math::mat4& value) = 0;
 
     virtual unsigned int getId() const = 0;
+    virtual const std::string& getPath() const = 0;
 
     enum class DataType
     {
