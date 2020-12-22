@@ -51,7 +51,12 @@ public:
     std::vector<Entity*> getAbsolutePath()
     {
         std::vector<Entity*> path;
-        recurseAbsolutePath(this, path);
+        //recurseAbsolutePath(this, path);
+
+        if (path.size() != 0)
+        {
+            path.pop_back(); // remove 'this' as it is not an ancestor
+        }
         return path;
     }
 
@@ -103,6 +108,7 @@ class EntityRegistry
 {
 public:
     EntityRegistry()
+        : m_parent(nullptr)
     {
         
     }
@@ -265,6 +271,15 @@ public:
     {
         for (auto& entity : m_entities)
         {
+            fn(&entity);
+        }
+    }
+
+    void recurse_each(const std::function<void(Entity* entity)>& fn)
+    {
+        for (auto& entity : m_entities)
+        {
+            entity.getChildren()->each(fn);
             fn(&entity);
         }
     }

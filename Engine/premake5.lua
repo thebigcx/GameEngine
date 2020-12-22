@@ -3,7 +3,7 @@ project "GameEngine"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
-    buildoptions "-Wextra -Wnon-virtual-dtor -pedantic"
+    buildoptions "-Wall -Wextra -Wnon-virtual-dtor -pedantic"
     symbols "On"
 
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Engine"

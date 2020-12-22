@@ -48,38 +48,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 
     Renderer3D::beginScene(camera);
 
-    /*auto view = m_registry.recurse_view<MeshRendererComponent, MeshComponent, TransformComponent>();
-    for (auto& entityID : view)
-    {
-        SceneEntity entity(entityID, this);
-        if (!entity.getComponent<MeshComponent>().mesh)
-        {
-            continue;
-        }
-        if (entity.getComponent<MeshRendererComponent>().materials.size() == 0)
-        {
-            continue;
-        }
-
-        math::mat4 transform = math::mat4(1.f);
-        for (auto& ancestorID : entityID->getAbsolutePath())
-        {
-            SceneEntity ancestor(ancestorID, this);
-            if (ancestor.hasComponent<TransformComponent>())
-            {
-                //std::cout << "has transform\n";
-                transform = ancestor.getComponent<TransformComponent>().getTransform();
-            }
-        }
-
-        transform = entity.getComponent<TransformComponent>().getTransform() * transform;
-
-        Renderer3D::submit(entity.getComponent<MeshComponent>().mesh, 
-                           transform, 
-                           entity.getComponent<MeshRendererComponent>().materials[0]);
-    }*/
-
-    m_registry.each([&](Entity* entityID)
+    m_registry.recurse_each([&](Entity* entityID)
     {
         SceneEntity entity(entityID, this);
         if (entity.hasComponent<MeshComponent>() && entity.hasComponent<MeshRendererComponent>() && entity.hasComponent<TransformComponent>())
@@ -99,16 +68,16 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
                 SceneEntity ancestor(ancestorID, this);
                 if (ancestor.hasComponent<TransformComponent>())
                 {
-                    //std::cout << "has transform\n";
-                    transform = ancestor.getComponent<TransformComponent>().getTransform();
+                    transform = ancestor.getComponent<TransformComponent>().getTransform() * transform;
+                    std::cout << math::to_string(ancestor.getComponent<TransformComponent>().getTransform()) << "\n";
                 }
             }
 
             transform = entity.getComponent<TransformComponent>().getTransform() * transform;
 
             Renderer3D::submit(entity.getComponent<MeshComponent>().mesh, 
-                            transform, 
-                            entity.getComponent<MeshRendererComponent>().materials[0]);
+                               transform, 
+                               entity.getComponent<MeshRendererComponent>().materials[0]);
         }
     });
 

@@ -75,7 +75,7 @@ void Renderer3D::beginScene(EditorCamera& camera)
     data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
 
     data.modelShader->bind();
-    data.modelShader->setFloat3("cameraPos", camera.calculatePosition());
+    data.modelShader->setFloat3("cameraPos", camera.getPosition());
 }
 
 void Renderer3D::endScene()
@@ -139,6 +139,11 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, c
     if (!data.sceneStarted)
     {
         Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
+    }
+
+    if (!material->shader)
+    {
+        return;
     }
 
     RenderCommand::setDepthTesting(true);

@@ -42,7 +42,7 @@ public:
     void updateView();
 
     math::quat getOrientation();
-    math::vec3 calculatePosition();
+    math::vec3 getPosition();
 
 private:
     math::mat4 m_projection, m_view;

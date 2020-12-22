@@ -57,6 +57,10 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
             vertex.normal.y = mesh->mNormals[i].y;
             vertex.normal.z = mesh->mNormals[i].z;
         }
+        else
+        {
+            vertex.normal = math::vec3(0.f);
+        }
 
         if (mesh->mTextureCoords[0])
         {
@@ -73,6 +77,10 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
             vertex.tangent.x = mesh->mTangents[i].x;
             vertex.tangent.y = mesh->mTangents[i].y;
             vertex.tangent.z = mesh->mTangents[i].z;
+        }
+        else
+        {
+            vertex.tangent = math::vec3(0.f);
         }
 
         vertices.push_back(vertex);

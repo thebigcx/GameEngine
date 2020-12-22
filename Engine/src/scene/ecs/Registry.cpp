@@ -3,7 +3,7 @@
 Entity::Entity(EntityRegistry* parent)
     : m_parent(parent)
 {
-    m_children = createShared<EntityRegistry>();
+    m_children = createShared<EntityRegistry>(this);
 }
 
 Entity::~Entity()
@@ -17,6 +17,13 @@ void Entity::recurseAbsolutePath(Entity* current, std::vector<Entity*>& path)
     {
         return;
     }
-    path.insert(path.begin(), current);
-    recurseAbsolutePath(getParent()->owned_by(), path);
+
+    if (current->getParent() == nullptr)
+    {
+        return;
+    }
+
+    path.push_back(current);
+
+    recurseAbsolutePath(current->getParent()->owned_by(), path);
 }

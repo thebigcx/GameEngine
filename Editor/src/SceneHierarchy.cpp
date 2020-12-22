@@ -84,6 +84,8 @@ void SceneHierarchy::onImGuiRender()
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_CollapsingHeader;
     bool gameObjectsOpen = ImGui::TreeNodeEx("Game Objects", flags);
 
+    //m_selection = SceneEntity::createNull(m_context.get());
+
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::MenuItem("Create Game Object"))
@@ -145,6 +147,8 @@ void SceneHierarchy::onImGuiRender()
                         }
                     }
                 }
+
+                m_selection = entity;
             }
         }
     }
@@ -161,46 +165,6 @@ void SceneHierarchy::onImGuiRender()
         {
             m_context->destroyEntity(m_deletedEntity);
         }
-
-        /*if (ImGui::BeginPopupContextWindow(0, 1, false))
-        {
-            if (ImGui::MenuItem("Create Empty Game Object"))
-            {
-                auto entity = m_context->createEntity("Untitled Game Object");
-                //m_selection = entity;
-            }
-
-            if (ImGui::MenuItem("Import 3D Model"))
-            {
-                FileSelectWindow::open(reinterpret_cast<const void*>("modelload"));
-            }
-
-            if (FileSelectWindow::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds"))
-            {
-                if (!FileSelectWindow::display())
-                {
-                    if (FileSelectWindow::madeSelection())
-                    {
-                        Shared<Model> model = Model::loadModel(FileSelectWindow::getSelection());
-
-                        if (model->meshes.size() > 0)
-                        {
-                            auto entity = m_context->createEntity(FileSelectWindow::getFilename());
-
-                            auto& mesh = entity.addComponent<MeshComponent>();
-
-                            mesh.mesh = model->meshes[0]; // TODO: load all meshes
-                            mesh.filePath = FileSelectWindow::getSelection();
-                            auto& meshRenderer = entity.addComponent<MeshRendererComponent>();
-                            meshRenderer.materials = model->meshes[0]->materials;
-
-                        }
-                    }
-                }
-            }
-
-            ImGui::EndPopup();
-        }*/
     }
 
     ImGui::End();

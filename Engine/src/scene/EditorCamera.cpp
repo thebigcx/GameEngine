@@ -66,7 +66,7 @@ math::vec3 EditorCamera::getUpDirection()
 
 void EditorCamera::updateView()
 {
-    m_position = calculatePosition();
+    m_position = getPosition();
 
     math::quat orientation = getOrientation();
     m_view = math::translate(math::mat4(1.f), m_position) * math::to_mat4(orientation);
@@ -142,7 +142,7 @@ math::quat EditorCamera::getOrientation()
     return math::quat(math::vec3(-m_pitch, -m_yaw, 0.f));
 }
 
-math::vec3 EditorCamera::calculatePosition()
+math::vec3 EditorCamera::getPosition()
 {
     return m_focalPoint - getForwardDirection() * m_distance;
 }
