@@ -86,8 +86,8 @@ struct NativeScriptComponent
 struct MeshComponent
 {
     Shared<Mesh> mesh;
-    std::vector<Shared<Material>> materials;
     std::string filePath;
+    uint32_t meshID = 0; // TODO: mesh id
 };
 
 struct BoxCollider2DComponent
@@ -115,5 +115,6 @@ struct PointLightComponent
 
 struct MeshRendererComponent
 {
+    //std::vector<Shared<Material>> materials;
     std::vector<Shared<Material>> materials;
 };

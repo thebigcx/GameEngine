@@ -84,8 +84,6 @@ void SceneHierarchy::onImGuiRender()
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_CollapsingHeader;
     bool gameObjectsOpen = ImGui::TreeNodeEx("Game Objects", flags);
 
-    //m_selection = SceneEntity::createNull(m_context.get());
-
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::MenuItem("Create Game Object"))
@@ -112,7 +110,6 @@ void SceneHierarchy::onImGuiRender()
 
                 auto entity = m_context->createEntity("Model");
 
-                std::vector<Shared<Material>> materialsLoaded;
                 for (auto& mesh : model->meshes)
                 {
                     auto childID = entity.addChild("Mesh");
@@ -124,27 +121,31 @@ void SceneHierarchy::onImGuiRender()
                     child.addComponent<TransformComponent>();
 
                     auto& meshRenderer = child.addComponent<MeshRendererComponent>();
-                    meshRenderer.materials = mesh->materials;
 
+                    int i = 0;
                     int index = Assets::getAssetCount<Material>() - 1;
                     for (auto& material : mesh->materials)
                     {
                         bool needToLoad = true;
-                        for (auto& materialLoaded : materialsLoaded)
+                        for (auto& materialLoaded : Assets::getList<Material>()->getInternalList())
                         {
-                            if (material == materialLoaded)
+                            if (*material == *materialLoaded.second)
                             {
                                 needToLoad = false;
-                                break;
+                                meshRenderer.materials.push_back(materialLoaded.second);
+                                break; // TODO: fix so this is actually works
                             }
                         }
 
                         if (needToLoad)
                         {
                             Assets::add<Material>(std::string("material_") + std::to_string(index), material);
-                            materialsLoaded.push_back(material);
+                            meshRenderer.materials.push_back(material);
+                            // TODO: use another way of creating ids
                             index++;
                         }
+
+                        i++;
                     }
                 }
 
@@ -447,7 +448,10 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 
                     if (materialCount > component.materials.size())
                     {
-                        component.materials.insert(component.materials.end(), materialCount - component.materials.size(), Material::create());
+                        auto material = Material::create();
+                        std::string key = std::string("material_") + std::to_string(Assets::getAssetCount<Material>() - 1);
+                        Assets::add<Material>(key, Material::create());
+                        component.materials.insert(component.materials.end(), materialCount - component.materials.size(), material);
                     }
                     else if (materialCount < component.materials.size())
                     {
@@ -519,32 +523,11 @@ void SceneHierarchy::drawComponent(const std::string& name, SceneEntity& entity,
 
     auto& component = entity.getComponent<T>();
 
-    //float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.f;
-    //auto available = ImGui::GetContentRegionAvail();
-
     ImGui::Separator();
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
     flags |= ImGuiTreeNodeFlags_CollapsingHeader;
     bool opened = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.c_str());
-
-    /*ImGui::SameLine(available.x - lineHeight * 0.5f);
-    if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }));
-    {
-        std::cout << "Clicked\n";
-        ImGui::OpenPopup("");
-    }
-
-    bool deleted = false;
-    if (ImGui::BeginPopup(""))
-    {
-        if (ImGui::MenuItem("Remove Component"))
-        {
-            deleted = true;
-        }
-
-        ImGui::EndPopup();
-    }*/
 
     bool deleted = false;
     if (ImGui::BeginPopupContextItem())

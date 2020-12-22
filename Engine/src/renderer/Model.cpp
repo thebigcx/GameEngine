@@ -149,7 +149,14 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
                 material->ambientOcclusionMap = aos.at(i);
                 material->usingAmbientOcclusionMap = true;
             }
-
+            // TODO: use Assets<Material> instead
+            for (auto& materialLoaded : Assets::getList<Material>()->getInternalList())
+            {
+                if (*materialLoaded.second == *material)
+                {
+                    material = materialLoaded.second;
+                }
+            }
             materials.push_back(material);
         }
     }

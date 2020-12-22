@@ -75,9 +75,12 @@ void MaterialsPanel::onImGuiRender()
                 ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
                 if (ImGui::InputText("Name", buf, 128, flags))
                 {
-                    auto nh = Assets::getList<Material>()->getInternalList().extract(asset.first);
-                    nh.key() = std::string(buf);
-                    Assets::getList<Material>()->getInternalList().insert(std::move(nh));
+                    if (!Assets::exists<Material>(std::string(buf)))
+                    {
+                        auto nh = Assets::getList<Material>()->getInternalList().extract(asset.first);
+                        nh.key() = std::string(buf);
+                        Assets::getList<Material>()->getInternalList().insert(std::move(nh));
+                    }
                 }
 
                 std::string currentShader = "";

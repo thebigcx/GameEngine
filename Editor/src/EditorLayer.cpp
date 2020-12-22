@@ -138,6 +138,7 @@ void EditorLayer::drawMenuBar()
 
             if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
             {
+                FileSelectWindow::open("saveSceneAs");
                 //SceneSerializer::saveScene(m_scene, "");
             }
 
@@ -160,6 +161,16 @@ void EditorLayer::drawMenuBar()
         }
     }
 
+    if (FileSelectWindow::saveFile("saveSceneAs", "Save scene...", ".yaml"))
+    {
+        if (!FileSelectWindow::display())
+        {
+            if (FileSelectWindow::madeSelection())
+            {
+                SceneSerializer::saveScene(m_scene, FileSelectWindow::getSelection() + std::string("/") + FileSelectWindow::getSaveFileName());
+            }
+        }
+    }
     
 }
 

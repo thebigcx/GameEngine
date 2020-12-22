@@ -7,7 +7,13 @@
 #include <core/Core.h>
 #include <renderer/Texture2D.h>
 
-class FileSelectWindow
+enum class FileDialogType
+{
+    Save,
+    Select
+};
+
+class FileSelectWindow // TODO: separate select/save file dialogs into inherited classes of base class "FileDialog"
 {
 private:
     FileSelectWindow();
@@ -29,6 +35,21 @@ public:
         }
         m_instance.m_title = title;
         m_instance.m_acceptedFileTypes = { args... };
+        m_instance.m_type = FileDialogType::Select;
+
+        return m_instance.m_isOpen;
+    }
+
+    template<typename... Args>
+    static bool saveFile(const void* id, const std::string& title = "Save file", Args... args)
+    {
+        if (m_instance.m_id != id)
+        {
+            return false;
+        }
+        m_instance.m_title = title;
+        m_instance.m_acceptedFileTypes = { args... };
+        m_instance.m_type = FileDialogType::Save;
 
         return m_instance.m_isOpen;
     }
@@ -54,6 +75,11 @@ public:
         return "filename";
     }
 
+    static std::string getSaveFileName()
+    {
+        return m_instance.m_fileName;
+    }
+
 private:
     static FileSelectWindow m_instance;
 
@@ -75,4 +101,7 @@ private:
     Shared<Texture2D> m_fileIcon;
 
     const void* m_id = 0;
+
+    FileDialogType m_type;
+    std::string m_fileName;
 };

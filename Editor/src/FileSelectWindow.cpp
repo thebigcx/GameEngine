@@ -63,9 +63,21 @@ bool FileSelectWindow::display()
         ImGui::SameLine();
 
         memset(buf, 0, 128);
-        strcpy(buf, m_instance.m_selection.c_str());
-        ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
+
+        
+        if (m_instance.m_type == FileDialogType::Select)
+        {
+            strcpy(buf, m_instance.m_selection.c_str());
+            ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
+        }
+        else if (m_instance.m_type == FileDialogType::Save)
+        {
+            strcpy(buf, m_instance.m_fileName.c_str());
+        }
         ImGui::InputText("File Name:", buf, 128, flags);
+
+        m_instance.m_fileName = std::string(buf);
+
 
         ImGui::SameLine();
 
@@ -227,5 +239,12 @@ void FileSelectWindow::renderDirectory(const std::filesystem::path& path)
 
 std::string FileSelectWindow::getSelection()
 {
-    return std::string(m_instance.m_selection.c_str());
+    if (m_instance.m_type == FileDialogType::Select)
+    {
+        return std::string(m_instance.m_selection.c_str());
+    }
+    else if (m_instance.m_type == FileDialogType::Save)
+    {
+        return std::string(m_instance.m_workingPath.c_str());
+    }
 }

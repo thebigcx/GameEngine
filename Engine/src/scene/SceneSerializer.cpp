@@ -84,6 +84,85 @@ void SceneSerializer::saveScene(const Shared<Scene>& scene, const std::string& p
             spriteRenderer["Texture Rect"].push_back<float>(comp.textureRect.h);
             spriteRenderer["Texture Rect"].SetStyle(YAML::EmitterStyle::Flow);
         }
+
+        if (entity.hasComponent<MeshComponent>())
+        {
+            auto comp = entity.getComponent<MeshComponent>();
+
+            auto mesh = object["Mesh"];
+
+            mesh["Mesh"] = comp.filePath;
+            mesh["Mesh ID"] = comp.meshID;
+        }
+
+        if (entity.hasComponent<MeshRendererComponent>())
+        {
+            auto comp = entity.getComponent<MeshRendererComponent>();
+
+            auto meshRenderer = object["Mesh Renderer"];
+
+            meshRenderer["Material Count"] = comp.materials.size();
+            
+            int i = 0;
+            for (auto& material : comp.materials) // TODO: only store a key for the AssetList<Material> manager
+            {
+                meshRenderer["Materials"][i]["Material ID"] = 0; // TODO: key
+                /*meshRenderer["Materials"][i]["Albedo"] = material->albedoMap->getPath();
+                meshRenderer["Materials"][i]["Using Albedo"] = material->usingAlbedoMap;
+
+                meshRenderer["Materials"][i]["Normal"] = material->normalMap->getPath();
+                meshRenderer["Materials"][i]["Using Normal"] = material->usingNormalMap;
+
+                meshRenderer["Materials"][i]["Metallic"] = material->metalnessMap->getPath();
+                meshRenderer["Materials"][i]["Using Metallic"] = material->usingMetalnessMap;
+                
+                meshRenderer["Materials"][i]["Roughness"] = material->roughnessMap->getPath();
+                meshRenderer["Materials"][i]["Using Roughness"] = material->usingRoughnessMap;
+
+                meshRenderer["Materials"][i]["Ambient Occlusion"] = material->ambientOcclusionMap->getPath();
+                meshRenderer["Materials"][i]["Using Ambient Occlusion"] = material->usingM;
+
+                meshRenderer["Materials"][i]["Depth"] = material->depthMap->getPath();*/
+
+                i++;
+            }
+        }
+
+        if (entity.hasComponent<DirectionalLightComponent>())
+        {
+            auto comp = entity.getComponent<DirectionalLightComponent>();
+
+            auto light = object["Directional Light"];
+
+            light["Radiance"][0] = comp.radiance.r;
+            light["Radiance"][1] = comp.radiance.g;
+            light["Radiance"][2] = comp.radiance.b;
+
+            light["Intensity"] = comp.intensity;
+        }
+
+        if (entity.hasComponent<PointLightComponent>())
+        {
+            auto comp = entity.getComponent<PointLightComponent>();
+
+            auto light = object["Point Light"];
+
+            light["Radiance"][0] = comp.radiance.r;
+            light["Radiance"][1] = comp.radiance.g;
+            light["Radiance"][2] = comp.radiance.b;
+
+            light["Intensity"] = comp.intensity;
+            light["Attenuation"] = comp.attenuation;
+        }
+
+        if (entity.hasComponent<SkyLightComponent>())
+        {
+            auto comp = entity.getComponent<SkyLightComponent>();
+
+            auto light = object["Sky Light"];
+
+            light["Intensity"] = comp.intensity;
+        }
     });
 
     std::ofstream fout(path);
@@ -107,7 +186,7 @@ Shared<Scene> SceneSerializer::loadScene(const std::string& path)
 
         if (it->second["Transform"])
         {
-            auto transform = entity.addComponent<TransformComponent>();
+            auto& transform = entity.addComponent<TransformComponent>();
 
             transform.translation.x = object["Transform"]["Translation"][0].as<float>();
             transform.translation.y = object["Transform"]["Translation"][1].as<float>();
@@ -124,7 +203,7 @@ Shared<Scene> SceneSerializer::loadScene(const std::string& path)
 
         if (it->second["Camera"])
         {
-            auto camera = entity.addComponent<CameraComponent>();
+            auto& camera = entity.addComponent<CameraComponent>();
 
             camera.camera.setProjectionType(static_cast<ProjectionType>(object["Camera"]["Projection Type"].as<uint32_t>()));
 
@@ -141,7 +220,7 @@ Shared<Scene> SceneSerializer::loadScene(const std::string& path)
 
         if (it->second["Sprite Renderer"])
         {
-            auto spriteRenderer = entity.addComponent<SpriteRendererComponent>();
+            auto& spriteRenderer = entity.addComponent<SpriteRendererComponent>();
 
             spriteRenderer.color.r = object["Sprite Renderer"]["Color"][0].as<float>();
             spriteRenderer.color.g = object["Sprite Renderer"]["Color"][1].as<float>();

@@ -1,0 +1,12 @@
+Scene:
+  GameObjects:
+    Object:
+      Transform:
+        Translation: [0.337376177, 0.600782812, 1.10919428]
+        Rotation: [0, 0, 61]
+        Scale: [0.99999994, 0.99999994, 1]
+      Sprite Renderer:
+        Color: [1, 1, 1, 1]
+        Texture: ""
+        Using Texture Rect: false
+        Texture Rect: [0, 0, 0, 0]

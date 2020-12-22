@@ -1,0 +1,13 @@
+Scene:
+  GameObjects:
+    Untitled Game Object:
+      Camera:
+        Projection Type: 1
+        Ortho Size: 51
+        Ortho Near: 7
+        Ortho Far: -10
+        Perspective Fov: 0.785398185
+        Perspective Near: 0.00999999978
+        Perspective Far: 100
+        Aspect: 1.34463274
+        Primary: true

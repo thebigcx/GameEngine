@@ -5,6 +5,7 @@
 #include <renderer/Renderer3D.h>
 #include <renderer/MeshFactory.h>
 #include <scene/Components.h>
+#include <renderer/Assets.h>
 
 Scene::Scene()
 {
