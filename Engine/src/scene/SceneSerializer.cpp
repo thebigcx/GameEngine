@@ -148,13 +148,11 @@ SceneEntity SceneSerializer::loadGameObject(YAML::Node& node, EntityRegistry& re
 
         if (needToLoad)
         {
-            auto model = Model::loadModel(mesh.filePath); // TODO: refactor model loading in some way, especially single mesh loading
-            model->path = mesh.filePath;
-            Assets::add<Model>(mesh.filePath, model);
-            if (model->meshes.size() > 0)
-            {
-                mesh.mesh = model->meshes[mesh.meshID];
-            }
+            //auto model = Model::loadModel(mesh.filePath); // TODO: refactor model loading in some way, especially single mesh loading
+            //model->path = mesh.filePath;
+            //Assets::add<Model>(mesh.filePath, model);
+            Shared<Mesh> meshObject = Model::loadMeshAtID(mesh.filePath, mesh.meshID);
+            mesh.mesh = meshObject;
         }
     }
 

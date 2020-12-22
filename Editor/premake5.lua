@@ -42,7 +42,9 @@ project "Editor"
 		"freetype",
 		"assimp",
 		"pthread",
-		"yaml-cpp"
+		"yaml-cpp",
+		"lua",
+		"dl"
 	}
 	
 	optimize "On"

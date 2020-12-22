@@ -280,14 +280,7 @@ void MaterialsPanel::shaderSelect(Shared<Shader>& shader)
 
 void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
 {
-    if (m_sphereMesh->materials.size() == 0)
-    {
-        m_sphereMesh->materials.push_back(material);
-    }
-    else
-    {
-        m_sphereMesh->materials.at(0) = material;
-    }
+    m_sphereMesh->material = material;
 
     auto availWidth = ImGui::GetContentRegionAvailWidth();
     ImVec2 size = { availWidth, availWidth / 2 };

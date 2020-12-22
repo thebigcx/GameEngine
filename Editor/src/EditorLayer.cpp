@@ -11,6 +11,7 @@
 #include <renderer/Assets.h>
 #include <renderer/MeshFactory.h>
 #include <scene/SceneSerializer.h>
+#include <script/LuaState.h>
 
 EditorLayer::EditorLayer()
 {
@@ -37,6 +38,8 @@ void EditorLayer::onAttach()
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
 
     Assets::add<Material>("default", Material::create(Assets::get<Shader>("pbr")));
+
+    LuaState state("Editor/scripts/test.lua");
 
     /*    
 

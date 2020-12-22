@@ -124,31 +124,7 @@ void SceneHierarchy::onImGuiRender()
 
                     auto& meshRenderer = child.addComponent<MeshRendererComponent>();
 
-                    int i = 0;
-                    int index = Assets::getAssetCount<Material>() - 1;
-                    for (auto& material : mesh->materials)
-                    {
-                        bool needToLoad = true;
-                        for (auto& materialLoaded : Assets::getList<Material>()->getInternalList())
-                        {
-                            if (*material == *materialLoaded.second)
-                            {
-                                needToLoad = false;
-                                meshRenderer.materials.push_back(materialLoaded.second);
-                                break; // TODO: fix so this is actually works
-                            }
-                        }
-
-                        if (needToLoad)
-                        {
-                            Assets::add<Material>(std::string("material_") + std::to_string(index), material);
-                            meshRenderer.materials.push_back(material);
-                            // TODO: use another way of creating ids
-                            index++;
-                        }
-
-                        i++;
-                    }
+                    meshRenderer.materials.push_back(mesh->material);
 
                     meshID++;
                 }
@@ -414,11 +390,11 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
                             component.mesh = model->meshes[component.meshID];
                             
                             std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
-                            Assets::add<Material>(name, model->meshes[component.meshID]->materials[0]);
+                            Assets::add<Material>(name, model->meshes[component.meshID]->material);
 
                             if (entity.hasComponent<MeshRendererComponent>())
                             {
-                                entity.getComponent<MeshRendererComponent>().materials.push_back(model->meshes[component.meshID]->materials[0]);
+                                entity.getComponent<MeshRendererComponent>().materials.push_back(model->meshes[component.meshID]->material);
                             }
                         }
                     }

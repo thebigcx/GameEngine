@@ -101,7 +101,7 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
         material->shader = shader;
     }
 
-    uint32_t white = 0xffffffff;
+    uint32_t white = 0xffffffff; // TODO: don't bother setting texture colors, leave them as nullptr's
     uint32_t black = 0x00000000;
     
     material->albedoMap = Texture2D::create(1, 1);

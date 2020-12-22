@@ -99,14 +99,14 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
 
     RenderCommand::setDepthTesting(true);
 
-    if (!mesh->materials.at(0)->shader)
+    if (!mesh->material->shader)
     {
         return;
     }
 
-    mesh->materials.at(0)->bind();
-    mesh->materials.at(0)->shader->setMatrix4("transform", transform);
-    mesh->materials.at(0)->shader->setFloat("exposure", Renderer::hdrExposure);
+    mesh->material->bind();
+    mesh->material->shader->setMatrix4("transform", transform);
+    mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
 
     mesh->vertexArray->bind();
 
@@ -124,9 +124,9 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
 
     for (auto& mesh : model->meshes)
     {
-        mesh->materials.at(0)->bind();
-        mesh->materials.at(0)->shader->setMatrix4("transform", transform);
-        mesh->materials.at(0)->shader->setFloat("exposure", Renderer::hdrExposure);
+        mesh->material->bind();
+        mesh->material->shader->setMatrix4("transform", transform);
+        mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
 
         mesh->vertexArray->bind();
 

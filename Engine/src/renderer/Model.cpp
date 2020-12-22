@@ -2,6 +2,8 @@
 #include <renderer/Renderer3D.h>
 #include <renderer/MeshFactory.h>
 #include <renderer/Assets.h>
+#include <util/Timer.h>
+#include <renderer/Assets.h>
 
 Shared<Model> Model::loadModel(const std::string& file)
 {
@@ -18,28 +20,51 @@ Shared<Model> Model::loadModel(const std::string& file)
 
     model->m_directory = file.substr(0, file.find_last_of('/'));
 
-    model->processNode(scene->mRootNode, scene);
+    model->processNode(scene->mRootNode, scene, model);
 
     return model;
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene)
+Shared<Mesh> Model::loadMeshAtID(const std::string& file, unsigned int id)
+{
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
+    {
+        Logger::getCoreLogger()->error("[ASSIMP] %s", importer.GetErrorString());
+    }
+
+    Shared<Model> temp = createShared<Model>();
+    temp->m_directory = file.substr(0, file.find_last_of('/'));
+
+    if (id > scene->mNumMeshes)
+    {
+        Logger::getCoreLogger()->error("Mesh ID (%i) greater than amount of meshes!", id);
+    }
+
+    aiMesh* mesh = scene->mMeshes[id];
+
+    return temp->processMesh(mesh, scene, temp);
+}
+
+void Model::processNode(aiNode* node, const aiScene* scene, const Shared<Model>& model)
 {
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene));
+        meshes.push_back(processMesh(mesh, scene, model));
     }
 
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene);
+        processNode(node->mChildren[i], scene, model);
     }
 }
 
-Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene, const Shared<Model>& model)
 {
-    std::vector<Shared<Material>> materials;
+    Shared<Material> material;
     std::vector<ModelVertex> vertices;
     std::vector<uint32_t> indices;
 
@@ -95,69 +120,74 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
         }
     }
 
-
-    if (mesh->mMaterialIndex > 0)
+    bool needToLoadMaterial = true;
+    for (auto& materialLoaded : m_materialsLoaded)
     {
-        aiMaterial* aimaterial = scene->mMaterials[mesh->mMaterialIndex];
-
-        auto albedos = loadMaterialTextures(aimaterial, aiTextureType_DIFFUSE);
-        auto normals = loadMaterialTextures(aimaterial, aiTextureType_HEIGHT);
-        auto metalnesses = loadMaterialTextures(aimaterial, aiTextureType_REFLECTION);
-        auto roughnesses = loadMaterialTextures(aimaterial, aiTextureType_SHININESS);
-        auto aos = loadMaterialTextures(aimaterial, aiTextureType_AMBIENT);
-
-        for (size_t i = 0; i < albedos.size(); i++)
+        if (mesh->mMaterialIndex == materialLoaded.first)
         {
-            auto material = Material::create(Assets::get<Shader>("pbr")); // TODO: material shaders
+            needToLoadMaterial = false;
+            material = materialLoaded.second;
+            break;
+        }
+    }
 
-            if (i >= albedos.size())
-                material->usingAlbedoMap = false;
+    if (needToLoadMaterial)
+    {
+        if (mesh->mMaterialIndex > 0)
+        {
+            aiMaterial* aimaterial = scene->mMaterials[mesh->mMaterialIndex];
+
+            auto albedo = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE);
+            auto normal = loadMaterialTexture(aimaterial, aiTextureType_HEIGHT);
+            auto metallic = loadMaterialTexture(aimaterial, aiTextureType_REFLECTION);
+            auto roughness = loadMaterialTexture(aimaterial, aiTextureType_SHININESS);
+            auto ambientOcclusion = loadMaterialTexture(aimaterial, aiTextureType_AMBIENT);
+
+            auto material_ = Material::create(Assets::get<Shader>("pbr")); // TODO: material shaders
+
+            if (!albedo)
+                material_->usingAlbedoMap = false;
             else
             {
-                material->albedoMap = albedos.at(i);
-                material->usingAlbedoMap = true;
+                material_->albedoMap = albedo;
+                material_->usingAlbedoMap = true;
             }
 
-            if (i >= normals.size())
-                material->usingNormalMap = false;
+            if (!normal)
+                material_->usingNormalMap = false;
             else
             {
-                material->normalMap = normals.at(i);
-                material->usingNormalMap = true;
+                material_->normalMap = normal;
+                material_->usingNormalMap = true;
             }
 
-            if (i >= metalnesses.size())
-                material->usingMetalnessMap = false;
+            if (!metallic)
+                material_->usingMetalnessMap = false;
             else
             {
-                material->metalnessMap = metalnesses.at(i);
-                material->usingMetalnessMap = true;
+                material_->metalnessMap = metallic;
+                material_->usingMetalnessMap = true;
             }
 
-            if (i >= roughnesses.size())
-                material->usingRoughnessMap = false;
+            if (!roughness)
+                material_->usingRoughnessMap = false;
             else
             {
-                material->roughnessMap = roughnesses.at(i);
-                material->usingRoughnessMap = true;
+                material_->roughnessMap = roughness;
+                material_->usingRoughnessMap = true;
             }
 
-            if (i >= aos.size())
-                material->usingAmbientOcclusionMap = false;
+            if (!ambientOcclusion)
+                material_->usingAmbientOcclusionMap = false;
             else
             {
-                material->ambientOcclusionMap = aos.at(i);
-                material->usingAmbientOcclusionMap = true;
+                material_->ambientOcclusionMap = ambientOcclusion;
+                material_->usingAmbientOcclusionMap = true;
             }
-            // TODO: use Assets<Material> instead
-            for (auto& materialLoaded : Assets::getList<Material>()->getInternalList())
-            {
-                if (*materialLoaded.second == *material)
-                {
-                    material = materialLoaded.second;
-                }
-            }
-            materials.push_back(material);
+
+            material = material_;
+            m_materialsLoaded.emplace(std::pair<int, Shared<Material>>(mesh->mMaterialIndex, material));
+            Assets::add<Material>(std::string("material_") + std::to_string(Assets::getAssetCount<Material>()), material);
         }
     }
 
@@ -182,42 +212,43 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     mesh_->vertexArray->addVertexBuffer(mesh_->vertexBuffer);
     mesh_->vertexArray->setIndexBuffer(mesh_->indexBuffer);
 
-    mesh_->materials = materials;
+    mesh_->material = material;
 
     return mesh_;
 }
 
-std::vector<Shared<Texture2D>> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type)
+Shared<Texture2D> Model::loadMaterialTexture(aiMaterial* mat, aiTextureType type)
 {
-    std::vector<Shared<Texture2D>> textures;
-    for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+    Shared<Texture2D> texture = nullptr;
+
+    if (mat->GetTextureCount(type) == 0)
     {
-        aiString str;
-        if (mat->GetTexture(type, i, &str) == AI_FAILURE)
-        {
-            Logger::getCoreLogger()->error("[ASSIMP] Could not open texture material!");
-        }
-
-        bool skip = false;
-        for (unsigned int j = 0; j < m_texturesLoaded.size(); j++)
-        {
-            std::string texture = m_directory + "/" + std::string(str.C_Str());
-            if (std::strcmp(m_texturesLoaded[j]->getPath().c_str(), texture.c_str()) == 0)
-            {
-                textures.push_back(m_texturesLoaded[j]);
-                skip = true;
-                break;
-            }
-        }
-        if (!skip)
-        {
-            Shared<Texture2D> texture;
-            texture = Texture2D::create(m_directory + "/" + str.C_Str());
-            textures.push_back(texture);
-
-            m_texturesLoaded.push_back(texture);
-        }
+        return texture;
     }
 
-    return textures;
+    aiString str;
+    if (mat->GetTexture(type, 0, &str) == AI_FAILURE)
+    {
+        Logger::getCoreLogger()->error("[ASSIMP] Could not open texture material!");
+    }
+
+    bool skip = false;
+    for (unsigned int j = 0; j < m_texturesLoaded.size(); j++)
+    {
+        std::string texturePath = m_directory + "/" + std::string(str.C_Str());
+        if (std::strcmp(m_texturesLoaded[j]->getPath().c_str(), texturePath.c_str()) == 0)
+        {
+            texture = m_texturesLoaded[j];
+            skip = true;
+            break;
+        }
+    }
+    if (!skip)
+    {
+        texture = Texture2D::create(m_directory + "/" + str.C_Str());
+
+        m_texturesLoaded.push_back(texture);
+    }
+
+    return texture;
 }
