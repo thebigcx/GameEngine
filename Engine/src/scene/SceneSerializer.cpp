@@ -132,7 +132,7 @@ if (needToLoad)\
     Assets::add<Texture2D>(path, asset);\
 }\
 
-SceneEntity SceneSerializer::loadGameObject(YAML::Node& node, EntityRegistry& registry, const Shared<Scene>& scene, const std::string& name)
+void SceneSerializer::loadGameObject(YAML::Node& node, EntityRegistry& registry, const Shared<Scene>& scene, const std::string& name)
 {
     auto entity = registry.create();
     registry.emplace<TagComponent>(entity, name);

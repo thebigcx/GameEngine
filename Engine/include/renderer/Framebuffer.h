@@ -3,6 +3,7 @@
 #include <memory>
 
 #include <core/Core.h>
+#include <maths/math.h>
 
 class Framebuffer
 {
@@ -18,6 +19,11 @@ public:
 
     virtual uint32_t getWidth() const = 0;
     virtual uint32_t getHeight() const = 0;
+    virtual math::vec2 getSize() const = 0;
 
-    virtual inline uint32_t getColorAttachment() const = 0;
+    virtual uint32_t getColorAttachment() const = 0;
+    virtual uint32_t getDepthAttachment() const = 0;
+
+    virtual bool operator==(const Framebuffer& buffer) const = 0;
+    virtual bool operator!=(const Framebuffer& buffer) const = 0;
 };

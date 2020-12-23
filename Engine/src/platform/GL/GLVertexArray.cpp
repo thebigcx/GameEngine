@@ -21,7 +21,7 @@ void GLVertexArray::unbind() const
     glBindVertexArray(0);
 }
 
-void GLVertexArray::addVertexBuffer(Shared<VertexBuffer> buffer)
+void GLVertexArray::addVertexBuffer(const Shared<VertexBuffer>& buffer)
 {
     bind();
     buffer->bind();
@@ -98,16 +98,11 @@ void GLVertexArray::addVertexBuffer(Shared<VertexBuffer> buffer)
     }
 }
 
-void GLVertexArray::setIndexBuffer(Shared<IndexBuffer> buffer)
+void GLVertexArray::setIndexBuffer(const Shared<IndexBuffer>& buffer)
 {
     bind();
 
     buffer->bind();
 
-    m_pIndexBuffer = buffer;
-}
-
-Shared<IndexBuffer> GLVertexArray::getIndexBuffer() const
-{
-    return m_pIndexBuffer;
+    m_indexBuffer = buffer;
 }

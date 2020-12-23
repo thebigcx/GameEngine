@@ -88,6 +88,7 @@ uniform Material material;
 
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform DirectionalLight directionalLight;
+uniform int usingDirectionalLight;
 uniform int numPointLights;
 
 //uniform vec3 lightPositions[MAX_LIGHTS];
@@ -264,6 +265,7 @@ void main()
     }
     
     // ----------------------------Directional Light-------------------------------------
+    if (usingDirectionalLight == 1)
     {
         vec3 L = TBN * normalize(-directionalLight.direction);
         vec3 H = normalize(V + L);

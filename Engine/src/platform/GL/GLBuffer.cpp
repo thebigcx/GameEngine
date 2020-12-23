@@ -7,27 +7,23 @@
 #include <GL/glew.h>
 
 GLVertexBuffer::GLVertexBuffer(size_t size)
+    : m_size(size), m_usage(BufferUsage::Dynamic)
 {
     glCreateBuffers(1, &m_id);
 
     bind();
 
     glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-
-    m_usage = BufferUsage::Dynamic;
-    m_size = size;
 }
 
 GLVertexBuffer::GLVertexBuffer(const void* data, size_t size)
+    : m_size(size), m_usage(BufferUsage::Static)
 {
     glCreateBuffers(1, &m_id);
 
     bind();
 
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-
-    m_usage = BufferUsage::Static;
-    m_size = size;
 }
 
 GLVertexBuffer::~GLVertexBuffer()
@@ -60,11 +56,6 @@ void GLVertexBuffer::bind() const
 void GLVertexBuffer::unbind() const
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void GLVertexBuffer::setLayout(const BufferLayout& layout)
-{
-    m_layout = layout;
 }
 
 void* GLVertexBuffer::getBufferPtr(size_t size, size_t offset) const
@@ -145,11 +136,6 @@ void GLIndexBuffer::unbind() const
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-IndexDataType GLIndexBuffer::getDataType() const
-{
-    return IndexDataType::UInt32;
-}
-
 void* GLIndexBuffer::getBufferPtr(uint32_t size, uint32_t offset) const
 {
     void* ptr = glMapNamedBufferRange(m_id, offset * m_typeSize, size * m_typeSize, GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
@@ -194,10 +180,8 @@ size_t GLIndexBuffer::calculateTypeSize(IndexDataType type)
 //------------------------------------------------------------------------------------------------//
 
 GLUniformBuffer::GLUniformBuffer(size_t size, uint32_t bindingPoint)
+    : m_size(size), m_bindingPoint(bindingPoint), m_usage(BufferUsage::Dynamic)
 {
-    m_bindingPoint = bindingPoint;
-    m_size = size;
-
     glCreateBuffers(1, &m_id);
 
     glBindBuffer(GL_UNIFORM_BUFFER, m_id);
@@ -205,15 +189,11 @@ GLUniformBuffer::GLUniformBuffer(size_t size, uint32_t bindingPoint)
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glBindBufferRange(GL_UNIFORM_BUFFER, m_bindingPoint, m_id, 0, size);
-
-    m_usage = BufferUsage::Dynamic;
 }
 
 GLUniformBuffer::GLUniformBuffer(const void* data, size_t size, uint32_t bindingPoint)
+    : m_size(size), m_bindingPoint(bindingPoint), m_usage(BufferUsage::Static)
 {
-    m_bindingPoint = bindingPoint;
-    m_size = size;
-
     glCreateBuffers(1, &m_id);
 
     glBindBuffer(GL_UNIFORM_BUFFER, m_id);
@@ -221,8 +201,6 @@ GLUniformBuffer::GLUniformBuffer(const void* data, size_t size, uint32_t binding
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     glBindBufferRange(GL_UNIFORM_BUFFER, m_bindingPoint, m_id, 0, size);
-
-    m_usage = BufferUsage::Static;
 }
 
 void GLUniformBuffer::bind() const

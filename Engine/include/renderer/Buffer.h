@@ -14,7 +14,7 @@ struct BufferElement
         size = dataTypeSize();
     }
 
-    uint32_t componentCount() const
+    inline uint32_t componentCount() const
     {
         switch (type)
         {
@@ -81,7 +81,7 @@ struct BufferElement
         }
     }
 
-    size_t dataTypeSize()
+    inline size_t dataTypeSize()
     {
         switch (type)
         {
@@ -150,10 +150,7 @@ struct BufferElement
 class BufferLayout
 {
 public:
-    BufferLayout()
-    {
-
-    }
+    BufferLayout() = default;
 
     BufferLayout(const std::initializer_list<BufferElement>& elements)
         : m_elements(elements)
@@ -161,7 +158,7 @@ public:
         setOffsets();
     }
 
-    void setOffsets()
+    inline void setOffsets()
     {
         size_t offset = 0;
         m_stride = 0;
@@ -173,17 +170,17 @@ public:
         }
     }
 
-    uint32_t size() const
+    inline uint32_t size() const
     {
         return m_elements.size();
     }
 
-    const BufferElement& operator[](uint32_t index) const
+    inline const BufferElement& operator[](uint32_t index) const
     {
         return m_elements[index];
     }
 
-    size_t getStride() const
+    inline constexpr size_t getStride() const
     {
         return m_stride;
     }

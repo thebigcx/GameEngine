@@ -35,8 +35,14 @@ class LightSetup
 public:
     LightSetup() {}
 
+    bool hasLights() const
+    {
+        return m_usingDirectionalLight || m_pointLights.size() > 0 || m_spotLights.size() > 0 || m_skyLight > 0;
+    }
+
     void setDirectionalLight(const DirectionalLight& light)
     {
+        m_usingDirectionalLight = true;
         m_dirLight = light;
     }
 
@@ -83,6 +89,11 @@ public:
         return m_spotLights;
     }
 
+    const bool& usingDirectionalLight() const
+    {
+        return m_usingDirectionalLight;
+    }
+
     float getSkyLight() const
     {
         return m_skyLight;
@@ -93,4 +104,5 @@ private:
     std::vector<PointLight> m_pointLights;
     std::vector<SpotLight> m_spotLights;
     float m_skyLight = 0;
+    bool m_usingDirectionalLight = false;
 };

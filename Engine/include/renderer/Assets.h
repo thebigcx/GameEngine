@@ -16,7 +16,7 @@ protected:
     IAssetList() {}
     virtual ~IAssetList() = default;
 
-    virtual int getAssetCount() = 0;
+    virtual const int getAssetCount() noexcept = 0;
 };
 
 template <typename T>
@@ -25,7 +25,7 @@ class AssetList : public IAssetList
     friend class Assets;
 
 public:
-    void add(const std::string& key, Shared<T> asset)
+    inline void add(const std::string& key, const Shared<T>& asset)
     {
         m_assets.insert(std::make_pair(key, asset));
     }
@@ -35,22 +35,28 @@ public:
         if (!exists(key))
         {
             Logger::getCoreLogger()->error("Asset does not exist: %s", key);
+
+            static Shared<T> fail = nullptr;
+            return fail;
         }
 
         return m_assets.at(key);
     }
 
-    void remove(const std::string& key)
+    inline void remove(const std::string& key)
     {
-        m_assets.erase(key);
+        if (this->exists(key))
+        {
+            m_assets.erase(key);
+        }
     }
 
-    bool exists(const std::string& key)
+    inline constexpr const bool exists(const std::string& key)
     {
         return m_assets.find(key) != m_assets.end();
     }
 
-    int getAssetCount() override
+    inline constexpr const int getAssetCount() noexcept override
     {
         return m_assets.size();
     }
@@ -60,7 +66,7 @@ public:
     typename std::unordered_map<std::string, Shared<T>>::const_iterator begin() const { return m_assets.begin(); }
     typename std::unordered_map<std::string, Shared<T>>::const_iterator end()   const { return m_assets.end(); }
 
-    std::unordered_map<std::string, Shared<T>>& getInternalList()
+    constexpr std::unordered_map<std::string, Shared<T>>& getInternalList()
     {
         return m_assets;
     }
@@ -73,7 +79,7 @@ private:
 class Assets
 {
 public:
-    Assets() {}
+    Assets() = default;
 
     ~Assets()
     {
@@ -81,9 +87,9 @@ public:
     }
 
     template<typename T>
-    static void add(const std::string& key, Shared<T> asset)
+    static inline void add(const std::string& key, Shared<T> asset)
     {
-        if (m_instance.m_lists.find(typeid(T)) == m_instance.m_lists.end())
+        if (!listExists<T>())
         {
             m_instance.m_lists.insert(std::pair<std::type_index, IAssetList*>(typeid(T), new AssetList<T>()));
         }
@@ -92,19 +98,21 @@ public:
     }
 
     template<typename T>
-    static const Shared<T>& get(const std::string& key)
+    static inline const Shared<T>& get(const std::string& key)
     {
         if (!listExists<T>())
         {
             Logger::getCoreLogger()->error("Asset List does not exist.");
-            return nullptr;
+
+            static Shared<T> fail = nullptr;
+            return fail;
         }
 
         return getList<T>()->get(key);
     }
 
     template<typename T>
-    static bool exists(const std::string& key)
+    static inline bool exists(const std::string& key)
     {
         if (!listExists<T>())
         {
@@ -115,7 +123,7 @@ public:
     }
 
     template<typename T>
-    static void remove(const std::string& key)
+    static inline void remove(const std::string& key)
     {
         if (!listExists<T>())
         {
@@ -125,35 +133,36 @@ public:
         getList<T>()->remove(key);
     }
 
-    static void flush()
+    static inline void flush()
     {
-        for (auto list : m_instance.m_lists)
+        for (auto& list : m_instance.m_lists)
         {
             delete list.second;
         }
+
         m_instance.m_lists.clear();
     }
 
     template<typename T>
-    static unsigned int getAssetCount()
+    static inline unsigned int getAssetCount() noexcept
     {
         return getList<T>()->getAssetCount();
     }
 
     template<typename T>
-    static AssetList<T>* getList()
+    static inline constexpr AssetList<T>* getList()
     {
-        return (AssetList<T>*)m_instance.m_lists[typeid(T)];
+        return static_cast<AssetList<T>*>(m_instance.m_lists.at(typeid(T)));
     }
 
     template<typename T>
-    static bool listExists()
+    static inline constexpr bool listExists()
     {
         return m_instance.m_lists.find(typeid(T)) != m_instance.m_lists.end();
     }
 
     template<typename T>
-    static const std::string& find(const Shared<T>& assetToFind)
+    static inline const std::string& find(const Shared<T>& assetToFind)
     {
         for (auto& asset : getList<T>()->getInternalList())
         {
@@ -163,7 +172,8 @@ public:
             }
         }
 
-        return nullptr;
+        static std::string fail = "";
+        return fail;
     }
 
 private:

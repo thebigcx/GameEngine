@@ -4,9 +4,8 @@
 #include <iostream>
 
 GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
+    : m_path(file)
 {
-    m_path = file;
-
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     bind();
 
@@ -52,7 +51,6 @@ GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
     else
     {
         Logger::getCoreLogger()->error("Image is corrupted or contains unknown formatted data!");
-        m_path = "";
     }
 
     m_width = image->width;
@@ -62,12 +60,11 @@ GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
 }
 
 GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat)
+    : m_internalFormat(dataFormat), m_dataFormat(dataFormat)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
-    bind();
 
-    m_internalFormat = dataFormat;
-    m_dataFormat = dataFormat;
+    bind();
 
     glTextureStorage2D(m_id, 1, dataFormat, width, height);
 }
@@ -99,26 +96,6 @@ void GLTexture2D::bind(uint32_t slot) const
 void GLTexture2D::unbind(uint32_t slot) const
 {
     glBindTextureUnit(slot, 0);
-}
-
-float GLTexture2D::getWidth() const
-{
-    return m_width;
-}
-
-float GLTexture2D::getHeight() const
-{
-    return m_height;
-}
-
-unsigned int GLTexture2D::getId() const
-{
-    return m_id;
-}
-
-const std::string& GLTexture2D::getPath() const
-{
-    return m_path;
 }
 
 bool GLTexture2D::operator==(const Texture2D& other)

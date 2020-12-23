@@ -45,11 +45,17 @@ public:
     void setMatrix3(const std::string& name, const math::mat3& value) override;
     void setMatrix4(const std::string& name, const math::mat4& value) override;
 
-    inline uint32_t getId() const override { return m_id; }
+    inline const uint32_t& getId() const noexcept override { return m_id; }
+    inline const std::string& getPath() const noexcept override { return m_path; }
 
-    inline const std::string& getPath() const override
+    inline bool operator==(const Shader& shader) const override
     {
-        return m_path;
+        return static_cast<const GLShader&>(shader).m_id == m_id;
+    }
+
+    inline bool operator!=(const Shader& shader) const override
+    {
+        return static_cast<const GLShader&>(shader).m_id != m_id;
     }
 
 private:

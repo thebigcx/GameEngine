@@ -46,8 +46,7 @@ struct Renderer2DData
     
     Shared<Texture2D> textureSlots[MAX_TEXTURE_SLOTS];
     uint32_t textureSlotIndex = 1;
-
-    OrthographicCamera* camera;
+    
     Mesh mesh;
 
     Shared<UniformBuffer> matrixData;

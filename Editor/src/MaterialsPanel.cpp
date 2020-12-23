@@ -31,11 +31,7 @@ void MaterialsPanel::init()
     m_sphereMesh = MeshFactory::sphereMesh(2.f, 36, 18);
 
     m_lightSetup.setSkylight(0.1);
-    m_lightSetup.setDirectionalLight({ math::vec3(0, -1, 0), math::vec3(1, 1, 1), 0.5 });
-    std::vector<PointLight> lights = {
-        { math::vec3(1, 1.3, 1.3), math::vec3(1, 1, 1), 1.f }
-    };
-    m_lightSetup.setPointLights(lights);
+    m_lightSetup.setDirectionalLight({ math::vec3(0, 1, 0), math::vec3(1, 1, 1), 0.5 });
 }
 
 void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)

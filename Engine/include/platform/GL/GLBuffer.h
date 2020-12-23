@@ -18,12 +18,15 @@ public:
     void bind() const override;
     void unbind() const override;
 
-    void setLayout(const BufferLayout& layout) override;
-
     void* getBufferPtr(size_t size, size_t offset) const override;
     void* getBufferPtr(size_t offset) const override;
     void unmap() const override;
     
+    inline void setLayout(const BufferLayout& layout) override
+    {
+        m_layout = layout;
+    }
+
     inline const BufferLayout& getLayout() const override
     {
         return m_layout;
@@ -32,7 +35,7 @@ public:
 private:
     uint32_t m_id = 0;
 
-    size_t m_size;
+    size_t m_size = 0;
 
     BufferLayout m_layout;
 
@@ -51,13 +54,16 @@ public:
     void bind() const override;
     void unbind() const override;
 
-    IndexDataType getDataType() const override;
-
     void* getBufferPtr(uint32_t size, uint32_t offset) const override;
     void* getBufferPtr(uint32_t offset) const override;
     void unmap() const override;
 
-    inline uint32_t getCount() const override
+    inline IndexDataType getDataType() const noexcept override
+    {
+        return IndexDataType::UInt32;
+    }
+
+    inline uint32_t getCount() const noexcept override
     {
         return m_count;
     }
@@ -66,7 +72,7 @@ private:
     uint32_t m_id = 0;
     uint32_t m_count = 0;
 
-    size_t m_typeSize;
+    size_t m_typeSize = 0;
 
     BufferUsage m_usage;
 
@@ -89,10 +95,10 @@ public:
     void unmap() const override;
 
 private:
-    uint32_t m_id;
-    uint32_t m_bindingPoint;
+    uint32_t m_id = 0;
+    uint32_t m_bindingPoint = 0;
 
     BufferUsage m_usage;
 
-    size_t m_size;
+    size_t m_size = 0;
 };

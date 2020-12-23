@@ -27,7 +27,7 @@ void GLTextureCube::unbind(uint32_t slot) const
 
 uint32_t GLTextureCube::loadFromFile(const std::string& filepath)
 {
-    unsigned int id = 0;
+    uint32_t id = 0;
     glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &id);
     glBindTextureUnit(0, id);
 
@@ -36,7 +36,7 @@ uint32_t GLTextureCube::loadFromFile(const std::string& filepath)
 
 uint32_t GLTextureCube::loadFromMultipleFiles(const std::string* files)
 {
-    unsigned int id = 0;
+    uint32_t id = 0;
     glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &id);
     glBindTextureUnit(0, id);
 

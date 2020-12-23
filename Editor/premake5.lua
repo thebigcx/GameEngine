@@ -8,7 +8,7 @@ project "Editor"
 	objdir "%{wks.location}/obj/%{cfg.buildcfg}/Editor"
 
 	symbols "On"
-	buildoptions "-Wall -Wextra -pedantic"
+	--buildoptions "-Wall -Wextra -pedantic"
 
 	files {
 		"**.cpp",

@@ -12,6 +12,7 @@
 #include <renderer/MeshFactory.h>
 #include <scene/SceneSerializer.h>
 #include <script/LuaState.h>
+#include <util/Timer.h>
 
 EditorLayer::EditorLayer()
 {
@@ -233,7 +234,10 @@ void EditorLayer::onImGuiRender()
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-    ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+    if (!m_playingScene)
+    {
+        ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+    }
 
     // ImGuizmo
     // TODO: create own gizmo library
@@ -286,6 +290,19 @@ void EditorLayer::onImGuiRender()
     
     ImGui::End();
     ImGui::PopStyleVar();
+
+    if (m_playingScene)
+    {
+        ImGuiWindowFlags flags = ImGuiWindowFlags_NoDocking;
+        ImGui::Begin("Game", nullptr, flags);
+
+        m_viewportSize.x = ImGui::GetContentRegionAvail().x;
+        m_viewportSize.y = ImGui::GetContentRegionAvail().y;
+
+        ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+
+        ImGui::End();
+    }
 
     m_sceneHeirarchy.onImGuiRender();
     m_materialsPanel.onImGuiRender();

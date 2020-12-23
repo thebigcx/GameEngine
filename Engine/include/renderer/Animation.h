@@ -10,7 +10,7 @@
 class Animation
 {
 public:
-    Animation() {};
+    Animation() = default;
 
     static Shared<Animation> create(Shared<Texture2D> texture);
 

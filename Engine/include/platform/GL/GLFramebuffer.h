@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include <renderer/Framebuffer.h>
+#include <maths/math.h>
 
 class GLFramebuffer : public Framebuffer
 {
@@ -15,18 +16,21 @@ public:
     void bind() const override;
     void unbind() const override;
 
-    inline uint32_t getWidth() const override
+    inline uint32_t getWidth() const override { return m_width; }
+    inline uint32_t getHeight() const override { return m_height; }
+    inline math::vec2 getSize() const override { return math::vec2(m_width, m_height); }
+
+    inline uint32_t getColorAttachment() const override { return m_colorAttachment; }
+    inline uint32_t getDepthAttachment() const override { return m_depthAttachment; }
+
+    inline bool operator==(const Framebuffer& buffer) const override
     {
-        return m_width;
-    }
-    inline uint32_t getHeight() const override
-    {
-        return m_height;
+        return static_cast<const GLFramebuffer&>(buffer).m_id == m_id;
     }
 
-    inline uint32_t getColorAttachment() const override
+    inline bool operator!=(const Framebuffer& buffer) const override
     {
-        return m_colorAttachment;
+        return static_cast<const GLFramebuffer&>(buffer).m_id != m_id;
     }
 
 private:

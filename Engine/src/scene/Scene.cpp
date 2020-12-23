@@ -6,6 +6,7 @@
 #include <renderer/MeshFactory.h>
 #include <scene/Components.h>
 #include <renderer/Assets.h>
+#include <util/Timer.h>
 
 Scene::Scene()
 {
@@ -45,7 +46,10 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
         setup.setPointLights(pointLights);
     }
 
-    Renderer3D::setLights(setup);
+    if (setup.hasLights())
+    {
+        Renderer3D::setLights(setup);
+    }
 
     Renderer3D::beginScene(camera);
 

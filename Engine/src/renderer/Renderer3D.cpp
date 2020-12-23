@@ -162,10 +162,18 @@ void Renderer3D::setLights(const LightSetup& setup)
 
     data.modelShader->setFloat("skyLight", setup.getSkyLight());
     
-    DirectionalLight dirLight = setup.getDirectionalLight();
-    data.modelShader->setFloat3("directionalLight.direction", dirLight.direction);
-    data.modelShader->setFloat3("directionalLight.radiance", dirLight.radiance);
-    data.modelShader->setFloat("directionalLight.intensity", dirLight.intensity);
+    if (setup.usingDirectionalLight())
+    {
+        DirectionalLight dirLight = setup.getDirectionalLight();
+        data.modelShader->setFloat3("directionalLight.direction", dirLight.direction);
+        data.modelShader->setFloat3("directionalLight.radiance", dirLight.radiance);
+        data.modelShader->setFloat("directionalLight.intensity", dirLight.intensity);
+        data.modelShader->setInt("usingDirectionalLight", static_cast<int>(true));
+    }
+    else
+    {
+        data.modelShader->setInt("usingDirectionalLight", static_cast<int>(false));
+    }
 
     auto& pointLights = setup.getPointLights();
     for (unsigned int i = 0; i < pointLights.size(); i++)

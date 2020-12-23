@@ -48,7 +48,7 @@ public:
     virtual void setFloat3(const std::string& name, const math::vec3& value) = 0;
     virtual void setFloat4(const std::string& name, const math::vec4& value) = 0;
 
-    virtual void setUint(const std::string& name, unsigned int value) = 0;
+    virtual void setUint(const std::string& name, uint32_t value) = 0;
     virtual void setUint2(const std::string& name, math::uvec2& value) = 0;
     virtual void setUint3(const std::string& name, math::uvec3& value) = 0;
     virtual void setUint4(const std::string& name, math::uvec4& value) = 0;
@@ -63,15 +63,18 @@ public:
     virtual void setInt3Array(const std::string& name, math::ivec3* value, uint32_t count) = 0;
     virtual void setInt4Array(const std::string& name, math::ivec4* value, uint32_t count) = 0;
 
-    virtual void setUintArray(const std::string& name, unsigned int* value, uint32_t count) = 0;
+    virtual void setUintArray(const std::string& name, uint32_t* value, uint32_t count) = 0;
 
     virtual void setMatrix4Array(const std::string& name, math::mat4* matrices, uint32_t count) = 0;
 
     virtual void setMatrix3(const std::string& name, const math::mat3& value) = 0;
     virtual void setMatrix4(const std::string& name, const math::mat4& value) = 0;
 
-    virtual unsigned int getId() const = 0;
-    virtual const std::string& getPath() const = 0;
+    virtual const uint32_t& getId() const noexcept = 0;
+    virtual const std::string& getPath() const noexcept = 0;
+
+    virtual bool operator==(const Shader& shader) const = 0;
+    virtual bool operator!=(const Shader& shader) const = 0;
 
     enum class DataType
     {
