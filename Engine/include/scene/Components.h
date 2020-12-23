@@ -117,3 +117,9 @@ struct MeshRendererComponent
 {
     std::vector<Shared<Material>> materials;
 };
+
+struct LuaScriptComponent
+{
+    std::string filePath;
+    std::string source;
+};

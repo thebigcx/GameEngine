@@ -11,6 +11,7 @@
 #include <renderer/MeshFactory.h>
 #include <renderer/Renderer.h>
 #include <renderer/Assets.h>
+#include <util/io/Files.h>
 
 SceneHierarchy::SceneHierarchy()
 {
@@ -207,6 +208,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         ADD_COMPONENT(DirectionalLightComponent, "Directional Light");
         ADD_COMPONENT(PointLightComponent, "Point Light");
         ADD_COMPONENT(MeshRendererComponent, "Mesh Renderer");
+        ADD_COMPONENT(LuaScriptComponent, "Script");
 
         ImGui::EndPopup();
     }
@@ -303,26 +305,44 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 
         if (component.texture == nullptr)
         {
-            component.texture = Texture2D::create(1, 1);
-            uint32_t white = 0xffffffff;
-            component.texture->setData(0, 0, 1, 1, &white);
+            component.texture = Assets::get<Texture2D>("white_texture");
         }
         
         char buf[128];
-        if (component.texture->getPath() == "")
+        /*if (component.texture->getPath() == "")
         {
             strcpy(buf, "<empty_texture>");
         }
         else
         {
             strcpy(buf, component.texture->getPath().c_str());
-        }
+        }*/
+        strcpy(buf, Assets::find<Texture2D>(component.texture).c_str());
 
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
         ImGui::InputText("", buf, 128, flags);
         
         ImGui::SameLine();
-        textureSelect(component.texture);
+        //textureSelect(component.texture);
+        std::string currentTexture = component.texture->getPath();
+        if (ImGui::BeginCombo("Texture", currentTexture.c_str()))
+        {
+            for (auto& texture : Assets::getList<Texture2D>()->getInternalList())
+            {
+                bool isSelected = currentTexture == texture.first;
+                if (ImGui::Selectable(texture.first.c_str(), isSelected))
+                {
+                    component.texture = texture.second;
+                }
+
+                if (isSelected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+
+            ImGui::EndCombo();
+        }
 
         ImGui::Checkbox("Using Texture Region", &component.usingTexRect);
         ImGui::DragFloat("X", &component.textureRect.x);
@@ -443,8 +463,8 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
                 {
                     unsigned int materialCount = std::stoi(buf);
 
-                    if (materialCount > 10)
-                        materialCount = 10;
+                    if (materialCount > 1)
+                        materialCount = 1;
 
                     if (materialCount > component.materials.size())
                     {
@@ -509,6 +529,31 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
             ImGui::Columns(1);
 
             ImGui::TreePop();
+        }
+    });
+
+    drawComponent<LuaScriptComponent>("Lua Script", entity, [](auto& component)
+    {
+        char buf[128];
+        strcpy(buf, component.filePath.c_str());
+        ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
+        ImGui::InputText("##luaScriptPath", buf, 128, flags);
+
+        if (ImGui::Button("...##luaScriptPathSelect"))
+        {
+            FileSelectWindow::open("luaScriptPathSelect");
+        }
+
+        if (FileSelectWindow::selectFile("luaScriptPathSelect", "Choose script...", ".lua"))
+        {
+            if (!FileSelectWindow::display())
+            {
+                if (FileSelectWindow::madeSelection())
+                {
+                    component.filePath = FileSelectWindow::getSelection();
+                    component.source = Files::readFile(component.filePath);
+                }
+            }
         }
     });
 }

@@ -18,6 +18,7 @@ Shared<Model> Model::loadModel(const std::string& file)
         return model;
     }
 
+    model->path = file;
     model->m_directory = file.substr(0, file.find_last_of('/'));
 
     model->processNode(scene->mRootNode, scene, model);
@@ -36,6 +37,7 @@ Shared<Mesh> Model::loadMeshAtID(const std::string& file, unsigned int id)
     }
 
     Shared<Model> temp = createShared<Model>();
+    temp->path = file;
     temp->m_directory = file.substr(0, file.find_last_of('/'));
 
     if (id > scene->mNumMeshes)
@@ -187,7 +189,10 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene, const Shared
 
             material = material_;
             m_materialsLoaded.emplace(std::pair<int, Shared<Material>>(mesh->mMaterialIndex, material));
-            Assets::add<Material>(std::string("material_") + std::to_string(Assets::getAssetCount<Material>()), material);
+
+            std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
+            material->name = name;
+            Assets::add<Material>(name, material);
         }
     }
 

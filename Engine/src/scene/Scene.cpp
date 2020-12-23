@@ -239,3 +239,4 @@ template<> void Scene::onComponentAdded<SkyLightComponent>(SceneEntity& entity, 
 template<> void Scene::onComponentAdded<PointLightComponent>(SceneEntity& entity, PointLightComponent& component) {}
 template<> void Scene::onComponentAdded<DirectionalLightComponent>(SceneEntity& entity, DirectionalLightComponent& component) {}
 template<> void Scene::onComponentAdded<MeshRendererComponent>(SceneEntity& entity, MeshRendererComponent& component) {}
+template<> void Scene::onComponentAdded<LuaScriptComponent>(SceneEntity& entity, LuaScriptComponent& component) {}

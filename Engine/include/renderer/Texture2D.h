@@ -31,6 +31,8 @@ public:
     static Shared<Texture2D> create(const std::string& file, bool isSRGB = false);
     static Shared<Texture2D> create(int width, int height, GLenum dataFormat = GL_RGBA8);
 
+    static Shared<Texture2D> asyncCreate(const std::string& file, bool isSRGB = false);
+
     virtual void setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA) = 0;
     virtual void setParameter(Parameter parameter, Value value) = 0;
 

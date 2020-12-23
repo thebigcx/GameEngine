@@ -73,6 +73,7 @@ void MaterialsPanel::onImGuiRender()
                 char buf[128];
                 strcpy(buf, asset.first.c_str());
                 ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+                flags |= ImGuiInputTextFlags_ReadOnly;// TODO: TEMP
                 if (ImGui::InputText("Name", buf, 128, flags))
                 {
                     if (!Assets::exists<Material>(std::string(buf)))
@@ -254,6 +255,58 @@ void MaterialsPanel::onImGuiRender()
                 }
             }
         }
+    }
+
+    std::string deletedTexture = "";
+    if (ImGui::CollapsingHeader("Textures"))
+    {
+        for (auto& texture : Assets::getList<Texture2D>()->getInternalList())
+        {
+            bool opened = ImGui::TreeNodeEx(texture.first.c_str());
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::MenuItem("Change Name"))
+                {
+                    
+                }
+                
+                if (ImGui::MenuItem("Delete Texture"))
+                {
+                    deletedTexture = texture.first;
+                }
+
+                ImGui::EndPopup();
+            }
+
+            if (opened)
+            {
+                ImGui::Image(reinterpret_cast<void*>(texture.second->getId()), ImVec2{30, 30}, ImVec2{0, 1}, ImVec2{1, 0});
+                ImGui::TreePop();
+            }
+        }
+
+        if (ImGui::Button("Create Texture"))
+        {
+            FileSelectWindow::open("createTexture");   
+        }
+
+        if (FileSelectWindow::selectFile("createTexture", "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
+        {
+            if (!FileSelectWindow::display())
+            {
+                if (FileSelectWindow::madeSelection())
+                {
+                    Shared<Texture2D> texture = Texture2D::create(FileSelectWindow::getSelection());
+                    Assets::add<Texture2D>(FileSelectWindow::getSelection(), texture);
+                }
+            }
+        }
+    }
+
+    if (deletedTexture != "")
+    {
+        Assets::remove<Texture2D>(deletedTexture);
     }
 
     ImGui::End();

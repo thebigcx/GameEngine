@@ -68,7 +68,8 @@ public:
 private:
     std::unordered_map<std::string, Shared<T>> m_assets;
 };
-
+// TODO: add callback system for when an asset is deleted. this notifies all users of the particular asset to switch to something else
+// a 'null' asset would work very well here, as when an asset is deleted, the null asset is the fallback.
 class Assets
 {
 public:
@@ -96,6 +97,7 @@ public:
         if (!listExists<T>())
         {
             Logger::getCoreLogger()->error("Asset List does not exist.");
+            return nullptr;
         }
 
         return getList<T>()->get(key);
@@ -120,7 +122,7 @@ public:
             return;
         }
 
-        getList<T>()->remove();
+        getList<T>()->remove(key);
     }
 
     static void flush()
@@ -148,6 +150,20 @@ public:
     static bool listExists()
     {
         return m_instance.m_lists.find(typeid(T)) != m_instance.m_lists.end();
+    }
+
+    template<typename T>
+    static const std::string& find(const Shared<T>& assetToFind)
+    {
+        for (auto& asset : getList<T>()->getInternalList())
+        {
+            if (asset.second == assetToFind)
+            {
+                return asset.first;
+            }
+        }
+
+        return nullptr;
     }
 
 private:

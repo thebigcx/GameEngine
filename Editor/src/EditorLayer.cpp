@@ -22,10 +22,6 @@ void EditorLayer::onAttach()
 {
     Application::get().getWindow().setSize(math::uvec2(1920, 1080));
 
-    Assets::add<Texture2D>("texture", Texture2D::create("Editor/assets/texture.png"));
-    Assets::add<Texture2D>("texture_1", Texture2D::create("Editor/assets/texture_1.png"));
-    Assets::add<Texture2D>("texture_2", Texture2D::create("Editor/assets/texture_2.png"));
-
     m_framebuffer = Framebuffer::create(1280, 720);
     m_viewportSize = math::vec2(1280, 720);
     m_editorCamera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
@@ -39,7 +35,20 @@ void EditorLayer::onAttach()
 
     Assets::add<Material>("default", Material::create(Assets::get<Shader>("pbr")));
 
+    {
+        auto whiteTexture = Texture2D::create(1, 1);
+        uint32_t white = 0xffffffff;
+        whiteTexture->setData(0, 0, 1, 1, &white);
+        Assets::add<Texture2D>("white_texture", whiteTexture);
+    }
+
     LuaState state("Editor/scripts/test.lua");
+    int x = 0;
+    state.setFunction("average", [&x]{
+        x++;
+    });
+
+    std::cout << x << "\n";
 
     /*    
 
