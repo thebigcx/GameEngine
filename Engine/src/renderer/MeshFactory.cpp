@@ -80,7 +80,7 @@ Shared<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
     return quad;
 }
 
-Shared<Mesh> MeshFactory::cubeMesh(float size, const Shared<Material>& material)
+Shared<Mesh> MeshFactory::cubeMesh(float size)
 {
     auto quad = createShared<Mesh>();
 
@@ -88,9 +88,10 @@ Shared<Mesh> MeshFactory::cubeMesh(float size, const Shared<Material>& material)
     quad->vertexArray->bind();
 
     BufferLayout layout = {
-        { Shader::DataType::Float3, "aPos" },
-        { Shader::DataType::Float3, "aNormal" },
-        { Shader::DataType::Float2, "aTexCoord" }
+        { Shader::DataType::Float3, "aPos"      },
+        { Shader::DataType::Float3, "aNormal"   },
+        { Shader::DataType::Float2, "aTexCoord" },
+        { Shader::DataType::Float3, "aTangent"  }
     };
 
     uint32_t indices[] = {
@@ -158,8 +159,6 @@ Shared<Mesh> MeshFactory::cubeMesh(float size, const Shared<Material>& material)
     quad->vertexBuffer->setLayout(layout);
     quad->vertexArray->addVertexBuffer(quad->vertexBuffer);
     quad->vertexArray->setIndexBuffer(quad->indexBuffer);
-
-    //quad->materials.push_back(material);
 
     return quad;
 }

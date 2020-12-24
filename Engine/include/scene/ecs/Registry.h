@@ -57,7 +57,7 @@ public:
     std::vector<Entity*> getAbsolutePath()
     {
         std::vector<Entity*> path;
-        //recurseAbsolutePath(this, path);
+        recurseAbsolutePath(this, path);
 
         if (path.size() != 0)
         {

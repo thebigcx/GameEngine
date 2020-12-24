@@ -12,7 +12,7 @@
 
 #include "FileSelectWindow.h"
 
-namespace Engine
+namespace Editor
 {
 
 MaterialsPanel::MaterialsPanel()

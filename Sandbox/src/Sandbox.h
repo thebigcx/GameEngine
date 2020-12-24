@@ -2,7 +2,7 @@
 
 #include <Engine.h>
 
-class Sandbox : public Layer
+class Sandbox : public Engine::Layer
 {
 public:
     Sandbox();
@@ -10,19 +10,20 @@ public:
     void onAttach() override;
     void onDetach() override;
     void onUpdate(float dt) override;
-    void onEvent(Event& event) override;
+    void onEvent(Engine::Event& event) override;
 
 private:
-    Shared<Material> m_cubeMaterial;
+    Engine::Shared<Engine::Material> m_cubeMaterial;
 
-    Shared<Model> m_model;
+    Engine::Shared<Engine::Model> m_model;
 
-    Shared<TrueTypeFont> m_font;
+    Engine::Shared<Engine::TrueTypeFont> m_font;
 
-    Shared<UniformBuffer> m_testUniformBuffer;
+    Engine::Shared<Engine::UniformBuffer> m_testUniformBuffer;
 
-    LightSetup lights;
+    Engine::LightSetup lights;
 
-    PerspectiveCameraController m_perspectiveCamera;
-    OrthographicCameraController m_orthoCamera;
+    Engine::PerspectiveCameraController m_perspectiveCamera;
+    Engine::OrthographicCameraController m_orthoCamera;
+    Engine::Shared<Engine::Mesh> m_mesh;
 };

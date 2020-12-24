@@ -1,18 +1,19 @@
 #include <core/Application.h>
+#include <core/EntryPoint.h>
 
 #include "Sandbox.h"
 
-class SandboxApp : public Application
+class SandboxApp : public Engine::Application
 {
 public:
     SandboxApp()
-        : Application()
+        : Engine::Application()
     {
         addLayer(new Sandbox());
     }
 };
 
-Application* createApplication()
+Engine::Application* Engine::createApplication()
 {
     return new SandboxApp();
 }

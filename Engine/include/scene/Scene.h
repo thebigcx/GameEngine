@@ -42,6 +42,7 @@ private:
     uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 
     void render2DEntities();
+    void render3DEntities();
 
     LightSetup m_setup;
 };

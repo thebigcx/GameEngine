@@ -54,11 +54,6 @@ void EditorLayer::onAttach()
 
     std::cout << x << "\n";
 
-    for (auto& asset : Assets::getList<Material>())
-    {
-        std::cout << "s\n";
-    }
-
     /*    
 
     class CameraController : public ScriptableEntity

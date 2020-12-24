@@ -56,38 +56,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 
     Renderer3D::beginScene(camera);
 
-    m_registry.recurse_each([&](Ecs::Entity* entityID)
-    {
-        SceneEntity entity(entityID, this);
-        if (entity.hasComponent<MeshComponent>() && entity.hasComponent<MeshRendererComponent>() && entity.hasComponent<TransformComponent>())
-        {
-            if (!entity.getComponent<MeshComponent>().mesh)
-            {
-                return;
-            }
-            if (entity.getComponent<MeshRendererComponent>().materials.size() == 0)
-            {
-                return;
-            }
-
-            math::mat4 transform = math::mat4(1.f);
-            for (auto& ancestorID : entityID->getAbsolutePath())
-            {
-                SceneEntity ancestor(ancestorID, this);
-                if (ancestor.hasComponent<TransformComponent>())
-                {
-                    transform = ancestor.getComponent<TransformComponent>().getTransform() * transform;
-                    std::cout << math::to_string(ancestor.getComponent<TransformComponent>().getTransform()) << "\n";
-                }
-            }
-
-            transform = entity.getComponent<TransformComponent>().getTransform() * transform;
-
-            Renderer3D::submit(entity.getComponent<MeshComponent>().mesh, 
-                               transform, 
-                               entity.getComponent<MeshRendererComponent>().materials[0]);
-        }
-    });
+    this->render3DEntities();
 
     Renderer3D::endScene();
 
@@ -95,6 +64,32 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
     this->render2DEntities();
 
     Renderer2D::endScene();
+}
+
+void Scene::render3DEntities()
+{
+    auto view = m_registry.recurse_view<MeshComponent, MeshRendererComponent, TransformComponent>();
+
+    for (auto& entityID : view)
+    {
+        SceneEntity entity(entityID, this);
+        /*math::mat4 transform = math::mat4(1.f);
+        for (auto& ancestorID : entityID->getAbsolutePath())
+        {
+            SceneEntity ancestor(ancestorID, this);
+            if (ancestor.hasComponent<TransformComponent>())
+            {
+                transform = ancestor.getComponent<TransformComponent>().getTransform() * transform;
+                std::cout << math::to_string(ancestor.getComponent<TransformComponent>().getTransform()) << "\n";
+            }
+        }*/
+
+        math::mat4 transform = entity.getComponent<TransformComponent>().getTransform();
+
+        Renderer3D::submit(entity.getComponent<MeshComponent>().mesh, 
+                           transform, 
+                           entity.getComponent<MeshRendererComponent>().materials[0]);
+    }
 }
 
 void Scene::render2DEntities()

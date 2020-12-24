@@ -7,6 +7,8 @@
 #include <events/Event.h>
 #include <desktop/ImGuiLayer.h>
 
+int main(int argc, char** argv);
+
 namespace Engine
 {
 
@@ -37,6 +39,8 @@ public:
 
 private:
     static Application* m_instance;
+
+    friend int ::main(int argc, char** argv);
 
     Unique<Window> m_window;
 
