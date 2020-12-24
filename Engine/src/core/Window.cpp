@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+namespace Engine
+{
+
 Window::Window(unsigned int width, unsigned int height, const std::string& title)
     : m_width(width), m_height(height)
 {
@@ -137,4 +140,6 @@ void Window::restore()
 void Window::setOpacity(float opacity)
 {
     glfwSetWindowOpacity(m_window, opacity);
+}
+
 }

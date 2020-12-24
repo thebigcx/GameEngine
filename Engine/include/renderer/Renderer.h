@@ -7,6 +7,9 @@
 #include <renderer/RenderCommand.h>
 #include <events/Event.h>
 
+namespace Engine
+{
+
 struct RendererData
 {
     Shared<Framebuffer> target;
@@ -30,3 +33,5 @@ public:
 private:
     static RendererData m_data;
 };
+
+}

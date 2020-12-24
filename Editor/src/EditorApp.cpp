@@ -2,7 +2,7 @@
 
 #include "EditorLayer.h"
 
-namespace Editor
+namespace Engine
 {
 
 class EditorApp : public Application
@@ -11,7 +11,7 @@ public:
     EditorApp()
         : Application()
     {
-        addLayer(new EditorLayer());
+        addLayer(new Engine::EditorLayer());
     }
 };
 

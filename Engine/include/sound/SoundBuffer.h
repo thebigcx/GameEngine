@@ -3,6 +3,9 @@
 #include <string>
 #include <memory>
 
+namespace Engine
+{
+
 class SoundBuffer
 {
 public:
@@ -27,3 +30,5 @@ private:
     SoundBuffer(unsigned int id);
 
 };
+
+}

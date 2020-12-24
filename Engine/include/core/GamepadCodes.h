@@ -1,5 +1,8 @@
 #pragma once
 
+namespace Engine
+{
+
 enum class GamepadAxis
 {
     LeftX = 0,
@@ -52,3 +55,5 @@ enum class Gamepad
     Fifteen = 14,
     Sixteen = 15
 };
+
+}

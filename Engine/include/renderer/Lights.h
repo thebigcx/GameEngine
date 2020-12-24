@@ -7,6 +7,9 @@
 
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 struct PointLight
 {
     math::vec3 position;
@@ -106,3 +109,5 @@ private:
     float m_skyLight = 0;
     bool m_usingDirectionalLight = false;
 };
+
+}

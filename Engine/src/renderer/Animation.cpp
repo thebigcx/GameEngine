@@ -1,5 +1,8 @@
 #include <renderer/Animation.h>
 
+namespace Engine
+{
+
 Shared<Animation> Animation::create(Shared<Texture2D> texture)
 {
     auto animation = createShared<Animation>();
@@ -20,4 +23,6 @@ void Animation::setFrames(const std::initializer_list<math::frect> frames)
 const math::frect& Animation::getCurrentFrame() const
 {
     return m_frames[m_currentFrameIndex];
+}
+
 }

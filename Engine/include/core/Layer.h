@@ -1,5 +1,8 @@
 #pragma once
 
+namespace Engine
+{
+
 class Event;
 
 class Layer
@@ -14,3 +17,5 @@ public:
     virtual void onImGuiRender() {}
     virtual void onEvent(Event& event) {}
 };
+
+}

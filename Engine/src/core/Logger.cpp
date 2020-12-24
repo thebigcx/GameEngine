@@ -7,4 +7,9 @@ bool _trace(char* format, ...);
 #define TRACE false && _trace
 #endif
 
+namespace Engine
+{
+
 Shared<Logger> Logger::m_coreLogger = createShared<Logger>();
+
+}

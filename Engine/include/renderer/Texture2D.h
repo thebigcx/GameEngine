@@ -9,6 +9,9 @@
 #include <util/Image.h>
 #include <core/Core.h>
 
+namespace Engine
+{
+
 class Texture2D
 {
 public:
@@ -50,3 +53,5 @@ public:
     virtual bool operator==(const Texture2D& other) = 0;
     virtual bool operator!=(const Texture2D& other) = 0;
 };
+
+}

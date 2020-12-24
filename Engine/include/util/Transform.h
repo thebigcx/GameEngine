@@ -7,6 +7,9 @@
 #include <maths/math.h>
 #include <maths/matrix/matrix_transform.h>
 
+namespace Engine
+{
+
 struct Transform
 {
     math::vec3 translation;
@@ -20,3 +23,5 @@ struct Transform
              * math::scale(math::mat4(1.f), scale);
     }
 };
+
+}

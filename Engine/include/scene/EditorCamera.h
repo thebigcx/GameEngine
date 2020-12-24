@@ -4,6 +4,9 @@
 #include <events/Event.h>
 #include <maths/quaternion/qua.h>
 
+namespace Engine
+{
+
 class EditorCamera : public Camera
 {
 public:
@@ -68,3 +71,5 @@ private:
     void mouseZoom(float delta);
     
 };
+
+}

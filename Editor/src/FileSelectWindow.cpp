@@ -8,6 +8,9 @@
 #include <maths/random.h>
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 FileSelectWindow FileSelectWindow::m_instance;
 
 FileSelectWindow::FileSelectWindow()
@@ -256,4 +259,6 @@ std::string FileSelectWindow::getSelection()
     {
         return std::string(m_instance.m_workingPath.c_str());
     }
+}
+
 }

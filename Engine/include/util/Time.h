@@ -2,6 +2,9 @@
 
 #include <chrono>
 
+namespace Engine
+{
+
 typedef std::chrono::time_point<std::chrono::high_resolution_clock> TimePoint;
 
 class Time
@@ -47,3 +50,5 @@ private:
 
     friend class Application;
 };
+
+}

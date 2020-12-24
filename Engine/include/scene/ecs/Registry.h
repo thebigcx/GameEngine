@@ -9,6 +9,9 @@
 #include <core/Logger.h>
 #include <core/Core.h>
 
+namespace Engine
+{
+
 namespace Ecs
 {
 
@@ -407,6 +410,8 @@ void View::each(const Func& func)
             func(entity, entity->getParent()->get<T>(entity));
         }
     }
+}
+
 }
 
 }

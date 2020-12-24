@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv)
 {
-    auto application = createApplication();
+    auto application = Engine::createApplication();
 
     application->run();
 

@@ -5,6 +5,9 @@
 #include <core/Core.h>
 #include <maths/math.h>
 
+namespace Engine
+{
+
 class Framebuffer
 {
 public:
@@ -27,3 +30,5 @@ public:
     virtual bool operator==(const Framebuffer& buffer) const = 0;
     virtual bool operator!=(const Framebuffer& buffer) const = 0;
 };
+
+}

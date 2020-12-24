@@ -3,6 +3,9 @@
 #include <maths/matrix/matrix_func.h>
 #include <maths/quaternion/qua_func.h>
 
+namespace Engine
+{
+
 EditorCamera::EditorCamera(float fov, float aspect, float near, float far)
     : m_fov(fov), m_aspect(aspect), m_near(near), m_far(far)
 {
@@ -145,4 +148,6 @@ math::quat EditorCamera::getOrientation()
 math::vec3 EditorCamera::getPosition()
 {
     return m_focalPoint - getForwardDirection() * m_distance;
+}
+
 }

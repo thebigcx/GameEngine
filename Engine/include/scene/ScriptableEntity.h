@@ -2,6 +2,9 @@
 
 #include <scene/SceneEntity.h>
 
+namespace Engine
+{
+
 class ScriptableEntity
 {
 public:
@@ -23,3 +26,5 @@ private:
     SceneEntity m_entity;
     friend class Scene;
 };
+
+}

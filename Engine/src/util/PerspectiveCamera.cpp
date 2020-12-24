@@ -1,5 +1,8 @@
 #include <util/PerspectiveCamera.h>
 
+namespace Engine
+{
+
 PerspectiveCamera::PerspectiveCamera()
     : m_up(0, 1, 0), m_direction(0, 0, -1)
 {
@@ -52,4 +55,6 @@ void PerspectiveCamera::onEvent(Event& event)
 void PerspectiveCamera::onWindowResize(WindowResizeEvent& event)
 {
     m_projectionMatrix = math::perspective((float)math::radians(m_fieldOfView), (float)event.getWidth() / (float)event.getHeight(), 0.1f, m_renderDistance);
+}
+
 }

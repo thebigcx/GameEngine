@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+namespace Engine
+{
+
 GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
     : m_path(file)
 {
@@ -106,4 +109,6 @@ bool GLTexture2D::operator==(const Texture2D& other)
 bool GLTexture2D::operator!=(const Texture2D& other)
 {
     return m_id != static_cast<const GLTexture2D&>(other).m_id;
+}
+
 }

@@ -6,6 +6,9 @@
 #include <iostream>
 #include <thread>
 
+namespace Engine
+{
+
 Shared<Texture2D> Texture2D::create(const std::string& file, bool isSRGB)
 {
     return createShared<GLTexture2D>(file, isSRGB);
@@ -35,4 +38,6 @@ Shared<Texture2D> Texture2D::asyncCreate(const std::string& file, bool isSRGB)
 
     Shared<Texture2D> texture = createShared<GLTexture2D>(img->width, img->height);
     texture->setData(0, 0, img->width, img->height, img->data);
+}
+
 }

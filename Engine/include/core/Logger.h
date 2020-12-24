@@ -7,6 +7,9 @@
 
 #include <core/Core.h>
 
+namespace Engine
+{
+
 #ifdef _DEBUG
 bool _trace(char* format, ...)
 {
@@ -96,3 +99,5 @@ private:
         return std::string(tmp);
     }
 };
+
+}

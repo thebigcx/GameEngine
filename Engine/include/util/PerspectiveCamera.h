@@ -5,6 +5,9 @@
 #include <events/Event.h>
 #include <events/EventDispatcher.h>
 
+namespace Engine
+{
+
 class PerspectiveCamera
 {
 public:
@@ -48,3 +51,5 @@ protected:
     float m_fieldOfView = 45.f;
     float m_renderDistance = 100.f;
 };
+
+}

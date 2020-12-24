@@ -8,6 +8,9 @@
 
 #include <util/PerspectiveCamera.h>
 
+namespace Engine
+{
+
 class PerspectiveCameraController : public PerspectiveCamera
 {
 public:
@@ -22,3 +25,5 @@ private:
 
     float m_sensitivity = 0.1f;
 };
+
+}

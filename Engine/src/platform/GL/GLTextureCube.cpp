@@ -5,6 +5,9 @@
 
 #include <stb_image/stb_image.h>
 
+namespace Engine
+{
+
 GLTextureCube::GLTextureCube(const std::string& filepath)
 {
     m_id = loadFromFile(filepath);
@@ -62,4 +65,6 @@ uint32_t GLTextureCube::loadFromMultipleFiles(const std::string* files)
     glTextureParameteri(id, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
 
     return id;
+}
+
 }

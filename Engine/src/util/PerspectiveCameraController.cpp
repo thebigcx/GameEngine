@@ -2,6 +2,9 @@
 #include <maths/matrix/matrix_transform.h>
 #include <core/Input.h>
 
+namespace Engine
+{
+
 PerspectiveCameraController::PerspectiveCameraController()
 {
 
@@ -43,4 +46,6 @@ void PerspectiveCameraController::update(float dt)
     m_direction.z = math::sin(math::radians(m_pan)) * math::cos(math::radians(m_tilt));
 
     m_direction = math::normalize(m_direction);
+}
+
 }

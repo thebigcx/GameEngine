@@ -6,6 +6,9 @@
 
 #include <renderer/shader/Shader.h>
 
+namespace Engine
+{
+
 struct BufferElement
 {
     BufferElement(Shader::DataType type, const std::string& name, bool normalized = false)
@@ -262,3 +265,5 @@ public:
 
     static Shared<UniformBuffer> create(size_t size, uint32_t bindingPoint);
 };
+
+}

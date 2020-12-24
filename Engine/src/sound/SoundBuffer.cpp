@@ -6,6 +6,9 @@
 #include <dr_libs/dr_mp3.h>
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 SoundBuffer::SoundBuffer()
 {
 
@@ -101,4 +104,6 @@ void SoundBuffer::destroy()
 SoundBuffer::~SoundBuffer()
 {
     destroy();
+}
+
 }

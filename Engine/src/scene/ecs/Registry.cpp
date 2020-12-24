@@ -1,5 +1,8 @@
 #include <scene/ecs/Registry.h>
 
+namespace Engine
+{
+
 namespace Ecs
 {
 
@@ -29,6 +32,8 @@ void Entity::recurseAbsolutePath(Entity* current, std::vector<Entity*>& path)
     path.push_back(current);
 
     recurseAbsolutePath(current->getParent()->owned_by(), path);
+}
+
 }
 
 }

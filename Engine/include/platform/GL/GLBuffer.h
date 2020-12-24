@@ -6,6 +6,9 @@
 
 #include <renderer/Buffer.h>
 
+namespace Engine
+{
+
 class GLVertexBuffer : public VertexBuffer
 {
 public:
@@ -102,3 +105,5 @@ private:
 
     size_t m_size = 0;
 };
+
+}

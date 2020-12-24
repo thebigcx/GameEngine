@@ -1,6 +1,9 @@
 #include <platform/GL/GLVertexArray.h>
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 GLVertexArray::GLVertexArray()
 {
     glCreateVertexArrays(1, &m_id);
@@ -105,4 +108,6 @@ void GLVertexArray::setIndexBuffer(const Shared<IndexBuffer>& buffer)
     buffer->bind();
 
     m_indexBuffer = buffer;
+}
+
 }

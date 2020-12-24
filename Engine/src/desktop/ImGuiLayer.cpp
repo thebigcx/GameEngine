@@ -8,6 +8,9 @@
 #include <core/Application.h>
 #include <renderer/RenderCommand.h>
 
+namespace Engine
+{
+
 ImGuiLayer::ImGuiLayer()
 {
 
@@ -88,4 +91,6 @@ void ImGuiLayer::onEvent(Event& event)
 void ImGuiLayer::blockEvents(bool block)
 {
     m_blockEvents = block;
+}
+
 }

@@ -5,6 +5,9 @@
 #include <events/Event.h>
 #include <events/EventDispatcher.h>
 
+namespace Engine
+{
+
 class OrthographicCamera
 {
 public:
@@ -30,3 +33,5 @@ protected:
     math::vec2 m_position;
     math::mat4 m_projectionMatrix;
 };
+
+}

@@ -5,6 +5,9 @@
 #include <maths/math.h>
 #include <core/Input.h>
 
+namespace Engine
+{
+
 enum class EventType
 {
     KeyPressed, KeyReleased, KeyTyped, 
@@ -408,3 +411,5 @@ public:
     EVENT_CLASS_TYPE(MouseLeave);
     EVENT_CLASS_CATEGORY(EventCategory::Mouse);
 };
+
+}

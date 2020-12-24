@@ -7,6 +7,9 @@
 
 #include <fstream>
 
+namespace Engine
+{
+
 void SceneSerializer::saveScene(const Shared<Scene>& scene, const std::string& path)
 {
     YAML::Node root;
@@ -456,4 +459,6 @@ void SceneSerializer::saveChildRecurse(SceneEntity& parent, YAML::Node& node)
         auto nextNode = node[child.getComponent<TagComponent>().tag];
         saveGameObject(child, nextNode);
     }
+}
+
 }

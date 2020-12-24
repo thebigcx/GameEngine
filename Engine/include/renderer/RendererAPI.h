@@ -5,6 +5,9 @@
 #include <renderer/VertexArray.h>
 #include <core/Core.h>
 
+namespace Engine
+{
+
 enum class BlendFunction
 {
     None,
@@ -66,3 +69,5 @@ public:
 protected:
     RendererCapabilities m_capabilities;
 };
+
+}

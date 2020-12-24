@@ -7,6 +7,9 @@
 
 #include "FileSelectWindow.h"
 
+namespace Engine
+{
+
 class SceneHierarchy
 {
 public:
@@ -42,3 +45,5 @@ private:
 
     void textureSelect(Shared<Texture2D>& texture);
 };
+
+}

@@ -10,6 +10,9 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+namespace Engine
+{
+
 struct Glyph
 {
     math::vec2 advance;
@@ -41,3 +44,5 @@ private:
 
     std::unordered_map<char, Glyph> m_glyphs;
 };
+
+}

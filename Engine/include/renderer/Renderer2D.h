@@ -12,6 +12,9 @@
 #include <util/OrthographicCamera.h>
 #include <scene/EditorCamera.h>
 
+namespace Engine
+{
+
 struct QuadVertex
 {
     math::vec3 position;
@@ -105,3 +108,5 @@ private:
 
     static Renderer2DData s_data;
 };
+
+}

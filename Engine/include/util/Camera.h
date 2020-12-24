@@ -2,6 +2,9 @@
 
 #include <maths/matrix/mat4x4.h>
 
+namespace Engine
+{
+
 class Camera
 {
 public:
@@ -16,3 +19,5 @@ public:
 protected:
     math::mat4 m_projection = math::mat4(1.f);
 };
+
+}

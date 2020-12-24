@@ -3,6 +3,9 @@
 #include <core/Core.h>
 #include <renderer/Mesh.h>
 
+namespace Engine
+{
+
 class MeshFactory
 {
 public:
@@ -21,3 +24,5 @@ public:
 
     static Shared<Mesh> skyboxMesh();
 };
+
+}

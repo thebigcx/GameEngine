@@ -1,5 +1,8 @@
 #include <util/io/Files.h>
 
+namespace Engine
+{
+
 void Files::writeToFile(const std::string& path, const std::string& text)
 {
     std::ofstream file;
@@ -54,4 +57,6 @@ bool Files::exists(const std::string& path)
     {
         return false;
     }
+}
+
 }

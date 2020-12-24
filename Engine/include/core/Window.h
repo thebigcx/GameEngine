@@ -11,6 +11,9 @@
 #include <renderer/RenderingContext.h>
 #include <events/Event.h>
 
+namespace Engine
+{
+
 struct WindowData
 {
     std::function<void(Event&)> eventCallback;
@@ -70,3 +73,5 @@ private:
 
     unsigned int m_width = 0, m_height = 0;
 };
+
+}

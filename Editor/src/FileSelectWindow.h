@@ -7,6 +7,9 @@
 #include <core/Core.h>
 #include <renderer/Texture2D.h>
 
+namespace Engine
+{
+
 enum class FileDialogType
 {
     Save,
@@ -136,3 +139,5 @@ private:
     FileDialogType m_type;
     std::string m_fileName;
 };
+
+}

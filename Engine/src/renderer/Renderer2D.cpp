@@ -8,6 +8,9 @@
 
 #include <GL/glew.h>
 
+namespace Engine
+{
+
 Renderer2DData Renderer2D::s_data;
 Shared<Mesh> Renderer2D::m_textMesh;
 Shared<Mesh> Renderer2D::m_framebufferMesh;
@@ -347,3 +350,5 @@ void Renderer2D::render(IRenderable2D& renderable)
     renderable.render();
 }
 
+
+}

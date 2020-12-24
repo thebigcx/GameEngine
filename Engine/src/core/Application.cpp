@@ -10,6 +10,9 @@
 #include <util/Time.h>
 #include <renderer/RenderCommand.h>
 
+namespace Engine
+{
+
 Application* Application::m_instance = nullptr;
 
 Application::Application()
@@ -57,7 +60,6 @@ void Application::run()
             layer->onUpdate(Time::getDelta());
         }
 
-        
         m_imguiLayer->begin();
         for (auto& layer : m_layers)
         {
@@ -131,4 +133,6 @@ void Application::setCursorEnabled(bool enabled)
     uint32_t glfwEnabled = enabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
 
     glfwSetInputMode(m_window->getNative(), GLFW_CURSOR, glfwEnabled);
+}
+
 }

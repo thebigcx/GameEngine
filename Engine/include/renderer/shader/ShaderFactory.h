@@ -3,6 +3,9 @@
 #include <renderer/shader/Shader.h>
 #include <core/Core.h>
 
+namespace Engine
+{
+
 class ShaderFactory
 {
 public:
@@ -12,3 +15,5 @@ public:
     static Shared<Shader> lightingShader();
     static Shared<Shader> createShader(const std::string& name);
 };
+
+}

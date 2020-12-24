@@ -1,5 +1,8 @@
 #pragma once
 
+namespace Engine
+{
+
 enum class MouseButton
 {
     Left = 0,
@@ -16,3 +19,5 @@ enum class MouseButton
     Seven = 6,
     Eight = 7
 };
+
+}

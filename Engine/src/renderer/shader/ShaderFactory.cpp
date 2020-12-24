@@ -1,5 +1,8 @@
 #include <renderer/shader/ShaderFactory.h>
 
+namespace Engine
+{
+
 Shared<Shader> ShaderFactory::textureShader()
 {
     return createShader("texture");;
@@ -23,4 +26,6 @@ Shared<Shader> ShaderFactory::lightingShader()
 Shared<Shader> ShaderFactory::createShader(const std::string& name)
 {
     return Shader::createFromFile("Engine/src/renderer/shader/default/" + name + ".glsl");
+}
+
 }

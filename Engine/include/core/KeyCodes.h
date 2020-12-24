@@ -1,5 +1,8 @@
 #pragma once
 
+namespace Engine
+{
+
 enum class Key
 {
     Unknown = -1,
@@ -134,3 +137,5 @@ enum class Key
     Menu = 348,
     Last = Menu
 };
+
+}

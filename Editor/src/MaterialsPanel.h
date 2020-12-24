@@ -6,6 +6,9 @@
 #include <util/PerspectiveCamera.h>
 #include <renderer/Model.h>
 
+namespace Engine
+{
+
 class MaterialsPanel
 {
 public:
@@ -38,3 +41,5 @@ private:
 
     std::unordered_map<int, std::string> m_texturePathInputs;
 };
+
+}

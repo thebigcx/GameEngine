@@ -2,6 +2,9 @@
 
 #include <sound/SoundListener.h>
 
+namespace Engine
+{
+
 ALCdevice* SoundEngine::m_device;
 ALCcontext* SoundEngine::m_context;
 
@@ -27,4 +30,6 @@ void SoundEngine::destroy()
 {
     alcDestroyContext(m_context);
     alcCloseDevice(m_device);
+}
+
 }

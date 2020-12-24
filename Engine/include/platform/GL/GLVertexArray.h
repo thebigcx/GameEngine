@@ -2,6 +2,9 @@
 
 #include <renderer/VertexArray.h>
 
+namespace Engine
+{
+
 class GLVertexArray : public VertexArray
 {
 public:
@@ -33,3 +36,5 @@ private:
 
     Shared<IndexBuffer> m_indexBuffer;
 };
+
+}

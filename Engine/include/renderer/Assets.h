@@ -8,6 +8,9 @@
 #include <renderer/Texture2D.h>
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 class IAssetList
 {
     friend class Assets;
@@ -187,3 +190,5 @@ private:
 
     static Assets m_instance;
 };
+
+}

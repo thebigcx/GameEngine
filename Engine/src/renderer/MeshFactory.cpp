@@ -3,6 +3,9 @@
 #include <renderer/Model.h>
 #include <maths/constants.h>
 
+namespace Engine
+{
+
 Shared<Mesh> MeshFactory::textMesh()
 {
     constexpr uint32_t MAX_CHARACTERS = 200;
@@ -364,4 +367,6 @@ math::vec3 MeshFactory::calculateTangent(
     tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 
     return tangent;
+}
+
 }

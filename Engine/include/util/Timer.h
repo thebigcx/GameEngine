@@ -3,6 +3,9 @@
 #include <chrono>
 #include <iostream>
 
+namespace Engine
+{
+
 class Timer
 {
 public:
@@ -44,3 +47,5 @@ public:
 private:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_startTime;
 };
+
+}

@@ -3,6 +3,9 @@
 #include <core/Core.h>
 #include <GLFW/glfw3.h>
 
+namespace Engine
+{
+
 class RenderingContext
 {
 public:
@@ -14,3 +17,5 @@ public:
 
     static Unique<RenderingContext> create(GLFWwindow* window);
 };
+
+}

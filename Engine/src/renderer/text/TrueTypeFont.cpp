@@ -5,6 +5,9 @@
 #include <renderer/text/TrueTypeFont.h>
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 TrueTypeFont::TrueTypeFont()
 {
     
@@ -91,4 +94,6 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
 
     FT_Done_Face(face);
     FT_Done_FreeType(library);
+}
+
 }

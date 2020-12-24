@@ -5,6 +5,9 @@
 
 #include "SoundBuffer.h"
 
+namespace Engine
+{
+
 class SoundSource
 {
 public:
@@ -37,3 +40,5 @@ private:
 
     vec3 m_position;
 };
+
+}

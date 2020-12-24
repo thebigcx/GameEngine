@@ -9,6 +9,9 @@
 #include <util/Time.h>
 #include <core/Core.h>
 
+namespace Engine
+{
+
 struct Particle
 {
     math::vec2 position, velocity;
@@ -34,3 +37,5 @@ public:
 private:
     Shared<Texture2D> m_texture;
 };
+
+}

@@ -1,5 +1,8 @@
 #include <sound/SoundSource.h>
 
+namespace Engine
+{
+
 SoundSource::SoundSource()
 {
     
@@ -39,4 +42,6 @@ bool SoundSource::isPlaying() const
     alGetSourcei(m_id, AL_SOURCE_STATE, &state);
 
     return state == AL_PLAYING;
+}
+
 }

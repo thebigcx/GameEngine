@@ -2,6 +2,9 @@
 
 #include <core/Layer.h>
 
+namespace Engine
+{
+
 class ImGuiLayer : public Layer
 {
 public:
@@ -20,3 +23,5 @@ public:
 private:
     bool m_blockEvents = false;
 };
+
+}

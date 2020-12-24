@@ -10,6 +10,9 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+namespace Engine
+{
+
 struct ModelVertex
 {
     math::vec3 position;
@@ -38,3 +41,5 @@ private:
     std::vector<Shared<Texture2D>> m_texturesLoaded;
     std::unordered_map<int, Shared<Material>> m_materialsLoaded;
 };
+
+}

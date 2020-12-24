@@ -2,6 +2,9 @@
 #include <renderer/RenderCommand.h>
 #include <iostream>
 
+namespace Engine
+{
+
 ParticleSystem::ParticleSystem(const Shared<Texture2D>& texture)
     : m_texture(texture)
 {
@@ -47,4 +50,6 @@ void ParticleSystem::render()
 Shared<ParticleSystem> ParticleSystem::create(const Shared<Texture2D>& texture)
 {
     return createShared<ParticleSystem>(texture);
+}
+
 }

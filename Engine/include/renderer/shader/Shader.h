@@ -13,6 +13,9 @@
 #include <maths/matrix/mat3x3.h>
 #include <core/Core.h>
 
+namespace Engine
+{
+
 struct ShaderSource
 {
     std::string vertex;
@@ -95,3 +98,5 @@ public:
         DMat4x2, DMat4x3, DMat4x4
     };
 };
+
+}

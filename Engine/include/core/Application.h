@@ -7,6 +7,9 @@
 #include <events/Event.h>
 #include <desktop/ImGuiLayer.h>
 
+namespace Engine
+{
+
 // Singleton
 class Application
 {
@@ -44,3 +47,5 @@ private:
 };
 
 Application* createApplication();
+
+}

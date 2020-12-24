@@ -6,6 +6,9 @@
 #include <scene/Scene.h>
 #include <core/Core.h>
 
+namespace Engine
+{
+
 // TODO: swap sol for my own lua engine
 class ScriptEngine
 {
@@ -24,3 +27,5 @@ private:
 
     lua::state m_state;
 };
+
+}

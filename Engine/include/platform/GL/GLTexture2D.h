@@ -4,6 +4,9 @@
 
 #include <renderer/Texture2D.h>
 
+namespace Engine
+{
+
 class GLTexture2D : public Texture2D
 {
 public:
@@ -36,3 +39,5 @@ private:
 
     std::string m_path = "";
 };
+
+}

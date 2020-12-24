@@ -6,6 +6,9 @@
 
 #include <GL/glew.h>
 
+namespace Engine
+{
+
 GLVertexBuffer::GLVertexBuffer(size_t size)
     : m_size(size), m_usage(BufferUsage::Dynamic)
 {
@@ -249,4 +252,6 @@ void* GLUniformBuffer::getBufferPtr(size_t offset) const
 void GLUniformBuffer::unmap() const
 {
     glUnmapNamedBuffer(m_id);
+}
+
 }

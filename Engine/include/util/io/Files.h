@@ -4,6 +4,9 @@
 #include <sstream>
 #include <fstream>
 
+namespace Engine
+{
+
 class Files
 {
 public:
@@ -15,3 +18,5 @@ public:
 
     static bool exists(const std::string& path);
 };
+
+}

@@ -14,6 +14,9 @@
 #include "SceneHierarchy.h"
 #include "MaterialsPanel.h"
 
+namespace Engine
+{
+
 class EditorLayer : public Layer
 {
 public:
@@ -51,3 +54,5 @@ private:
 
     uint32_t m_gizmoType = 0;
 };
+
+}

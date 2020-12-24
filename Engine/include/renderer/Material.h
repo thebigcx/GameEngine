@@ -6,6 +6,9 @@
 #include <renderer/shader/Shader.h>
 #include <renderer/Texture2D.h>
 
+namespace Engine
+{
+
 class Material
 {
 public:
@@ -55,3 +58,5 @@ public:
                other.depthMap != ambientOcclusionMap;
     }
 };
+
+}

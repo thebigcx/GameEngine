@@ -3,6 +3,9 @@
 #include <renderer/shader/ShaderFactory.h>
 #include <core/Application.h>
 
+namespace Engine
+{
+
 RendererData Renderer::m_data;
 float Renderer::hdrExposure = 1.f;
 
@@ -48,4 +51,6 @@ void Renderer::endFrame()
 void Renderer::windowResize(WindowResizeEvent& event)
 {
     m_data.target->resize(event.getWidth(), event.getHeight());
+}
+
 }

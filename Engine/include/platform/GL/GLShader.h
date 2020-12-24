@@ -2,6 +2,9 @@
 
 #include <renderer/shader/Shader.h>
 
+namespace Engine
+{
+
 class GLShader : public Shader
 {
 public:
@@ -72,3 +75,5 @@ private:
 
     std::string m_path = "";
 };
+
+}

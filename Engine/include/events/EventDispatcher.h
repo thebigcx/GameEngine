@@ -3,6 +3,9 @@
 #include <events/Event.h>
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 class EventDispatcher
 {
 public:
@@ -25,3 +28,5 @@ private:
 };
 
 #define BIND_EVENT_FN(fn) [this](auto&& ...args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+
+}

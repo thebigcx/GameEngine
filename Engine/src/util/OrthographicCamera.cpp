@@ -1,5 +1,8 @@
 #include <util/OrthographicCamera.h>
 
+namespace Engine
+{
+
 OrthographicCamera::OrthographicCamera()
 {
     m_projectionMatrix = math::ortho(0.f, 1280.f, 0.f, 720.f, -1.f, 1.f);
@@ -34,4 +37,6 @@ void OrthographicCamera::onEvent(Event& event)
 void OrthographicCamera::onWindowResize(WindowResizeEvent& event)
 {
     m_projectionMatrix = math::ortho(0.f, (float)event.getWidth(), 0.f, (float)event.getHeight(), -1.f, 1.f);
+}
+
 }

@@ -5,6 +5,9 @@
 #include <core/GamepadCodes.h>
 #include <maths/vector/vec2.h>
 
+namespace Engine
+{
+
 class Input
 {
 public:
@@ -17,3 +20,5 @@ public:
     static float getGamepadAxis(Gamepad gamepad, GamepadAxis axis);
     static void setGamepadMappingsFromFile(const std::string& path);
 };
+
+}

@@ -1,6 +1,9 @@
 #include <util/OrthographicCameraController.h>
 #include <core/Input.h>
 
+namespace Engine
+{
+
 void OrthographicCameraController::update(float dt)
 {
     if (Input::isKeyPressed(Key::W))
@@ -19,4 +22,6 @@ void OrthographicCameraController::update(float dt)
     {
         this->translate(m_speed * dt, 0.f);
     }
+}
+
 }

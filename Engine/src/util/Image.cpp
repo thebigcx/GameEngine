@@ -3,6 +3,9 @@
 
 #include <stb_image/stb_image.h>
 
+namespace Engine
+{
+
 Image::~Image()
 {
     stbi_image_free(data);
@@ -40,4 +43,6 @@ Shared<Image> ImageLoader::loadOpenGLImage(const std::string& file)
     stbi_set_flip_vertically_on_load(true);
 
     return loadImageImpl(file);
+}
+
 }

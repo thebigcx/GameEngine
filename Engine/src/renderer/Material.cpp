@@ -1,6 +1,9 @@
 #include <renderer/Material.h>
 #include <renderer/Renderer3D.h>
 
+namespace Engine
+{
+
 void Material::bind() const
 {
     if (shader)
@@ -130,4 +133,6 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
 Shared<Material> Material::create()
 {
     return Material::create(nullptr);
+}
+
 }

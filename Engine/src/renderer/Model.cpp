@@ -5,6 +5,9 @@
 #include <util/Timer.h>
 #include <renderer/Assets.h>
 
+namespace Engine
+{
+
 Shared<Model> Model::loadModel(const std::string& file)
 {
     auto model = createShared<Model>();
@@ -255,4 +258,6 @@ Shared<Texture2D> Model::loadMaterialTexture(aiMaterial* mat, aiTextureType type
     }
 
     return texture;
+}
+
 }

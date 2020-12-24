@@ -5,6 +5,9 @@
 
 #include <cstring>
 
+namespace Engine
+{
+
 GLShader::GLShader(const std::string& path)
     : m_path(path)
 {
@@ -309,4 +312,6 @@ uint32_t GLShader::getUniformLocation(const std::string& name)
     }
 
     return m_uniformLocations.at(name);
+}
+
 }

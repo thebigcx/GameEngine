@@ -2,6 +2,9 @@
 
 #include <memory>
 
+namespace Engine
+{
+
 template<typename T>
 using Shared = std::shared_ptr<T>;
 
@@ -24,3 +27,5 @@ constexpr Unique<T> createUnique(Args&& ... args)
 
 #define EXPAND_MACRO(x) x
 #define STINGIFY_MACRO(x) #x
+
+}

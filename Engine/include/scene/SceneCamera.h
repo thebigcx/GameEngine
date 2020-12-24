@@ -2,6 +2,9 @@
 
 #include <util/Camera.h>
 
+namespace Engine
+{
+
 enum class ProjectionType
 {
     Perspective,
@@ -60,3 +63,5 @@ private:
 
     float m_aspect = 0.f;
 };
+
+}

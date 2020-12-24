@@ -4,6 +4,9 @@
 
 #include <core/Application.h>
 
+namespace Engine
+{
+
 class Cursor
 {
 public:
@@ -50,3 +53,5 @@ public:
 private:
     GLFWcursor* m_cursor;
 };
+
+}

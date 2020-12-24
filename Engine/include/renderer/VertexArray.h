@@ -4,6 +4,9 @@
 
 #include <renderer/Buffer.h>
 
+namespace Engine
+{
+
 class VertexArray
 {
 public:
@@ -22,3 +25,5 @@ public:
     virtual bool operator==(const VertexArray& array) const = 0;
     virtual bool operator!=(const VertexArray& array) const = 0;
 };
+
+}

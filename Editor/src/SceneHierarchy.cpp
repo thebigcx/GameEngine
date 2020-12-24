@@ -13,6 +13,9 @@
 #include <renderer/Assets.h>
 #include <util/io/Files.h>
 
+namespace Engine
+{
+
 SceneHierarchy::SceneHierarchy()
 {
     
@@ -636,4 +639,6 @@ void SceneHierarchy::drawSceneRenderer()
     }
 
     ImGui::End();
+}
+
 }

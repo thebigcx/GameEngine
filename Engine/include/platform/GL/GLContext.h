@@ -5,6 +5,9 @@
 
 #include <renderer/RenderingContext.h>
 
+namespace Engine
+{
+
 class GLContext : public RenderingContext
 {
 public:
@@ -17,3 +20,5 @@ public:
 private:
     GLFWwindow* m_window;
 };
+
+}

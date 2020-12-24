@@ -3,6 +3,9 @@
 #include <renderer/TextureCube.h>
 #include <renderer/shader/Shader.h>
 
+namespace Engine
+{
+
 class Skybox
 {
 public:
@@ -16,3 +19,5 @@ public:
 private:
     Shared<TextureCube> m_cubemap;
 };
+
+}

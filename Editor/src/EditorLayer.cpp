@@ -14,6 +14,9 @@
 #include <script/lua/state.h>
 #include <util/Timer.h>
 
+namespace Engine
+{
+
 EditorLayer::EditorLayer()
 {
 
@@ -353,4 +356,6 @@ bool EditorLayer::onKeyPressed(KeyPressedEvent& event)
     }
 
     return false;
+}
+
 }

@@ -1,6 +1,9 @@
 #include <platform/GL/GLContext.h>
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 GLContext::GLContext(GLFWwindow* window)
     : m_window(window)
 {
@@ -28,4 +31,6 @@ void GLContext::vsync(bool enabled)
 {
     int interval = enabled ? 1 : 0;
     glfwSwapInterval(interval);
+}
+
 }

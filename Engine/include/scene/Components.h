@@ -11,6 +11,9 @@
 #include <renderer/Mesh.h>
 #include <renderer/Lights.h>
 
+namespace Engine
+{
+
 struct TransformComponent
 {
     TransformComponent()
@@ -123,3 +126,5 @@ struct LuaScriptComponent
     std::string filePath;
     std::string source;
 };
+
+}

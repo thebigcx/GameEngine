@@ -1,5 +1,8 @@
 #pragma once
 
+namespace Engine
+{
+
 class SoundListener
 {
 private:
@@ -24,3 +27,5 @@ private:
     vec3 m_velocity;
 
 };
+
+}

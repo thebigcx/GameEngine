@@ -7,6 +7,9 @@
 #include <maths/rect/rect.h>
 #include <renderer/Texture2D.h>
 
+namespace Engine
+{
+
 class Animation
 {
 public:
@@ -50,3 +53,5 @@ private:
 
     double m_lastTime = 0;
 };
+
+}

@@ -7,6 +7,9 @@
 #include <renderer/Material.h>
 #include <renderer/Lights.h>
 
+namespace Engine
+{
+
 class SceneEntity;
 
 class Scene
@@ -42,3 +45,5 @@ private:
 
     LightSetup m_setup;
 };
+
+}

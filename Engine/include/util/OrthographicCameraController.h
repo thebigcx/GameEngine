@@ -8,6 +8,9 @@
 
 #include <util/OrthographicCamera.h>
 
+namespace Engine
+{
+
 class OrthographicCameraController : public OrthographicCamera
 {
 public:
@@ -29,3 +32,5 @@ public:
 private:
     float m_speed = 1.f;
 };
+
+}

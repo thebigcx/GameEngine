@@ -2,6 +2,9 @@
 #include <core/Application.h>
 #include <util/io/Files.h>
 
+namespace Engine
+{
+
 math::ivec2 Input::getMousePosition()
 {
     auto& window = Application::get().getWindow();
@@ -39,4 +42,6 @@ void Input::setGamepadMappingsFromFile(const std::string& path)
 {
     const char* mappings = Files::readFile(path).c_str();
     glfwUpdateGamepadMappings(mappings);
+}
+
 }

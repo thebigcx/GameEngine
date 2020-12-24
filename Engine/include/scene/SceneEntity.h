@@ -2,6 +2,9 @@
 
 #include <scene/Scene.h>
 
+namespace Engine
+{
+
 class SceneEntity
 {
 public:
@@ -75,3 +78,5 @@ private:
 
     friend class Scene;
 };
+
+}

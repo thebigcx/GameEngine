@@ -10,6 +10,9 @@
 #include <sound/SoundSource.h>
 #include <core/Core.h>
 
+namespace Engine
+{
+
 class SoundEngine
 {
 public:
@@ -25,3 +28,5 @@ private:
     static ALCdevice* m_device;
     static ALCcontext* m_context;
 };
+
+}

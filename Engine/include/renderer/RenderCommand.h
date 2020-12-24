@@ -2,6 +2,9 @@
 
 #include <renderer/RendererAPI.h>
 
+namespace Engine
+{
+
 class RenderCommand
 {
 public:
@@ -59,3 +62,5 @@ public:
 private:
     static Unique<RendererAPI> m_api;
 };
+
+}

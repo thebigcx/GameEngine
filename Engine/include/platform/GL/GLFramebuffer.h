@@ -5,6 +5,9 @@
 #include <renderer/Framebuffer.h>
 #include <maths/math.h>
 
+namespace Engine
+{
+
 class GLFramebuffer : public Framebuffer
 {
 public:
@@ -44,3 +47,5 @@ private:
 
     static constexpr int s_maxSize = 8192;
 };
+
+}

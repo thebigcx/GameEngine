@@ -6,6 +6,9 @@
 #include <renderer/VertexArray.h>
 #include <renderer/Material.h>
 
+namespace Engine
+{
+
 class Mesh
 {
 public:
@@ -16,3 +19,5 @@ public:
     Shared<VertexArray> vertexArray;
     Shared<Material> material;
 };
+
+}

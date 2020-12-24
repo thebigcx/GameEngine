@@ -7,6 +7,9 @@
 #include <renderer/Renderer.h>
 #include <renderer/Assets.h>
 
+namespace Engine
+{
+
 Renderer3DData Renderer3D::data;
 
 void Renderer3D::init()
@@ -213,4 +216,6 @@ void Renderer3D::setLights(const LightSetup& setup)
 void Renderer3D::setEnvironment(const Shared<Skybox>& environment)
 {
     data.environment = environment;
+}
+
 }

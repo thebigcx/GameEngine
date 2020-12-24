@@ -1,6 +1,9 @@
 #include <platform/GL/GLRendererAPI.h>
 #include <core/Logger.h>
 
+namespace Engine
+{
+
 void GLAPIENTRY messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const char* message, const void* userParam)
 {
     switch (severity)
@@ -124,4 +127,6 @@ void GLRendererAPI::renderIndexed(Shared<VertexArray> array, uint32_t count, uin
     }
 
     glDrawElements(GL_TRIANGLES, count, type, (void*)(offset * sizeof(uint32_t)));
+}
+
 }

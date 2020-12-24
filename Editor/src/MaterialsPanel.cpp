@@ -12,6 +12,9 @@
 
 #include "FileSelectWindow.h"
 
+namespace Engine
+{
+
 MaterialsPanel::MaterialsPanel()
 {
     init();
@@ -365,4 +368,6 @@ void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
     m_materialPreviewViewport->unbind();
 
     ImGui::Image(reinterpret_cast<void*>(m_materialPreviewViewport->getColorAttachment()), size, ImVec2{0, 1}, ImVec2{1, 0});
+}
+
 }

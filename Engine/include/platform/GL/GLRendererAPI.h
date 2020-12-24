@@ -2,6 +2,9 @@
 
 #include <renderer/RendererAPI.h>
 
+namespace Engine
+{
+
 class GLRendererAPI : public RendererAPI
 {
 public:
@@ -18,3 +21,5 @@ public:
 
     void renderIndexed(Shared<VertexArray> array, uint32_t count = 0, uint32_t offset = 0) override;
 };
+
+}

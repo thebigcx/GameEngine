@@ -5,7 +5,12 @@
 
 #include <iostream>
 
+namespace Engine
+{
+
 Shared<Framebuffer> Framebuffer::create(uint32_t width, uint32_t height)
 {
     return createShared<GLFramebuffer>(width, height);
+}
+
 }

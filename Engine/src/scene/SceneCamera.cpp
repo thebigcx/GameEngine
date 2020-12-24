@@ -1,6 +1,9 @@
 #include <scene/SceneCamera.h>
 #include <maths/matrix/matrix_transform.h>
 
+namespace Engine
+{
+
 SceneCamera::SceneCamera()
 {
     calculateProjection();
@@ -49,4 +52,6 @@ void SceneCamera::setViewportSize(uint32_t width, uint32_t height)
 {
     m_aspect = static_cast<float>(width) / static_cast<float>(height);
     calculateProjection();
+}
+
 }

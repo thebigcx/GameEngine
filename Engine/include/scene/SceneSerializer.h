@@ -4,6 +4,9 @@
 
 #include <scene/Scene.h>
 
+namespace Engine
+{
+
 class SceneSerializer
 {
 public:
@@ -17,3 +20,5 @@ private:
     static void saveChildRecurse(SceneEntity& parent, YAML::Node& node);
     static void loadChildRecurse(YAML::Node& node, Ecs::Registry& registry, const Shared<Scene>& scene, const std::string& name);
 };
+
+}

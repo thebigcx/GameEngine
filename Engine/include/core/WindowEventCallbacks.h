@@ -7,6 +7,9 @@
 
 #include <GLFW/glfw3.h>
 
+namespace Engine
+{
+
 static void windowCloseCallback(GLFWwindow* window)
 {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -169,4 +172,6 @@ static void joystickCallback(int jid, int event)
         data.eventCallback(event);
     }
     
+}
+
 }

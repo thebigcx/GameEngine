@@ -4,6 +4,9 @@
 
 #include <core/Core.h>
 
+namespace Engine
+{
+
 struct Image
 {
     ~Image();
@@ -22,3 +25,5 @@ public:
 private:
     static Shared<Image> loadImageImpl(const std::string& path);
 };
+
+}

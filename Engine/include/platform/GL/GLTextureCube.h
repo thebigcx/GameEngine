@@ -2,6 +2,9 @@
 
 #include <renderer/TextureCube.h>
 
+namespace Engine
+{
+
 class GLTextureCube : public TextureCube
 {
 public:
@@ -27,3 +30,5 @@ private:
 
     uint32_t m_id = 0;
 };
+
+}

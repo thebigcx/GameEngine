@@ -4,6 +4,9 @@
 
 #include <core/Core.h>
 
+namespace Engine
+{
+
 class TextureCube
 {
 public:
@@ -18,3 +21,5 @@ public:
     static Shared<TextureCube> create(const std::string& filepath);
     static Shared<TextureCube> create(const std::string* files);
 };
+
+}

@@ -2,6 +2,9 @@
 
 #include <AL/al.h>
 
+namespace Engine
+{
+
 SoundListener SoundListener::getInstance()
 {
     SoundListener listener;
@@ -18,4 +21,6 @@ void SoundListener::setVelocity(float x, float y, float z)
 {
     m_velocity = { x, y, z };
     alListener3f(AL_VELOCITY, m_velocity.x, m_velocity.y, m_velocity.z);
+}
+
 }

@@ -12,6 +12,9 @@
 #include <util/PerspectiveCamera.h>
 #include <scene/EditorCamera.h>
 
+namespace Engine
+{
+
 struct Renderer3DData
 {
     Shared<Shader> modelShader;
@@ -46,3 +49,5 @@ public:
 
     static Renderer3DData data;
 };
+
+}
