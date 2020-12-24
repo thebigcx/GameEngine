@@ -101,7 +101,7 @@ void SceneHierarchy::onImGuiRender()
         ImGui::EndPopup();
     }
 
-    if (FileSelectWindow::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds"))
+    if (FileSelectWindow::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
     {
         if (!FileSelectWindow::display())
         {
@@ -323,11 +323,10 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
         ImGui::InputText("", buf, 128, flags);
         
         ImGui::SameLine();
-        //textureSelect(component.texture);
         std::string currentTexture = component.texture->getPath();
         if (ImGui::BeginCombo("Texture", currentTexture.c_str()))
         {
-            for (auto& texture : Assets::getList<Texture2D>()->getInternalList())
+            for (auto& texture : Assets::getList<Texture2D>())
             {
                 bool isSelected = currentTexture == texture.first;
                 if (ImGui::Selectable(texture.first.c_str(), isSelected))
@@ -393,8 +392,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
             component.meshID = meshID;
         }
 
-
-        if (FileSelectWindow::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds"))
+        if (FileSelectWindow::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
         {
             if (!FileSelectWindow::display())
             {
@@ -470,7 +468,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
                     {
                         auto material = Material::create();
                         std::string key = std::string("material_") + std::to_string(Assets::getAssetCount<Material>() - 1);
-                        Assets::add<Material>(key, Material::create());
+                        Assets::add<Material>(key, material);
                         component.materials.insert(component.materials.end(), materialCount - component.materials.size(), material);
                     }
                     else if (materialCount < component.materials.size())
@@ -494,7 +492,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
                 ImGui::NextColumn();
                 
                 std::vector<const char*> materialNames;
-                for (auto& asset : Assets::getList<Material>()->getInternalList())
+                for (auto& asset : Assets::getList<Material>())
                 {
                     materialNames.push_back(asset.first.c_str());
                 }
@@ -609,7 +607,15 @@ void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
         {
             if (FileSelectWindow::madeSelection())
             {
-                texture = Texture2D::create(FileSelectWindow::getSelection());
+                std::string key = FileSelectWindow::getSelection();
+                if (Assets::exists<Texture2D>(key))
+                {
+                    texture = Assets::get<Texture2D>(key);
+                }
+                else
+                {
+                    texture = Texture2D::create(key);
+                }
             }
         }
     }

@@ -30,6 +30,7 @@ public:
 
     static Shared<Texture2D> create(const std::string& file, bool isSRGB = false);
     static Shared<Texture2D> create(int width, int height, GLenum dataFormat = GL_RGBA8);
+    static Shared<Texture2D> createWhiteTexture();
 
     static Shared<Texture2D> asyncCreate(const std::string& file, bool isSRGB = false);
 

@@ -25,7 +25,7 @@ Application::Application()
     m_window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
     math::random::init_seed();
-    //SoundEngine::init();
+    SoundEngine::init();
     Renderer::init();
     Time::init();
 
@@ -52,13 +52,14 @@ void Application::run()
 
         m_window->pollEvents();
 
-        for (auto layer : m_layers)
+        for (auto& layer : m_layers)
         {
             layer->onUpdate(Time::getDelta());
         }
 
+        
         m_imguiLayer->begin();
-        for (auto layer : m_layers)
+        for (auto& layer : m_layers)
         {
             layer->onImGuiRender();
         }
@@ -107,6 +108,9 @@ void Application::quit()
 
 bool Application::onWindowResize(WindowResizeEvent& event)
 {
+    m_window->m_width = event.getWidth();
+    m_window->m_height = event.getHeight();
+    
     Renderer::windowResize(event);
     return false;
 }

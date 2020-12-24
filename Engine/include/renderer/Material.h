@@ -15,7 +15,7 @@ public:
     static Shared<Material> create();
     static Shared<Material> create(const Shared<Shader>& shader);
 
-    bool usingMetalnessMap = false;
+    bool usingMetallicMap = false;
     bool usingRoughnessMap = false;
     bool usingAlbedoMap = true;
     bool usingNormalMap = false;
@@ -26,7 +26,7 @@ public:
     float roughness = 0.f;
     Shared<Texture2D> albedoMap;
     Shared<Texture2D> normalMap;
-    Shared<Texture2D> metalnessMap;
+    Shared<Texture2D> metallicMap;
     Shared<Texture2D> roughnessMap;
     Shared<Texture2D> ambientOcclusionMap;
     Shared<Texture2D> depthMap;
@@ -35,13 +35,11 @@ public:
 
     Shared<Shader> shader;
 
-    std::string name;
-
     bool operator==(const Material& other)
     {
         return other.albedoMap == albedoMap && 
                other.normalMap == normalMap && 
-               other.metalnessMap == metalnessMap && 
+               other.metallicMap == metallicMap && 
                other.roughnessMap == roughnessMap &&
                other.ambientOcclusionMap == ambientOcclusionMap &&
                other.depthMap == ambientOcclusionMap;
@@ -51,7 +49,7 @@ public:
     {
         return other.albedoMap != albedoMap || 
                other.normalMap != normalMap || 
-               other.metalnessMap != metalnessMap || 
+               other.metallicMap != metallicMap || 
                other.roughnessMap != roughnessMap ||
                other.ambientOcclusionMap != ambientOcclusionMap ||
                other.depthMap != ambientOcclusionMap;

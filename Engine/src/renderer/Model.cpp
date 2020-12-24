@@ -164,11 +164,11 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene, const Shared
             }
 
             if (!metallic)
-                material_->usingMetalnessMap = false;
+                material_->usingMetallicMap = false;
             else
             {
-                material_->metalnessMap = metallic;
-                material_->usingMetalnessMap = true;
+                material_->metallicMap = metallic;
+                material_->usingMetallicMap = true;
             }
 
             if (!roughness)
@@ -191,7 +191,6 @@ Shared<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene, const Shared
             m_materialsLoaded.emplace(std::pair<int, Shared<Material>>(mesh->mMaterialIndex, material));
 
             std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
-            material->name = name;
             Assets::add<Material>(name, material);
         }
     }

@@ -16,6 +16,14 @@ Shared<Texture2D> Texture2D::create(int width, int height, GLenum dataFormat)
     return createShared<GLTexture2D>(width, height, dataFormat);
 }
 
+Shared<Texture2D> Texture2D::createWhiteTexture()
+{
+    auto texture = createShared<GLTexture2D>(1, 1);
+    uint32_t white = 0xffffffff;
+    texture->setData(0, 0, 1, 1, &white);
+    return texture;
+}
+
 Shared<Texture2D> Texture2D::asyncCreate(const std::string& file, bool isSRGB)
 {
     Shared<Image> img;

@@ -3,12 +3,13 @@
 
 #include <iostream>
 
-Window::Window(int width, int height, const std::string& title)
+Window::Window(unsigned int width, unsigned int height, const std::string& title)
+    : m_width(width), m_height(height)
 {
     init(width, height, title);
 }
 
-void Window::init(int width, int height, const std::string& title)
+void Window::init(unsigned int width, unsigned int height, const std::string& title)
 {
     bool success = glfwInit();
     if (!success)
@@ -60,7 +61,7 @@ Window::~Window()
     glfwDestroyWindow(m_window);
 }
 
-Unique<Window> Window::create(int width, int height, const std::string& title)
+Unique<Window> Window::create(unsigned int width, unsigned int height, const std::string& title)
 {
     return createUnique<Window>(width, height, title);
 }
@@ -68,23 +69,6 @@ Unique<Window> Window::create(int width, int height, const std::string& title)
 void Window::setEventCallback(const std::function<void(Event&)>& callback)
 {
     m_data.eventCallback = callback;
-}
-
-math::ivec2 Window::getSize() const
-{
-    int width, height;
-    glfwGetWindowSize(m_window, &width, &height);
-    return math::ivec2(width, height);
-}
-
-int Window::getWidth() const
-{
-    return this->getSize().x;
-}
-
-int Window::getHeight() const
-{
-    return this->getSize().y;
 }
 
 void Window::onUpdate()
@@ -129,6 +113,9 @@ void Window::setTitle(const std::string& title)
 
 void Window::setSize(const math::uvec2& size)
 {
+    m_width = size.x;
+    m_height = size.y;
+    
     glfwSetWindowSize(m_window, size.x, size.y);
 }
 

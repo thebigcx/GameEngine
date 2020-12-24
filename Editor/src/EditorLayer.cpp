@@ -11,7 +11,7 @@
 #include <renderer/Assets.h>
 #include <renderer/MeshFactory.h>
 #include <scene/SceneSerializer.h>
-#include <script/LuaState.h>
+#include <script/lua/state.h>
 #include <util/Timer.h>
 
 EditorLayer::EditorLayer()
@@ -43,13 +43,18 @@ void EditorLayer::onAttach()
         Assets::add<Texture2D>("white_texture", whiteTexture);
     }
 
-    LuaState state("Editor/scripts/test.lua");
+    lua::state state;
     int x = 0;
-    state.setFunction("average", [&x]{
+    state.set_function("average", [&x]{
         x++;
     });
 
     std::cout << x << "\n";
+
+    for (auto& asset : Assets::getList<Material>())
+    {
+        std::cout << "s\n";
+    }
 
     /*    
 
@@ -108,6 +113,7 @@ void EditorLayer::onAttach()
 
 void EditorLayer::onUpdate(float dt)
 {
+    Timer timer;
     m_editorCamera.onUpdate(dt);
 
     if (m_framebuffer->getWidth() != m_viewportSize.x || m_framebuffer->getHeight() != m_viewportSize.y)
@@ -131,6 +137,8 @@ void EditorLayer::onUpdate(float dt)
     }
 
     m_framebuffer->unbind();
+
+    Application::get().getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
 }
 
 void EditorLayer::drawMenuBar()
@@ -167,6 +175,7 @@ void EditorLayer::drawMenuBar()
         {
             if (FileSelectWindow::madeSelection())
             {
+                Assets::flush();
                 m_scene = SceneSerializer::loadScene(FileSelectWindow::getSelection());
                 m_sceneHeirarchy.setContext(m_scene);
                 m_materialsPanel.setContext(m_scene); // TODO: add a callback system to make this better

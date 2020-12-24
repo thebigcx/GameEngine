@@ -27,7 +27,7 @@ void Renderer3D::init()
                                             + sizeof(math::vec3)
                                             + sizeof(float), 1);
 
-    std::array<std::string, 6> skyboxFaces = {
+    /*std::array<std::string, 6> skyboxFaces = {
         "Sandbox/assets/skybox/right.jpg",
         "Sandbox/assets/skybox/left.jpg",
         "Sandbox/assets/skybox/top.jpg",
@@ -36,9 +36,11 @@ void Renderer3D::init()
         "Sandbox/assets/skybox/back.jpg"
     };
 
-    data.environment = Skybox::create(skyboxFaces);
+    data.environment = Skybox::create(skyboxFaces);*/
     data.skyboxMesh = MeshFactory::skyboxMesh();
+
     data.skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
+    Assets::add<Shader>("Engine/src/renderer/shader/default/skybox.glsl", data.skyboxShader);
 }
 
 void Renderer3D::shutdown()

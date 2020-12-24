@@ -21,7 +21,7 @@ public:
     virtual void onWindowResize(WindowResizeEvent& event);
 
     math::mat4 getViewMatrix() const;
-    inline const math::mat4& getProjectionMatrix() const
+    inline constexpr const math::mat4& getProjectionMatrix() const
     {
         return m_projectionMatrix;
     }

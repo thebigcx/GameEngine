@@ -36,7 +36,13 @@ void MaterialsPanel::init()
 
 void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
 {
-    if (ImGui::ImageButton(reinterpret_cast<void*>(texture->getId()), ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 }))
+    bool open;
+    if (texture)
+        ImGui::ImageButton(reinterpret_cast<void*>(texture->getId()), ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    else
+        ImGui::ImageButton(0, ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    
+    if (open)
     {
         FileSelectWindow::open(&texture);
     }
@@ -47,7 +53,15 @@ void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
         {
             if (FileSelectWindow::madeSelection())
             {
-                texture = Texture2D::create(FileSelectWindow::getSelection());
+                std::string key = FileSelectWindow::getSelection();
+                if (Assets::exists<Texture2D>(key))
+                {
+                    texture = Assets::get<Texture2D>(key);
+                }
+                else
+                {
+                    texture = Texture2D::create(key);
+                }
             }
         }
     }
@@ -61,7 +75,7 @@ void MaterialsPanel::onImGuiRender()
 
     if (ImGui::CollapsingHeader("Materials"))
     {
-        for (auto& asset : Assets::getList<Material>()->getInternalList())
+        for (auto& asset : Assets::getList<Material>())
         {
             if (ImGui::TreeNodeEx(asset.first.c_str()))
             {
@@ -74,15 +88,15 @@ void MaterialsPanel::onImGuiRender()
                 {
                     if (!Assets::exists<Material>(std::string(buf)))
                     {
-                        auto nh = Assets::getList<Material>()->getInternalList().extract(asset.first);
+                        auto nh = Assets::getList<Material>().getInternalList().extract(asset.first);
                         nh.key() = std::string(buf);
-                        Assets::getList<Material>()->getInternalList().insert(std::move(nh));
+                        Assets::getList<Material>().getInternalList().insert(std::move(nh));
                     }
                 }
 
                 std::string currentShader = "";
 
-                for (auto& shader : Assets::getList<Shader>()->getInternalList())
+                for (auto& shader : Assets::getList<Shader>())
                 {
                     if (shader.second == material->shader)
                     {
@@ -92,7 +106,7 @@ void MaterialsPanel::onImGuiRender()
 
                 if (ImGui::BeginCombo("Shader", currentShader.c_str()))
                 {
-                    for (auto& shader : Assets::getList<Shader>()->getInternalList())
+                    for (auto& shader : Assets::getList<Shader>())
                     {
                         bool isSelected = currentShader == shader.first;
                         if (ImGui::Selectable(shader.first.c_str(), isSelected))
@@ -139,10 +153,10 @@ void MaterialsPanel::onImGuiRender()
                 {
                     ImGui::PushID("Metalness");
 
-                    textureSelect(material->metalnessMap);
+                    textureSelect(material->metallicMap);
 
                     ImGui::SameLine();
-                    ImGui::Checkbox("Use", &material->usingMetalnessMap);
+                    ImGui::Checkbox("Use", &material->usingMetallicMap);
 
                     ImGui::PopID();
                 }
@@ -196,7 +210,7 @@ void MaterialsPanel::onImGuiRender()
 
     if (ImGui::CollapsingHeader("Shaders"))
     {
-        for (auto& shader : Assets::getList<Shader>()->getInternalList())
+        for (auto& shader : Assets::getList<Shader>().getInternalList())
         {
             bool opened = ImGui::TreeNodeEx(shader.first.c_str());
 
@@ -256,7 +270,7 @@ void MaterialsPanel::onImGuiRender()
     std::string deletedTexture = "";
     if (ImGui::CollapsingHeader("Textures"))
     {
-        for (auto& texture : Assets::getList<Texture2D>()->getInternalList())
+        for (auto& texture : Assets::getList<Texture2D>().getInternalList())
         {
             bool opened = ImGui::TreeNodeEx(texture.first.c_str());
 

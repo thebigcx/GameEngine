@@ -141,7 +141,10 @@ void FileSelectWindow::renderDirectory(const std::filesystem::path& path)
     bool parentOpened = ImGui::Selectable("##..");
 
     ImGui::SameLine(0, 0);
-    ImGui::Image(reinterpret_cast<void*>(m_instance.m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    if (m_instance.m_flags & static_cast<uint32_t>(Flags::NoIcons))
+        ImGui::Text("[Dir]");
+    else
+        ImGui::Image(reinterpret_cast<void*>(m_instance.m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     ImGui::SameLine();
     ImGui::Text("..");
 
@@ -209,7 +212,10 @@ void FileSelectWindow::renderDirectory(const std::filesystem::path& path)
         bool opened = ImGui::Selectable((std::string("##") + name).c_str());
 
         ImGui::SameLine(0, 0);
-        ImGui::Image(reinterpret_cast<void*>(m_instance.m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        if (m_instance.m_flags & static_cast<uint32_t>(Flags::NoIcons))
+            ImGui::Text("[Dir]");
+        else
+            ImGui::Image(reinterpret_cast<void*>(m_instance.m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::SameLine();
         ImGui::Text(name.c_str());
 
@@ -226,7 +232,10 @@ void FileSelectWindow::renderDirectory(const std::filesystem::path& path)
         bool opened = ImGui::Selectable((std::string("##") + name).c_str());
 
         ImGui::SameLine(0, 0);
-        ImGui::Image(reinterpret_cast<void*>(m_instance.m_fileIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        if (m_instance.m_flags & static_cast<uint32_t>(Flags::NoIcons))
+            ImGui::Text("[File]");
+        else
+            ImGui::Image(reinterpret_cast<void*>(m_instance.m_fileIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::SameLine();
         ImGui::Text(name.c_str());
 

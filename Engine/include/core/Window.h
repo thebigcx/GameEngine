@@ -18,8 +18,11 @@ struct WindowData
 
 class Window
 {
+private:
+    friend class Application;
+
 public:
-    Window(int width, int height, const std::string& title);
+    Window(unsigned int width, unsigned int height, const std::string& title);
     ~Window();
 
     bool isOpen();
@@ -35,9 +38,9 @@ public:
         return m_window;
     }
 
-    int getWidth() const;
-    int getHeight() const;
-    math::ivec2 getSize() const;
+    inline constexpr unsigned int getWidth() const noexcept { return m_height; }
+    inline constexpr unsigned int getHeight() const noexcept { return m_width; }
+    inline math::uvec2 getSize() const { return math::uvec2(m_width, m_height); }
 
     void close();
 
@@ -54,14 +57,16 @@ public:
 
     void setOpacity(float opacity);
 
-    static Unique<Window> create(int width, int height, const std::string& title);
+    static Unique<Window> create(unsigned int width, unsigned height, const std::string& title);
 
 private:
     GLFWwindow* m_window;
 
     Unique<RenderingContext> m_context;
 
-    void init(int width, int height, const std::string& title);
+    void init(unsigned int width, unsigned int height, const std::string& title);
 
     WindowData m_data;
+
+    unsigned int m_width = 0, m_height = 0;
 };

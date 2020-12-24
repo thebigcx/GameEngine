@@ -29,9 +29,9 @@ void Material::bind() const
         shader->setInt("material.usingNormal", 0);
     }
 
-    if (usingMetalnessMap)
+    if (usingMetallicMap)
     {
-        metalnessMap->bind(2);
+        metallicMap->bind(2);
         shader->setInt("material.metallic", 2);
         shader->setInt("material.usingMetalness", 1);
     }
@@ -86,7 +86,7 @@ void Material::unbind() const
 
     albedoMap->unbind(0);
     normalMap->unbind(1);
-    metalnessMap->unbind(2);
+    metallicMap->unbind(2);
     roughnessMap->unbind(3);
     ambientOcclusionMap->unbind(4);
     depthMap->unbind(5);
@@ -101,7 +101,7 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
         material->shader = shader;
     }
 
-    uint32_t white = 0xffffffff; // TODO: don't bother setting texture colors, leave them as nullptr's
+    /*uint32_t white = 0xffffffff; // TODO: don't bother setting texture colors, leave them as nullptr's
     uint32_t black = 0x00000000;
     
     material->albedoMap = Texture2D::create(1, 1);
@@ -110,8 +110,8 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
     material->normalMap = Texture2D::create(1, 1);
     material->normalMap->setData(0, 0, 1, 1, &black);
 
-    material->metalnessMap = Texture2D::create(1, 1);
-    material->metalnessMap->setData(0, 0, 1, 1, &white);
+    material->metallicMap = Texture2D::create(1, 1);
+    material->metallicMap->setData(0, 0, 1, 1, &white);
 
     material->roughnessMap = Texture2D::create(1, 1);
     material->roughnessMap->setData(0, 0, 1, 1, &white);
@@ -122,7 +122,7 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
     material->depthMap = Texture2D::create(1, 1);
     material->depthMap->setData(0, 0, 1, 1, &white);
 
-    material->albedoColor = math::vec4(1, 1, 1, 1);
+    material->albedoColor = math::vec4(1, 1, 1, 1);*/
 
     return material;
 }

@@ -13,11 +13,23 @@ enum class FileDialogType
     Select
 };
 
+class FileDialog
+{
+public:
+
+};
+
 class FileSelectWindow // TODO: separate select/save file dialogs into inherited classes of base class "FileDialog"
 {
 private:
     FileSelectWindow();
     ~FileSelectWindow() = default;
+
+public:
+    enum class Flags
+    {
+        NoIcons
+    };
 
 public:
     static bool display();
@@ -29,6 +41,22 @@ public:
     template<typename... Args>
     static bool selectFile(const void* id, const std::string& title = "Choose file", Args... args)
     {
+        m_instance.m_flags = 0;
+        if (m_instance.m_id != id)
+        {
+            return false;
+        }
+        m_instance.m_title = title;
+        m_instance.m_acceptedFileTypes = { args... };
+        m_instance.m_type = FileDialogType::Select;
+
+        return m_instance.m_isOpen;
+    }
+
+    template<typename... Args>
+    static bool selectFile(const void* id, uint32_t flags, const std::string& title = "Choose file", Args... args)
+    {
+        m_instance.m_flags = flags;
         if (m_instance.m_id != id)
         {
             return false;
@@ -68,6 +96,7 @@ public:
         m_instance.m_selection = "";
         m_instance.m_isOpen = true;
         m_instance.m_workingPath = std::filesystem::current_path();
+        m_instance.m_flags = 0;
     }
 
     static std::string getFilename()
@@ -99,6 +128,8 @@ private:
 
     Shared<Texture2D> m_folderIcon;
     Shared<Texture2D> m_fileIcon;
+
+    uint32_t m_flags;
 
     const void* m_id = 0;
 
