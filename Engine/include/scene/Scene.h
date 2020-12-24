@@ -7,7 +7,6 @@
 #include <renderer/Material.h>
 #include <renderer/Lights.h>
 
-class Entity;
 class SceneEntity;
 
 class Scene
@@ -24,7 +23,7 @@ public:
     SceneEntity createEntity(const std::string& name);
     void destroyEntity(SceneEntity& entity);
 
-    EntityRegistry& getRegistry()
+    Ecs::Registry& getRegistry()
     {
         return m_registry;
     }
@@ -35,7 +34,7 @@ public:
     void onComponentAdded(SceneEntity& entity, T& component);
 
 private:
-    EntityRegistry m_registry;
+    Ecs::Registry m_registry;
 
     uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 

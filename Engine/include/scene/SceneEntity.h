@@ -6,13 +6,13 @@ class SceneEntity
 {
 public:
     SceneEntity() = default;
-    SceneEntity(Entity* entity, Scene* scene);
+    SceneEntity(Ecs::Entity* entity, Scene* scene);
     SceneEntity(const SceneEntity& other) = default;
 
     template<typename T, typename... Args>
-    T& addComponent(Args... args)
+    T& addComponent(Args&&... args)
     {
-        T& component = m_entityHandle->getParent()->emplace<T>(m_entityHandle, args...);
+        T& component = m_entityHandle->getParent()->emplace<T>(m_entityHandle, std::forward<Args>(args)...);
         m_scene->onComponentAdded<T>(*this, component);
         return component;
     }
@@ -39,7 +39,7 @@ public:
     std::vector<SceneEntity> getChildren()
     {
         std::vector<SceneEntity> children;
-        m_entityHandle->getChildren()->each([&](Entity* entityID)
+        m_entityHandle->getChildren()->each([&](Ecs::Entity* entityID)
         {
             children.push_back(SceneEntity(entityID, m_scene));
         });
@@ -47,9 +47,9 @@ public:
         return children;
     }
 
-    Entity* addChild(const std::string& name);
+    Ecs::Entity* addChild(const std::string& name);
 
-    const Entity* getHandle() const
+    const Ecs::Entity* getHandle() const
     {
         return m_entityHandle;
     }
@@ -70,7 +70,7 @@ public:
 
 private:
     Scene* m_scene = nullptr;
-    Entity* m_entityHandle = nullptr;
+    Ecs::Entity* m_entityHandle = nullptr;
     
 
     friend class Scene;

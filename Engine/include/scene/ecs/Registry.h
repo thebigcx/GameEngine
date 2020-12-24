@@ -9,6 +9,9 @@
 #include <core/Logger.h>
 #include <core/Core.h>
 
+namespace Ecs
+{
+
 class IComponent
 {
 public:
@@ -20,30 +23,30 @@ class Component : public IComponent
 {
 public:
     template<typename... Args>
-    Component(Args... args) 
+    Component(Args&&... args) 
         : value(args...) {}
 
     T value;
 };
 
-class EntityRegistry;
+class Registry;
 
 class Entity
 {
 private:
-    friend class EntityRegistry;
-    friend class EntityView;
+    friend class Registry;
+    friend class View;
 
 public:
-    Entity(EntityRegistry* parent);
+    Entity(Registry* parent);
     ~Entity();
 
-    const Shared<EntityRegistry>& getChildren()
+    const Shared<Registry>& getChildren()
     {
         return m_children;
     }
 
-    EntityRegistry* getParent()
+    Registry* getParent()
     {
         return m_parent;
     }
@@ -61,18 +64,18 @@ public:
     }
 
 private:
-    EntityRegistry* m_parent;
-    Shared<EntityRegistry> m_children;
+    Registry* m_parent;
+    Shared<Registry> m_children;
 
     std::unordered_map<std::type_index, IComponent*> m_components;
 
     void recurseAbsolutePath(Entity* current, std::vector<Entity*>& path);
 };
 
-class EntityView
+class View
 {
 public:
-    EntityView(const std::vector<Entity*>& entities)
+    View(const std::vector<Entity*>& entities)
         : m_entities(entities)
     {
 
@@ -104,22 +107,22 @@ private:
     std::vector<Entity*> m_entities;
 };
 
-class EntityRegistry
+class Registry
 {
 public:
-    EntityRegistry()
+    Registry()
         : m_parent(nullptr)
     {
         
     }
 
-    EntityRegistry(Entity* parent)
+    Registry(Entity* parent)
         : m_parent(parent)
     {
 
     }
 
-    ~EntityRegistry()
+    ~Registry()
     {
         
     }
@@ -166,7 +169,7 @@ public:
     }
 
     template<typename T, typename... Args>
-    T& emplace(Entity* entity, Args... args)
+    T& emplace(Entity* entity, Args&&... args)
     {
         if (entity == nullptr)
         {
@@ -178,7 +181,7 @@ public:
         }
         else
         {
-            entity->m_components.insert(std::pair<std::type_index, IComponent*>(typeid(T), new Component<T>(args...)));
+            entity->m_components.insert(std::pair<std::type_index, IComponent*>(typeid(T), new Component<T>(std::forward<Args>(args)...)));
         }
 
         return static_cast<Component<T>&>(*(entity->m_components.at(typeid(T)))).value;
@@ -236,22 +239,22 @@ public:
     }
 
     template<typename T, typename... Args>
-    void replace(Entity* entity, Args... args)
+    void replace(Entity* entity, Args&&... args)
     {
         delete entity->m_components.find(typeid(T))->second;
-        entity->m_components.find(typeid(T))->second = new Component<T>(args...);
+        entity->m_components.find(typeid(T))->second = new Component<T>(std::forward<Args>(args)...);
     }
 
     template<typename T, typename... Args>
-    void emplace_or_replace(Entity* entity, Args... args)
+    void emplace_or_replace(Entity* entity, Args&&... args)
     {
         if (has<T>(entity))
         {
-            this->replace<T>(entity, args...);
+            this->replace<T>(entity, std::forward<Args>(args)...);
         }
         else
         {
-            this->emplace<T>(entity, args...);
+            this->emplace<T>(entity, std::forward<Args>(args)...);
         }
     }
 
@@ -304,7 +307,7 @@ public:
     }
 
     template<typename... Components>
-    EntityView view()
+    View view()
     {
         std::vector<Entity*> entities;
         for (auto& entity : m_entities)
@@ -315,11 +318,11 @@ public:
             }
         }
 
-        return EntityView(entities);
+        return View(entities);
     }
 
     template<typename... Components>
-    EntityView recurse_view()
+    View recurse_view()
     {
         std::vector<Entity*> entities;
         for (auto& entity : m_entities)
@@ -331,7 +334,7 @@ public:
             }
         }
 
-        return EntityView(entities);
+        return View(entities);
     }
 
     Entity* owned_by()
@@ -395,7 +398,7 @@ private:
 };
 
 template<typename T, typename Func>
-void EntityView::each(const Func& func)
+void View::each(const Func& func)
 {
     for (auto& entity : m_entities)
     {
@@ -404,4 +407,6 @@ void EntityView::each(const Func& func)
             func(entity, entity->getParent()->get<T>(entity));
         }
     }
+}
+
 }

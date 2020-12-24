@@ -53,7 +53,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 
     Renderer3D::beginScene(camera);
 
-    m_registry.recurse_each([&](Entity* entityID)
+    m_registry.recurse_each([&](Ecs::Entity* entityID)
     {
         SceneEntity entity(entityID, this);
         if (entity.hasComponent<MeshComponent>() && entity.hasComponent<MeshRendererComponent>() && entity.hasComponent<TransformComponent>())

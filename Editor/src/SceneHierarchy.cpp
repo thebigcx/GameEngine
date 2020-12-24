@@ -138,7 +138,7 @@ void SceneHierarchy::onImGuiRender()
     if (gameObjectsOpen)
     {   
         m_deletedEntity = SceneEntity::createNull(m_context.get());
-        m_context->getRegistry().each([&](Entity* entityHandle)
+        m_context->getRegistry().each([&](Ecs::Entity* entityHandle)
         {
             recurseTree(SceneEntity(entityHandle, m_context.get()));
         });

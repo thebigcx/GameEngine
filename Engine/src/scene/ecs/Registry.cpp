@@ -1,9 +1,12 @@
 #include <scene/ecs/Registry.h>
 
-Entity::Entity(EntityRegistry* parent)
+namespace Ecs
+{
+
+Entity::Entity(Registry* parent)
     : m_parent(parent)
 {
-    m_children = createShared<EntityRegistry>(this);
+    m_children = createShared<Registry>(this);
 }
 
 Entity::~Entity()
@@ -26,4 +29,6 @@ void Entity::recurseAbsolutePath(Entity* current, std::vector<Entity*>& path)
     path.push_back(current);
 
     recurseAbsolutePath(current->getParent()->owned_by(), path);
+}
+
 }

@@ -2,6 +2,9 @@
 
 #include "EditorLayer.h"
 
+namespace Editor
+{
+
 class EditorApp : public Application
 {
 public:
@@ -15,4 +18,6 @@ public:
 Application* createApplication()
 {
     return new EditorApp();
+}
+
 }

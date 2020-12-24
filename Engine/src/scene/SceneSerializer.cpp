@@ -78,7 +78,7 @@ void SceneSerializer::saveScene(const Shared<Scene>& scene, const std::string& p
         sceneNode["Shaders"][shader.first] = shader.second->getPath();
     }
 
-    scene->getRegistry().each([&](Entity* entityID)
+    scene->getRegistry().each([&](Ecs::Entity* entityID)
     {
         SceneEntity entity(entityID, scene.get());
 
@@ -163,7 +163,7 @@ Shared<Scene> SceneSerializer::loadScene(const std::string& path)
     return scene;
 }
 
-void SceneSerializer::loadGameObject(YAML::Node& node, EntityRegistry& registry, const Shared<Scene>& scene, const std::string& name)
+void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, const Shared<Scene>& scene, const std::string& name)
 {
     auto entity = registry.create();
     registry.emplace<TagComponent>(entity, name);
@@ -302,7 +302,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, EntityRegistry& registry,
     }
 }
 
-void SceneSerializer::loadChildRecurse(YAML::Node& node, EntityRegistry& registry, const Shared<Scene>& scene, const std::string& name)
+void SceneSerializer::loadChildRecurse(YAML::Node& node, Ecs::Registry& registry, const Shared<Scene>& scene, const std::string& name)
 {
     for (YAML::const_iterator it = node.begin(); it != node.end(); it++)
     {
