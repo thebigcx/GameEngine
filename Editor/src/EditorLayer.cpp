@@ -46,14 +46,6 @@ void EditorLayer::onAttach()
         Assets::add<Texture2D>("white_texture", whiteTexture);
     }
 
-    lua::state state;
-    int x = 0;
-    state.set_function("average", [&x]{
-        x++;
-    });
-
-    std::cout << x << "\n";
-
     /*    
 
     class CameraController : public ScriptableEntity
@@ -263,33 +255,36 @@ void EditorLayer::onImGuiRender()
 
         ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
 
-        SceneEntity& entity = m_sceneHeirarchy.getSelectedEntity();
-        if (entity && m_gizmoType != -1 && entity.hasComponent<TransformComponent>())
+        GameObject* entity = m_sceneHeirarchy.getSelectedEntity();
+        if (entity)
         {
-            auto& tc = entity.getComponent<TransformComponent>();
-            math::mat4 transform = tc.getTransform();
-
-            bool snap = Input::isKeyPressed(Key::LeftControl);
-            float snapValue = 0.5f;
-            
-            if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
+            if (m_gizmoType != -1 && entity->hasComponent<TransformComponent>())
             {
-                snapValue = 45.f;
-            }
+                auto& tc = entity->getComponent<TransformComponent>();
+                math::mat4 transform = tc.getTransform();
 
-            float snapValues[] = { snapValue, snapValue, snapValue };
+                bool snap = Input::isKeyPressed(Key::LeftControl);
+                float snapValue = 0.5f;
+                
+                if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
+                {
+                    snapValue = 45.f;
+                }
+
+                float snapValues[] = { snapValue, snapValue, snapValue };
+                
+                ImGuizmo::Manipulate(math::buffer(view), math::buffer(projection), (ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, math::buffer(transform), nullptr, snap ? snapValues : nullptr);
             
-            ImGuizmo::Manipulate(math::buffer(view), math::buffer(projection), (ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, math::buffer(transform), nullptr, snap ? snapValues : nullptr);
-        
-            if (ImGuizmo::IsUsing())
-            {
-                math::vec3 translation, rotation, scale;
-                math::decompose_transform(transform, translation, rotation, scale);
+                if (ImGuizmo::IsUsing())
+                {
+                    math::vec3 translation, rotation, scale;
+                    math::decompose_transform(transform, translation, rotation, scale);
 
-                math::vec3 deltaRotation = math::degrees(rotation) - tc.rotation;
-                tc.translation = translation;
-                tc.rotation += deltaRotation;
-                tc.scale = scale;
+                    math::vec3 deltaRotation = math::degrees(rotation) - tc.rotation;
+                    tc.translation = translation;
+                    tc.rotation += deltaRotation;
+                    tc.scale = scale;
+                }
             }
         }
 

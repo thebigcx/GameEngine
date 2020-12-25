@@ -13,7 +13,7 @@ public:
     template<typename T>
     T& getComponent()
     {
-        return m_entity.getComponent<T>();
+        return m_entity->getComponent<T>();
     }
 
 protected:
@@ -23,7 +23,7 @@ protected:
     virtual void onCollide2D() {}
 
 private:
-    SceneEntity m_entity;
+    GameObject* m_entity;
     friend class Scene;
 };
 

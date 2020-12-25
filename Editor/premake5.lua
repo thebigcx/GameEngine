@@ -9,6 +9,7 @@ project "Editor"
 
 	symbols "On"
 	--buildoptions "-Wall -Wextra -pedantic"
+	buildoptions "-Wuninitialized"
 
 	files {
 		"**.cpp",

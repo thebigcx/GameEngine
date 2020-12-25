@@ -17,22 +17,22 @@ public:
     SceneHierarchy(const Shared<Scene>& scene);
 
     template<typename T, typename F>
-    void drawComponent(const std::string& name, SceneEntity& entity, const F& func);
+    void drawComponent(const std::string& name, GameObject& entity, const F& func);
 
-    void drawProperties(SceneEntity& entity);
+    void drawProperties(GameObject& entity);
     
     void setContext(const Shared<Scene>& context)
     {
         m_context = context;
     }
 
-    void recurseTree(SceneEntity entity);
+    void recurseTree(GameObject& entity);
 
     void onImGuiRender();
 
     void drawSceneRenderer();
 
-    SceneEntity& getSelectedEntity()
+    GameObject* getSelectedEntity()
     {
         return m_selection;
     }
@@ -40,8 +40,8 @@ public:
 private:
     Shared<Scene> m_context;
 
-    SceneEntity m_selection;
-    SceneEntity m_deletedEntity;
+    GameObject* m_selection = nullptr;
+    GameObject* m_deletedEntity = nullptr;
 
     void textureSelect(Shared<Texture2D>& texture);
 };

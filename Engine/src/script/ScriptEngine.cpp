@@ -6,8 +6,8 @@ namespace Engine
 
 void ScriptEngine::onUpdate(float dt)
 {
-    auto view = m_context->getRegistry().recurse_view<LuaScriptComponent>();
-    for (auto& entityID : view)
+    auto scripts = m_context->getRootGameObject().getChildrenWithComponent<LuaScriptComponent>();
+    for (auto& object : scripts)
     {
         
     }

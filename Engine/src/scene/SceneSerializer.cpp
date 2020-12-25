@@ -81,14 +81,14 @@ void SceneSerializer::saveScene(const Shared<Scene>& scene, const std::string& p
         sceneNode["Shaders"][shader.first] = shader.second->getPath();
     }
 
-    scene->getRegistry().each([&](Ecs::Entity* entityID)
+    auto& children = scene->getRootGameObject().getChildren();
+
+    for (auto& object : children)
     {
-        SceneEntity entity(entityID, scene.get());
+        auto objectNode = objects[object.getComponent<TagComponent>().tag];
 
-        auto object = objects[entity.getComponent<TagComponent>().tag];
-
-        saveGameObject(entity, object);
-    });
+        saveGameObject(object, objectNode);
+    }
 
     std::ofstream fout(path);
     fout << root;
@@ -160,21 +160,20 @@ Shared<Scene> SceneSerializer::loadScene(const std::string& path)
     {
         auto object = gameObjects[it->first];
 
-        loadGameObject(object, scene->getRegistry(), scene, it->first.as<std::string>());
+        loadGameObject(object, scene->getRootGameObject(), scene, it->first.as<std::string>());
     }
     
     return scene;
 }
 
-void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, const Shared<Scene>& scene, const std::string& name)
+void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const Shared<Scene>& scene, const std::string& name)
 {
-    auto entity = registry.create();
-    registry.emplace<TagComponent>(entity, name);
-    SceneEntity object(entity, scene.get());
+    auto object = parent.addChild();
+    object->addComponent<TagComponent>(name);
 
     if (node["Transform"])
     {
-        auto& transform = object.addComponent<TransformComponent>();
+        auto& transform = object->addComponent<TransformComponent>();
 
         transform.translation.x = node["Transform"]["Translation"][0].as<float>();
         transform.translation.y = node["Transform"]["Translation"][1].as<float>();
@@ -191,7 +190,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, 
 
     if (node["Camera"])
     {
-        auto& camera = object.addComponent<CameraComponent>();
+        auto& camera = object->addComponent<CameraComponent>();
 
         camera.camera.setProjectionType(static_cast<ProjectionType>(node["Camera"]["Projection Type"].as<uint32_t>()));
 
@@ -208,7 +207,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, 
 
     if (node["Sprite Renderer"])
     {
-        auto& spriteRenderer = object.addComponent<SpriteRendererComponent>();
+        auto& spriteRenderer = object->addComponent<SpriteRendererComponent>();
 
         spriteRenderer.color.r = node["Sprite Renderer"]["Color"][0].as<float>();
         spriteRenderer.color.g = node["Sprite Renderer"]["Color"][1].as<float>();
@@ -230,7 +229,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, 
 
     if (node["Mesh"])
     {
-        auto& mesh = object.addComponent<MeshComponent>();
+        auto& mesh = object->addComponent<MeshComponent>();
 
         mesh.filePath = node["Mesh"]["Mesh"].as<std::string>();
         mesh.meshID = node["Mesh"]["Mesh ID"].as<uint32_t>();
@@ -259,7 +258,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, 
 
     if (node["Mesh Renderer"])
     {
-        auto& meshRenderer = object.addComponent<MeshRendererComponent>();
+        auto& meshRenderer = object->addComponent<MeshRendererComponent>();
 
         auto mats = node["Mesh Renderer"]["Materials"];
         for (int i = 0; i < node["Mesh Renderer"]["Material Count"].as<int>(); i++)
@@ -270,7 +269,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, 
 
     if (node["Directional Light"]) // TODO: add directional lights pbr
     {
-        auto& light = object.addComponent<DirectionalLightComponent>();
+        auto& light = object->addComponent<DirectionalLightComponent>();
 
         light.radiance.r = node["Directional Light"]["Radiance"][0].as<float>();
         light.radiance.g = node["Directional Light"]["Radiance"][1].as<float>();
@@ -281,14 +280,14 @@ void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, 
 
     if (node["Sky Light"])
     {
-        auto& light = object.addComponent<SkyLightComponent>();
+        auto& light = object->addComponent<SkyLightComponent>();
 
         light.intensity = node["Sky Light"]["Intensity"].as<float>();
     }
 
     if (node["Point Light"])
     {
-        auto& light = object.addComponent<PointLightComponent>();
+        auto& light = object->addComponent<PointLightComponent>();
 
         light.radiance.r = node["Point Light"]["Radiance"][0].as<float>();
         light.radiance.g = node["Point Light"]["Radiance"][1].as<float>();
@@ -301,20 +300,20 @@ void SceneSerializer::loadGameObject(YAML::Node& node, Ecs::Registry& registry, 
     if (node["Children"])
     {
         auto childrenNode = node["Children"];
-        loadChildRecurse(childrenNode, *entity->getChildren(), scene, name);
+        loadChildRecurse(childrenNode, *object, scene, name);
     }
 }
 
-void SceneSerializer::loadChildRecurse(YAML::Node& node, Ecs::Registry& registry, const Shared<Scene>& scene, const std::string& name)
+void SceneSerializer::loadChildRecurse(YAML::Node& node, GameObject& parent, const Shared<Scene>& scene, const std::string& name)
 {
     for (YAML::const_iterator it = node.begin(); it != node.end(); it++)
     {
         YAML::Node nextNode = node[it->first];
-        loadGameObject(nextNode, registry, scene, it->first.as<std::string>());
+        loadGameObject(nextNode, parent, scene, it->first.as<std::string>());
     }
 }
 
-void SceneSerializer::saveGameObject(SceneEntity& entity, YAML::Node& node)
+void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
 {
     if (entity.hasComponent<TransformComponent>())
     {
@@ -452,7 +451,7 @@ void SceneSerializer::saveGameObject(SceneEntity& entity, YAML::Node& node)
     saveChildRecurse(entity, childrenNode);
 }
 
-void SceneSerializer::saveChildRecurse(SceneEntity& parent, YAML::Node& node)
+void SceneSerializer::saveChildRecurse(GameObject& parent, YAML::Node& node)
 {
     for (auto& child : parent.getChildren())
     {

@@ -27,14 +27,18 @@ SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
     
 }
 
-void SceneHierarchy::recurseTree(SceneEntity entity)
+void SceneHierarchy::recurseTree(GameObject& entity)
 {
-    ImGui::PushID(entity.getHandle());
+    ImGui::PushID(&entity);
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
     const char* tag;
     if (!entity.hasComponent<TagComponent>())
-        return;
+    {
+        //ImGui::PopID();
+        entity.addComponent<TagComponent>("?");
+        //return;
+    }
     else
         tag = entity.getComponent<TagComponent>().tag.c_str();
     
@@ -42,7 +46,7 @@ void SceneHierarchy::recurseTree(SceneEntity entity)
 
     if (ImGui::IsItemClicked())
     {
-        m_selection = entity;
+        m_selection = &entity;
     }
     
     bool deleted = false;
@@ -50,7 +54,8 @@ void SceneHierarchy::recurseTree(SceneEntity entity)
     {
         if (ImGui::MenuItem("Create Child"))
         {
-            entity.addChild("Untitled Child");
+            auto object = entity.addChild();
+            object->addComponent<TagComponent>("Untitled Child");
         }
 
         if (ImGui::MenuItem("Delete Game Object"))
@@ -63,8 +68,8 @@ void SceneHierarchy::recurseTree(SceneEntity entity)
 
     if (deleted)
     {
-        m_selection = SceneEntity::createNull(m_context.get());
-        m_deletedEntity = entity;
+        m_selection = nullptr;
+        m_deletedEntity = &entity;
     }
 
     if (entityExpanded)
@@ -86,7 +91,7 @@ void SceneHierarchy::onImGuiRender()
     ImGui::Begin("Scene Hierarchy");
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_CollapsingHeader;
-    bool gameObjectsOpen = ImGui::TreeNodeEx("Game Objects", flags);
+    bool gameObjectsOpen = ImGui::CollapsingHeader("Game Objects");
 
     if (ImGui::BeginPopupContextItem())
     {
@@ -117,16 +122,16 @@ void SceneHierarchy::onImGuiRender()
                 int meshID = 0;
                 for (auto& mesh : model->meshes)
                 {
-                    auto childID = entity.addChild(std::string("Mesh_") + std::to_string(meshID));
-                    SceneEntity child(childID, m_context.get());
+                    auto child = entity->addChild();
+                    child->addComponent<TagComponent>(std::string("Mesh_") + std::to_string(meshID));
 
-                    child.addComponent<MeshComponent>();
-                    child.getComponent<MeshComponent>().mesh = mesh;
-                    child.getComponent<MeshComponent>().meshID = meshID;
-                    child.getComponent<MeshComponent>().filePath = FileSelectWindow::getSelection();
-                    child.addComponent<TransformComponent>();
+                    child->addComponent<MeshComponent>();
+                    child->getComponent<MeshComponent>().mesh = mesh;
+                    child->getComponent<MeshComponent>().meshID = meshID;
+                    child->getComponent<MeshComponent>().filePath = FileSelectWindow::getSelection();
+                    child->addComponent<TransformComponent>();
 
-                    auto& meshRenderer = child.addComponent<MeshRendererComponent>();
+                    auto& meshRenderer = child->addComponent<MeshRendererComponent>();
 
                     meshRenderer.materials.push_back(mesh->material);
 
@@ -140,15 +145,16 @@ void SceneHierarchy::onImGuiRender()
 
     if (gameObjectsOpen)
     {   
-        m_deletedEntity = SceneEntity::createNull(m_context.get());
-        m_context->getRegistry().each([&](Ecs::Entity* entityHandle)
+        m_deletedEntity = nullptr;
+        auto& gameObjects = m_context->getRootGameObject().getChildren();
+        for (auto& gameObject : gameObjects)
         {
-            recurseTree(SceneEntity(entityHandle, m_context.get()));
-        });
+            recurseTree(gameObject);
+        }
 
         if (m_deletedEntity)
         {
-            m_context->destroyEntity(m_deletedEntity);
+            m_deletedEntity->destroy();
         }
     }
 
@@ -156,10 +162,10 @@ void SceneHierarchy::onImGuiRender()
 
     ImGui::Begin("Properties");
 
-    if (m_selection.getHandle() != nullptr)
+    if (m_selection != nullptr)
     {
-        if (m_selection.hasComponent<TagComponent>())
-            drawProperties(m_selection);
+        if (m_selection->hasComponent<TagComponent>())
+            drawProperties(*m_selection);
     }
 
     ImGui::End();
@@ -187,7 +193,7 @@ void SceneHierarchy::onImGuiRender()
                                     }\
                                 }
 
-void SceneHierarchy::drawProperties(SceneEntity& entity)
+void SceneHierarchy::drawProperties(GameObject& entity)
 {
     char buf[128];
     strcpy(buf, entity.getComponent<TagComponent>().tag.c_str());
@@ -560,7 +566,7 @@ void SceneHierarchy::drawProperties(SceneEntity& entity)
 }
 
 template<typename T, typename F>
-void SceneHierarchy::drawComponent(const std::string& name, SceneEntity& entity, const F& func)
+void SceneHierarchy::drawComponent(const std::string& name, GameObject& entity, const F& func)
 {
     if (!entity.hasComponent<T>())
     {

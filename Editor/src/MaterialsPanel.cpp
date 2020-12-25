@@ -12,7 +12,7 @@
 
 #include "FileSelectWindow.h"
 
-namespace Editor
+namespace Engine
 {
 
 MaterialsPanel::MaterialsPanel()
@@ -39,7 +39,7 @@ void MaterialsPanel::init()
 
 void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
 {
-    bool open;
+    bool open = false;
     if (texture)
         ImGui::ImageButton(reinterpret_cast<void*>(texture->getId()), ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     else

@@ -14,7 +14,7 @@
 namespace Engine
 {
 
-struct TransformComponent
+struct TransformComponent : public GameComponent
 {
     TransformComponent()
         : scale(1.f) {}
@@ -33,21 +33,21 @@ struct TransformComponent
     }
 };
 
-struct TagComponent
+struct TagComponent : public GameComponent
 {
     TagComponent(const std::string& str)
         : tag(str) {}
         
-    std::string tag;
+    std::string tag = "";
 };
 
-struct CameraComponent
+struct CameraComponent : public GameComponent
 {
     SceneCamera camera;
     bool primary;
 };
 
-struct SpriteRendererComponent
+struct SpriteRendererComponent : public GameComponent
 {
     math::vec4 color = { 1.f, 1.f, 1.f, 1.f };
     Shared<Texture2D> texture;
@@ -56,14 +56,14 @@ struct SpriteRendererComponent
     math::frect textureRect;
 };
 
-struct TextRendererComponent
+struct TextRendererComponent : public GameComponent
 {
     math::vec4 color;
     Shared<TrueTypeFont> font;
     std::string text;
 };
 
-struct NativeScriptComponent
+struct NativeScriptComponent : public GameComponent
 {
     ScriptableEntity* instance = nullptr;
 
@@ -86,42 +86,42 @@ struct NativeScriptComponent
     }
 };
 
-struct MeshComponent
+struct MeshComponent : public GameComponent
 {
     Shared<Mesh> mesh;
     std::string filePath;
     uint32_t meshID = 0; // TODO: mesh id
 };
 
-struct BoxCollider2DComponent
+struct BoxCollider2DComponent : public GameComponent
 {
     math::frect box;
 };
 
-struct DirectionalLightComponent
+struct DirectionalLightComponent : public GameComponent
 {
     math::vec3 radiance = math::vec3(1.f);
     float intensity = 0.5f;
 };
 
-struct SkyLightComponent
+struct SkyLightComponent : public GameComponent
 {
     float intensity = 0.5f;
 };
 
-struct PointLightComponent
+struct PointLightComponent : public GameComponent
 {
     math::vec3 radiance = math::vec3(1.f);
     float intensity = 0.5f;
     float attenuation = 0.5f;
 };
 
-struct MeshRendererComponent
+struct MeshRendererComponent : public GameComponent
 {
     std::vector<Shared<Material>> materials;
 };
 
-struct LuaScriptComponent
+struct LuaScriptComponent : public GameComponent
 {
     std::string filePath;
     std::string source;

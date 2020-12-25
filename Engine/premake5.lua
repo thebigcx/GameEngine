@@ -4,6 +4,7 @@ project "GameEngine"
     language "C++"
     cppdialect "C++17"
     --buildoptions "-Wall -Wextra -Wnon-virtual-dtor -pedantic"
+    buildoptions "-Wuninitialized"
     symbols "On"
 
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Engine"

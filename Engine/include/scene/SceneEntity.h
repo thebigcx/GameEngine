@@ -1,6 +1,7 @@
 #pragma once
 
 #include <scene/Scene.h>
+#include <scene/ecs/Registry.h>
 
 namespace Engine
 {

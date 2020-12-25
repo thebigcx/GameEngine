@@ -25,24 +25,25 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
     LightSetup setup;
     {
-        auto view = m_registry.view<SkyLightComponent>();
-        for (auto& entity : view)
-            setup.setSkylight(view.get<SkyLightComponent>(entity).intensity);
+        //auto view = m_registry.view<SkyLightComponent>();
+        auto skylights = m_rootObject.getChildrenWithComponent<SkyLightComponent>();
+        for (auto& object : skylights)
+            setup.setSkylight(object->getComponent<SkyLightComponent>().intensity);
         
-        view = m_registry.view<DirectionalLightComponent, TransformComponent>();
-        for (auto& entity : view)
+        auto directionalLights = m_rootObject.getChildrenWithComponents<DirectionalLightComponent, TransformComponent>();
+        for (auto& object : directionalLights)
         {
-            auto& dirLight = view.get<DirectionalLightComponent>(entity);
-            auto& transform = view.get<TransformComponent>(entity);
+            auto& dirLight = object->getComponent<DirectionalLightComponent>();
+            auto& transform = object->getComponent<TransformComponent>();
             setup.setDirectionalLight({ transform.rotation, dirLight.radiance, dirLight.intensity });
         }
 
         std::vector<PointLight> pointLights;
-        view = m_registry.view<PointLightComponent, TransformComponent>();
-        for (auto& entity : view)
+        auto pointLightObjects = m_rootObject.getChildrenWithComponents<PointLightComponent, TransformComponent>();
+        for (auto& object : pointLightObjects)
         {
-            auto& pointLight = view.get<PointLightComponent>(entity);
-            auto& transform = view.get<TransformComponent>(entity);
+            auto& pointLight = object->getComponent<PointLightComponent>();
+            auto& transform = object->getComponent<TransformComponent>();
             pointLights.push_back({ transform.translation, pointLight.radiance, pointLight.intensity, pointLight.attenuation });
         }
 
@@ -66,102 +67,98 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
     Renderer2D::endScene();
 }
 
+void recurseRender(GameObject& object)
+{
+    if (object.hasComponents<MeshComponent, TransformComponent, MeshRendererComponent>())
+    {
+        auto& mesh = object.getComponent<MeshComponent>().mesh;
+        auto transform = object.getComponent<TransformComponent>().getTransform();
+        auto& material = object.getComponent<MeshRendererComponent>().materials[0];
+
+        Renderer3D::submit(mesh, transform, material);
+    }
+
+    for (auto& child : object.getChildren())
+    {
+        recurseRender(child);
+    }
+}
+
 void Scene::render3DEntities()
 {
-    auto view = m_registry.recurse_view<MeshComponent, MeshRendererComponent, TransformComponent>();
+    auto objects = m_rootObject.getChildren();
 
-    for (auto& entityID : view)
+    for (auto& object : objects)
     {
-        SceneEntity entity(entityID, this);
-        /*math::mat4 transform = math::mat4(1.f);
-        for (auto& ancestorID : entityID->getAbsolutePath())
-        {
-            SceneEntity ancestor(ancestorID, this);
-            if (ancestor.hasComponent<TransformComponent>())
-            {
-                transform = ancestor.getComponent<TransformComponent>().getTransform() * transform;
-                std::cout << math::to_string(ancestor.getComponent<TransformComponent>().getTransform()) << "\n";
-            }
-        }*/
-
-        math::mat4 transform = entity.getComponent<TransformComponent>().getTransform();
-
-        Renderer3D::submit(entity.getComponent<MeshComponent>().mesh, 
-                           transform, 
-                           entity.getComponent<MeshRendererComponent>().materials[0]);
+        recurseRender(object);
     }
 }
 
 void Scene::render2DEntities()
 {
-    auto view = m_registry.view<SpriteRendererComponent, TransformComponent>();
-    for (auto& entity : view)
+    auto renderables = m_rootObject.getChildrenWithComponents<TransformComponent, SpriteRendererComponent>();
+    for (auto& object : renderables)
     {
-        auto& sprite = view.get<SpriteRendererComponent>(entity);
+        auto& sprite = object->getComponent<SpriteRendererComponent>();
         if (sprite.texture != nullptr)
         {
             if (sprite.usingTexRect)
             {
-                Renderer2D::renderSprite(sprite.texture, view.get<TransformComponent>(entity).getTransform(), sprite.textureRect);
+                Renderer2D::renderSprite(sprite.texture, object->getComponent<TransformComponent>().getTransform(), sprite.textureRect);
             }
             else
             {
-                Renderer2D::renderSprite(sprite.texture, view.get<TransformComponent>(entity).getTransform());
+                Renderer2D::renderSprite(sprite.texture, object->getComponent<TransformComponent>().getTransform());
             }
         }
         else
         {
-            Renderer2D::renderQuad(view.get<TransformComponent>(entity).getTransform(), sprite.color);
+            Renderer2D::renderQuad(object->getComponent<TransformComponent>().getTransform(), sprite.color);
         }
     }
 }
 
-SceneEntity Scene::createEntity(const std::string& name)
+GameObject* Scene::createEntity(const std::string& name)
 {
-    auto entity = m_registry.create();
-    m_registry.emplace<TagComponent>(entity, name);
-    return SceneEntity(entity, this);
-}
-
-void Scene::destroyEntity(SceneEntity& entity)
-{
-    m_registry.destroy(entity.m_entityHandle);
-    entity.m_entityHandle = nullptr;
+    //GameObject object;
+    //object.addComponent<TagComponent>(name);
+    auto object = m_rootObject.addChild();
+    object->addComponent<TagComponent>(name);
+    return object;
 }
 
 void Scene::onUpdateRuntime(float dt)
 {
     // Game logic updating
-    auto colliders = m_registry.view<BoxCollider2DComponent, NativeScriptComponent>();
-    for (auto& entityID : colliders)
+    /*auto colliders = m_rootObject.getChildrenWithComponents<BoxCollider2DComponent, NativeScriptComponent>();
+    for (auto& object1 : colliders)
     {
-        SceneEntity entity = { entityID, this };
-        for (auto& otherID : colliders)
+        for (auto& object2 : colliders)
         {
-            SceneEntity other = { otherID, this };
-            if (entity == other)
+            if (object1 == object2)
                 continue;
 
-            if (math::intersects(entity.getComponent<BoxCollider2DComponent>().box, other.getComponent<BoxCollider2DComponent>().box))
+            if (math::intersects(object1->getComponent<BoxCollider2DComponent>().box, object2->getComponent<BoxCollider2DComponent>().box))
             {
-                if (entity.getComponent<NativeScriptComponent>().instance)
-                    entity.getComponent<NativeScriptComponent>().instance->onCollide2D();
+                if (object1->getComponent<NativeScriptComponent>().instance)
+                    object1->getComponent<NativeScriptComponent>().instance->onCollide2D();
 
-                if (other.getComponent<NativeScriptComponent>().instance)
-                    other.getComponent<NativeScriptComponent>().instance->onCollide2D();
+                if (object2->getComponent<NativeScriptComponent>().instance)
+                    object2->getComponent<NativeScriptComponent>().instance->onCollide2D();
             }
         }
-    }
+    }*/
+    // TODO: replace with rigid bodies
 
-    auto view = m_registry.view<NativeScriptComponent>();
-    for (auto& entity : view)
+    auto scripts = m_rootObject.getChildrenWithComponent<NativeScriptComponent>();
+    for (auto& object : scripts)
     {
-        auto& script = view.get<NativeScriptComponent>(entity);
+        auto& script = object->getComponent<NativeScriptComponent>();
 
         if (!script.instance)
         {
             script.instance = script.instantiateScript();
-            script.instance->m_entity = SceneEntity(entity, this);
+            script.instance->m_entity = object;
             script.instance->onCreate();
         }
 
@@ -173,14 +170,13 @@ void Scene::onUpdateRuntime(float dt)
     math::mat4 transform;
 
     {
-        auto view = m_registry.view<TransformComponent, CameraComponent>();
-        for (auto& entityID : view)
+        auto cameras = m_rootObject.getChildrenWithComponents<TransformComponent, CameraComponent>();
+        for (auto& object : cameras)
         {
-            SceneEntity entity = { entityID, this };
-            if (entity.getComponent<CameraComponent>().primary)
+            if (object->getComponent<CameraComponent>().primary)
             {
-                camera = &(entity.getComponent<CameraComponent>().camera);
-                transform = entity.getComponent<TransformComponent>().getTransform();
+                camera = &(object->getComponent<CameraComponent>().camera);
+                transform = object->getComponent<TransformComponent>().getTransform();
                 break;
             }
         }
@@ -196,19 +192,19 @@ void Scene::onUpdateRuntime(float dt)
     }
 }
 
-SceneEntity Scene::getPrimaryCameraEntity()
+GameObject* Scene::getPrimaryCameraEntity()
 {
-    auto view = m_registry.view<CameraComponent>();
-    for (auto& entity : view)
+    auto cameras = m_rootObject.getChildrenWithComponent<CameraComponent>();
+    for (auto& object : cameras)
     {
-        auto& camera = view.get<CameraComponent>(entity);
+        auto& camera = object->getComponent<CameraComponent>();
         if (camera.primary)
         {
-            return SceneEntity(entity, this);
+            return object;
         }
     }
 
-    return {};
+    return nullptr;
 }
 
 void Scene::onViewportResize(uint32_t width, uint32_t height)
@@ -216,31 +212,31 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
     m_viewportWidth = width;
     m_viewportHeight = height;
 
-    auto view = m_registry.view<CameraComponent>();
-    for (auto& entity : view)
+    auto cameras = m_rootObject.getChildrenWithComponent<CameraComponent>();
+    for (auto& object : cameras)
     {
-        auto& cameraComponent = view.get<CameraComponent>(entity);
+        auto& cameraComponent = object->getComponent<CameraComponent>();
         cameraComponent.camera.setViewportSize(width, height);
     }
 }
 
 template<>
-void Scene::onComponentAdded<CameraComponent>(SceneEntity& entity, CameraComponent& component)
+void Scene::onComponentAdded<CameraComponent>(GameObject& entity, CameraComponent& component)
 {
-    component.camera.setViewportSize(m_viewportWidth, m_viewportHeight);
+    component.camera.setViewportSize(m_viewportWidth, m_viewportHeight); // TODO: better way
 }
 
-template<> void Scene::onComponentAdded<TransformComponent>(SceneEntity& entity, TransformComponent& component) {}
-template<> void Scene::onComponentAdded<SpriteRendererComponent>(SceneEntity& entity, SpriteRendererComponent& component) {}
-template<> void Scene::onComponentAdded<BoxCollider2DComponent>(SceneEntity& entity, BoxCollider2DComponent& component) {}
-template<> void Scene::onComponentAdded<NativeScriptComponent>(SceneEntity& entity, NativeScriptComponent& component) {}
-template<> void Scene::onComponentAdded<TagComponent>(SceneEntity& entity, TagComponent& component) {}
-template<> void Scene::onComponentAdded<TextRendererComponent>(SceneEntity& entity, TextRendererComponent& component) {}
-template<> void Scene::onComponentAdded<MeshComponent>(SceneEntity& entity, MeshComponent& component) {}
-template<> void Scene::onComponentAdded<SkyLightComponent>(SceneEntity& entity, SkyLightComponent& component) {}
-template<> void Scene::onComponentAdded<PointLightComponent>(SceneEntity& entity, PointLightComponent& component) {}
-template<> void Scene::onComponentAdded<DirectionalLightComponent>(SceneEntity& entity, DirectionalLightComponent& component) {}
-template<> void Scene::onComponentAdded<MeshRendererComponent>(SceneEntity& entity, MeshRendererComponent& component) {}
-template<> void Scene::onComponentAdded<LuaScriptComponent>(SceneEntity& entity, LuaScriptComponent& component) {}
+template<> void Scene::onComponentAdded<TransformComponent>(GameObject& entity, TransformComponent& component) {}
+template<> void Scene::onComponentAdded<SpriteRendererComponent>(GameObject& entity, SpriteRendererComponent& component) {}
+template<> void Scene::onComponentAdded<BoxCollider2DComponent>(GameObject& entity, BoxCollider2DComponent& component) {}
+template<> void Scene::onComponentAdded<NativeScriptComponent>(GameObject& entity, NativeScriptComponent& component) {}
+template<> void Scene::onComponentAdded<TagComponent>(GameObject& entity, TagComponent& component) {}
+template<> void Scene::onComponentAdded<TextRendererComponent>(GameObject& entity, TextRendererComponent& component) {}
+template<> void Scene::onComponentAdded<MeshComponent>(GameObject& entity, MeshComponent& component) {}
+template<> void Scene::onComponentAdded<SkyLightComponent>(GameObject& entity, SkyLightComponent& component) {}
+template<> void Scene::onComponentAdded<PointLightComponent>(GameObject& entity, PointLightComponent& component) {}
+template<> void Scene::onComponentAdded<DirectionalLightComponent>(GameObject& entity, DirectionalLightComponent& component) {}
+template<> void Scene::onComponentAdded<MeshRendererComponent>(GameObject& entity, MeshRendererComponent& component) {}
+template<> void Scene::onComponentAdded<LuaScriptComponent>(GameObject& entity, LuaScriptComponent& component) {}
 
 }
