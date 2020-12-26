@@ -34,7 +34,6 @@ void EditorLayer::onAttach()
     m_scene = createShared<Scene>();
     m_sceneHeirarchy.setContext(m_scene);
     m_materialsPanel.setContext(m_scene);
-    m_scriptEngine.setContext(m_scene);
 
     m_scenePlayButton = Texture2D::create("Editor/assets/scene_play.png");
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
@@ -58,7 +57,6 @@ void EditorLayer::onUpdate(float dt)
 {
     Timer timer;
     m_editorCamera.onUpdate(dt);
-    m_scriptEngine.onUpdate(dt);
 
     if (m_framebuffer->getWidth() != m_viewportSize.x || m_framebuffer->getHeight() != m_viewportSize.y)
     {

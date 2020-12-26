@@ -10,8 +10,9 @@ project "Sandbox"
 	symbols "On"
 
 	files {
-		"**.cpp",
-		"**.h"
+		"src/ExampleLayer.cpp",
+		"src/ExampleLayer.h",
+		"src/ExampleApp.cpp"
 	}
 	
 	includedirs {

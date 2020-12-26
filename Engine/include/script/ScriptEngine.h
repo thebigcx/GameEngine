@@ -8,20 +8,18 @@
 
 namespace Engine
 {
-
-// TODO: swap sol for my own lua engine
+// TODO: look into replacing lua with C#
 class ScriptEngine
 {
 public:
     ScriptEngine();
-    ScriptEngine(const Shared<Scene>& context)
-        : m_context(context) {}
 
     ~ScriptEngine() = default;
 
-    void setContext(const Shared<Scene>& context)
+    void setScript(const std::string& path)
     {
-        m_context = context;
+        m_filePath = path;
+        m_state.load_file(m_filePath);
     }
 
     void onUpdate(float dt);
@@ -34,9 +32,9 @@ public:
     bool onKeyPressed(KeyPressedEvent& event);
 
 private:
-    Shared<Scene> m_context;
-
     lua::state m_state;
+
+    std::string m_filePath;
 };
 
 }

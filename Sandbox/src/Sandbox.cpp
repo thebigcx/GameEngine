@@ -16,11 +16,8 @@ void Sandbox::onAttach()
 
     Engine::RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
 
-    m_orthoCamera.setPosition(math::vec2(0, 0));
-
-    m_cubeMaterial = Engine::Material::create(Engine::Renderer3D::data.modelShader);
+    m_cubeMaterial = Engine::Material::create(Engine::Assets::get<Engine::Shader>("pbr"));
     m_cubeMaterial->albedoMap = Engine::Assets::get<Engine::Texture2D>("grass");
-    m_cubeMaterial->metalness = 16.f;
 
     lights.setSkylight(0.05f);
 
@@ -38,7 +35,7 @@ void Sandbox::onAttach()
 
         pointLight.radiance = math::vec3(1, 1, 1);
         pointLight.intensity = 1.f;
-        pointLight.attenuation = 500.f;
+        pointLight.attenuation = 5.f;
         
         pointLights.push_back(pointLight);
     }
@@ -62,10 +59,11 @@ void Sandbox::onAttach()
 
     Engine::Renderer3D::setLights(lights);
 
-    m_model = Engine::Model::loadModel("Sandbox/assets/Donut.obj");
+    m_model = Engine::Model::load("Sandbox/assets/Donut.obj");
 
     m_mesh = Engine::MeshFactory::cubeMesh(1.f);
     m_mesh->material = m_cubeMaterial;
+    //m_mesh->setVertices(std::vector<math::vec3>(), std::vector<math::vec3>(), std::vector<uint32_t>());
 }
 
 void Sandbox::onDetach()
@@ -96,18 +94,12 @@ void Sandbox::onUpdate(float dt)
         Engine::Renderer3D::submit(m_mesh, math::scale(math::translate(math::mat4(1.f), math::vec3(i * 2, j * 2, 0)), math::vec3(2.f)));
     }
 
-    Engine::Renderer3D::data.modelShader->bind();
-    Engine::Renderer3D::data.modelShader->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
+    Engine::Assets::get<Engine::Shader>("pbr")->bind();
+    Engine::Assets::get<Engine::Shader>("pbr")->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
 
     Engine::Renderer3D::submit(m_mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.f, 4.f)));
 
     Engine::Renderer3D::endScene();
-
-    Engine::Renderer2D::beginScene(m_orthoCamera);
-    Engine::Renderer2D::renderSprite(Engine::Assets::get<Engine::Texture2D>("grass"), math::vec2(100, 100), math::vec2(100, 100), math::vec4(1, 1, 1, 1));
-    Engine::Renderer2D::renderQuad(math::vec2(0, 0), math::vec2(100, 100), math::vec4(0, 1, 0, 1));
-    Engine::Renderer2D::renderText("Hello, world!", m_font, math::vec2(0, 0), math::vec2(80, 80), math::vec4(1, 0, 0, 1));
-    Engine::Renderer2D::endScene();
 
     Engine::Application::get().getWindow().setTitle(std::string("Sandbox FPS: " + std::to_string((int)floor(1000.f / timer.getMillis()))));
 }
@@ -115,5 +107,4 @@ void Sandbox::onUpdate(float dt)
 void Sandbox::onEvent(Engine::Event& event)
 {
     m_perspectiveCamera.onEvent(event);
-    m_orthoCamera.onEvent(event);
 }

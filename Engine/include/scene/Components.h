@@ -123,8 +123,10 @@ struct MeshRendererComponent : public GameComponent
 
 struct LuaScriptComponent : public GameComponent
 {
-    std::string filePath;
-    std::string source;
+    std::string filePath = "";
+    std::string source = "";
+    ScriptEngine scriptEngine;
+    bool initialized = false;
 };
 
 }

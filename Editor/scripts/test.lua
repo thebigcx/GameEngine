@@ -1,11 +1,11 @@
-function onStart(dt)
-
+function onCreate(dt)
+    print("Created!")
 end
 
 function onUpdate(dt)
-    --print("Updated!")
+    print("Updated!")
 end
 
-function onDetach(dt)
-
+function onDestroy(dt)
+    print("Destroyed!")
 end

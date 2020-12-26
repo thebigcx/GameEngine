@@ -17,8 +17,6 @@ namespace Engine
 
 struct Renderer3DData
 {
-    Shared<Shader> modelShader;
-
     bool sceneStarted = false;
     Shared<UniformBuffer> lightingData;
 

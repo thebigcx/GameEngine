@@ -22,6 +22,11 @@ public:
         const math::vec2& uv2,
         const math::vec2& uv3);
 
+    static math::vec3 calculateNormal(
+        const math::vec3& pos1,
+        const math::vec3& pos2,
+        const math::vec3& pos3);
+
     static Shared<Mesh> skyboxMesh();
 };
 

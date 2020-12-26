@@ -11,44 +11,23 @@ ScriptEngine::ScriptEngine()
 
 void ScriptEngine::onStart()
 {
-    auto scripts = m_context->getRootGameObject().getChildrenWithComponent<LuaScriptComponent>();
-    for (auto& object : scripts)
-    {
-        m_state.load_file(object->getComponent<LuaScriptComponent>().filePath);
-        m_state.callVoid("onStart");
-    }
+    m_state.callVoid("onCreate");
 }
 
 void ScriptEngine::onUpdate(float dt)
 {
-    auto scripts = m_context->getRootGameObject().getChildrenWithComponent<LuaScriptComponent>();
-    for (auto& object : scripts)
-    {
-        m_state.load_file(object->getComponent<LuaScriptComponent>().filePath);
-        m_state.callVoid("onUpdate", dt);
-    }
+    m_state.callVoid("onUpdate", dt);
 }
 
 void ScriptEngine::onDetach()
 {
-    auto scripts = m_context->getRootGameObject().getChildrenWithComponent<LuaScriptComponent>();
-    for (auto& object : scripts)
-    {
-        m_state.load_file(object->getComponent<LuaScriptComponent>().filePath);
-        m_state.callVoid("onDetach");
-    }
+    m_state.callVoid("onDestroy");
 }
 
 void ScriptEngine::onEvent(Event& event)
 {
-    auto scripts = m_context->getRootGameObject().getChildrenWithComponent<LuaScriptComponent>();
-    for (auto& object : scripts)
-    {
-        m_state.load_file(object->getComponent<LuaScriptComponent>().filePath);
-
-        EventDispatcher dispatcher(event);
-        dispatcher.dispatch<MousePressedEvent>(BIND_EVENT_FN(ScriptEngine::onMousePressed));
-    }
+    EventDispatcher dispatcher(event);
+    dispatcher.dispatch<MousePressedEvent>(BIND_EVENT_FN(ScriptEngine::onMousePressed));
 }
 
 bool ScriptEngine::onMousePressed(MousePressedEvent& event)

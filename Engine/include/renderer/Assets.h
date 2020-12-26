@@ -80,6 +80,8 @@ private:
 };
 // TODO: add callback system for when an asset is deleted. this notifies all users of the particular asset to switch to something else
 // a 'null' asset would work very well here, as when an asset is deleted, the null asset is the fallback.
+// TODO: should store names of assets in their respective classes, and allow changing of those names. This would avoid the issue of
+// duplicate names.
 class Assets
 {
 public:

@@ -24,6 +24,5 @@ private:
     Engine::LightSetup lights;
 
     Engine::PerspectiveCameraController m_perspectiveCamera;
-    Engine::OrthographicCameraController m_orthoCamera;
     Engine::Shared<Engine::Mesh> m_mesh;
 };

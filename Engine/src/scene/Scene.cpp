@@ -13,7 +13,7 @@ namespace Engine
 
 Scene::Scene()
 {
-
+    
 }
 
 Scene::~Scene()
@@ -165,6 +165,22 @@ void Scene::onUpdateRuntime(float dt)
         }
 
         script.instance->onUpdate(dt);
+    }
+
+    // Lua scripts
+    auto luaScripts = m_rootObject.getChildrenWithComponent<LuaScriptComponent>();
+    for (auto& object : luaScripts)
+    {
+        auto& script = object->getComponent<LuaScriptComponent>();
+        script.scriptEngine.setScript(script.filePath); // TODO: possibly not do this every frame (50-100microseconds)
+
+        if (!script.initialized)
+        {
+            script.scriptEngine.onStart();
+            script.initialized = true;
+        }
+        
+        script.scriptEngine.onUpdate(dt);
     }
 
     // Rendering

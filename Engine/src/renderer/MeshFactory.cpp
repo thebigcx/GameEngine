@@ -358,14 +358,30 @@ math::vec3 MeshFactory::calculateTangent(
     math::vec2 deltaUV1 = uv2 - uv1;
     math::vec2 deltaUV2 = uv3 - uv1;
 
-    float f = 1.f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+    float f = 1.f / ((deltaUV1.x * deltaUV2.y) - (deltaUV2.x * deltaUV1.y));
 
     math::vec3 tangent;
-    tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
-    tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
-    tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+    tangent.x = f * ((deltaUV2.y * edge1.x) - (deltaUV1.y * edge2.x));
+    tangent.y = f * ((deltaUV2.y * edge1.y) - (deltaUV1.y * edge2.y));
+    tangent.z = f * ((deltaUV2.y * edge1.z) - (deltaUV1.y * edge2.z));
 
     return tangent;
+}
+
+math::vec3 MeshFactory::calculateNormal(
+    const math::vec3& pos1,
+    const math::vec3& pos2,
+    const math::vec3& pos3)
+{
+    math::vec3 edge1 = pos2 - pos1;
+    math::vec3 edge2 = pos3 - pos1;
+
+    math::vec3 normal;
+    normal.x = (edge1.y * edge2.z) - (edge1.z * edge2.y);
+    normal.y = (edge1.z * edge2.x) - (edge1.x * edge2.z);
+    normal.z = (edge1.x * edge2.y) - (edge1.y * edge2.x);
+
+    return normal;
 }
 
 }

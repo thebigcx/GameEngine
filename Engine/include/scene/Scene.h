@@ -6,6 +6,7 @@
 #include <scene/EditorCamera.h>
 #include <renderer/Material.h>
 #include <renderer/Lights.h>
+#include <script/ScriptEngine.h>
 
 namespace Engine
 {
@@ -23,10 +24,6 @@ public:
 
     GameObject* createGameObject(const std::string& name);
 
-    /*Ecs::Registry& getRegistry()
-    {
-        return m_registry;
-    }*/
     GameObject& getRootGameObject()
     {
         return m_rootObject;
@@ -38,7 +35,6 @@ public:
     void onComponentAdded(GameObject& object, T& component);
 
 private:
-    //Ecs::Registry m_registry;
     GameObject m_rootObject;
 
     uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
