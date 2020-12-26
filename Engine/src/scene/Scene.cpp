@@ -50,10 +50,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
         setup.setPointLights(pointLights);
     }
 
-    if (setup.hasLights())
-    {
-        Renderer3D::setLights(setup);
-    }
+    Renderer3D::setLights(setup);
 
     Renderer3D::beginScene(camera);
 

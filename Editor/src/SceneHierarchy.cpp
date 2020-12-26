@@ -103,19 +103,19 @@ void SceneHierarchy::onImGuiRender()
 
         if (ImGui::MenuItem("Import 3D Model"))
         {
-            FileSelectWindow::open(reinterpret_cast<const void*>("modelload"));
+            FileDialog::open(reinterpret_cast<const void*>("modelload"));
         }
 
         ImGui::EndPopup();
     }
 
-    if (FileSelectWindow::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
+    if (FileDialog::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
     {
-        if (!FileSelectWindow::display())
+        if (!FileDialog::display())
         {
-            if (FileSelectWindow::madeSelection())
+            if (FileDialog::madeSelection())
             {
-                Shared<Model> model = Model::loadModel(FileSelectWindow::getSelection());
+                Shared<Model> model = Model::load(FileDialog::getSelection());
 
                 auto object = m_context->createGameObject("Model");
 
@@ -128,8 +128,10 @@ void SceneHierarchy::onImGuiRender()
                     child->addComponent<MeshComponent>();
                     child->getComponent<MeshComponent>().mesh = mesh;
                     child->getComponent<MeshComponent>().meshID = meshID;
-                    child->getComponent<MeshComponent>().filePath = FileSelectWindow::getSelection();
+                    child->getComponent<MeshComponent>().filePath = FileDialog::getSelection();
                     child->addComponent<TransformComponent>();
+
+                    Assets::addIfNotExists(Assets::generateID<Material>(), child->getComponent<MeshComponent>().mesh->material);
 
                     auto& meshRenderer = child->addComponent<MeshRendererComponent>();
 
@@ -375,7 +377,7 @@ void SceneHierarchy::drawProperties(GameObject& object)
         ImGui::SameLine();
         if (ImGui::Button("..."))
         {
-            FileSelectWindow::open(&component);
+            FileDialog::open(&component);
         }
 
         memset(buf, 0, 128);
@@ -387,22 +389,14 @@ void SceneHierarchy::drawProperties(GameObject& object)
             component.meshID = meshID;
         }
 
-        if (FileSelectWindow::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
+        if (FileDialog::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
         {
-            if (!FileSelectWindow::display())
+            if (!FileDialog::display())
             {
-                if (FileSelectWindow::madeSelection())
+                if (FileDialog::madeSelection())
                 {
-                    component.filePath = FileSelectWindow::getSelection();
+                    component.filePath = FileDialog::getSelection();
                     component.mesh = Mesh::load(component.filePath, component.meshID);
-                    
-                    std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
-                    Assets::add<Material>(name, component.mesh->material);
-
-                    if (object.hasComponent<MeshRendererComponent>())
-                    { // TODO: refactor the MeshRenderer component system
-                        object.getComponent<MeshRendererComponent>().materials.push_back(component.mesh->material);
-                    }
                 }
             }
         }
@@ -446,17 +440,11 @@ void SceneHierarchy::drawProperties(GameObject& object)
 
                 if (isInteger && std::string(buf).size() > 0)
                 {
-                    unsigned int materialCount = std::stoi(buf);
-
-                    if (materialCount > 1)
-                        materialCount = 1;
+                    unsigned int materialCount = math::max(std::stoi(buf), 1);
 
                     if (materialCount > component.materials.size())
                     {
-                        auto material = Material::create();
-                        std::string key = std::string("material_") + std::to_string(Assets::getAssetCount<Material>() - 1);
-                        Assets::add<Material>(key, material);
-                        component.materials.insert(component.materials.end(), materialCount - component.materials.size(), material);
+                        component.materials.push_back(Material::create());
                     }
                     else if (materialCount < component.materials.size())
                     {
@@ -527,16 +515,16 @@ void SceneHierarchy::drawProperties(GameObject& object)
 
         if (ImGui::Button("...##luaScriptPathSelect"))
         {
-            FileSelectWindow::open("luaScriptPathSelect");
+            FileDialog::open("luaScriptPathSelect");
         }
 
-        if (FileSelectWindow::selectFile("luaScriptPathSelect", "Choose script...", ".lua"))
+        if (FileDialog::selectFile("luaScriptPathSelect", "Choose script...", ".lua"))
         {
-            if (!FileSelectWindow::display())
+            if (!FileDialog::display())
             {
-                if (FileSelectWindow::madeSelection())
+                if (FileDialog::madeSelection())
                 {
-                    component.filePath = FileSelectWindow::getSelection();
+                    component.filePath = FileDialog::getSelection();
                     component.source = Files::readFile(component.filePath);
                 }
             }
@@ -586,16 +574,16 @@ void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
 {
     if (ImGui::Button("..."))
     {
-        FileSelectWindow::open(&texture);
+        FileDialog::open(&texture);
     }
 
-    if (FileSelectWindow::selectFile(&texture, "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
+    if (FileDialog::selectFile(&texture, "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
     {
-        if (!FileSelectWindow::display())
+        if (!FileDialog::display())
         {
-            if (FileSelectWindow::madeSelection())
+            if (FileDialog::madeSelection())
             {
-                std::string key = FileSelectWindow::getSelection();
+                std::string key = FileDialog::getSelection();
                 if (Assets::exists<Texture2D>(key))
                 {
                     texture = Assets::get<Texture2D>(key);

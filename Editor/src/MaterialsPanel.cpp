@@ -10,7 +10,7 @@
 #include <maths/quaternion/qua_func.h>
 #include <renderer/Assets.h>
 
-#include "FileSelectWindow.h"
+#include "FileDialog.h"
 
 namespace Engine
 {
@@ -47,16 +47,16 @@ void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
     
     if (open)
     {
-        FileSelectWindow::open(&texture);
+        FileDialog::open(&texture);
     }
 
-    if (FileSelectWindow::selectFile(&texture, "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
+    if (FileDialog::selectFile(&texture, "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
     {
-        if (!FileSelectWindow::display())
+        if (!FileDialog::display())
         {
-            if (FileSelectWindow::madeSelection())
+            if (FileDialog::madeSelection())
             {
-                std::string key = FileSelectWindow::getSelection();
+                std::string key = FileDialog::getSelection();
                 if (Assets::exists<Texture2D>(key))
                 {
                     texture = Assets::get<Texture2D>(key);
@@ -247,17 +247,17 @@ void MaterialsPanel::onImGuiRender()
         
         if (ImGui::Button("Create Shader"))
         {
-            FileSelectWindow::open("createNewShader");
+            FileDialog::open("createNewShader");
         }
 
-        if (FileSelectWindow::selectFile("createNewShader", "Choose shader...", ".glsl")) // TODO: select frag and vert shaders as multi-select in FileSelectWindow
+        if (FileDialog::selectFile("createNewShader", "Choose shader...", ".glsl")) // TODO: select frag and vert shaders as multi-select in FileDialog
         {
-            if (!FileSelectWindow::display())
+            if (!FileDialog::display())
             {
-                if (FileSelectWindow::madeSelection())
+                if (FileDialog::madeSelection())
                 {
-                    std::string name = FileSelectWindow::getSelection();
-                    Assets::add<Shader>(name, Shader::createFromFile(FileSelectWindow::getSelection()));
+                    std::string name = FileDialog::getSelection();
+                    Assets::add<Shader>(name, Shader::createFromFile(FileDialog::getSelection()));
                 }
             }
         }
@@ -289,17 +289,17 @@ void MaterialsPanel::onImGuiRender()
 
         if (ImGui::Button("Create Texture"))
         {
-            FileSelectWindow::open("createTexture");   
+            FileDialog::open("createTexture");   
         }
 
-        if (FileSelectWindow::selectFile("createTexture", "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
+        if (FileDialog::selectFile("createTexture", "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
         {
-            if (!FileSelectWindow::display())
+            if (!FileDialog::display())
             {
-                if (FileSelectWindow::madeSelection())
+                if (FileDialog::madeSelection())
                 {
-                    Shared<Texture2D> texture = Texture2D::create(FileSelectWindow::getSelection());
-                    Assets::add<Texture2D>(FileSelectWindow::getSelection(), texture);
+                    Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection());
+                    Assets::add<Texture2D>(FileDialog::getSelection(), texture);
                 }
             }
         }
@@ -317,17 +317,17 @@ void MaterialsPanel::shaderSelect(Shared<Shader>& shader)
 {
     if (ImGui::Button("Load"))
     {
-        FileSelectWindow::open(&shader);
+        FileDialog::open(&shader);
     }
 
-    if (FileSelectWindow::selectFile(&shader, "Choose shader...", ".glsl")) // TODO: select frag and vert shaders as multi-select in FileSelectWindow
+    if (FileDialog::selectFile(&shader, "Choose shader...", ".glsl")) // TODO: select frag and vert shaders as multi-select in FileDialog
     {
-        if (!FileSelectWindow::display())
+        if (!FileDialog::display())
         {
-            if (FileSelectWindow::madeSelection())
+            if (FileDialog::madeSelection())
             {
                 // TODO: patch Assets key
-                shader = Shader::createFromFile(FileSelectWindow::getSelection());
+                shader = Shader::createFromFile(FileDialog::getSelection());
             }
         }
     }

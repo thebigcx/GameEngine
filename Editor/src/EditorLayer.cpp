@@ -93,7 +93,7 @@ void EditorLayer::drawMenuBar()
         {
             if (ImGui::MenuItem("Open", "Ctrl+O"))
             {
-                FileSelectWindow::open("loadScene");
+                FileDialog::open("loadScene");
             }
 
             if (ImGui::MenuItem("Save", "Ctrl+S"))
@@ -103,7 +103,7 @@ void EditorLayer::drawMenuBar()
 
             if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
             {
-                FileSelectWindow::open("saveSceneAs");
+                FileDialog::open("saveSceneAs");
                 //SceneSerializer::saveScene(m_scene, "");
             }
 
@@ -113,27 +113,27 @@ void EditorLayer::drawMenuBar()
         ImGui::EndMenuBar();
     }
 
-    if (FileSelectWindow::selectFile("loadScene", "Choose scene...", ".yaml"))
+    if (FileDialog::selectFile("loadScene", "Choose scene...", ".yaml"))
     {
-        if (!FileSelectWindow::display())
+        if (!FileDialog::display())
         {
-            if (FileSelectWindow::madeSelection())
+            if (FileDialog::madeSelection())
             {
                 Assets::flush();
-                m_scene = SceneSerializer::loadScene(FileSelectWindow::getSelection());
+                m_scene = SceneSerializer::loadScene(FileDialog::getSelection());
                 m_sceneHeirarchy.setContext(m_scene);
                 m_materialsPanel.setContext(m_scene); // TODO: add a callback system to make this better
             }
         }
     }
 
-    if (FileSelectWindow::saveFile("saveSceneAs", "Save scene...", ".yaml"))
+    if (FileDialog::saveFile("saveSceneAs", "Save scene...", ".yaml"))
     {
-        if (!FileSelectWindow::display())
+        if (!FileDialog::display())
         {
-            if (FileSelectWindow::madeSelection())
+            if (FileDialog::madeSelection())
             {
-                SceneSerializer::saveScene(m_scene, FileSelectWindow::getSelection() + std::string("/") + FileSelectWindow::getSaveFileName());
+                SceneSerializer::saveScene(m_scene, FileDialog::getSelection() + std::string("/") + FileDialog::getSaveFileName());
             }
         }
     }

@@ -24,22 +24,12 @@ struct ModelVertex
 class Model
 {
 public:
-    static Shared<Model> loadModel(const std::string& file);
-    static Shared<Mesh> loadMeshAtID(const std::string& file, unsigned int id);
+    static Shared<Model> load(const std::string& file);
 
     std::vector<Shared<Mesh>> meshes;
 
     std::string path;
-
-private:
-    std::string m_directory;
-
-    void processNode(aiNode* node, const aiScene* scene, const Shared<Model>& model);
-    Shared<Mesh> processMesh(aiMesh* mesh, const aiScene* scene, const Shared<Model>& model);
-    Shared<Texture2D> loadMaterialTexture(aiMaterial* mat, aiTextureType type);
-
-    std::vector<Shared<Texture2D>> m_texturesLoaded;
-    std::unordered_map<int, Shared<Material>> m_materialsLoaded;
+    std::string directory;
 };
 
 }

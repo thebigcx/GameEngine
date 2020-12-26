@@ -16,17 +16,11 @@ enum class FileDialogType
     Select
 };
 
-class FileDialog
-{
-public:
-
-};
-
-class FileSelectWindow // TODO: separate select/save file dialogs into inherited classes of base class "FileDialog"
+class FileDialog // TODO: separate select/save file dialogs into inherited classes of base class "FileDialog"
 {
 private:
-    FileSelectWindow();
-    ~FileSelectWindow() = default;
+    FileDialog();
+    ~FileDialog() = default;
 
 public:
     enum class Flags
@@ -113,7 +107,7 @@ public:
     }
 
 private:
-    static FileSelectWindow m_instance;
+    static FileDialog m_instance;
 
 private:
     std::filesystem::path m_workingPath;

@@ -5,7 +5,7 @@
 
 #include <renderer/Framebuffer.h>
 
-#include "FileSelectWindow.h"
+#include "FileDialog.h"
 
 namespace Engine
 {

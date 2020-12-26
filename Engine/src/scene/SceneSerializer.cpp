@@ -250,7 +250,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
         if (needToLoad)
         {
-            auto model = Model::loadModel(mesh.filePath); // TODO: refactor model loading in some way, especially single mesh loading
+            auto model = Model::load(mesh.filePath); // TODO: refactor model loading in some way, especially single mesh loading
             model->path = mesh.filePath;
             Assets::add<Model>(mesh.filePath, model);
         }

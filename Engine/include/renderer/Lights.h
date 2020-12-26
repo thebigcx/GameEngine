@@ -40,7 +40,7 @@ public:
 
     bool hasLights() const
     {
-        return m_usingDirectionalLight || m_pointLights.size() > 0 || m_spotLights.size() > 0 || m_skyLight > 0;
+        return m_usingDirectionalLight || m_pointLights.size() > 0 || m_spotLights.size() > 0 || m_skyLight > 0.f;
     }
 
     void setDirectionalLight(const DirectionalLight& light)
@@ -106,7 +106,7 @@ private:
     DirectionalLight m_dirLight;
     std::vector<PointLight> m_pointLights;
     std::vector<SpotLight> m_spotLights;
-    float m_skyLight = 0;
+    float m_skyLight = 0.f;
     bool m_usingDirectionalLight = false;
 };
 

@@ -10,7 +10,7 @@
 
 namespace Engine
 {
-
+// TODO: refactor this part of the engine (resource management)
 class IAssetList
 {
     friend class Assets;
@@ -102,6 +102,15 @@ public:
     }
 
     template<typename T>
+    static inline void addIfNotExists(const std::string& key, Shared<T> asset)
+    {
+        if (find(asset) == "")
+        {
+            add(key, asset);
+        }
+    }
+
+    template<typename T>
     static inline const Shared<T>& get(const std::string& key)
     {
         if (!listExists<T>())
@@ -183,6 +192,18 @@ public:
 
         static std::string fail = "";
         return fail;
+    }
+
+    template<typename T>
+    static inline std::string generateID()
+    {
+        int candidate = getAssetCount<T>();
+        while (getList<T>().getInternalList().find(std::to_string(candidate)) != getList<T>().getInternalList().end())
+        {
+            candidate++;
+        }
+
+        return std::to_string(candidate);
     }
 
 private:

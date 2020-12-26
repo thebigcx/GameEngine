@@ -1,4 +1,4 @@
-#include "FileSelectWindow.h"
+#include "FileDialog.h"
 
 #include <filesystem>
 #include <algorithm>
@@ -11,15 +11,15 @@
 namespace Engine
 {
 
-FileSelectWindow FileSelectWindow::m_instance;
+FileDialog FileDialog::m_instance;
 
-FileSelectWindow::FileSelectWindow()
+FileDialog::FileDialog()
     : m_workingPath(std::filesystem::current_path())
 {
 
 }
 
-bool FileSelectWindow::display()
+bool FileDialog::display()
 {
     if (!m_instance.m_id)
     {
@@ -139,7 +139,7 @@ bool FileSelectWindow::display()
     return m_instance.m_isOpen;
 }
 
-void FileSelectWindow::renderDirectory(const std::filesystem::path& path)
+void FileDialog::renderDirectory(const std::filesystem::path& path)
 {
     bool parentOpened = ImGui::Selectable("##..");
 
@@ -249,7 +249,7 @@ void FileSelectWindow::renderDirectory(const std::filesystem::path& path)
     }
 }
 
-std::string FileSelectWindow::getSelection()
+std::string FileDialog::getSelection()
 {
     if (m_instance.m_type == FileDialogType::Select)
     {
