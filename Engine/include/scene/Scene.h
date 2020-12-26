@@ -10,8 +10,6 @@
 namespace Engine
 {
 
-class SceneEntity;
-
 class Scene
 {
 public:
@@ -23,7 +21,7 @@ public:
 
     void onViewportResize(uint32_t width, uint32_t height);
 
-    GameObject* createEntity(const std::string& name);
+    GameObject* createGameObject(const std::string& name);
 
     /*Ecs::Registry& getRegistry()
     {
@@ -34,10 +32,10 @@ public:
         return m_rootObject;
     }
 
-    GameObject* getPrimaryCameraEntity();
+    GameObject* getPrimaryCameraGameObject();
     
     template<typename T>
-    void onComponentAdded(GameObject& entity, T& component);
+    void onComponentAdded(GameObject& object, T& component);
 
 private:
     //Ecs::Registry m_registry;

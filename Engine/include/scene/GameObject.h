@@ -28,33 +28,18 @@ public:
 
     void destroy()
     {
-        if (m_parent)
-        {
-            m_parent->removeChild(this);
+        _destroy();
+    }
 
-            for (auto& component : m_components)
-            {
-                delete component.second;
-            }
-        }
+    void removeChild(GameObject* child)
+    {
+        child->_destroy();
     }
 
     GameObject* addChild()
     {
         m_children.push_back(GameObject(this));
         return &m_children.back();
-    }
-
-    void removeChild(GameObject* child)
-    {
-        for (size_t i = 0; i < m_children.size(); i++)
-        {
-            if (&m_children[i] == child)
-            {
-                m_children.erase(m_children.begin() + i);// TODO: Recurse the children as well
-                return;
-            }
-        }
     }
 
     std::vector<GameObject>& getChildren()
@@ -119,11 +104,17 @@ public:
     template<typename T>
     void removeComponent()
     {
-        for (auto& component : m_components)
+        if (std::is_base_of<GameComponent, T>())
         {
-            if (static_cast<std::type_index>(typeid(T)) == component.first)
+            for (auto& component : m_components)
             {
-                m_components.erase(component.first);
+                if (component.first == static_cast<std::type_index>(typeid(T)))
+                {
+                    delete component.second;
+                    m_components.erase(component.first);
+                    
+                    break;
+                }
             }
         }
     }
@@ -179,6 +170,33 @@ private:
         }
 
         check = object.hasComponent<T>();
+    }
+
+    void _destroy()
+    {
+        for (auto& component : m_components)
+        {
+            delete component.second;
+        }
+
+        for (auto& child : m_children)
+        {
+            child._destroy();
+        }
+
+        if (m_parent)
+        {
+            for (size_t i = 0; i < m_parent->getChildren().size(); i++)
+            {
+                if (&m_parent->getChildren()[i] == this)
+                {
+                    m_parent->getChildren().erase(m_parent->getChildren().begin() + i);// TODO: Recurse the children as well
+                    return;
+                }
+            }
+        }
+
+        m_parent = nullptr;
     }
 };
 

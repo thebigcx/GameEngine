@@ -7,6 +7,7 @@
 #include <maths/vector/vec2.h>
 #include <util/OrthographicCameraController.h>
 #include <renderer/text/TrueTypeFont.h>
+#include <script/ScriptEngine.h>
 
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>
@@ -51,6 +52,8 @@ private:
 
     Shared<Texture2D> m_scenePlayButton;
     Shared<Texture2D> m_sceneStopButton;
+
+    ScriptEngine m_scriptEngine;
 
     uint32_t m_gizmoType = 0;
 };

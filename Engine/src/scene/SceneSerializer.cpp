@@ -1,5 +1,5 @@
 #include <scene/SceneSerializer.h>
-#include <scene/SceneEntity.h>
+
 #include <scene/Components.h>
 #include <renderer/Model.h>
 #include <renderer/Assets.h>
@@ -313,11 +313,11 @@ void SceneSerializer::loadChildRecurse(YAML::Node& node, GameObject& parent, con
     }
 }
 
-void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
+void SceneSerializer::saveGameObject(GameObject& object, YAML::Node& node)
 {
-    if (entity.hasComponent<TransformComponent>())
+    if (object.hasComponent<TransformComponent>())
     {
-        auto tc = entity.getComponent<TransformComponent>();
+        auto tc = object.getComponent<TransformComponent>();
         auto transform = node["Transform"];
 
         transform["Translation"].push_back<float>(tc.translation.x);
@@ -336,9 +336,9 @@ void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
         transform["Scale"].SetStyle(YAML::EmitterStyle::Flow);
     }
 
-    if (entity.hasComponent<CameraComponent>())
+    if (object.hasComponent<CameraComponent>())
     {
-        auto comp = entity.getComponent<CameraComponent>();
+        auto comp = object.getComponent<CameraComponent>();
         auto camera = node["Camera"];
 
         camera["Projection Type"] = static_cast<uint32_t>(comp.camera.getProjectionType());
@@ -356,9 +356,9 @@ void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
         camera["Primary"] = comp.primary;
     }
 
-    if (entity.hasComponent<SpriteRendererComponent>())
+    if (object.hasComponent<SpriteRendererComponent>())
     {
-        auto comp = entity.getComponent<SpriteRendererComponent>();
+        auto comp = object.getComponent<SpriteRendererComponent>();
 
         auto spriteRenderer = node["Sprite Renderer"];
 
@@ -382,9 +382,9 @@ void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
         spriteRenderer["Texture Rect"].SetStyle(YAML::EmitterStyle::Flow);
     }
 
-    if (entity.hasComponent<MeshComponent>())
+    if (object.hasComponent<MeshComponent>())
     {
-        auto comp = entity.getComponent<MeshComponent>();
+        auto comp = object.getComponent<MeshComponent>();
 
         auto mesh = node["Mesh"];
 
@@ -392,9 +392,9 @@ void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
         mesh["Mesh ID"] = comp.meshID;
     }
 
-    if (entity.hasComponent<MeshRendererComponent>())
+    if (object.hasComponent<MeshRendererComponent>())
     {
-        auto comp = entity.getComponent<MeshRendererComponent>();
+        auto comp = object.getComponent<MeshRendererComponent>();
 
         auto meshRenderer = node["Mesh Renderer"];
 
@@ -411,9 +411,9 @@ void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
         }
     }
 
-    if (entity.hasComponent<DirectionalLightComponent>())
+    if (object.hasComponent<DirectionalLightComponent>())
     {
-        auto comp = entity.getComponent<DirectionalLightComponent>();
+        auto comp = object.getComponent<DirectionalLightComponent>();
 
         auto light = node["Directional Light"];
 
@@ -424,9 +424,9 @@ void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
         light["Intensity"] = comp.intensity;
     }
 
-    if (entity.hasComponent<PointLightComponent>())
+    if (object.hasComponent<PointLightComponent>())
     {
-        auto comp = entity.getComponent<PointLightComponent>();
+        auto comp = object.getComponent<PointLightComponent>();
 
         auto light = node["Point Light"];
 
@@ -438,9 +438,9 @@ void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
         light["Attenuation"] = comp.attenuation;
     }
 
-    if (entity.hasComponent<SkyLightComponent>())
+    if (object.hasComponent<SkyLightComponent>())
     {
-        auto comp = entity.getComponent<SkyLightComponent>();
+        auto comp = object.getComponent<SkyLightComponent>();
 
         auto light = node["Sky Light"];
 
@@ -448,7 +448,7 @@ void SceneSerializer::saveGameObject(GameObject& entity, YAML::Node& node)
     }
 
     auto childrenNode = node["Children"];
-    saveChildRecurse(entity, childrenNode);
+    saveChildRecurse(object, childrenNode);
 }
 
 void SceneSerializer::saveChildRecurse(GameObject& parent, YAML::Node& node)

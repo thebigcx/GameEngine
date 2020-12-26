@@ -1,3 +1,11 @@
-function add(x, y)
-    return x + y
+function onStart(dt)
+
+end
+
+function onUpdate(dt)
+    --print("Updated!")
+end
+
+function onDetach(dt)
+
 end

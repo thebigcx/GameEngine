@@ -15,13 +15,19 @@ void Material::bind() const
         return;
     }
 
-    if (usingAlbedoMap)
+    if (usingAlbedoMap && albedoMap)
     {
         albedoMap->bind(0);
         shader->setInt("material.albedo", 0);
+        shader->setInt("material.usingAlbedo", 1);
+    }
+    else
+    {
+        shader->setInt("material.usingAlbedo", 0);
+        shader->setFloat3("material.albedoColor", albedoColor);
     }
 
-    if (usingNormalMap)
+    if (usingNormalMap && normalMap)
     {
         normalMap->bind(1);
         shader->setInt("material.normal", 1);
@@ -32,7 +38,7 @@ void Material::bind() const
         shader->setInt("material.usingNormal", 0);
     }
 
-    if (usingMetallicMap)
+    if (usingMetallicMap && metallicMap)
     {
         metallicMap->bind(2);
         shader->setInt("material.metallic", 2);
@@ -42,9 +48,10 @@ void Material::bind() const
     {
         shader->setInt("material.usingMetalness", 0);
     }
+    shader->setFloat("material.metallicScalar", metallicScalar);
     
 
-    if (usingRoughnessMap)
+    if (usingRoughnessMap && roughnessMap)
     {
         roughnessMap->bind(3);
         shader->setInt("material.roughness", 3);
@@ -54,9 +61,10 @@ void Material::bind() const
     {
         shader->setInt("material.usingRoughness", 0);
     }
+    shader->setFloat("material.roughnessScalar", roughnessScalar);
     
 
-    if (usingAmbientOcclusionMap)
+    if (usingAmbientOcclusionMap && ambientOcclusionMap)
     {
         ambientOcclusionMap->bind(4);
         shader->setInt("material.ao", 4);
@@ -68,7 +76,7 @@ void Material::bind() const
     }
     
 
-    if (usingDepthMap)
+    if (usingDepthMap && depthMap)
     {
         depthMap->bind(5);
         shader->setInt("material.depth", 5);

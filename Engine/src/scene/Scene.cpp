@@ -1,7 +1,7 @@
 #include <scene/Scene.h>
 #include <renderer/Renderer2D.h>
 #include <maths/matrix/matrix_func.h>
-#include <scene/SceneEntity.h>
+
 #include <renderer/Renderer3D.h>
 #include <renderer/MeshFactory.h>
 #include <scene/Components.h>
@@ -73,9 +73,16 @@ void recurseRender(GameObject& object)
     {
         auto& mesh = object.getComponent<MeshComponent>().mesh;
         auto transform = object.getComponent<TransformComponent>().getTransform();
-        auto& material = object.getComponent<MeshRendererComponent>().materials[0];
 
-        Renderer3D::submit(mesh, transform, material);
+        if (object.getComponent<MeshRendererComponent>().materials.size() > 0)
+        {
+            auto& material = object.getComponent<MeshRendererComponent>().materials.at(0);
+
+            if (material && mesh)
+            {
+                Renderer3D::submit(mesh, transform, material);
+            }
+        }
     }
 
     for (auto& child : object.getChildren())
@@ -118,10 +125,8 @@ void Scene::render2DEntities()
     }
 }
 
-GameObject* Scene::createEntity(const std::string& name)
+GameObject* Scene::createGameObject(const std::string& name)
 {
-    //GameObject object;
-    //object.addComponent<TagComponent>(name);
     auto object = m_rootObject.addChild();
     object->addComponent<TagComponent>(name);
     return object;
@@ -158,7 +163,7 @@ void Scene::onUpdateRuntime(float dt)
         if (!script.instance)
         {
             script.instance = script.instantiateScript();
-            script.instance->m_entity = object;
+            script.instance->m_gameObject = object;
             script.instance->onCreate();
         }
 
@@ -192,7 +197,7 @@ void Scene::onUpdateRuntime(float dt)
     }
 }
 
-GameObject* Scene::getPrimaryCameraEntity()
+GameObject* Scene::getPrimaryCameraGameObject()
 {
     auto cameras = m_rootObject.getChildrenWithComponent<CameraComponent>();
     for (auto& object : cameras)
@@ -221,22 +226,22 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
 }
 
 template<>
-void Scene::onComponentAdded<CameraComponent>(GameObject& entity, CameraComponent& component)
+void Scene::onComponentAdded<CameraComponent>(GameObject& object, CameraComponent& component)
 {
     component.camera.setViewportSize(m_viewportWidth, m_viewportHeight); // TODO: better way
 }
 
-template<> void Scene::onComponentAdded<TransformComponent>(GameObject& entity, TransformComponent& component) {}
-template<> void Scene::onComponentAdded<SpriteRendererComponent>(GameObject& entity, SpriteRendererComponent& component) {}
-template<> void Scene::onComponentAdded<BoxCollider2DComponent>(GameObject& entity, BoxCollider2DComponent& component) {}
-template<> void Scene::onComponentAdded<NativeScriptComponent>(GameObject& entity, NativeScriptComponent& component) {}
-template<> void Scene::onComponentAdded<TagComponent>(GameObject& entity, TagComponent& component) {}
-template<> void Scene::onComponentAdded<TextRendererComponent>(GameObject& entity, TextRendererComponent& component) {}
-template<> void Scene::onComponentAdded<MeshComponent>(GameObject& entity, MeshComponent& component) {}
-template<> void Scene::onComponentAdded<SkyLightComponent>(GameObject& entity, SkyLightComponent& component) {}
-template<> void Scene::onComponentAdded<PointLightComponent>(GameObject& entity, PointLightComponent& component) {}
-template<> void Scene::onComponentAdded<DirectionalLightComponent>(GameObject& entity, DirectionalLightComponent& component) {}
-template<> void Scene::onComponentAdded<MeshRendererComponent>(GameObject& entity, MeshRendererComponent& component) {}
-template<> void Scene::onComponentAdded<LuaScriptComponent>(GameObject& entity, LuaScriptComponent& component) {}
+template<> void Scene::onComponentAdded<TransformComponent>(GameObject& object, TransformComponent& component) {}
+template<> void Scene::onComponentAdded<SpriteRendererComponent>(GameObject& object, SpriteRendererComponent& component) {}
+template<> void Scene::onComponentAdded<BoxCollider2DComponent>(GameObject& object, BoxCollider2DComponent& component) {}
+template<> void Scene::onComponentAdded<NativeScriptComponent>(GameObject& object, NativeScriptComponent& component) {}
+template<> void Scene::onComponentAdded<TagComponent>(GameObject& object, TagComponent& component) {}
+template<> void Scene::onComponentAdded<TextRendererComponent>(GameObject& object, TextRendererComponent& component) {}
+template<> void Scene::onComponentAdded<MeshComponent>(GameObject& object, MeshComponent& component) {}
+template<> void Scene::onComponentAdded<SkyLightComponent>(GameObject& object, SkyLightComponent& component) {}
+template<> void Scene::onComponentAdded<PointLightComponent>(GameObject& object, PointLightComponent& component) {}
+template<> void Scene::onComponentAdded<DirectionalLightComponent>(GameObject& object, DirectionalLightComponent& component) {}
+template<> void Scene::onComponentAdded<MeshRendererComponent>(GameObject& object, MeshRendererComponent& component) {}
+template<> void Scene::onComponentAdded<LuaScriptComponent>(GameObject& object, LuaScriptComponent& component) {}
 
 }

@@ -13,6 +13,7 @@
 #include <scene/SceneSerializer.h>
 #include <script/lua/state.h>
 #include <util/Timer.h>
+#include <util/io/Files.h>
 
 namespace Engine
 {
@@ -33,10 +34,12 @@ void EditorLayer::onAttach()
     m_scene = createShared<Scene>();
     m_sceneHeirarchy.setContext(m_scene);
     m_materialsPanel.setContext(m_scene);
+    m_scriptEngine.setContext(m_scene);
 
     m_scenePlayButton = Texture2D::create("Editor/assets/scene_play.png");
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
 
+    Assets::add<Shader>("shader", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
     Assets::add<Material>("default", Material::create(Assets::get<Shader>("pbr")));
 
     {
@@ -46,65 +49,16 @@ void EditorLayer::onAttach()
         Assets::add<Texture2D>("white_texture", whiteTexture);
     }
 
-    /*    
-
-    class CameraController : public ScriptableEntity
-    {
-    public:
-        virtual void onCreate() override
-        {
-
-        }
-
-        virtual void onDestroy() override
-        {
-
-        }
-
-        virtual void onUpdate(float dt) override
-        {
-            auto& translation = getComponent<TransformComponent>().translation;
-
-            float speed = 0.05f;
-
-            if (Input::isKeyPressed(Key::A))
-            {
-                translation.x -= speed * dt;
-            }
-            if (Input::isKeyPressed(Key::D))
-            {
-                translation.x += speed * dt;
-            }
-            if (Input::isKeyPressed(Key::W))
-            {
-                translation.y += speed * dt;
-            }
-            if (Input::isKeyPressed(Key::S))
-            {
-                translation.y -= speed * dt;
-            }
-        }
-    };
-
-    auto entity1 = m_scene->createEntity("Square");
-    auto& comp = entity1.addComponent<SpriteRendererComponent>();
-    comp.texture = Texture2D::create("Editor/assets/texture.png");
-    entity1.addComponent<TransformComponent>(math::vec3(0, 0, 0), math::vec3(0), math::vec3(1));
-
-    entity1.addComponent<NativeScriptComponent>().bind<CameraController>();
-
-    auto entity2 = m_scene->createEntity("Camera");
-    entity2.addComponent<TransformComponent>();
-    entity2.addComponent<CameraComponent>();
-    entity2.getComponent<CameraComponent>().primary = true;
-
-    */
+    auto script = m_scene->createGameObject("Script");
+    auto& luaScript = script->addComponent<LuaScriptComponent>();
+    luaScript.filePath = "Editor/scripts/test.lua";
 }
 
 void EditorLayer::onUpdate(float dt)
 {
     Timer timer;
     m_editorCamera.onUpdate(dt);
+    m_scriptEngine.onUpdate(dt);
 
     if (m_framebuffer->getWidth() != m_viewportSize.x || m_framebuffer->getHeight() != m_viewportSize.y)
     {
@@ -255,12 +209,12 @@ void EditorLayer::onImGuiRender()
 
         ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
 
-        GameObject* entity = m_sceneHeirarchy.getSelectedEntity();
-        if (entity)
+        GameObject* object = m_sceneHeirarchy.getSelectedGameObject();
+        if (object)
         {
-            if (m_gizmoType != -1 && entity->hasComponent<TransformComponent>())
+            if (m_gizmoType != -1 && object->hasComponent<TransformComponent>())
             {
-                auto& tc = entity->getComponent<TransformComponent>();
+                auto& tc = object->getComponent<TransformComponent>();
                 math::mat4 transform = tc.getTransform();
 
                 bool snap = Input::isKeyPressed(Key::LeftControl);

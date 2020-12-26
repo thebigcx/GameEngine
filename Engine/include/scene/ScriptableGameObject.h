@@ -1,19 +1,19 @@
 #pragma once
 
-#include <scene/SceneEntity.h>
+#include <scene/GameObject.h>
 
 namespace Engine
 {
 
-class ScriptableEntity
+class ScriptableGameObject
 {
 public:
-    virtual ~ScriptableEntity() = default;
+    virtual ~ScriptableGameObject() = default;
 
     template<typename T>
     T& getComponent()
     {
-        return m_entity->getComponent<T>();
+        return m_gameObject->getComponent<T>();
     }
 
 protected:
@@ -23,7 +23,7 @@ protected:
     virtual void onCollide2D() {}
 
 private:
-    GameObject* m_entity;
+    GameObject* m_gameObject;
     friend class Scene;
 };
 

@@ -13,14 +13,25 @@ namespace Engine
 class ScriptEngine
 {
 public:
-    ScriptEngine() = default;
+    ScriptEngine();
     ScriptEngine(const Shared<Scene>& context)
         : m_context(context) {}
 
     ~ScriptEngine() = default;
 
+    void setContext(const Shared<Scene>& context)
+    {
+        m_context = context;
+    }
+
     void onUpdate(float dt);
     void onEvent(Event& event);
+    void onStart();
+    void onDetach();
+
+    // Events
+    bool onMousePressed(MousePressedEvent& event);
+    bool onKeyPressed(KeyPressedEvent& event);
 
 private:
     Shared<Scene> m_context;

@@ -34,6 +34,18 @@ void state::push_parameter<bool>(const bool& p)
 }
 
 template<>
+void state::push_parameter<float>(const float& p)
+{
+    lua_pushnumber(m_state, p);
+}
+
+template<>
+void state::push_parameter<float&>(float& p)
+{
+    lua_pushnumber(m_state, p);
+}
+
+template<>
 int state::get_function_result<int>()
 {
     return lua_tointeger(m_state, -1);

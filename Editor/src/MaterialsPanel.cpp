@@ -135,7 +135,7 @@ void MaterialsPanel::onImGuiRender()
                     ImGui::SameLine();
                     ImGui::Checkbox("Use", &material->usingAlbedoMap);
                     ImGui::SameLine();
-                    ImGui::ColorEdit4("Color", &material->albedoColor.x);
+                    ImGui::ColorEdit3("Color", &material->albedoColor.x);
 
                     ImGui::PopID();
                 }
@@ -152,14 +152,17 @@ void MaterialsPanel::onImGuiRender()
                     ImGui::PopID();
                 }
 
-                if (ImGui::CollapsingHeader("Metalness"))
+                if (ImGui::CollapsingHeader("Metallic"))
                 {
-                    ImGui::PushID("Metalness");
+                    ImGui::PushID("Metallic");
 
                     textureSelect(material->metallicMap);
 
                     ImGui::SameLine();
                     ImGui::Checkbox("Use", &material->usingMetallicMap);
+
+                    ImGui::SameLine();
+                    ImGui::SliderFloat("##metallicScalar", &material->metallicScalar, 0.f, 32.f);
 
                     ImGui::PopID();
                 }
@@ -172,6 +175,9 @@ void MaterialsPanel::onImGuiRender()
 
                     ImGui::SameLine();
                     ImGui::Checkbox("Use", &material->usingRoughnessMap);
+
+                    ImGui::SameLine();
+                    ImGui::SliderFloat("##roughnessScalar", &material->roughnessScalar, 0.f, 32.f);
 
                     ImGui::PopID();
                 }
@@ -227,19 +233,6 @@ void MaterialsPanel::onImGuiRender()
                 ImGui::EndPopup();
             }
 
-            if (ImGui::BeginPopupModal("Change Shader Name"))
-            {
-                char buf[128];
-                strcpy(buf, shader.first.c_str());
-                ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-                if (ImGui::InputText("##changeShaderName", buf, flags))
-                {
-                    //ImGui::CloseCurrentPopup();
-                }
-                
-                ImGui::EndPopup();
-            }
-
             if (opened)
             {
                 ImGui::PushID(&shader.second);
@@ -263,7 +256,7 @@ void MaterialsPanel::onImGuiRender()
             {
                 if (FileSelectWindow::madeSelection())
                 {
-                    std::string name = std::string("shader_") + std::to_string(Assets::getAssetCount<Shader>());
+                    std::string name = FileSelectWindow::getSelection();
                     Assets::add<Shader>(name, Shader::createFromFile(FileSelectWindow::getSelection()));
                 }
             }
@@ -279,11 +272,6 @@ void MaterialsPanel::onImGuiRender()
 
             if (ImGui::BeginPopupContextItem())
             {
-                if (ImGui::MenuItem("Change Name"))
-                {
-                    
-                }
-                
                 if (ImGui::MenuItem("Delete Texture"))
                 {
                     deletedTexture = texture.first;
@@ -338,6 +326,7 @@ void MaterialsPanel::shaderSelect(Shared<Shader>& shader)
         {
             if (FileSelectWindow::madeSelection())
             {
+                // TODO: patch Assets key
                 shader = Shader::createFromFile(FileSelectWindow::getSelection());
             }
         }

@@ -25,8 +25,8 @@ public:
     bool usingAmbientOcclusionMap = false;
     bool usingDepthMap = false;
 
-    float metalness = 0.f;
-    float roughness = 0.f;
+    float metallicScalar = 0.f;
+    float roughnessScalar = 0.f;
     Shared<Texture2D> albedoMap;
     Shared<Texture2D> normalMap;
     Shared<Texture2D> metallicMap;

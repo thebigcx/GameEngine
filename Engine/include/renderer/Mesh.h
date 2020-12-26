@@ -5,6 +5,7 @@
 #include <renderer/Buffer.h>
 #include <renderer/VertexArray.h>
 #include <renderer/Material.h>
+#include <core/Core.h>
 
 namespace Engine
 {
@@ -18,6 +19,8 @@ public:
     Shared<IndexBuffer> indexBuffer;
     Shared<VertexArray> vertexArray;
     Shared<Material> material;
+
+    static Shared<Mesh> load(const std::string& path, unsigned int id);
 };
 
 }

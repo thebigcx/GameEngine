@@ -5,7 +5,7 @@
 #include <util/Transform.h>
 #include <util/OrthographicCameraController.h>
 #include <scene/SceneCamera.h>
-#include <scene/ScriptableEntity.h>
+#include <scene/ScriptableGameObject.h>
 #include <renderer/Texture2D.h>
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Mesh.h>
@@ -65,9 +65,9 @@ struct TextRendererComponent : public GameComponent
 
 struct NativeScriptComponent : public GameComponent
 {
-    ScriptableEntity* instance = nullptr;
+    ScriptableGameObject* instance = nullptr;
 
-    ScriptableEntity*(*instantiateScript)();
+    ScriptableGameObject*(*instantiateScript)();
     void (*destroyScript)(NativeScriptComponent*);
 
     template<typename T>
@@ -75,7 +75,7 @@ struct NativeScriptComponent : public GameComponent
     {
         instantiateScript = []()
         {
-            return static_cast<ScriptableEntity*>(new T());
+            return static_cast<ScriptableGameObject*>(new T());
         };
 
         destroyScript = [](NativeScriptComponent* component)

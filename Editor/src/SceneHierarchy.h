@@ -2,7 +2,7 @@
 
 #include <scene/Scene.h>
 #include <core/Core.h>
-#include <scene/SceneEntity.h>
+
 #include <renderer/Framebuffer.h>
 
 #include "FileSelectWindow.h"
@@ -17,22 +17,22 @@ public:
     SceneHierarchy(const Shared<Scene>& scene);
 
     template<typename T, typename F>
-    void drawComponent(const std::string& name, GameObject& entity, const F& func);
+    void drawComponent(const std::string& name, GameObject& object, const F& func);
 
-    void drawProperties(GameObject& entity);
+    void drawProperties(GameObject& object);
     
     void setContext(const Shared<Scene>& context)
     {
         m_context = context;
     }
 
-    void recurseTree(GameObject& entity);
+    void recurseTree(GameObject& object);
 
     void onImGuiRender();
 
     void drawSceneRenderer();
 
-    GameObject* getSelectedEntity()
+    GameObject* getSelectedGameObject()
     {
         return m_selection;
     }
@@ -41,7 +41,7 @@ private:
     Shared<Scene> m_context;
 
     GameObject* m_selection = nullptr;
-    GameObject* m_deletedEntity = nullptr;
+    GameObject* m_deletedGameObject = nullptr;
 
     void textureSelect(Shared<Texture2D>& texture);
 };

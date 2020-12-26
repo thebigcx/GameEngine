@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 //#include <sol/sol.hpp>
 
@@ -26,8 +27,6 @@ static int luafunc(lua_State* state)
     return 0;
 }
 
-static int luafunction(lua_State* state);
-
 class state
 {
 public:
@@ -45,17 +44,15 @@ public:
     }
 
     template<typename... Args>
-    void open_libs(Args... libs)
+    void open_libs(Args&&... libs)
     {
         (open_lib(libs), ...);
         luaL_openlibs(m_state);
     }
 
     template<typename T, typename... Args>
-    T call(const std::string& name, Args... args)
+    T call(const std::string& name, Args&&... args)
     {
-        T returnValue;
-
         lua_getglobal(m_state, name.c_str());
 
         (push_parameter<Args>(args), ...);
@@ -69,6 +66,23 @@ public:
         return result;
     }
 
+    template<typename... Args>
+    void callVoid(const std::string& name, Args&&... args)
+    {
+        lua_getglobal(m_state, name.c_str());
+
+        (push_parameter<Args>(args), ...);
+
+        lua_call(m_state, sizeof...(args), 1);
+
+        lua_pop(m_state, 1);
+    }
+
+    /*bool function_exists(const std::string& name)
+    {
+        lua_getglobal(m_state, "onMousePressed");
+    }*/
+
     template<typename F> // function type
     void set_function(const std::string& name, const F& func)
     {
@@ -81,10 +95,10 @@ private:
     lua_State* m_state;
 
     template<typename T>
-    void push_parameter(const T& p) {}
+    void push_parameter(const T& p);
 
     template<typename T>
-    T get_function_result() {}
+    T get_function_result();
 
     template<typename T>
     void open_lib(const T& _lib)
@@ -110,15 +124,6 @@ private:
         else if (_lib == lib::table)
             luaopen_table(m_state);
     }
-
-    friend int luafunction(lua_State* state);
 };
-
-static int luafunction(lua_State* state)
-{
-    //const LuaState* userState = static_cast<const LuaState*>(lua_topointer(state, 0));
-    //auto user = lua_topointer(state, 0);
-    
-}
 
 }

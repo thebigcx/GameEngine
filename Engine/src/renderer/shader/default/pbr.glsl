@@ -50,11 +50,17 @@ struct Material
     sampler2D ao;
     sampler2D depth;
 
+    float metallicScalar;
+    float roughnessScalar;
+
+    bool usingAlbedo;
     bool usingNormal;
     bool usingMetallic;
     bool usingRoughness;
-    bool usingAo;
+    bool usingAo; // Could combine them all in a single int
     bool usingDepth;
+
+    vec3 albedoColor;
 };
 
 struct PointLight
@@ -196,7 +202,15 @@ void main()
 
     vec4 albedoSample = texture(material.albedo, texCoord);
 
-    vec3 albedo = vec3(pow(albedoSample.r, 2.2), pow(albedoSample.g, 2.2), pow(albedoSample.b, 2.2));
+    vec3 albedo;
+    if (material.usingAlbedo)
+    {
+        albedo = vec3(pow(albedoSample.r, 2.2), pow(albedoSample.g, 2.2), pow(albedoSample.b, 2.2));
+    }
+    else
+    {
+        albedo = material.albedoColor;
+    }
 
     vec3 normal;
     if (material.usingNormal)
@@ -208,17 +222,8 @@ void main()
         normal = normalize(TBN * fs_in.normal);
     }
 
-    float metallic = 1.f;
-    if (material.usingMetallic)
-    {
-        metallic = texture(material.metallic, texCoord).r;
-    }
-
-    float roughness = 1.f;
-    if (material.usingRoughness)
-    {
-        roughness = texture(material.roughness, texCoord).r;
-    }
+    float metallic = (int(material.usingMetallic) * texture(material.metallic, fs_in.texCoord).r) + material.metallicScalar;
+    float roughness = (int(material.usingRoughness) * texture(material.roughness, fs_in.texCoord).r) + material.roughnessScalar;
 
     float ao = 1.f;
     if (material.usingAo)

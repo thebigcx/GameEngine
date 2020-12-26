@@ -3,7 +3,7 @@
 #include <imgui/imgui.h>
 
 #include <scene/Components.h>
-#include <scene/SceneEntity.h>
+
 #include <renderer/Model.h>
 #include <renderer/RenderCommand.h>
 #include <renderer/Renderer3D.h>
@@ -27,26 +27,26 @@ SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
     
 }
 
-void SceneHierarchy::recurseTree(GameObject& entity)
+void SceneHierarchy::recurseTree(GameObject& object)
 {
-    ImGui::PushID(&entity);
+    ImGui::PushID(&object);
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
     const char* tag;
-    if (!entity.hasComponent<TagComponent>())
+    if (!object.hasComponent<TagComponent>())
     {
         //ImGui::PopID();
-        entity.addComponent<TagComponent>("?");
+        object.addComponent<TagComponent>("?");
         //return;
     }
     else
-        tag = entity.getComponent<TagComponent>().tag.c_str();
+        tag = object.getComponent<TagComponent>().tag.c_str();
     
-    bool entityExpanded = ImGui::TreeNodeEx(tag, flags);
+    bool objectExpanded = ImGui::TreeNodeEx(tag, flags);
 
     if (ImGui::IsItemClicked())
     {
-        m_selection = &entity;
+        m_selection = &object;
     }
     
     bool deleted = false;
@@ -54,8 +54,8 @@ void SceneHierarchy::recurseTree(GameObject& entity)
     {
         if (ImGui::MenuItem("Create Child"))
         {
-            auto object = entity.addChild();
-            object->addComponent<TagComponent>("Untitled Child");
+            auto child = object.addChild();
+            child->addComponent<TagComponent>("Untitled Child");
         }
 
         if (ImGui::MenuItem("Delete Game Object"))
@@ -69,14 +69,14 @@ void SceneHierarchy::recurseTree(GameObject& entity)
     if (deleted)
     {
         m_selection = nullptr;
-        m_deletedEntity = &entity;
+        m_deletedGameObject = &object;
     }
 
-    if (entityExpanded)
+    if (objectExpanded)
     {
-        for (auto& entity : entity.getChildren())
+        for (auto& object : object.getChildren())
         {
-            recurseTree(entity);
+            recurseTree(object);
         }
         
         
@@ -97,8 +97,8 @@ void SceneHierarchy::onImGuiRender()
     {
         if (ImGui::MenuItem("Create Game Object"))
         {
-            auto entity = m_context->createEntity("Untitled Game Object");
-            m_selection = entity;
+            auto object = m_context->createGameObject("Untitled Game Object");
+            m_selection = object;
         }
 
         if (ImGui::MenuItem("Import 3D Model"))
@@ -117,12 +117,12 @@ void SceneHierarchy::onImGuiRender()
             {
                 Shared<Model> model = Model::loadModel(FileSelectWindow::getSelection());
 
-                auto entity = m_context->createEntity("Model");
+                auto object = m_context->createGameObject("Model");
 
                 int meshID = 0;
                 for (auto& mesh : model->meshes)
                 {
-                    auto child = entity->addChild();
+                    auto child = object->addChild();
                     child->addComponent<TagComponent>(std::string("Mesh_") + std::to_string(meshID));
 
                     child->addComponent<MeshComponent>();
@@ -138,23 +138,23 @@ void SceneHierarchy::onImGuiRender()
                     meshID++;
                 }
 
-                m_selection = entity;
+                m_selection = object;
             }
         }
     }
 
     if (gameObjectsOpen)
     {   
-        m_deletedEntity = nullptr;
+        m_deletedGameObject = nullptr;
         auto& gameObjects = m_context->getRootGameObject().getChildren();
         for (auto& gameObject : gameObjects)
         {
             recurseTree(gameObject);
         }
 
-        if (m_deletedEntity)
+        if (m_deletedGameObject)
         {
-            m_deletedEntity->destroy();
+            m_deletedGameObject->destroy();
         }
     }
 
@@ -185,21 +185,21 @@ void SceneHierarchy::onImGuiRender()
     ImGui::End();
 }
 
-#define ADD_COMPONENT(type, str) if (!entity.hasComponent<type>())\
+#define ADD_COMPONENT(type, str) if (!object.hasComponent<type>())\
                                 {\
                                     if (ImGui::MenuItem(str)) {\
-                                        entity.addComponent<type>();\
+                                        object.addComponent<type>();\
                                         ImGui::CloseCurrentPopup();\
                                     }\
                                 }
 
-void SceneHierarchy::drawProperties(GameObject& entity)
+void SceneHierarchy::drawProperties(GameObject& object)
 {
     char buf[128];
-    strcpy(buf, entity.getComponent<TagComponent>().tag.c_str());
+    strcpy(buf, object.getComponent<TagComponent>().tag.c_str());
     ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
     ImGui::InputText("Name", buf, 128, flags);
-    entity.getComponent<TagComponent>().tag = std::string(buf);
+    object.getComponent<TagComponent>().tag = std::string(buf);
 
     if (ImGui::Button("Add Component"))
     {
@@ -222,7 +222,7 @@ void SceneHierarchy::drawProperties(GameObject& entity)
         ImGui::EndPopup();
     }
 
-    drawComponent<TransformComponent>("Transform", entity, [](auto& component)
+    drawComponent<TransformComponent>("Transform", object, [](auto& component)
     {
         ImGui::PushID("Transform");
 
@@ -238,7 +238,7 @@ void SceneHierarchy::drawProperties(GameObject& entity)
         ImGui::PopID();
     });
 
-    drawComponent<CameraComponent>("Camera", entity, [](auto& component)
+    drawComponent<CameraComponent>("Camera", object, [](auto& component)
     {
         ImGui::Checkbox("Primary", &component.primary);
 
@@ -308,7 +308,7 @@ void SceneHierarchy::drawProperties(GameObject& entity)
         }
     });
 
-    drawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [&](auto& component)
+    drawComponent<SpriteRendererComponent>("Sprite Renderer", object, [&](auto& component)
     {
         ImGui::ColorEdit4("Color", &(component.color.x));
 
@@ -317,22 +317,8 @@ void SceneHierarchy::drawProperties(GameObject& entity)
             component.texture = Assets::get<Texture2D>("white_texture");
         }
         
-        char buf[128];
-        /*if (component.texture->getPath() == "")
-        {
-            strcpy(buf, "<empty_texture>");
-        }
-        else
-        {
-            strcpy(buf, component.texture->getPath().c_str());
-        }*/
-        strcpy(buf, Assets::find<Texture2D>(component.texture).c_str());
-
-        ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
-        ImGui::InputText("", buf, 128, flags);
+        std::string currentTexture = Assets::find<Texture2D>(component.texture);
         
-        ImGui::SameLine();
-        std::string currentTexture = component.texture->getPath();
         if (ImGui::BeginCombo("Texture", currentTexture.c_str()))
         {
             for (auto& texture : Assets::getList<Texture2D>())
@@ -360,7 +346,7 @@ void SceneHierarchy::drawProperties(GameObject& entity)
         
     });
 
-    drawComponent<TextRendererComponent>("Text Renderer", entity, [](auto& component)
+    drawComponent<TextRendererComponent>("Text Renderer", object, [](auto& component)
     {
         ImGui::ColorEdit4("Color", &component.color.x);
         ImGui::Text("Font selection window goes here...");
@@ -371,7 +357,7 @@ void SceneHierarchy::drawProperties(GameObject& entity)
         component.text = std::string(buf);
     });
 
-    drawComponent<MeshComponent>("Mesh", entity, [&entity](auto& component)
+    drawComponent<MeshComponent>("Mesh", object, [&object](auto& component)
     {
         char buf[128];
         if (component.filePath == "")
@@ -408,36 +394,28 @@ void SceneHierarchy::drawProperties(GameObject& entity)
                 if (FileSelectWindow::madeSelection())
                 {
                     component.filePath = FileSelectWindow::getSelection();
-                    Shared<Model> model = Model::loadModel(component.filePath);
+                    component.mesh = Mesh::load(component.filePath, component.meshID);
+                    
+                    std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
+                    Assets::add<Material>(name, component.mesh->material);
 
-                    if (model->meshes.size() < component.meshID && component.meshID > 0)
-                    {
-                        if (model->meshes.size() > 0)
-                        {
-                            component.mesh = model->meshes[component.meshID];
-                            
-                            std::string name = std::string("material_") + std::to_string(Assets::getAssetCount<Material>());
-                            Assets::add<Material>(name, model->meshes[component.meshID]->material);
-
-                            if (entity.hasComponent<MeshRendererComponent>())
-                            {
-                                entity.getComponent<MeshRendererComponent>().materials.push_back(model->meshes[component.meshID]->material);
-                            }
-                        }
+                    if (object.hasComponent<MeshRendererComponent>())
+                    { // TODO: refactor the MeshRenderer component system
+                        object.getComponent<MeshRendererComponent>().materials.push_back(component.mesh->material);
                     }
                 }
             }
         }
     });
 
-    drawComponent<SkyLightComponent>("Sky Light", entity, [](auto& component)
+    drawComponent<SkyLightComponent>("Sky Light", object, [](auto& component)
     {
         ImGui::PushID("Skylight");
         ImGui::DragFloat("Intensity", &component.intensity, 0.01f, 0.f);
         ImGui::PopID();
     });
 
-    drawComponent<DirectionalLightComponent>("Directional Light", entity, [](auto& component)
+    drawComponent<DirectionalLightComponent>("Directional Light", object, [](auto& component)
     {
         ImGui::PushID("Directionallight");
         ImGui::ColorEdit3("Radiance", &component.radiance.x);
@@ -445,7 +423,7 @@ void SceneHierarchy::drawProperties(GameObject& entity)
         ImGui::PopID();
     });
 
-    drawComponent<PointLightComponent>("Point Light", entity, [](auto& component)
+    drawComponent<PointLightComponent>("Point Light", object, [](auto& component)
     {
         ImGui::PushID("Pointlight");
         ImGui::ColorEdit4("Radiance", &component.radiance.x);
@@ -454,7 +432,7 @@ void SceneHierarchy::drawProperties(GameObject& entity)
         ImGui::PopID();
     });
 
-    drawComponent<MeshRendererComponent>("Mesh Renderer", entity, [](auto& component)
+    drawComponent<MeshRendererComponent>("Mesh Renderer", object, [](auto& component)
     {
         if (ImGui::TreeNode("Materials"))
         {
@@ -539,12 +517,13 @@ void SceneHierarchy::drawProperties(GameObject& entity)
         }
     });
 
-    drawComponent<LuaScriptComponent>("Lua Script", entity, [](auto& component)
+    drawComponent<LuaScriptComponent>("Lua Script", object, [](auto& component)
     {
         char buf[128];
         strcpy(buf, component.filePath.c_str());
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
         ImGui::InputText("##luaScriptPath", buf, 128, flags);
+        ImGui::SameLine();
 
         if (ImGui::Button("...##luaScriptPathSelect"))
         {
@@ -566,14 +545,14 @@ void SceneHierarchy::drawProperties(GameObject& entity)
 }
 
 template<typename T, typename F>
-void SceneHierarchy::drawComponent(const std::string& name, GameObject& entity, const F& func)
+void SceneHierarchy::drawComponent(const std::string& name, GameObject& object, const F& func)
 {
-    if (!entity.hasComponent<T>())
+    if (!object.hasComponent<T>())
     {
         return;
     }
 
-    auto& component = entity.getComponent<T>();
+    auto& component = object.getComponent<T>();
 
     ImGui::Separator();
 
@@ -599,7 +578,7 @@ void SceneHierarchy::drawComponent(const std::string& name, GameObject& entity, 
 
     if (deleted)
     {
-        entity.removeComponent<T>();
+        object.removeComponent<T>();
     }
 }
 
