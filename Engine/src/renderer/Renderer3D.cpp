@@ -16,8 +16,8 @@ void Renderer3D::init()
 {
     math::ivec2 windowSize = Application::get().getWindow().getSize();
     
-    //Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
-    Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/basic3d.glsl"));
+    Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
+    //Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/basic3d.glsl"));
 
     data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
 
@@ -43,6 +43,11 @@ void Renderer3D::init()
 
     data.skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
     Assets::add<Shader>("Engine/src/renderer/shader/default/skybox.glsl", data.skyboxShader);
+
+    data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, true, false);
+    data.shadowMapFramebuffer = Framebuffer::create(data.shadowMap, GL_DEPTH_ATTACHMENT);
+    data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
+    data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);
 }
 
 void Renderer3D::shutdown()
@@ -160,6 +165,7 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, c
     RenderCommand::renderIndexed(mesh->vertexArray);
 }
 
+/*
 void Renderer3D::setLights(const LightSetup& setup)
 {
     auto& shader = Assets::get<Shader>("pbr");
@@ -207,13 +213,13 @@ void Renderer3D::setLights(const LightSetup& setup)
         shader->setFloat("spotLights[" + index + "].intensity",   light.intensity);
         shader->setFloat("spotLights[" + index + "].attenuation", light.attenuation);
         shader->setFloat("spotLights[" + index + "].cutoff", light.cutoff);
-        shader->setFloat("spotLights[" + index + "].outerCutoff", light.outerCutoff);*/
+        shader->setFloat("spotLights[" + index + "].outerCutoff", light.outerCutoff);
     }
 
     Assets::get<Shader>("pbr")->setInt("numPointLights", pointLights.size());
     //Assets::get<Shader>("pbr")->setInt("numSpotLights", spotLights.size());
 }
-
+*/
 void Renderer3D::setEnvironment(const Shared<Skybox>& environment)
 {
     data.environment = environment;

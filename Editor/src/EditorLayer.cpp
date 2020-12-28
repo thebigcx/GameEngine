@@ -38,8 +38,7 @@ void EditorLayer::onAttach()
     m_scenePlayButton = Texture2D::create("Editor/assets/scene_play.png");
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
 
-    Assets::add<Shader>("shader", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
-    Assets::add<Material>("default", Material::create(Assets::get<Shader>("pbr")));
+    //Assets::add<Material>("default", Material::create(Assets::get<Shader>("pbr")));
 
     {
         auto whiteTexture = Texture2D::create(1, 1);
@@ -118,7 +117,9 @@ void EditorLayer::drawMenuBar()
             if (FileDialog::madeSelection())
             {
                 Assets::flush();
+                m_scene = createShared<Scene>();
                 m_scene = SceneSerializer::loadScene(FileDialog::getSelection());
+                m_scene->onViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
                 m_sceneHeirarchy.setContext(m_scene);
                 m_materialsPanel.setContext(m_scene); // TODO: add a callback system to make this better
             }
@@ -205,7 +206,8 @@ void EditorLayer::onImGuiRender()
         float windowHeight = (float)ImGui::GetWindowHeight();
         ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-        ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
+        //ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
+        // TODO: create grid myself, so depth information is correct
 
         GameObject* object = m_sceneHeirarchy.getSelectedGameObject();
         if (object)

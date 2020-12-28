@@ -5,6 +5,7 @@
 #include <core/Cursor.h>
 #include <core/Input.h>
 #include <core/KeyCodes.h>
+#include <core/Core.h>
 
 #include <util/Image.h>
 #include <util/Timer.h>
@@ -41,3 +42,9 @@
 #include <sound/SoundSource.h>
 #include <sound/SoundBuffer.h>
 #include <sound/SoundListener.h>
+
+#include <scene/Scene.h>
+#include <scene/Components.h>
+#include <scene/GameComponent.h>
+#include <scene/GameObject.h>
+#include <scene/ScriptableGameObject.h>

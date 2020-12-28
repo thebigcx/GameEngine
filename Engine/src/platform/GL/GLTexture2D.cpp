@@ -6,7 +6,7 @@
 namespace Engine
 {
 
-GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
+GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB, bool clamp, bool linear)
     : m_path(file)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
@@ -29,13 +29,10 @@ GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
 
         glTextureStorage2D(m_id, 1, m_internalFormat, image->width, image->height);
 
-        //glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        //glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-        glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-        glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
+        glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR : GL_NEAREST_MIPMAP_NEAREST);
+        glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+        glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
 
         glTextureSubImage2D(m_id,
                      0,
@@ -62,12 +59,17 @@ GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB)
     unbind();
 }
 
-GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat)
-    : m_internalFormat(dataFormat), m_dataFormat(dataFormat)
+GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat, bool clamp, bool linear)
+    : m_internalFormat(dataFormat), m_dataFormat(dataFormat), m_path("")
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
 
     bind();
+
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR : GL_NEAREST);
+    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
 
     glTextureStorage2D(m_id, 1, dataFormat, width, height);
 }
@@ -77,11 +79,11 @@ GLTexture2D::~GLTexture2D()
     glDeleteTextures(1, &m_id);
 }
 
-void GLTexture2D::setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat)
+void GLTexture2D::setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat, GLenum type)
 {
     bind();
 
-    glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
+    glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, dataFormat, type, data);
     
     unbind();
 }

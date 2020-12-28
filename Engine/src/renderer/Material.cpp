@@ -112,28 +112,26 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
         material->shader = shader;
     }
 
-    /*uint32_t white = 0xffffffff; // TODO: don't bother setting texture colors, leave them as nullptr's
-    uint32_t black = 0x00000000;
+    return material;
+}
+
+Shared<Material> create(const Shared<Shader>& shader,
+                        const Shared<Texture2D>& albedo,
+                        const Shared<Texture2D>& normal,
+                        const Shared<Texture2D>& metallic,
+                        const Shared<Texture2D>& roughness,
+                        const Shared<Texture2D>& ao,
+                        const Shared<Texture2D>& depth)
+{
+    auto material = createShared<Material>();
     
-    material->albedoMap = Texture2D::create(1, 1);
-    material->albedoMap->setData(0, 0, 1, 1, &white);
-
-    material->normalMap = Texture2D::create(1, 1);
-    material->normalMap->setData(0, 0, 1, 1, &black);
-
-    material->metallicMap = Texture2D::create(1, 1);
-    material->metallicMap->setData(0, 0, 1, 1, &white);
-
-    material->roughnessMap = Texture2D::create(1, 1);
-    material->roughnessMap->setData(0, 0, 1, 1, &white);
-
-    material->ambientOcclusionMap = Texture2D::create(1, 1);
-    material->ambientOcclusionMap->setData(0, 0, 1, 1, &white);
-
-    material->depthMap = Texture2D::create(1, 1);
-    material->depthMap->setData(0, 0, 1, 1, &white);
-
-    material->albedoColor = math::vec4(1, 1, 1, 1);*/
+    material->shader = shader;
+    material->albedoMap = albedo;
+    material->normalMap = normal;
+    material->metallicMap = metallic;
+    material->roughnessMap = roughness;
+    material->ambientOcclusionMap = ao;
+    material->depthMap = depth;
 
     return material;
 }

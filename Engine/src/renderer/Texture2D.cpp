@@ -9,14 +9,14 @@
 namespace Engine
 {
 
-Shared<Texture2D> Texture2D::create(const std::string& file, bool isSRGB)
+Shared<Texture2D> Texture2D::create(const std::string& file, bool isSRGB, bool clamp, bool linear)
 {
-    return createShared<GLTexture2D>(file, isSRGB);
+    return createShared<GLTexture2D>(file, isSRGB, clamp, linear);
 }
 
-Shared<Texture2D> Texture2D::create(int width, int height, GLenum dataFormat)
+Shared<Texture2D> Texture2D::create(int width, int height, GLenum dataFormat, bool clamp, bool linear)
 {
-    return createShared<GLTexture2D>(width, height, dataFormat);
+    return createShared<GLTexture2D>(width, height, dataFormat, clamp, linear);
 }
 
 Shared<Texture2D> Texture2D::createWhiteTexture()

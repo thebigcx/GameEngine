@@ -50,16 +50,23 @@ public:
     template<typename T, typename... Args>
     T& addComponent(Args&& ...args)
     {
-        T* component = new T(std::forward<Args>(args)...);
-        this->addExistingComponent<T>(component);
-        return *component;
+        if (!hasComponent<T>())
+        {
+            T* component = new T(std::forward<Args>(args)...);
+            this->addExistingComponent<T>(component);
+            return *component;
+        }
+
+        Logger::getCoreLogger()->error(std::string("Game Object already has component: ") + typeid(T).name());
+        static T fail(std::forward<Args>(args)...);
+        return fail;
     }
 
     // Component is move'd in (just in case it would otherwise be a heavy copy)
     template<typename T>
     void addExistingComponent(GameComponent* component)
     {
-        if (std::is_base_of<GameComponent, T>())
+        if (std::is_base_of<GameComponent, T>() && !hasComponent<T>())
         {
             component->setOwner(this);
             m_components.emplace(std::make_pair(static_cast<std::type_index>(typeid(T)), component));

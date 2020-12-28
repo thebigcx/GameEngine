@@ -8,6 +8,15 @@
 namespace Engine
 {
 
+GLFramebuffer::GLFramebuffer(const GLTexture2D& texture, GLenum attachment)
+{
+    glCreateFramebuffers(1, &m_id);
+
+    bind();
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture.getId(), 0);
+    unbind();
+}
+
 GLFramebuffer::GLFramebuffer(uint32_t width, uint32_t height)
     : m_width(width), m_height(height)
 {
@@ -78,7 +87,7 @@ void GLFramebuffer::resize(uint32_t width, uint32_t height)
     m_width = width;
     m_height = height;
 
-    invalidate(width, height);
+    invalidate(width, height); // FIXME
 }
 
 void GLFramebuffer::bind() const
@@ -90,6 +99,60 @@ void GLFramebuffer::bind() const
 void GLFramebuffer::unbind() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GLFramebuffer::drawBuffer(uint32_t buffer) const
+{
+    bind();
+    glDrawBuffer(getColorBufferEnumValue_(buffer));
+    unbind();
+}
+
+void GLFramebuffer::readBuffer(uint32_t buffer) const
+{
+    bind();
+    glReadBuffer(getColorBufferEnumValue_(buffer));
+    unbind();
+}
+
+GLenum GLFramebuffer::getColorBufferEnumValue_(uint32_t buffer)
+{
+    bool bl = false, br = false, fl = false, fr = false;
+
+    if (buffer & static_cast<uint32_t>(ColorBuffer::FrontLeft))
+        fl = true;
+
+    if (buffer & static_cast<uint32_t>(ColorBuffer::FrontRight))
+        fr = true;
+
+    if (buffer & static_cast<uint32_t>(ColorBuffer::BackLeft))
+        bl = true;
+
+    if (buffer & static_cast<uint32_t>(ColorBuffer::BackRight))
+        br = true;
+
+    if (!bl && !br && !fl && !fr)
+        return GL_NONE;
+    else if (!bl && !br && fl && !fr)
+        return GL_FRONT_LEFT;
+    else if (!bl && !br && !fl && fr)
+        return GL_FRONT_RIGHT;
+    else if (bl && !br && !fl && !fr)
+        return GL_BACK_LEFT;
+    else if (!bl && br && !fl && !fr)
+        return GL_BACK_RIGHT;
+    else if (!bl && !br && fl && fr)
+        return GL_FRONT;
+    else if (bl && br && !fl && !fr)
+        return GL_BACK;
+    else if (bl && !br && fl && !fr)
+        return GL_LEFT;
+    else if (!bl && br && !fl && fr)
+        return GL_RIGHT;
+    else if (bl && br && fl && fr)
+        return GL_FRONT_AND_BACK;
+
+    return 0;
 }
 
 }

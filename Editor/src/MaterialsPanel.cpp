@@ -33,8 +33,8 @@ void MaterialsPanel::init()
     m_camera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
     m_sphereMesh = MeshFactory::sphereMesh(2.f, 36, 18);
 
-    m_lightSetup.setSkylight(0.1);
-    m_lightSetup.setDirectionalLight({ math::vec3(0, 1, 0), math::vec3(1, 1, 1), 0.5 });
+    m_directionalLight = DirectionalLight(math::vec3(1, 1, 1), 0.5, math::vec3(0, 1, 0));
+    m_skyLight = SkyLight(math::vec3(1, 1, 1), 0.1);
 }
 
 void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
@@ -348,7 +348,8 @@ void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
     RenderCommand::setClearColor(math::vec4(0.2f, 0.2f, 0.2f, 1.f));
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
-    Renderer3D::setLights(m_lightSetup);
+    m_directionalLight.addToShader(Assets::get<Shader>("pbr"), 0);
+    m_skyLight.addToShader(Assets::get<Shader>("pbr"), 0);
 
     Renderer3D::beginScene(m_camera);
     Renderer3D::submit(m_sphereMesh, math::to_mat4(math::quat(math::vec3(math::radians(-80), 0, 0))));

@@ -42,7 +42,7 @@ private:
     void render2DEntities();
     void render3DEntities();
 
-    LightSetup m_setup;
+    //LightSetup m_setup;
 };
 
 }

@@ -35,7 +35,8 @@ private:
     Shared<Framebuffer> m_materialPreviewViewport;
     Shared<Mesh> m_sphereMesh;
     
-    LightSetup m_lightSetup;
+    DirectionalLight m_directionalLight;
+    SkyLight m_skyLight;
 
     EditorCamera m_camera;
 

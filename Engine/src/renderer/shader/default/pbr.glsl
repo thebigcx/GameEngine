@@ -78,6 +78,12 @@ struct DirectionalLight
     float intensity;
 };
 
+struct SkyLight
+{
+    vec3 radiance;
+    float intensity;
+};
+
 in DATA
 {
     vec2 texCoord;
@@ -93,14 +99,13 @@ uniform vec3 cameraPos;
 uniform Material material;
 
 uniform PointLight pointLights[MAX_LIGHTS];
-uniform DirectionalLight directionalLight;
-uniform int usingDirectionalLight;
 uniform int numPointLights;
 
-//uniform vec3 lightPositions[MAX_LIGHTS];
-//uniform vec3 lightColors[MAX_LIGHTS];
+uniform DirectionalLight directionalLight;
+uniform int usingDirectionalLight;
 
-uniform float skyLight;
+uniform SkyLight skyLight;
+
 uniform float exposure;
 
 float PI = 3.1415926535897932384626433832795028841971693993751058209749445923;
@@ -295,7 +300,7 @@ void main()
         Lo *= directionalLight.intensity;
     }
 
-    vec3 ambient = skyLight * albedo * ao;
+    vec3 ambient = (skyLight.radiance * skyLight.intensity) * albedo * ao;
     vec3 color = ambient + Lo;
 
     vec3 mapped = vec3(1.0) - exp(-color * exposure);

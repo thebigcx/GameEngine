@@ -172,6 +172,11 @@ public:
     template<typename T>
     static inline constexpr AssetList<T>& getList()
     {
+        if (!listExists<T>())
+        {
+            m_instance.m_lists.emplace(std::make_pair(static_cast<std::type_index>(typeid(T)), new AssetList<T>()));
+        }
+
         return *static_cast<AssetList<T>*>(m_instance.m_lists.at(typeid(T)));
     }
 

@@ -10,11 +10,11 @@ namespace Engine
 class GLTexture2D : public Texture2D
 {
 public:
-    GLTexture2D(const std::string& path, bool isSRGB = true);
-    GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat = GL_RGBA8);
+    GLTexture2D(const std::string& path, bool isSRGB = true, bool clamp = false, bool linear = true);
+    GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat = GL_RGBA8, bool clamp = false, bool linear = true);
     ~GLTexture2D();
 
-    void setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA) override;
+    void setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE) override;
     void setParameter(Parameter parameter, Value value) override;
 
     void bind(uint32_t slot = 0) const override;

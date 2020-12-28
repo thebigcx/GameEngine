@@ -10,29 +10,102 @@
 namespace Engine
 {
 
-struct PointLight
+struct ShadowInfo
 {
-    math::vec3 position;
+public:
+    ShadowInfo(const math::mat4& projection)
+        : m_projection(projection) {}
+
+    inline const math::mat4& getProjection() { return m_projection; }
+
+private:
+    math::mat4 m_projection;
+};
+
+struct BaseLight
+{
+public:
+    BaseLight() {}
+    BaseLight(const math::vec3& radiance_, float intensity_)
+        : radiance(radiance_), intensity(intensity_), m_shadowInfo(nullptr) {}
+
+    virtual void addToShader(const Shared<Shader>& shader, uint32_t index) {}
+
     math::vec3 radiance;
     float intensity;
+
+    virtual ~BaseLight() = default;
+
+private:
+    ShadowInfo* m_shadowInfo;
+};
+
+struct PointLight : public BaseLight
+{
+public:
+    PointLight() {}
+    PointLight(const math::vec3& radiance, float intensity, const math::vec3& position_, float attenuation_)
+        : BaseLight(radiance, intensity), position(position_), attenuation(attenuation_) {}
+
+    void addToShader(const Shared<Shader>& shader, uint32_t index) override
+    {
+        std::string idx = std::to_string(index);
+
+        shader->setFloat3("pointLights[" + idx + "].radiance", radiance);
+        shader->setFloat("pointLights[" + idx + "].intensity", intensity);
+        shader->setFloat3("pointLights[" + idx + "].position", position);
+        shader->setFloat("pointLights[" + idx + "].attenuation", attenuation);
+    }
+
+    math::vec3 position;
     float attenuation;
 };
-
-struct DirectionalLight
+// TODO: possibly add support for multiple directional lights
+struct DirectionalLight : public BaseLight
 {
+public:
+    DirectionalLight() {}
+    DirectionalLight(const math::vec3& radiance, float intensity, const math::vec3& direction_)
+        : BaseLight(radiance, intensity), direction(direction_) {}
+
+    void addToShader(const Shared<Shader>& shader, uint32_t index) override
+    {
+        shader->setFloat3("directionalLight.radiance", radiance);
+        shader->setFloat("directionalLight.intensity", intensity);
+        shader->setFloat3("directionalLight.direction", direction);
+    }
+
     math::vec3 direction;
-    math::vec3 radiance;
-    float intensity;
 };
-
-struct SpotLight
+// TODO: make spotlight compatible with pbr shading
+struct SpotLight : public BaseLight
 {
-    math::vec3 position, direction, radiance;
+public:
+    SpotLight() {}
+    SpotLight(const math::vec3& radiance, float intensity, const math::vec3& position_, const math::vec3& direction_,
+              float cutoff_, float outerCutoff_)
+        : BaseLight(radiance, intensity), position(position_), direction(direction_), cutoff(cutoff_), outerCutoff(outerCutoff_) {}
+    // TODO: addToShader method
+    math::vec3 position;
+    math::vec3 direction;
     float cutoff;
     float outerCutoff;
-    float intensity;
 };
 
+struct SkyLight : public BaseLight
+{
+public:
+    SkyLight() {}
+    SkyLight(const math::vec3& radiance, float intensity)
+        : BaseLight(radiance, intensity) {}
+
+    void addToShader(const Shared<Shader>& shader, uint32_t index) override
+    {
+        shader->setFloat3("skyLight.radiance", radiance);
+        shader->setFloat("skyLight.intensity", intensity);
+    }
+};
+/*
 class LightSetup
 {
 public:
@@ -109,5 +182,5 @@ private:
     float m_skyLight = 0.f;
     bool m_usingDirectionalLight = false;
 };
-
+*/
 }

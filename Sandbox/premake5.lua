@@ -39,7 +39,10 @@ project "Sandbox"
 		"openal",
 		"freetype",
 		"assimp",
-		"pthread"
+		"pthread",
+		"yaml-cpp",
+		"lua",
+		"dl" -- TODO: move to static library
 	}
 	
 	optimize "On"

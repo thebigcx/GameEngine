@@ -106,6 +106,7 @@ struct DirectionalLightComponent : public GameComponent
 
 struct SkyLightComponent : public GameComponent
 {
+    math::vec3 radiance = math::vec3(1.f);
     float intensity = 0.5f;
 };
 

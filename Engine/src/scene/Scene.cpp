@@ -23,34 +23,42 @@ Scene::~Scene()
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
-    LightSetup setup;
+    Assets::get<Shader>("pbr")->bind();
     {
         //auto view = m_registry.view<SkyLightComponent>();
         auto skylights = m_rootObject.getChildrenWithComponent<SkyLightComponent>();
         for (auto& object : skylights)
-            setup.setSkylight(object->getComponent<SkyLightComponent>().intensity);
+        {   
+            auto light = object->getComponent<SkyLightComponent>();
+            SkyLight skyLight(light.radiance, light.intensity);
+            skyLight.addToShader(Assets::get<Shader>("pbr"), 0);
+        }
         
         auto directionalLights = m_rootObject.getChildrenWithComponents<DirectionalLightComponent, TransformComponent>();
         for (auto& object : directionalLights)
         {
-            auto& dirLight = object->getComponent<DirectionalLightComponent>();
+            auto& light = object->getComponent<DirectionalLightComponent>();
             auto& transform = object->getComponent<TransformComponent>();
-            setup.setDirectionalLight({ transform.rotation, dirLight.radiance, dirLight.intensity });
+
+            DirectionalLight dirLight(light.radiance, light.intensity, transform.rotation);
+            dirLight.addToShader(Assets::get<Shader>("pbr"), 0);
         }
 
-        std::vector<PointLight> pointLights;
+        int index = 0;
         auto pointLightObjects = m_rootObject.getChildrenWithComponents<PointLightComponent, TransformComponent>();
         for (auto& object : pointLightObjects)
         {
-            auto& pointLight = object->getComponent<PointLightComponent>();
+            auto& light = object->getComponent<PointLightComponent>();
             auto& transform = object->getComponent<TransformComponent>();
-            pointLights.push_back({ transform.translation, pointLight.radiance, pointLight.intensity, pointLight.attenuation });
+
+            PointLight pointLight(light.radiance, light.intensity, transform.translation, light.attenuation);
+            pointLight.addToShader(Assets::get<Shader>("pbr"), index);
+
+            index++;
         }
 
-        setup.setPointLights(pointLights);
+        Assets::get<Shader>("pbr")->setInt("numPointLights", index);
     }
-
-    Renderer3D::setLights(setup);
 
     Renderer3D::beginScene(camera);
 

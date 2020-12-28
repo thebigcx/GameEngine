@@ -18,23 +18,31 @@ public:
     static Shared<Material> create();
     static Shared<Material> create(const Shared<Shader>& shader);
 
-    bool usingMetallicMap = false;
-    bool usingRoughnessMap = false;
+    static Shared<Material> create(const Shared<Shader>& shader,
+                                   const Shared<Texture2D>& albedo,
+                                   const Shared<Texture2D>& normal,
+                                   const Shared<Texture2D>& metallic,
+                                   const Shared<Texture2D>& roughness,
+                                   const Shared<Texture2D>& ao,
+                                   const Shared<Texture2D>& depth);
+
     bool usingAlbedoMap = true;
     bool usingNormalMap = false;
+    bool usingMetallicMap = false;
+    bool usingRoughnessMap = false;
     bool usingAmbientOcclusionMap = false;
     bool usingDepthMap = false;
 
     float metallicScalar = 0.f;
     float roughnessScalar = 0.f;
-    Shared<Texture2D> albedoMap;
-    Shared<Texture2D> normalMap;
-    Shared<Texture2D> metallicMap;
-    Shared<Texture2D> roughnessMap;
-    Shared<Texture2D> ambientOcclusionMap;
-    Shared<Texture2D> depthMap;
+    Shared<Texture2D> albedoMap = nullptr;
+    Shared<Texture2D> normalMap = nullptr;
+    Shared<Texture2D> metallicMap = nullptr;
+    Shared<Texture2D> roughnessMap = nullptr;
+    Shared<Texture2D> ambientOcclusionMap = nullptr;
+    Shared<Texture2D> depthMap = nullptr;
 
-    math::vec4 albedoColor;
+    math::vec4 albedoColor = math::vec4(1.f);
 
     Shared<Shader> shader;
 
