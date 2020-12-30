@@ -27,6 +27,8 @@ struct Renderer3DData
     Shared<Shader> skyboxShader;
     Shared<Texture2D> shadowMap;
     Shared<Framebuffer> shadowMapFramebuffer;
+
+    std::vector<const BaseLight*> lights;
 };
 
 class Renderer3D
@@ -45,9 +47,15 @@ public:
     //static void setLights(const LightSetup& setup);
     static void setEnvironment(const Shared<Skybox>& environment);
 
+    static inline void addLight(const BaseLight* light) { data.lights.push_back(light); }
+    static inline void clearLights() { data.lights.clear(); }
+
     static void endScene();
 
     static Renderer3DData data;
+
+private:
+    static void setLightingUniforms(const Shared<Shader>& shader);
 };
 
 }

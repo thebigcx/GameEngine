@@ -348,8 +348,8 @@ void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
     RenderCommand::setClearColor(math::vec4(0.2f, 0.2f, 0.2f, 1.f));
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
-    m_directionalLight.addToShader(Assets::get<Shader>("pbr"), 0);
-    m_skyLight.addToShader(Assets::get<Shader>("pbr"), 0);
+    //m_directionalLight.addToRenderer();
+    //m_skyLight.addToRenderer();
 
     Renderer3D::beginScene(m_camera);
     Renderer3D::submit(m_sphereMesh, math::to_mat4(math::quat(math::vec3(math::radians(-80), 0, 0))));

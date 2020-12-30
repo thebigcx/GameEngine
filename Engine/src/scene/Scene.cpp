@@ -24,14 +24,14 @@ Scene::~Scene()
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
     Assets::get<Shader>("pbr")->bind();
+    Renderer3D::clearLights();
     {
-        //auto view = m_registry.view<SkyLightComponent>();
         auto skylights = m_rootObject.getChildrenWithComponent<SkyLightComponent>();
         for (auto& object : skylights)
         {   
             auto light = object->getComponent<SkyLightComponent>();
-            SkyLight skyLight(light.radiance, light.intensity);
-            skyLight.addToShader(Assets::get<Shader>("pbr"), 0);
+            auto skyLight = new SkyLight(light.radiance, light.intensity);
+            skyLight->addToRenderer();
         }
         
         auto directionalLights = m_rootObject.getChildrenWithComponents<DirectionalLightComponent, TransformComponent>();
@@ -40,24 +40,19 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
             auto& light = object->getComponent<DirectionalLightComponent>();
             auto& transform = object->getComponent<TransformComponent>();
 
-            DirectionalLight dirLight(light.radiance, light.intensity, transform.rotation);
-            dirLight.addToShader(Assets::get<Shader>("pbr"), 0);
+            auto dirLight = new DirectionalLight(light.radiance, light.intensity, transform.rotation);
+            dirLight->addToRenderer();
         }
 
-        int index = 0;
         auto pointLightObjects = m_rootObject.getChildrenWithComponents<PointLightComponent, TransformComponent>();
         for (auto& object : pointLightObjects)
         {
             auto& light = object->getComponent<PointLightComponent>();
             auto& transform = object->getComponent<TransformComponent>();
 
-            PointLight pointLight(light.radiance, light.intensity, transform.translation, light.attenuation);
-            pointLight.addToShader(Assets::get<Shader>("pbr"), index);
-
-            index++;
+            auto pointLight = new PointLight(light.radiance, light.intensity, transform.translation, light.attenuation);
+            pointLight->addToRenderer();
         }
-
-        Assets::get<Shader>("pbr")->setInt("numPointLights", index);
     }
 
     Renderer3D::beginScene(camera);

@@ -117,6 +117,8 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
     mesh->material->shader->setMatrix4("transform", transform);
     mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
 
+    setLightingUniforms(mesh->material->shader);
+
     mesh->vertexArray->bind();
 
     RenderCommand::renderIndexed(mesh->vertexArray);
@@ -131,11 +133,19 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
 
     RenderCommand::setDepthTesting(true);
 
+    Shared<Material> lastMaterial = nullptr;
     for (auto& mesh : model->meshes)
     {
-        mesh->material->bind();
-        mesh->material->shader->setMatrix4("transform", transform);
-        mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
+        if (mesh->material != lastMaterial)
+        {
+            mesh->material->bind(); // TODO: duplicate shaders optimization
+            mesh->material->shader->setMatrix4("transform", transform);
+            mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
+            
+            setLightingUniforms(mesh->material->shader);
+
+            lastMaterial = mesh->material;
+        }
 
         mesh->vertexArray->bind();
 
@@ -220,6 +230,29 @@ void Renderer3D::setLights(const LightSetup& setup)
     //Assets::get<Shader>("pbr")->setInt("numSpotLights", spotLights.size());
 }
 */
+
+void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
+{
+    uint32_t pointLights = 0;
+    for (auto& light : data.lights)
+    {
+        //static_cast<const PointLight*>(light)->setShaderUniforms(shader, pointLights);
+        //light->setShaderUniforms(shader, pointLights);
+        std::string idx = std::to_string(pointLights);
+
+        auto pointLight = static_cast<const PointLight*>(light);
+
+        shader->setFloat3("pointLights[" + idx + "].position", pointLight->position);
+        shader->setFloat3("pointLights[" + idx + "].radiance", pointLight->radiance);
+        shader->setFloat("pointLights[" + idx + "].intensity", pointLight->intensity);
+        shader->setFloat("pointLights[" + idx + "].attenuation", pointLight->attenuation);
+
+        pointLights++;
+    }
+
+    shader->setInt("numPointLights", pointLights);
+}
+
 void Renderer3D::setEnvironment(const Shared<Skybox>& environment)
 {
     data.environment = environment;
