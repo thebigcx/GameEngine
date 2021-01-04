@@ -14,6 +14,11 @@ project "Sandbox"
 		"src/ExampleLayer.h",
 		"src/ExampleApp.cpp"
 	}
+	--[[files {
+		"src/Sandbox.cpp",
+		"src/Sandbox.h",
+		"src/SandboxApp.cpp"
+	};]]--
 	
 	includedirs {
 		"%{wks.location}/Engine/include",

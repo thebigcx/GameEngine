@@ -41,9 +41,9 @@ void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
 {
     bool open = false;
     if (texture)
-        ImGui::ImageButton(reinterpret_cast<void*>(texture->getId()), ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        open = ImGui::ImageButton(reinterpret_cast<void*>(texture->getId()), ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     else
-        ImGui::ImageButton(0, ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        open = ImGui::ImageButton(0, ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     
     if (open)
     {
@@ -350,6 +350,9 @@ void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
 
     //m_directionalLight.addToRenderer();
     //m_skyLight.addToRenderer();
+    //Renderer3D::clearLights();
+    //Renderer3D::addLight(&m_directionalLight);
+    //Renderer3D::addLight(&m_skyLight);
 
     Renderer3D::beginScene(m_camera);
     Renderer3D::submit(m_sphereMesh, math::to_mat4(math::quat(math::vec3(math::radians(-80), 0, 0))));

@@ -35,7 +35,7 @@ void SceneCamera::calculateProjection()
 {
     if (m_projectionType == ProjectionType::Perspective)
     {
-        m_projection = math::perspective(m_perspectiveFov, m_aspect, m_perspectiveNear, m_perspectiveFar);
+        m_projectionMatrix = math::perspective(m_perspectiveFov, m_aspect, m_perspectiveNear, m_perspectiveFar);
     }
     else
     {
@@ -44,7 +44,7 @@ void SceneCamera::calculateProjection()
         float bottom = -m_orthoSize * 0.5f;
         float top = m_orthoSize * 0.5f;
 
-        m_projection = math::ortho(left, right, bottom, top, m_orthoNear, m_orthoFar);
+        m_projectionMatrix = math::ortho(left, right, bottom, top, m_orthoNear, m_orthoFar);
     }
 }
 

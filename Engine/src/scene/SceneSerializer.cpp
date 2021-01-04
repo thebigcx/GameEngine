@@ -271,30 +271,33 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
     {
         auto& light = object->addComponent<DirectionalLightComponent>();
 
-        light.radiance.r = node["Directional Light"]["Radiance"][0].as<float>();
-        light.radiance.g = node["Directional Light"]["Radiance"][1].as<float>();
-        light.radiance.b = node["Directional Light"]["Radiance"][2].as<float>();
+        light.light.radiance.r = node["Directional Light"]["Radiance"][0].as<float>();
+        light.light.radiance.g = node["Directional Light"]["Radiance"][1].as<float>();
+        light.light.radiance.b = node["Directional Light"]["Radiance"][2].as<float>();
 
-        light.intensity = node["Directional Light"]["Intensity"].as<float>();
+        light.light.intensity = node["Directional Light"]["Intensity"].as<float>();
     }
 
     if (node["Sky Light"])
     {
         auto& light = object->addComponent<SkyLightComponent>();
 
-        light.intensity = node["Sky Light"]["Intensity"].as<float>();
+        light.light.intensity = node["Sky Light"]["Intensity"].as<float>();
+
+        light.light.radiance.r = node["Sky Light"]["Radiance"][0].as<float>();
+        light.light.radiance.g = node["Sky Light"]["Radiance"][1].as<float>();
+        light.light.radiance.b = node["Sky Light"]["Radiance"][2].as<float>();
     }
 
     if (node["Point Light"])
     {
         auto& light = object->addComponent<PointLightComponent>();
 
-        light.radiance.r = node["Point Light"]["Radiance"][0].as<float>();
-        light.radiance.g = node["Point Light"]["Radiance"][1].as<float>();
-        light.radiance.b = node["Point Light"]["Radiance"][2].as<float>();
+        light.light.radiance.r = node["Point Light"]["Radiance"][0].as<float>();
+        light.light.radiance.g = node["Point Light"]["Radiance"][1].as<float>();
+        light.light.radiance.b = node["Point Light"]["Radiance"][2].as<float>();
 
-        light.intensity = node["Point Light"]["Intensity"].as<float>();
-        light.attenuation = node["Point Light"]["Attenuation"].as<float>();
+        light.light.intensity = node["Point Light"]["Intensity"].as<float>();
     }
 
     if (node["Children"])
@@ -417,11 +420,11 @@ void SceneSerializer::saveGameObject(GameObject& object, YAML::Node& node)
 
         auto light = node["Directional Light"];
 
-        light["Radiance"][0] = comp.radiance.r;
-        light["Radiance"][1] = comp.radiance.g;
-        light["Radiance"][2] = comp.radiance.b;
+        light["Radiance"][0] = comp.light.radiance.r;
+        light["Radiance"][1] = comp.light.radiance.g;
+        light["Radiance"][2] = comp.light.radiance.b;
 
-        light["Intensity"] = comp.intensity;
+        light["Intensity"] = comp.light.intensity;
     }
 
     if (object.hasComponent<PointLightComponent>())
@@ -430,12 +433,11 @@ void SceneSerializer::saveGameObject(GameObject& object, YAML::Node& node)
 
         auto light = node["Point Light"];
 
-        light["Radiance"][0] = comp.radiance.r;
-        light["Radiance"][1] = comp.radiance.g;
-        light["Radiance"][2] = comp.radiance.b;
+        light["Radiance"][0] = comp.light.radiance.r;
+        light["Radiance"][1] = comp.light.radiance.g;
+        light["Radiance"][2] = comp.light.radiance.b;
 
-        light["Intensity"] = comp.intensity;
-        light["Attenuation"] = comp.attenuation;
+        light["Intensity"] = comp.light.intensity;
     }
 
     if (object.hasComponent<SkyLightComponent>())
@@ -444,7 +446,11 @@ void SceneSerializer::saveGameObject(GameObject& object, YAML::Node& node)
 
         auto light = node["Sky Light"];
 
-        light["Intensity"] = comp.intensity;
+        light["Intensity"] = comp.light.intensity;
+        
+        light["Radiance"][0] = comp.light.radiance.r;
+        light["Radiance"][1] = comp.light.radiance.g;
+        light["Radiance"][2] = comp.light.radiance.b;
     }
 
     auto childrenNode = node["Children"];

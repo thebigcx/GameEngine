@@ -4,11 +4,12 @@
 
 #include <events/Event.h>
 #include <events/EventDispatcher.h>
+#include <util/Camera.h>
 
 namespace Engine
 {
 
-class PerspectiveCamera
+class PerspectiveCamera : public Camera
 {
 public:
     PerspectiveCamera();
@@ -30,11 +31,6 @@ public:
 
     math::mat4 getViewMatrix() const;
 
-    inline constexpr const math::mat4& getProjectionMatrix() const
-    {
-        return m_projectionMatrix;
-    }
-
     virtual void onEvent(Event& event);
     virtual void onWindowResize(WindowResizeEvent& event);
 
@@ -42,8 +38,6 @@ protected:
     math::vec3 m_position;
     math::vec3 m_direction;
     math::vec3 m_up;
-
-    math::mat4 m_projectionMatrix;
 
     float m_pan = 0;
     float m_tilt = 0;

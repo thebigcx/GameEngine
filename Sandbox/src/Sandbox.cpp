@@ -16,10 +16,11 @@ void Sandbox::onAttach()
 
     Engine::RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
 
-    m_cubeMaterial = Engine::Material::create(Engine::Assets::get<Engine::Shader>("pbr"));
+    //m_cubeMaterial = Engine::Material::create(Engine::Assets::get<Engine::Shader>("pbr"));
+    m_cubeMaterial = Engine::Material::create(Engine::Shader::createFromFile("Engine/src/renderer/shader/default/basic3d.glsl"));
     m_cubeMaterial->albedoMap = Engine::Assets::get<Engine::Texture2D>("grass");
 
-    lights.setSkylight(0.05f);
+    /*lights.setSkylight(0.05f);
 
     Engine::DirectionalLight dirLight;
     dirLight.direction = math::vec3(-0.6f, -0.6f, -0.6f);
@@ -57,7 +58,18 @@ void Sandbox::onAttach()
 
     lights.setSpotLights(spotLights);
 
-    Engine::Renderer3D::setLights(lights);
+    Engine::Renderer3D::setLights(lights);*/
+    m_skyLight = Engine::SkyLight(math::vec3(1), 1.f);
+    m_directionalLight = Engine::DirectionalLight(math::vec3(1), 1.f, math::vec3(0, -1, 0));
+    m_pointLights.push_back(Engine::PointLight(math::vec3(1), 1.f, math::vec3(3, 0, 2)));
+
+    Engine::Renderer3D::addLight(&m_skyLight);
+    Engine::Renderer3D::addLight(&m_directionalLight);
+
+    for (auto& pointLight : m_pointLights)
+    {
+        Engine::Renderer3D::addLight(&pointLight);
+    }
 
     m_model = Engine::Model::load("Sandbox/assets/Donut.obj");
 
@@ -94,8 +106,7 @@ void Sandbox::onUpdate(float dt)
         Engine::Renderer3D::submit(m_mesh, math::scale(math::translate(math::mat4(1.f), math::vec3(i * 2, j * 2, 0)), math::vec3(2.f)));
     }
 
-    Engine::Assets::get<Engine::Shader>("pbr")->bind();
-    Engine::Assets::get<Engine::Shader>("pbr")->setFloat3("pointLights[0].position", m_perspectiveCamera.getPosition());
+    m_pointLights[0].position = m_perspectiveCamera.getPosition();
 
     Engine::Renderer3D::submit(m_mesh, math::translate(math::mat4(1.f), math::vec3(2.f, 1.f, 4.f)));
 

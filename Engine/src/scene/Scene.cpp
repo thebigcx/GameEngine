@@ -5,7 +5,6 @@
 #include <renderer/Renderer3D.h>
 #include <renderer/MeshFactory.h>
 #include <scene/Components.h>
-#include <renderer/Assets.h>
 #include <util/Timer.h>
 
 namespace Engine
@@ -23,15 +22,14 @@ Scene::~Scene()
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
-    Assets::get<Shader>("pbr")->bind();
     Renderer3D::clearLights();
     {
         auto skylights = m_rootObject.getChildrenWithComponent<SkyLightComponent>();
         for (auto& object : skylights)
         {   
-            auto light = object->getComponent<SkyLightComponent>();
-            auto skyLight = new SkyLight(light.radiance, light.intensity);
-            skyLight->addToRenderer();
+            auto& light = object->getComponent<SkyLightComponent>();
+
+            Renderer3D::addLight(&light.light);
         }
         
         auto directionalLights = m_rootObject.getChildrenWithComponents<DirectionalLightComponent, TransformComponent>();
@@ -40,8 +38,9 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
             auto& light = object->getComponent<DirectionalLightComponent>();
             auto& transform = object->getComponent<TransformComponent>();
 
-            auto dirLight = new DirectionalLight(light.radiance, light.intensity, transform.rotation);
-            dirLight->addToRenderer();
+            light.light.direction = transform.rotation;
+
+            Renderer3D::addLight(&light.light);
         }
 
         auto pointLightObjects = m_rootObject.getChildrenWithComponents<PointLightComponent, TransformComponent>();
@@ -50,8 +49,9 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
             auto& light = object->getComponent<PointLightComponent>();
             auto& transform = object->getComponent<TransformComponent>();
 
-            auto pointLight = new PointLight(light.radiance, light.intensity, transform.translation, light.attenuation);
-            pointLight->addToRenderer();
+            light.light.position = transform.translation;
+
+            Renderer3D::addLight(&light.light);
         }
     }
 
@@ -67,7 +67,25 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
     Renderer2D::endScene();
 }
 
-void recurseRender(GameObject& object)
+void recurseRender2D(GameObject& object)
+{
+    if (object.hasComponents<TransformComponent, SpriteRendererComponent>())
+    {
+        auto& sprite = object.getComponent<SpriteRendererComponent>();
+        auto transform = object.getComponent<TransformComponent>().getTransform();
+
+        math::frect textureRect = sprite.usingTexRect ? sprite.textureRect : math::frect(0, 0, sprite.texture->getWidth(), sprite.texture->getHeight());
+
+        Renderer2D::renderSprite(sprite.texture, transform, textureRect);
+    }
+
+    for (auto& child : object.getChildren())
+    {
+        recurseRender2D(child);
+    }
+}
+
+void recurseRender3D(GameObject& object)
 {
     if (object.hasComponents<MeshComponent, TransformComponent, MeshRendererComponent>())
     {
@@ -87,7 +105,7 @@ void recurseRender(GameObject& object)
 
     for (auto& child : object.getChildren())
     {
-        recurseRender(child);
+        recurseRender3D(child);
     }
 }
 
@@ -97,31 +115,17 @@ void Scene::render3DEntities()
 
     for (auto& object : objects)
     {
-        recurseRender(object);
+        recurseRender3D(object);
     }
 }
 
 void Scene::render2DEntities()
 {
-    auto renderables = m_rootObject.getChildrenWithComponents<TransformComponent, SpriteRendererComponent>();
+    auto renderables = m_rootObject.getChildren();
+
     for (auto& object : renderables)
     {
-        auto& sprite = object->getComponent<SpriteRendererComponent>();
-        if (sprite.texture != nullptr)
-        {
-            if (sprite.usingTexRect)
-            {
-                Renderer2D::renderSprite(sprite.texture, object->getComponent<TransformComponent>().getTransform(), sprite.textureRect);
-            }
-            else
-            {
-                Renderer2D::renderSprite(sprite.texture, object->getComponent<TransformComponent>().getTransform());
-            }
-        }
-        else
-        {
-            Renderer2D::renderQuad(object->getComponent<TransformComponent>().getTransform(), sprite.color);
-        }
+        recurseRender2D(object);
     }
 }
 

@@ -47,7 +47,7 @@ private:
     uint32_t m_depthAttachment = 0;
     uint32_t m_linearFiltering = true;
 
-    uint32_t m_width, m_height;
+    uint32_t m_width = 0, m_height = 0;
 
     void invalidate(uint32_t width, uint32_t height);
 

@@ -37,19 +37,6 @@ void EditorLayer::onAttach()
 
     m_scenePlayButton = Texture2D::create("Editor/assets/scene_play.png");
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
-
-    //Assets::add<Material>("default", Material::create(Assets::get<Shader>("pbr")));
-
-    {
-        auto whiteTexture = Texture2D::create(1, 1);
-        uint32_t white = 0xffffffff;
-        whiteTexture->setData(0, 0, 1, 1, &white);
-        Assets::add<Texture2D>("white_texture", whiteTexture);
-    }
-
-    auto script = m_scene->createGameObject("Script");
-    auto& luaScript = script->addComponent<LuaScriptComponent>();
-    luaScript.filePath = "Editor/scripts/test.lua";
 }
 
 void EditorLayer::onUpdate(float dt)
@@ -101,7 +88,6 @@ void EditorLayer::drawMenuBar()
             if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
             {
                 FileDialog::open("saveSceneAs");
-                //SceneSerializer::saveScene(m_scene, "");
             }
 
             ImGui::EndMenu();
@@ -136,7 +122,7 @@ void EditorLayer::drawMenuBar()
             }
         }
     }
-    
+
 }
 
 void EditorLayer::onImGuiRender()
@@ -219,16 +205,16 @@ void EditorLayer::onImGuiRender()
 
                 bool snap = Input::isKeyPressed(Key::LeftControl);
                 float snapValue = 0.5f;
-                
+
                 if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
                 {
                     snapValue = 45.f;
                 }
 
                 float snapValues[] = { snapValue, snapValue, snapValue };
-                
+
                 ImGuizmo::Manipulate(math::buffer(view), math::buffer(projection), (ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, math::buffer(transform), nullptr, snap ? snapValues : nullptr);
-            
+
                 if (ImGuizmo::IsUsing())
                 {
                     math::vec3 translation, rotation, scale;
@@ -243,7 +229,7 @@ void EditorLayer::onImGuiRender()
         }
 
     }
-    
+
     ImGui::End();
     ImGui::PopStyleVar();
 
@@ -262,14 +248,14 @@ void EditorLayer::onImGuiRender()
 
     m_sceneHeirarchy.onImGuiRender();
     m_materialsPanel.onImGuiRender();
-    
+
     ImGui::End();
     ImGui::PopStyleVar();
 }
 
 void EditorLayer::onDetach()
 {
-    
+
 }
 
 void EditorLayer::onEvent(Event& event)

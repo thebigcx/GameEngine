@@ -17,6 +17,8 @@
 #include <util/Transform.h>
 #include <util/io/Files.h>
 
+#include <events/Event.h>
+#include <events/EventDispatcher.h>
 
 #include <renderer/Buffer.h>
 #include <renderer/shader/Shader.h>

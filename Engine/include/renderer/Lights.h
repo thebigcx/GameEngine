@@ -30,8 +30,6 @@ public:
     BaseLight(const math::vec3& radiance_, float intensity_)
         : radiance(radiance_), intensity(intensity_), m_shadowInfo(nullptr) {}
 
-    void addToRenderer();
-
     virtual void setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const {};
 
     math::vec3 radiance;
@@ -50,13 +48,12 @@ struct PointLight : public BaseLight
 {
 public:
     PointLight() {}
-    PointLight(const math::vec3& radiance, float intensity, const math::vec3& position_, float attenuation_)
-        : BaseLight(radiance, intensity), position(position_), attenuation(attenuation_) {}
+    PointLight(const math::vec3& radiance, float intensity, const math::vec3& position_)
+        : BaseLight(radiance, intensity), position(position_) {}
 
     void setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const override;
 
     math::vec3 position;
-    float attenuation;
 };
 // TODO: possibly add support for multiple directional lights
 struct DirectionalLight : public BaseLight

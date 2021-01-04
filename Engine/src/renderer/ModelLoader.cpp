@@ -135,7 +135,7 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
     bool needToLoadMaterial = true;
     for (auto& materialLoaded : m_materialsLoaded)
     {
-        if (mesh->mMaterialIndex == materialLoaded.first)
+        if (mesh->mMaterialIndex == materialLoaded.first) // FIXME: doesn't work
         {
             needToLoadMaterial = false;
             material = materialLoaded.second;
@@ -153,7 +153,7 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
             auto normal = loadMaterialTexture_(aimaterial, aiTextureType_HEIGHT, model->directory);
             auto metallic = loadMaterialTexture_(aimaterial, aiTextureType_REFLECTION, model->directory);
             auto roughness = loadMaterialTexture_(aimaterial, aiTextureType_SHININESS, model->directory);
-            auto ambientOcclusion = loadMaterialTexture_(aimaterial, aiTextureType_AMBIENT, model->directory);
+            auto ambientOcclusion = loadMaterialTexture_(aimaterial, aiTextureType_LIGHTMAP, model->directory);
 
             auto material_ = Material::create(Assets::get<Shader>("pbr")); // TODO: material shaders
 

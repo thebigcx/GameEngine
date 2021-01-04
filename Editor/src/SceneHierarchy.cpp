@@ -316,7 +316,7 @@ void SceneHierarchy::drawProperties(GameObject& object)
 
         if (component.texture == nullptr)
         {
-            component.texture = Assets::get<Texture2D>("white_texture");
+            component.texture = Texture2D::createWhiteTexture();
         }
         
         std::string currentTexture = Assets::find<Texture2D>(component.texture);
@@ -405,24 +405,24 @@ void SceneHierarchy::drawProperties(GameObject& object)
     drawComponent<SkyLightComponent>("Sky Light", object, [](auto& component)
     {
         ImGui::PushID("Skylight");
-        ImGui::DragFloat("Intensity", &component.intensity, 0.01f, 0.f);
+        ImGui::ColorEdit3("Radiance", &component.light.radiance.x);
+        ImGui::DragFloat("Intensity", &component.light.intensity, 0.01f, 0.f);
         ImGui::PopID();
     });
 
     drawComponent<DirectionalLightComponent>("Directional Light", object, [](auto& component)
     {
         ImGui::PushID("Directionallight");
-        ImGui::ColorEdit3("Radiance", &component.radiance.x);
-        ImGui::DragFloat("Intensity", &component.intensity, 0.01f, 0.f);
+        ImGui::ColorEdit3("Radiance", &component.light.radiance.x);
+        ImGui::DragFloat("Intensity", &component.light.intensity, 0.01f, 0.f);
         ImGui::PopID();
     });
 
     drawComponent<PointLightComponent>("Point Light", object, [](auto& component)
     {
         ImGui::PushID("Pointlight");
-        ImGui::ColorEdit4("Radiance", &component.radiance.x);
-        ImGui::DragFloat("Intensity", &component.intensity, 0.01f, 0.f);
-        ImGui::DragFloat("Attenuation", &component.attenuation, 0.01f, 0.f);
+        ImGui::ColorEdit3("Radiance", &component.light.radiance.x);
+        ImGui::DragFloat("Intensity", &component.light.intensity, 0.01f, 0.f);
         ImGui::PopID();
     });
 

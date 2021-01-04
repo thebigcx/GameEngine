@@ -9,6 +9,8 @@
 namespace Engine
 {
 
+Shared<Texture2D> Texture2D::s_whiteTexture = nullptr;
+
 Shared<Texture2D> Texture2D::create(const std::string& file, bool isSRGB, bool clamp, bool linear)
 {
     return createShared<GLTexture2D>(file, isSRGB, clamp, linear);
@@ -21,10 +23,14 @@ Shared<Texture2D> Texture2D::create(int width, int height, GLenum dataFormat, bo
 
 Shared<Texture2D> Texture2D::createWhiteTexture()
 {
-    auto texture = createShared<GLTexture2D>(1, 1);
-    uint32_t white = 0xffffffff;
-    texture->setData(0, 0, 1, 1, &white);
-    return texture;
+    if (!s_whiteTexture)
+    {
+        s_whiteTexture = createShared<GLTexture2D>(1, 1);
+        uint32_t white = 0xffffffff;
+        s_whiteTexture->setData(0, 0, 1, 1, &white);
+    }
+
+    return s_whiteTexture;
 }
 
 Shared<Texture2D> Texture2D::asyncCreate(const std::string& file, bool isSRGB)

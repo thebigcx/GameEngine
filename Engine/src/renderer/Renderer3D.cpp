@@ -17,7 +17,6 @@ void Renderer3D::init()
     math::ivec2 windowSize = Application::get().getWindow().getSize();
     
     Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
-    //Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/basic3d.glsl"));
 
     data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
 
@@ -42,7 +41,7 @@ void Renderer3D::init()
     data.skyboxMesh = MeshFactory::skyboxMesh();
 
     data.skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
-    Assets::add<Shader>("Engine/src/renderer/shader/default/skybox.glsl", data.skyboxShader);
+    Assets::add<Shader>("skybox", data.skyboxShader);
 
     data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, true, false);
     data.shadowMapFramebuffer = Framebuffer::create(data.shadowMap, GL_DEPTH_ATTACHMENT);
@@ -67,8 +66,7 @@ void Renderer3D::beginScene(PerspectiveCamera& camera)
     data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
     data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
 
-    Assets::get<Shader>("pbr")->bind();
-    Assets::get<Shader>("pbr")->setFloat3("cameraPos", camera.getPosition());
+    data.cameraPos = camera.getPosition();
 }
 
 void Renderer3D::beginScene(EditorCamera& camera)
@@ -83,8 +81,7 @@ void Renderer3D::beginScene(EditorCamera& camera)
     data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
     data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
 
-    Assets::get<Shader>("pbr")->bind();
-    Assets::get<Shader>("pbr")->setFloat3("cameraPos", camera.getPosition());
+    data.cameraPos = camera.getPosition();
 }
 
 void Renderer3D::endScene()
@@ -116,6 +113,7 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
     mesh->material->bind();
     mesh->material->shader->setMatrix4("transform", transform);
     mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
+    mesh->material->shader->setFloat3("cameraPos", data.cameraPos);
 
     setLightingUniforms(mesh->material->shader);
 
@@ -138,9 +136,10 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
     {
         if (mesh->material != lastMaterial)
         {
-            mesh->material->bind(); // TODO: duplicate shaders optimization
+            mesh->material->bind();
             mesh->material->shader->setMatrix4("transform", transform);
             mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
+            mesh->material->shader->setFloat3("cameraPos", data.cameraPos);
             
             setLightingUniforms(mesh->material->shader);
 
@@ -169,88 +168,45 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, c
 
     material->bind();
     material->shader->setMatrix4("transform", transform);
+    material->shader->setFloat("exposure", Renderer::hdrExposure);
+    material->shader->setFloat3("cameraPos", data.cameraPos);
+
+    setLightingUniforms(material->shader);
 
     mesh->vertexArray->bind();
 
     RenderCommand::renderIndexed(mesh->vertexArray);
 }
 
-/*
-void Renderer3D::setLights(const LightSetup& setup)
-{
-    auto& shader = Assets::get<Shader>("pbr");
-
-    shader->bind();
-
-    shader->setFloat("skyLight", setup.getSkyLight());
-    
-    if (setup.usingDirectionalLight())
-    {
-        DirectionalLight dirLight = setup.getDirectionalLight();
-        shader->setFloat3("directionalLight.direction", dirLight.direction);
-        shader->setFloat3("directionalLight.radiance", dirLight.radiance);
-        shader->setFloat("directionalLight.intensity", dirLight.intensity);
-        shader->setInt("usingDirectionalLight", static_cast<int>(true));
-    }
-    else
-    {
-        shader->setInt("usingDirectionalLight", static_cast<int>(false));
-    }
-
-    auto& pointLights = setup.getPointLights();
-    for (unsigned int i = 0; i < pointLights.size(); i++)
-    {
-        std::string index = std::to_string(i);
-
-        auto& light = pointLights[i];
-
-        shader->setFloat3("pointLights[" + index + "].position",  light.position);
-        shader->setFloat3("pointLights[" + index + "].radiance",   light.radiance);
-        shader->setFloat("pointLights[" + index + "].intensity",  light.intensity);
-        shader->setFloat("pointLights[" + index + "].attenuation", light.attenuation);
-    }
-
-    auto& spotLights = setup.getSpotLights();
-    for (unsigned int i = 0; i < spotLights.size(); i++)
-    {
-        std::string index = std::to_string(i);
-
-        auto& light = spotLights[i];
-
-        /*shader->setFloat3("spotLights[" + index + "].position",  light.position);
-        shader->setFloat3("spotLights[" + index + "].direction",  light.direction);
-        shader->setFloat3("spotLights[" + index + "].color",   light.radiance);
-        shader->setFloat("spotLights[" + index + "].intensity",   light.intensity);
-        shader->setFloat("spotLights[" + index + "].attenuation", light.attenuation);
-        shader->setFloat("spotLights[" + index + "].cutoff", light.cutoff);
-        shader->setFloat("spotLights[" + index + "].outerCutoff", light.outerCutoff);
-    }
-
-    Assets::get<Shader>("pbr")->setInt("numPointLights", pointLights.size());
-    //Assets::get<Shader>("pbr")->setInt("numSpotLights", spotLights.size());
-}
-*/
-
 void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
 {
     uint32_t pointLights = 0;
     for (auto& light : data.lights)
     {
-        //static_cast<const PointLight*>(light)->setShaderUniforms(shader, pointLights);
-        //light->setShaderUniforms(shader, pointLights);
-        std::string idx = std::to_string(pointLights);
-
-        auto pointLight = static_cast<const PointLight*>(light);
-
-        shader->setFloat3("pointLights[" + idx + "].position", pointLight->position);
-        shader->setFloat3("pointLights[" + idx + "].radiance", pointLight->radiance);
-        shader->setFloat("pointLights[" + idx + "].intensity", pointLight->intensity);
-        shader->setFloat("pointLights[" + idx + "].attenuation", pointLight->attenuation);
-
-        pointLights++;
+        if (dynamic_cast<const PointLight*>(light))
+        {
+            light->setShaderUniforms(shader, pointLights);
+            pointLights++;
+        }
+        else if (dynamic_cast<const SkyLight*>(light) || dynamic_cast<const DirectionalLight*>(light))
+        {
+            light->setShaderUniforms(shader, 0);
+        }
+        
     }
 
     shader->setInt("numPointLights", pointLights);
+}
+
+void Renderer3D::removeLight(const BaseLight* light)
+{
+    for (std::vector<const BaseLight*>::iterator it = data.lights.begin(); it != data.lights.end(); it++)
+    {
+        if (*(it.base()) == light)
+        {
+            data.lights.erase(it);
+        }
+    }
 }
 
 void Renderer3D::setEnvironment(const Shared<Skybox>& environment)

@@ -10,6 +10,7 @@
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Mesh.h>
 #include <renderer/Lights.h>
+#include <renderer/Assets.h>
 
 namespace Engine
 {
@@ -49,6 +50,11 @@ struct CameraComponent : public GameComponent
 
 struct SpriteRendererComponent : public GameComponent
 {
+    SpriteRendererComponent()
+    {
+        texture = Texture2D::createWhiteTexture(); // TODO: add white_texture to Texture2D class for easier access
+    }
+
     math::vec4 color = { 1.f, 1.f, 1.f, 1.f };
     Shared<Texture2D> texture;
 
@@ -70,12 +76,12 @@ struct NativeScriptComponent : public GameComponent
     ScriptableGameObject*(*instantiateScript)();
     void (*destroyScript)(NativeScriptComponent*);
 
-    template<typename T>
-    void bind()
+    template<typename T, typename... Args>
+    void bind(Args&&... args)
     {
-        instantiateScript = []()
+        instantiateScript = [&args...]()
         {
-            return static_cast<ScriptableGameObject*>(new T());
+            return static_cast<ScriptableGameObject*>(new T(std::forward<Args>(args)...));
         };
 
         destroyScript = [](NativeScriptComponent* component)
@@ -100,21 +106,17 @@ struct BoxCollider2DComponent : public GameComponent
 
 struct DirectionalLightComponent : public GameComponent
 {
-    math::vec3 radiance = math::vec3(1.f);
-    float intensity = 0.5f;
+    DirectionalLight light;
 };
 
 struct SkyLightComponent : public GameComponent
 {
-    math::vec3 radiance = math::vec3(1.f);
-    float intensity = 0.5f;
+    SkyLight light;
 };
 
 struct PointLightComponent : public GameComponent
 {
-    math::vec3 radiance = math::vec3(1.f);
-    float intensity = 0.5f;
-    float attenuation = 0.5f;
+    PointLight light;
 };
 
 struct MeshRendererComponent : public GameComponent

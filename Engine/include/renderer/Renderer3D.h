@@ -29,6 +29,8 @@ struct Renderer3DData
     Shared<Framebuffer> shadowMapFramebuffer;
 
     std::vector<const BaseLight*> lights;
+
+    math::vec3 cameraPos;
 };
 
 class Renderer3D
@@ -44,11 +46,12 @@ public:
     static void submit(const Shared<Model>& model, const math::mat4& transform);
     static void submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material);
 
-    //static void setLights(const LightSetup& setup);
     static void setEnvironment(const Shared<Skybox>& environment);
 
     static inline void addLight(const BaseLight* light) { data.lights.push_back(light); }
-    static inline void clearLights() { data.lights.clear(); }
+    static inline void clearLights() { std::vector<const BaseLight*>().swap(data.lights); }
+
+    static void removeLight(const BaseLight* light);
 
     static void endScene();
 

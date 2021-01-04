@@ -10,11 +10,6 @@ void BaseLight::setShadowInfo(ShadowInfo* info)
     m_shadowInfo = info;
 }
 
-void BaseLight::addToRenderer()
-{
-    Renderer3D::addLight(this);
-}
-
 DirectionalLight::DirectionalLight(const math::vec3& radiance, float intensity, const math::vec3& direction_)
     : BaseLight(radiance, intensity), direction(direction_)
 {
@@ -35,7 +30,6 @@ void PointLight::setShaderUniforms(const Shared<Shader>& shader, uint32_t index)
     shader->setFloat3("pointLights[" + idx + "].radiance", radiance);
     shader->setFloat("pointLights[" + idx + "].intensity", intensity);
     shader->setFloat3("pointLights[" + idx + "].position", position);
-    shader->setFloat("pointLights[" + idx + "].attenuation", attenuation);
 }
 
 void SkyLight::setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const

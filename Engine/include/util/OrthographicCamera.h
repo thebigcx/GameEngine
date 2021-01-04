@@ -4,11 +4,12 @@
 
 #include <events/Event.h>
 #include <events/EventDispatcher.h>
+#include <util/Camera.h>
 
 namespace Engine
 {
 
-class OrthographicCamera
+class OrthographicCamera : public Camera
 {
 public:
     OrthographicCamera();
@@ -24,14 +25,9 @@ public:
     virtual void onWindowResize(WindowResizeEvent& event);
 
     math::mat4 getViewMatrix() const;
-    inline constexpr const math::mat4& getProjectionMatrix() const
-    {
-        return m_projectionMatrix;
-    }
 
 protected:
     math::vec2 m_position;
-    math::mat4 m_projectionMatrix;
 };
 
 }

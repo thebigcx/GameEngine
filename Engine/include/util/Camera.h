@@ -11,13 +11,13 @@ public:
     Camera() = default;
     virtual ~Camera() = default;
 
-    inline constexpr const math::mat4& getProjection() const noexcept
+    inline constexpr const math::mat4& getProjectionMatrix() const noexcept
     {
-        return m_projection;
+        return m_projectionMatrix;
     }
 
 protected:
-    math::mat4 m_projection = math::mat4(1.f);
+    math::mat4 m_projectionMatrix = math::mat4(1.f);
 };
 
 }

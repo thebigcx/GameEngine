@@ -21,7 +21,10 @@ private:
 
     Engine::Shared<Engine::UniformBuffer> m_testUniformBuffer;
 
-    Engine::LightSetup lights;
+    //Engine::LightSetup lights;
+    std::vector<Engine::PointLight> m_pointLights;
+    Engine::DirectionalLight m_directionalLight;
+    Engine::SkyLight m_skyLight;
 
     Engine::PerspectiveCameraController m_perspectiveCamera;
     Engine::Shared<Engine::Mesh> m_mesh;
