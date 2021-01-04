@@ -4,24 +4,23 @@
 namespace Engine
 {
 
-void InstancedRenderer::init()
+InstancedRenderer::InstancedRenderer()
 {
-    glCreateBuffers(1, &s_data.instanceBuffer); // TODO: platform independence
-    //glBindBuffer(GL_ARRAY_BUFFER, s_data.instanceBuffer);
+    m_instanceBuffer = VertexBuffer::create();
 }
 
-void InstancedRenderer::add(const math::mat4& transform)
+void InstancedRenderer::add(const RenderingInstance& instance)
 {
-    s_data.transforms.push_back(transform);
+    m_instances.push_back(instance);
 }
 
-void InstancedRenderer::setMesh(const Shared<Mesh>& mesh)
+void InstancedRenderer::setInstance_(const Shared<Mesh>& mesh)
 {
-    s_data.mesh = mesh;
+    m_meshes.push_back(mesh);
 
-    s_data.mesh->vertexArray->bind();
+    mesh->vertexArray->bind();
     
-    glBindBuffer(GL_ARRAY_BUFFER, s_data.instanceBuffer);
+    m_instanceBuffer->bind();
 
     glEnableVertexAttribArray(4);// TODO: platform independence
     glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(math::vec4), (void*)0);
@@ -36,24 +35,34 @@ void InstancedRenderer::setMesh(const Shared<Mesh>& mesh)
     glVertexAttribDivisor(5, 1);
     glVertexAttribDivisor(6, 1);
     glVertexAttribDivisor(7, 1);
-
 }
 
-void InstancedRenderer::render()
+void InstancedRenderer::setInstance(const Shared<Mesh>& mesh)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, s_data.instanceBuffer);
-    glBufferData(GL_ARRAY_BUFFER, s_data.transforms.size() * sizeof(math::mat4), &s_data.transforms[0], GL_STATIC_DRAW);
+    setInstance_(mesh);
+}
 
-    if (!s_data.mesh)
+void InstancedRenderer::setInstance(const std::vector<Shared<Mesh>>& meshes)
+{
+    for (auto& mesh : meshes)
     {
-        return;
+        setInstance_(mesh);
     }
+}
 
-    s_data.mesh->material->bind();
+void InstancedRenderer::resetInstances()
+{
+    m_instances.clear();
+}
 
-    s_data.mesh->vertexArray->bind();
+void InstancedRenderer::updateInstances()
+{
+    m_instanceBuffer->setData(math::buffer(m_instances[0].transform), m_instances.size() * sizeof(math::mat4));
+}
 
-    RenderCommand::renderInstanced(s_data.mesh->vertexArray, s_data.transforms.size());
+Shared<InstancedRenderer> InstancedRenderer::create()
+{
+    return createShared<InstancedRenderer>();
 }
 
 };

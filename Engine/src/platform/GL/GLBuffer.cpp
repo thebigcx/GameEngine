@@ -14,9 +14,17 @@ GLVertexBuffer::GLVertexBuffer(size_t size)
 {
     glCreateBuffers(1, &m_id);
 
-    bind();
+    if (size > 0)
+    {
+        bind();
 
-    glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+    }
+    else
+    {
+        m_usage = BufferUsage::Static;
+    }
+    
 }
 
 GLVertexBuffer::GLVertexBuffer(const void* data, size_t size)

@@ -1,7 +1,6 @@
 #include <renderer/Renderer.h>
 #include <renderer/MeshFactory.h>
 #include <renderer/shader/ShaderFactory.h>
-#include <renderer/InstancedRenderer.h>
 #include <core/Application.h>
 
 namespace Engine
@@ -15,7 +14,6 @@ void Renderer::init()
     RenderCommand::init();
     Renderer2D::init();
     Renderer3D::init();
-    InstancedRenderer::init();
 
     m_data.fboMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
     m_data.fboShader = ShaderFactory::createShader("hdr");

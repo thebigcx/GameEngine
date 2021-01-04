@@ -217,7 +217,7 @@ public:
     virtual void* getBufferPtr(size_t offset) const = 0;
     virtual void unmap() const = 0;
 
-    static Shared<VertexBuffer> create(size_t size);
+    static Shared<VertexBuffer> create(size_t size = 0);
 };
 
 enum class IndexDataType

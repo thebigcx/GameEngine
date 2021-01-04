@@ -8,25 +8,37 @@
 namespace Engine
 {
 
-struct InstancedRendererData
+struct RenderingInstance
 {
-    std::vector<math::mat4> transforms;
-    Shared<Mesh> mesh = nullptr;
-
-    uint32_t instanceBuffer;// TODO: platform independence
+    math::mat4 transform;
 };
 
 class InstancedRenderer
 {
 public:
-    static void init();
+    InstancedRenderer();
 
-    static void setMesh(const Shared<Mesh>& mesh); // TODO: support models
-    static void add(const math::mat4& transform);
-    static void render();
+    void add(const RenderingInstance& instance);
+    void setInstance(const std::vector<Shared<Mesh>>& model);
+    void setInstance(const Shared<Mesh>& mesh);
+
+    void updateInstances();
+    void resetInstances();
+
+    const std::vector<Shared<Mesh>>& getInstance() const { return m_meshes; }
+    const std::vector<RenderingInstance>& getInstances() const { return m_instances; }
+
+    static Shared<InstancedRenderer> create();
 
 private:
-    static inline InstancedRendererData s_data;
+    std::vector<RenderingInstance> m_instances;
+    std::vector<Shared<Mesh>> m_meshes;
+
+    Shared<VertexBuffer> m_instanceBuffer;
+
+    bool m_instanceChanged = false;
+
+    void setInstance_(const Shared<Mesh>& mesh);
 };
 
 }

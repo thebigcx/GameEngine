@@ -4,6 +4,7 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
 layout (location = 3) in vec3 aTangent;
+layout (location = 4) in mat4 instanceMatrix;
 
 out DATA
 {
@@ -23,8 +24,8 @@ uniform mat4 transform = mat4(1.f);
 
 void main()
 {
-    vec3 T = normalize(vec3(transform * vec4(aTangent, 0.0)));
-    vec3 N = normalize(vec3(transform * vec4(aNormal, 0.0)));
+    vec3 T = normalize(vec3(instanceMatrix * vec4(aTangent, 0.0)));
+    vec3 N = normalize(vec3(instanceMatrix * vec4(aNormal, 0.0)));
     T = normalize(T - dot(T, N) * N);
     vec3 B = cross(N, T);
     //vs_out.TBN = transpose(mat3(T, B, N));
@@ -32,9 +33,9 @@ void main()
 
     vs_out.normal = aNormal;
     vs_out.texCoord = aTexCoord;
-    vs_out.fragPos = vec3(transform * vec4(aPos, 1.0));
+    vs_out.fragPos = vec3(instanceMatrix * vec4(aPos, 1.0));
 
-    gl_Position = projection * view * transform * vec4(aPos, 1.0);
+    gl_Position = projection * view * instanceMatrix * vec4(aPos, 1.0);
 }
 
 #shader fragment
@@ -50,7 +51,7 @@ struct Material
     bool usingNormal;
     bool usingMetallic;
     bool usingRoughness;
-    bool usingAo; // Could combine them all in a single int
+    bool usingAo; // TODO: combine them all in a single int and unpack
     bool usingDepth;
 
     vec3 albedoColor;
@@ -303,7 +304,7 @@ void main()
 
     vec3 mapped = vec3(1.0) - exp(-color * exposure);
 
-    mapped = pow(mapped, vec3(1.0 / 2.2));
+    mapped = pow(mapped, vec3(1.0 / 2.2)); // TODO: IMPORTANT! hdr render pass, instead of in pbr shader
 
-    fragColor = vec4(mapped, 1.0);
+    fragColor = vec4(color, 1.0);
 }

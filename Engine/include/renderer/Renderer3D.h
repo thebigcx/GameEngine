@@ -8,6 +8,7 @@
 #include <renderer/Lights.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/Skybox.h>
+#include <renderer/InstancedRenderer.h>
 
 #include <util/PerspectiveCamera.h>
 #include <scene/EditorCamera.h>
@@ -45,6 +46,8 @@ public:
     static void submit(const Shared<Mesh>& mesh, const math::mat4& transform);
     static void submit(const Shared<Model>& model, const math::mat4& transform);
     static void submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material);
+
+    static void submit(const Shared<InstancedRenderer>& instance);
 
     static void setEnvironment(const Shared<Skybox>& environment);
 

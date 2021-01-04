@@ -17,6 +17,7 @@ void Renderer3D::init()
     math::ivec2 windowSize = Application::get().getWindow().getSize();
     
     Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
+    Assets::add<Shader>("instancepbr", Shader::createFromFile("Engine/src/renderer/shader/default/instancepbr.glsl"));
 
     data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
 
@@ -176,6 +177,35 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, c
     mesh->vertexArray->bind();
 
     RenderCommand::renderIndexed(mesh->vertexArray);
+}
+
+void Renderer3D::submit(const Shared<InstancedRenderer>& instance)
+{
+    if (!data.sceneStarted)
+    {
+        Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
+    }
+
+    RenderCommand::setDepthTesting(true);
+
+    Shared<Material> lastMaterial = nullptr;
+    for (auto& mesh : instance->getInstance())
+    {
+        if (mesh->material != lastMaterial)
+        {
+            mesh->material->bind();
+            mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
+            mesh->material->shader->setFloat3("cameraPos", data.cameraPos);
+            
+            setLightingUniforms(mesh->material->shader);
+
+            lastMaterial = mesh->material;
+        }
+
+        mesh->vertexArray->bind();
+
+        RenderCommand::renderInstanced(mesh->vertexArray, instance->getInstances().size());
+    }
 }
 
 void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
