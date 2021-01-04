@@ -19,7 +19,8 @@ public:
     void setClearColor(const math::vec4& color) override;
     void clear(uint32_t buffer) override;
 
-    void renderIndexed(Shared<VertexArray> array, uint32_t count = 0, uint32_t offset = 0) override;
+    void renderIndexed(Shared<VertexArray> array, uint32_t count, uint32_t offset) override;
+    void renderInstanced(const Shared<VertexArray>& array, uint32_t instanceCount, uint32_t count, uint32_t offset) override;
 };
 
 }

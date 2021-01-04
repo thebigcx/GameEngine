@@ -18,7 +18,6 @@ void Material::bind() const
     if (usingAlbedoMap && albedoMap)
     {
         albedoMap->bind(0);
-        shader->setInt("material.albedo", 0);
         shader->setInt("material.usingAlbedo", 1);
     }
     else
@@ -30,7 +29,6 @@ void Material::bind() const
     if (usingNormalMap && normalMap)
     {
         normalMap->bind(1);
-        shader->setInt("material.normal", 1);
         shader->setInt("material.usingNormal", 1);
     }
     else
@@ -41,7 +39,6 @@ void Material::bind() const
     if (usingMetallicMap && metallicMap)
     {
         metallicMap->bind(2);
-        shader->setInt("material.metallic", 2);
         shader->setInt("material.usingMetalness", 1);
     }
     else
@@ -54,7 +51,6 @@ void Material::bind() const
     if (usingRoughnessMap && roughnessMap)
     {
         roughnessMap->bind(3);
-        shader->setInt("material.roughness", 3);
         shader->setInt("material.usingRoughness", 1);
     }
     else
@@ -67,7 +63,6 @@ void Material::bind() const
     if (usingAmbientOcclusionMap && ambientOcclusionMap)
     {
         ambientOcclusionMap->bind(4);
-        shader->setInt("material.ao", 4);
         shader->setInt("material.usingAo", 1);
     }
     else
@@ -79,7 +74,6 @@ void Material::bind() const
     if (usingDepthMap && depthMap)
     {
         depthMap->bind(5);
-        shader->setInt("material.depth", 5);
         shader->setInt("material.usingDepth", 1);
     }
     else

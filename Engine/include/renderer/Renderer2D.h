@@ -31,7 +31,7 @@ struct GlyphVertex
 
 struct Renderer2DData
 {
-    static constexpr uint32_t MAX_SPRITES = 100000;
+    static constexpr uint32_t MAX_SPRITES = 20000;
     static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
     static constexpr uint32_t MAX_VERTICES = MAX_SPRITES * 4;
     static constexpr uint32_t MAX_INDICES = MAX_SPRITES * 6;

@@ -49,6 +49,11 @@ public:
         m_api->renderIndexed(array, count, offset);
     }
 
+    static void renderInstanced(const Shared<VertexArray>& array, uint32_t instanceCount, uint32_t count = 0, uint32_t offset = 0)
+    {
+        m_api->renderInstanced(array, instanceCount, count, offset);
+    }
+
     static uint32_t defaultClearBits()
     {
         return (uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth;

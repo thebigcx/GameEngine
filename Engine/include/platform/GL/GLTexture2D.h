@@ -23,7 +23,7 @@ public:
     inline float getWidth() const override { return m_width; }
     inline float getHeight() const override { return m_height; }
     inline uint32_t getId() const override { return m_id; }
-    inline const std::string& getPath() const { return m_path; }
+    inline const std::string& getPath() const override { return m_path; }
 
     bool operator==(const Texture2D& other) override;
     bool operator!=(const Texture2D& other) override;

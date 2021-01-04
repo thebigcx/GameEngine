@@ -48,6 +48,8 @@ private:
     ImGuiLayer* m_imguiLayer;
 
     bool m_running = true;
+
+    uint64_t m_frames;
 };
 
 Application* createApplication();

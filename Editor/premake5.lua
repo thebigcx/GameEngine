@@ -6,10 +6,8 @@ project "Editor"
 
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Editor"
 	objdir "%{wks.location}/obj/%{cfg.buildcfg}/Editor"
-
-	symbols "On"
 	--buildoptions "-Wall -Wextra -pedantic"
-	buildoptions "-Wuninitialized"
+	--buildoptions "-Wuninitialized"
 
 	files {
 		"**.cpp",
@@ -48,7 +46,12 @@ project "Editor"
 		"dl"
 	}
 	
-	optimize "On"
-	
-	configuration "Debug"
-	configuration "Release"
+	filter "configurations:Debug"
+		buildoptions "-pg"
+        defines "ENGINE_DEBUG"
+        runtime "Release"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"

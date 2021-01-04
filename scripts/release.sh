@@ -2,6 +2,6 @@
 
 # Use Premake and a Makefile to compile
 vendor/premake/premake5 gmake
-make
+make config=Release
 
-echo "Built debug target in ./bin/"
+echo "Built release target in ./bin/"

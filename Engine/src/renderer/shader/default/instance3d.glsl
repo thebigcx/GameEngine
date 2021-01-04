@@ -4,6 +4,7 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
 layout (location = 3) in vec3 aTangent;
+layout (location = 4) in mat4 instanceMatrix;
 
 out DATA
 {
@@ -24,7 +25,7 @@ void main()
     vs_out.normal = aNormal;
     vs_out.texCoord = aTexCoord;
 
-    gl_Position = projection * view * transform * vec4(aPos, 1.0);
+    gl_Position = projection * view * instanceMatrix * vec4(aPos, 1.0);
 }
 
 #shader fragment

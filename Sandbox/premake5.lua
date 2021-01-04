@@ -7,8 +7,6 @@ project "Sandbox"
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Sandbox"
 	objdir "%{wks.location}/obj/%{cfg.buildcfg}/Sandbox"
 
-	symbols "On"
-
 	files {
 		"src/ExampleLayer.cpp",
 		"src/ExampleLayer.h",
@@ -50,7 +48,12 @@ project "Sandbox"
 		"dl" -- TODO: move to static library
 	}
 	
-	optimize "On"
-	
-	configuration "Debug"
-	configuration "Release"
+	filter "configurations:Debug"
+		buildoptions "-pg"
+        defines "ENGINE_DEBUG"
+        runtime "Release"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"

@@ -4,8 +4,7 @@ project "GameEngine"
     language "C++"
     cppdialect "C++17"
     --buildoptions "-Wall -Wextra -Wnon-virtual-dtor -pedantic"
-    buildoptions "-Wuninitialized"
-    symbols "On"
+    --buildoptions "-Wuninitialized"
 
     targetdir "%{wks.location}/bin/%{cfg.buildcfg}/Engine"
     objdir "%{wks.location}/obj/%{cfg.buildcfg}/Engine"
@@ -34,4 +33,13 @@ project "GameEngine"
         "vendor"
     }
 
-    optimize "On"
+    filter "configurations:Debug"
+        buildoptions "-pg"
+        defines "ENGINE_DEBUG"
+        runtime "Release"
+        optimize "On" -- TODO: not optimize in Debug mode
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"

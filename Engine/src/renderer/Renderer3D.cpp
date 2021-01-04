@@ -181,6 +181,7 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, c
 void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
 {
     uint32_t pointLights = 0;
+    uint32_t directionalLights = 0;
     for (auto& light : data.lights)
     {
         if (dynamic_cast<const PointLight*>(light))
@@ -188,7 +189,12 @@ void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
             light->setShaderUniforms(shader, pointLights);
             pointLights++;
         }
-        else if (dynamic_cast<const SkyLight*>(light) || dynamic_cast<const DirectionalLight*>(light))
+        else if (dynamic_cast<const DirectionalLight*>(light))
+        {
+            light->setShaderUniforms(shader, 0);
+            directionalLights++;
+        }
+        else if (dynamic_cast<const SkyLight*>(light))
         {
             light->setShaderUniforms(shader, 0);
         }
@@ -196,6 +202,7 @@ void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
     }
 
     shader->setInt("numPointLights", pointLights);
+    shader->setInt("usingDirectionalLight", directionalLights); // TODO: multiple directional lights
 }
 
 void Renderer3D::removeLight(const BaseLight* light)

@@ -43,13 +43,6 @@ void main()
 
 struct Material
 {
-    sampler2D albedo;
-    sampler2D normal;
-    sampler2D metallic;
-    sampler2D roughness;
-    sampler2D ao;
-    sampler2D depth;
-
     float metallicScalar;
     float roughnessScalar;
 
@@ -62,6 +55,13 @@ struct Material
 
     vec3 albedoColor;
 };
+
+layout(binding = 0) uniform sampler2D materialAlbedo;
+layout(binding = 1) uniform sampler2D materialNormal;
+layout(binding = 2) uniform sampler2D materialMetallic;
+layout(binding = 3) uniform sampler2D materialRoughness;
+layout(binding = 4) uniform sampler2D materialAo;
+layout(binding = 5) uniform sampler2D materialDepth;
 
 struct PointLight
 {
@@ -151,7 +151,7 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 vec3 getNormalFromNormalMap(vec2 texCoord)
 {
-    vec3 normal = texture(material.normal, texCoord).rgb;
+    vec3 normal = texture(materialNormal, texCoord).rgb;
     normal = normal * 2.0 - 1.0;
     return normal;
 }
@@ -171,19 +171,19 @@ vec2 parallaxMapping(vec2 texCoord, vec3 viewDir)
     vec2 deltaTexCoord = P / numLayers;
 
     vec2 currentTexCoord = texCoord;
-    float currentDepthMapValue = 1.0 - texture(material.depth, currentTexCoord).r;
+    float currentDepthMapValue = 1.0 - texture(materialDepth, currentTexCoord).r;
 
     while (currentLayerDepth < currentDepthMapValue)
     {
         currentTexCoord -= deltaTexCoord;
-        currentDepthMapValue = 1.0 - texture(material.depth, currentTexCoord).r;
+        currentDepthMapValue = 1.0 - texture(materialDepth, currentTexCoord).r;
         currentLayerDepth += layerDepth;
     }
 
     vec2 prevTexCoord = currentTexCoord + deltaTexCoord;
 
     float afterDepth = currentDepthMapValue - currentLayerDepth;
-    float beforeDepth = 1.0 - texture(material.depth, prevTexCoord).r - currentLayerDepth + layerDepth;
+    float beforeDepth = 1.0 - texture(materialDepth, prevTexCoord).r - currentLayerDepth + layerDepth;
 
     float weight = afterDepth / (afterDepth - beforeDepth);
     vec2 finalTexCoord = prevTexCoord * weight + currentTexCoord * (1.0 - weight);
@@ -204,7 +204,7 @@ void main()
         texCoord = parallaxMapping(fs_in.texCoord, V);
     }
 
-    vec4 albedoSample = texture(material.albedo, texCoord);
+    vec4 albedoSample = texture(materialAlbedo, texCoord);
 
     vec3 albedo;
     if (material.usingAlbedo)
@@ -226,13 +226,13 @@ void main()
         normal = normalize(TBN * fs_in.normal);
     }
 
-    float metallic = (int(material.usingMetallic) * texture(material.metallic, fs_in.texCoord).r) + material.metallicScalar;
-    float roughness = (int(material.usingRoughness) * texture(material.roughness, fs_in.texCoord).r) + material.roughnessScalar;
+    float metallic = (int(material.usingMetallic) * texture(materialMetallic, fs_in.texCoord).r) + material.metallicScalar;
+    float roughness = (int(material.usingRoughness) * texture(materialRoughness, fs_in.texCoord).r) + material.roughnessScalar;
 
     float ao = 1.f;
     if (material.usingAo)
     {
-        ao = texture(material.ao, texCoord).r;
+        ao = texture(materialAo, texCoord).r;
     }
 
     vec3 F0 = vec3(0.04);

@@ -9,6 +9,7 @@
 #include <renderer/Renderer.h>
 #include <util/Time.h>
 #include <renderer/RenderCommand.h>
+#include <util/Timer.h>
 
 namespace Engine
 {
@@ -28,7 +29,7 @@ Application::Application()
     m_window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
     math::random::init_seed();
-    SoundEngine::init();
+    //SoundEngine::init();
     Renderer::init();
     Time::init();
 
@@ -51,6 +52,10 @@ void Application::run()
 {
     while (m_running)
     {
+#ifdef ENGINE_DEBUG
+        Timer timer;
+        m_frames++;
+#endif
         Time::update();
 
         m_window->pollEvents();
@@ -68,6 +73,15 @@ void Application::run()
         m_imguiLayer->end();
 
         m_window->onUpdate();
+
+        // Debugging information (fps, frametime)
+#ifdef ENGINE_DEBUG
+        if (m_frames >= 60)
+        {
+            std::cout << "[INFO] Frame Time: " << timer.getMillis() << "ms FPS: " << 1000.f / timer.getMillis() << "\n";
+            m_frames = 0;
+        }
+#endif
     }
 }
 

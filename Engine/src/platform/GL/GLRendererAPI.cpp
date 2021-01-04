@@ -129,4 +129,23 @@ void GLRendererAPI::renderIndexed(Shared<VertexArray> array, uint32_t count, uin
     glDrawElements(GL_TRIANGLES, count, type, (void*)(offset * sizeof(uint32_t)));
 }
 
+void GLRendererAPI::renderInstanced(const Shared<VertexArray>& array, uint32_t instanceCount, uint32_t count, uint32_t offset)
+{
+    if (count == 0)
+    {
+        count = array->getIndexBuffer()->getCount();
+    }
+
+    uint32_t type;
+    switch (array->getIndexBuffer()->getDataType())
+    {
+        case IndexDataType::UInt8:  type = GL_UNSIGNED_BYTE;  break;
+        case IndexDataType::UInt16: type = GL_UNSIGNED_SHORT; break;
+        case IndexDataType::UInt32: type = GL_UNSIGNED_INT;   break;
+        default: type = GL_UNSIGNED_INT; break;
+    }
+
+    glDrawElementsInstanced(GL_TRIANGLES, count, type, (void*)(offset * sizeof(uint32_t)), instanceCount);
+}
+
 }

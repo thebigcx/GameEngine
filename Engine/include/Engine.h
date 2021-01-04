@@ -37,6 +37,7 @@
 #include <renderer/Particles.h>
 #include <renderer/Model.h>
 #include <renderer/TextureCube.h>
+#include <renderer/InstancedRenderer.h>
 
 #include <maths/math.h>
 
