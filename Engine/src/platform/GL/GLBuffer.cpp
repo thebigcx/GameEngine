@@ -214,6 +214,28 @@ GLUniformBuffer::GLUniformBuffer(const void* data, size_t size, uint32_t binding
     glBindBufferRange(GL_UNIFORM_BUFFER, m_bindingPoint, m_id, 0, size);
 }
 
+void GLUniformBuffer::setBlockDeclaration(const Shader& shader)
+{
+    shader.bind();
+    int32_t count = 0;
+    glGetProgramiv(shader.getId(), GL_ACTIVE_UNIFORMS, &count);
+
+    for (int32_t i = 0; i < count; i++)
+    {
+        GLenum type;
+        int32_t size = 0;
+        char name[32];
+        glGetActiveUniform(shader.getId(), i, 32, nullptr, &size, &type, name);
+
+        GLuint index = i;
+        int32_t offset = 0;
+        glGetActiveUniformsiv(shader.getId(), 1, &index, GL_UNIFORM_OFFSET, &offset);
+
+        if (offset != -1)
+            m_variableOffsets.emplace(std::make_pair(std::string(name), offset));
+    }
+}
+
 void GLUniformBuffer::bind() const
 {
     glBindBuffer(GL_UNIFORM_BUFFER, m_id);
@@ -260,6 +282,28 @@ void* GLUniformBuffer::getBufferPtr(size_t offset) const
 void GLUniformBuffer::unmap() const
 {
     glUnmapNamedBuffer(m_id);
+}
+
+size_t GLUniformBuffer::getVariableOffset(const std::string& name) const
+{
+    if (m_variableOffsets.find(name) == m_variableOffsets.end())
+    {
+        return 0;
+    }
+
+    return m_variableOffsets.at(name);
+}
+
+void GLUniformBuffer::setVariable(const std::string& uniform, const void* data, size_t size)
+{
+    if (m_variableOffsets.find(uniform) == m_variableOffsets.end())
+    {
+        return;
+    }
+
+    size_t offset = m_variableOffsets.at(uniform);
+
+    setData(data, size, offset);
 }
 
 }

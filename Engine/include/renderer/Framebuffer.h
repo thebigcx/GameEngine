@@ -20,13 +20,18 @@ enum class ColorBuffer
     BackRight = 1 << 3
 };
 
+enum class Attachment
+{
+    Color, Depth, Stencil
+};
+
 class Framebuffer
 {
 public:
     virtual ~Framebuffer() = default;
 
     static Shared<Framebuffer> create(uint32_t width, uint32_t height);
-    static Shared<Framebuffer> create(const Shared<Texture2D>& texture, GLenum attachment); // TODO: make platform independent
+    static Shared<Framebuffer> create(const Shared<Texture2D>& texture, Attachment attachment);
 
     virtual void resize(uint32_t width, uint32_t height) = 0;
 

@@ -12,7 +12,7 @@ namespace Engine
 class GLFramebuffer : public Framebuffer
 {
 public:
-    GLFramebuffer(const GLTexture2D& texture, GLenum attachment);
+    GLFramebuffer(const GLTexture2D& texture, Attachment attachment);
     GLFramebuffer(uint32_t width, uint32_t height);
     ~GLFramebuffer();
 
@@ -52,6 +52,8 @@ private:
     void invalidate(uint32_t width, uint32_t height);
 
     static GLenum getColorBufferEnumValue_(uint32_t buffer);
+
+    static GLenum getAttachmentEnumValue_(Attachment attachment);
 
     static constexpr int s_maxSize = 8192;
 };

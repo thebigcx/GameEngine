@@ -47,12 +47,7 @@ struct Material
     float metallicScalar;
     float roughnessScalar;
 
-    bool usingAlbedo;
-    bool usingNormal;
-    bool usingMetallic;
-    bool usingRoughness;
-    bool usingAo; // TODO: combine them all in a single int and unpack
-    bool usingDepth;
+    int textureFlags;
 
     vec3 albedoColor;
 };
@@ -200,13 +195,13 @@ void main()
     vec3 V = normalize(TBN * cameraPos - TBN * fs_in.fragPos);
 
     vec2 texCoord = fs_in.texCoord;
-    if (material.usingDepth)
+    if ((material.textureFlags & (1 << 5)) != 0)
     {
         texCoord = parallaxMapping(fs_in.texCoord, V);
     }
 
     vec3 albedo;
-    if (material.usingAlbedo)
+    if ((material.textureFlags & (1 << 0)) != 0)
     {
         vec4 albedoSample = texture(materialAlbedo, texCoord);
         albedo = vec3(pow(albedoSample.r, 2.2), pow(albedoSample.g, 2.2), pow(albedoSample.b, 2.2));
@@ -217,7 +212,7 @@ void main()
     }
 
     vec3 normal;
-    if (material.usingNormal)
+    if ((material.textureFlags & (1 << 1)) != 0)
     {
         normal = getNormalFromNormalMap(texCoord);
     }
@@ -226,11 +221,11 @@ void main()
         normal = normalize(TBN * fs_in.normal);
     }
 
-    float metallic = (int(material.usingMetallic) * texture(materialMetallic, fs_in.texCoord).r) + material.metallicScalar;
-    float roughness = (int(material.usingRoughness) * texture(materialRoughness, fs_in.texCoord).r) + material.roughnessScalar;
+    float metallic = (int(bool(material.textureFlags & (1 << 2))) * texture(materialMetallic, fs_in.texCoord).r) + material.metallicScalar;
+    float roughness = (int(bool(material.textureFlags & (1 << 3))) * texture(materialRoughness, fs_in.texCoord).r) + material.roughnessScalar;
 
     float ao = 1.f;
-    if (material.usingAo)
+    if ((material.textureFlags & (1 << 4)) != 0)
     {
         ao = texture(materialAo, texCoord).r;
     }
@@ -304,7 +299,7 @@ void main()
 
     vec3 mapped = vec3(1.0) - exp(-color * exposure);
 
-    mapped = pow(mapped, vec3(1.0 / 2.2)); // TODO: IMPORTANT! hdr render pass, instead of in pbr shader
+    mapped = pow(mapped, vec3(1.0 / 2.2)); // TODO: IMPORTANT! HDR render pass in Framebuffer, not here!
 
-    fragColor = vec4(color, 1.0);
+    fragColor = vec4(mapped, 1.0);
 }

@@ -15,38 +15,23 @@ namespace Engine
 class Texture2D
 {
 public:
-    enum class Parameter
-    {
-        MinFilter = GL_TEXTURE_MIN_FILTER,
-        MagFilter = GL_TEXTURE_MAG_FILTER,
-        WrapS = GL_TEXTURE_WRAP_S,
-        WrapT = GL_TEXTURE_WRAP_T
-    };
-
-    enum class Value
-    {
-        Nearest = GL_NEAREST,
-        ClampToEdge = GL_CLAMP_TO_EDGE
-    };
-
     virtual ~Texture2D() = default;
 
-    static Shared<Texture2D> create(const std::string& file, bool isSRGB = false, bool clamp = false, bool linear = true);
-    static Shared<Texture2D> create(int width, int height, GLenum dataFormat = GL_RGBA8, bool clamp = false, bool linear = true);// TODO: make platform independent (GL_RGBA8)
+    static Shared<Texture2D> create(const std::string& file, GLenum internalFormat = GL_RGBA8, GLenum dataFormat = GL_RGBA, bool clamp = false, bool linear = true);
+    static Shared<Texture2D> create(uint32_t width, uint32_t height, GLenum dataFormat = GL_RGBA8, bool clamp = false, bool linear = true);// TODO: make platform independent (GL_RGBA8)
     static Shared<Texture2D> createWhiteTexture();
 
     static Shared<Texture2D> asyncCreate(const std::string& file, bool isSRGB = false);
 
-    virtual void setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE) = 0;
-    virtual void setParameter(Parameter parameter, Value value) = 0;
-
+    virtual void setData(uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height, const void* data, GLenum dataFormat = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE) = 0;
+    
     virtual void bind(uint32_t slot = 0) const = 0;
     virtual void unbind(uint32_t slot = 0) const = 0;
 
-    virtual float getWidth() const = 0;
-    virtual float getHeight() const = 0;
+    virtual uint32_t getWidth() const = 0;
+    virtual uint32_t getHeight() const = 0;
 
-    virtual unsigned int getId() const = 0;
+    virtual uint32_t getId() const = 0;
 
     virtual const std::string& getPath() const = 0;
 

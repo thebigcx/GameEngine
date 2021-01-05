@@ -133,7 +133,7 @@ Shared<Scene> SceneSerializer::loadScene(const std::string& path)
 
         // Make sure they aren't invalid texture
         if (node["Albedo"].as<std::string>() != "")
-            material->albedoMap = Texture2D::create(node["Albedo"].as<std::string>()); // TODO: texture serialization and asset management similar to materials
+            material->albedoMap = Texture2D::create(node["Albedo"].as<std::string>());
         
         if (node["Normal"].as<std::string>() != "")
             material->normalMap = Texture2D::create(node["Normal"].as<std::string>());
@@ -241,7 +241,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
             {
                 if (model.second->path == mesh.filePath)
                 {
-                    mesh.mesh = model.second->meshes[mesh.meshID];// TODO: add ID
+                    mesh.mesh = model.second->meshes[mesh.meshID];
                     needToLoad = false;
                     break;
                 }
@@ -250,7 +250,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
         if (needToLoad)
         {
-            auto model = Model::load(mesh.filePath); // TODO: refactor model loading in some way, especially single mesh loading
+            auto model = Model::load(mesh.filePath);
             model->path = mesh.filePath;
             Assets::add<Model>(mesh.filePath, model);
         }
@@ -267,7 +267,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
         }
     }
 
-    if (node["Directional Light"]) // TODO: add directional lights pbr
+    if (node["Directional Light"])
     {
         auto& light = object->addComponent<DirectionalLightComponent>();
 

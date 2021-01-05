@@ -15,35 +15,28 @@ void Material::bind() const
         return;
     }
 
+    int32_t textureFlags = 0;
+
     if (usingAlbedoMap && albedoMap)
     {
         albedoMap->bind(0);
-        shader->setInt("material.usingAlbedo", 1);
+        textureFlags |= (1 << 0);
     }
     else
     {
-        shader->setInt("material.usingAlbedo", 0);
         shader->setFloat3("material.albedoColor", albedoColor);
     }
 
     if (usingNormalMap && normalMap)
     {
         normalMap->bind(1);
-        shader->setInt("material.usingNormal", 1);
-    }
-    else
-    {
-        shader->setInt("material.usingNormal", 0);
+        textureFlags |= (1 << 1);
     }
 
     if (usingMetallicMap && metallicMap)
     {
         metallicMap->bind(2);
-        shader->setInt("material.usingMetalness", 1);
-    }
-    else
-    {
-        shader->setInt("material.usingMetalness", 0);
+        textureFlags |= (1 << 2);
     }
     shader->setFloat("material.metallicScalar", metallicScalar);
     
@@ -51,11 +44,7 @@ void Material::bind() const
     if (usingRoughnessMap && roughnessMap)
     {
         roughnessMap->bind(3);
-        shader->setInt("material.usingRoughness", 1);
-    }
-    else
-    {
-        shader->setInt("material.usingRoughness", 0);
+        textureFlags |= (1 << 3);
     }
     shader->setFloat("material.roughnessScalar", roughnessScalar);
     
@@ -63,23 +52,17 @@ void Material::bind() const
     if (usingAmbientOcclusionMap && ambientOcclusionMap)
     {
         ambientOcclusionMap->bind(4);
-        shader->setInt("material.usingAo", 1);
-    }
-    else
-    {
-        shader->setInt("material.usingAo", 0);
+        textureFlags |= (1 << 4);
     }
     
 
     if (usingDepthMap && depthMap)
     {
         depthMap->bind(5);
-        shader->setInt("material.usingDepth", 1);
+        textureFlags |= (1 << 5);
     }
-    else
-    {
-        shader->setInt("material.usingDepth", 0);
-    }
+
+    shader->setInt("material.textureFlags", textureFlags);
 }
 
 void Material::unbind() const

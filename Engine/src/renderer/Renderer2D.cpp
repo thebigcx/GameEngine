@@ -12,7 +12,6 @@ namespace Engine
 {
 
 Renderer2DData Renderer2D::s_data;
-Shared<Mesh> Renderer2D::m_textMesh;
 Shared<Mesh> Renderer2D::m_framebufferMesh;
 
 void Renderer2D::init()
@@ -28,11 +27,9 @@ void Renderer2D::init()
 
     s_data.textShader = ShaderFactory::textShader();
 
-    m_textMesh = MeshFactory::textMesh();
-
-    s_data.whiteTexture = Texture2D::create(1, 1);
-    uint32_t white = 0xffffffff;
-    s_data.whiteTexture->setData(0, 0, 1, 1, &white);
+    s_data.textMesh = MeshFactory::textMesh(s_data.MAX_GLYPHS);
+    s_data.textVertexBase = new GlyphVertex[4 * s_data.MAX_GLYPHS];
+    s_data.textVertexPtr = s_data.textVertexBase;
 
     s_data.vertexBase = new QuadVertex[s_data.MAX_VERTICES];
 
@@ -81,12 +78,13 @@ void Renderer2D::init()
     s_data.textureShader->bind();
     s_data.textureShader->setIntArray("textures", samplers, s_data.MAX_TEXTURE_SLOTS);
 
-    s_data.textureSlots[0] = s_data.whiteTexture;
+    s_data.textureSlots[0] = Texture2D::createWhiteTexture();
 }
 
 void Renderer2D::shutdown()
 {
     delete[] s_data.vertexBase;
+    delete[] s_data.textVertexBase;
 }
 
 void Renderer2D::beginScene(OrthographicCamera& camera)
@@ -125,6 +123,8 @@ void Renderer2D::startBatch()
     s_data.textureSlotIndex = 1;
     s_data.vertexPointer = s_data.vertexBase;
     s_data.indexCount = 0;
+
+    s_data.textVertexPtr = s_data.textVertexBase;
 }
 
 void Renderer2D::nextBatch()
@@ -256,11 +256,11 @@ void Renderer2D::renderQuad(const math::vec2& position, const math::vec2& size, 
 
 void Renderer2D::renderQuad(const math::mat4& transform, const math::vec4& color)
 {
-    constexpr size_t quadVertexCount = 4;
+    constexpr uint32_t quadVertexCount = 4;
     constexpr float textureIndex = 0.f;
-    math::vec2 texCoords[] = { {0, 0}, {0, 1}, {1, 1}, {1, 0} };
+    constexpr math::vec2 texCoords[] = { {0, 0}, {0, 1}, {1, 1}, {1, 0} };
 
-    for (size_t i = 0 ; i < quadVertexCount ; i++)
+    for (uint32_t i = 0 ; i < quadVertexCount ; i++)
     {
         s_data.vertexPointer->position = math::vec3(transform * math::vec4(s_data.quadPositions[i]));
         s_data.vertexPointer->texCoord = texCoords[i];
@@ -284,9 +284,6 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     int x = position.x;
     int y = position.y;
 
-    GlyphVertex* vertexBasePtr = new GlyphVertex[4 * text.size()];
-    GlyphVertex* vertexPtr = vertexBasePtr;
-
     // Loop through each character in the string, and add its texCoords to the mesh
     for (auto& c : text)
     {
@@ -298,35 +295,42 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
         x += ch.advance.x * scale.x;
         y += ch.advance.y * scale.y;
 
-        float x1 = ch.texOffset;
-        float y1 = 0;
-        float x2 = ch.texOffset + ch.size.x / font->getAtlasSize().x;
-        float y2 = ch.size.y / font->getAtlasSize().y;
+        float x1 = pos.x;
+        float y1 = -pos.y;
+        float x2 = pos.x + size.x;
+        float y2 = -pos.y - size.y;
+
+        float u1 = ch.texOffset;
+        float v1 = 0;
+        float u2 = ch.texOffset + ch.size.x / font->getAtlasSize().x;
+        float v2 = ch.size.y / font->getAtlasSize().y;
 
         if (!size.x || !size.y)
         {
             continue;
         }
 
-        vertexPtr->position = { pos.x, -pos.y };
-        vertexPtr->texCoord = { x1, y1 };
-        vertexPtr++;
+        s_data.textVertexPtr->position = { x1, y1 };
+        s_data.textVertexPtr->texCoord = { u1, v1 };
+        s_data.textVertexPtr++;
 
-        vertexPtr->position = { pos.x + size.x, -pos.y };
-        vertexPtr->texCoord = { x2, y1 };
-        vertexPtr++;
+        s_data.textVertexPtr->position = { x2, y1 };
+        s_data.textVertexPtr->texCoord = { u2, v1 };
+        s_data.textVertexPtr++;
 
-        vertexPtr->position = { pos.x + size.x, -pos.y - size.y };
-        vertexPtr->texCoord = { x2, y2 };
-        vertexPtr++;
+        s_data.textVertexPtr->position = { x2, y2 };
+        s_data.textVertexPtr->texCoord = { u2, v2 };
+        s_data.textVertexPtr++;
 
-        vertexPtr->position = { pos.x, -pos.y - size.y };
-        vertexPtr->texCoord = { x1, y2 };
-        vertexPtr++;
+        s_data.textVertexPtr->position = { x1, y2 };
+        s_data.textVertexPtr->texCoord = { u1, v2 };
+        s_data.textVertexPtr++;
     }
 
-    m_textMesh->vertexArray->bind();
-    m_textMesh->vertexBuffer->setData(vertexBasePtr, sizeof(GlyphVertex) * (4 * text.size()));
+    size_t dataSize = static_cast<size_t>(reinterpret_cast<uint8_t*>(s_data.textVertexPtr) - reinterpret_cast<uint8_t*>(s_data.textVertexBase));
+
+    s_data.textMesh->vertexArray->bind();
+    s_data.textMesh->vertexBuffer->setData(s_data.textVertexBase, dataSize);
 
     s_data.textShader->bind();
     s_data.textShader->setFloat4("textColor", color);
@@ -336,17 +340,11 @@ void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>&
     RenderCommand::setBlendFunction(BlendFunction::SourceAlpha, BlendFunction::OneMinusSourceAlpha);
     RenderCommand::setDepthTesting(false);
 
-    RenderCommand::renderIndexed(m_textMesh->vertexArray, 6 * text.size());
+    RenderCommand::renderIndexed(s_data.textMesh->vertexArray, 6 * text.size());
 
     RenderCommand::setBlend(false);
 
-    delete[] vertexBasePtr;
+    s_data.textVertexPtr = s_data.textVertexBase;
 }
-
-void Renderer2D::render(IRenderable2D& renderable)
-{
-    renderable.render();
-}
-
 
 }

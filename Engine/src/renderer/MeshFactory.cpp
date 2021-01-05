@@ -6,10 +6,8 @@
 namespace Engine
 {
 
-Shared<Mesh> MeshFactory::textMesh()
+Shared<Mesh> MeshFactory::textMesh(uint32_t charCount)
 {
-    constexpr uint32_t MAX_CHARACTERS = 200;
-    
     auto text = createShared<Mesh>();
     
     text->vertexArray = VertexArray::create();
@@ -20,10 +18,10 @@ Shared<Mesh> MeshFactory::textMesh()
         { Shader::DataType::Float2, "aTexCoord" }
     };
     
-    uint32_t indices[6 * MAX_CHARACTERS];
+    uint32_t indices[6 * charCount];
 
     int offset = 0;
-    for (unsigned int i = 0; i < MAX_CHARACTERS * 6; i += 6)
+    for (unsigned int i = 0; i < charCount * 6; i += 6)
     {
         indices[i + 0] = offset + 0;
         indices[i + 1] = offset + 1;
@@ -35,9 +33,9 @@ Shared<Mesh> MeshFactory::textMesh()
 
         offset += 4;
     }
-    text->indexBuffer = IndexBuffer::create(indices, 6 * MAX_CHARACTERS, IndexDataType::UInt32);
+    text->indexBuffer = IndexBuffer::create(indices, 6 * charCount, IndexDataType::UInt32);
 
-    text->vertexBuffer = VertexBuffer::create(sizeof(float) * 4 * MAX_CHARACTERS);
+    text->vertexBuffer = VertexBuffer::create(sizeof(float) * 4 * charCount);
     text->vertexBuffer->setLayout(layout);
     text->vertexArray->addVertexBuffer(text->vertexBuffer);
     text->vertexArray->setIndexBuffer(text->indexBuffer);

@@ -6,11 +6,10 @@
 #include <renderer/MeshFactory.h>
 #include <renderer/Renderer.h>
 #include <renderer/Assets.h>
+#include <util/Timer.h>
 
 namespace Engine
 {
-
-Renderer3DData Renderer3D::data;
 
 void Renderer3D::init()
 {
@@ -19,9 +18,10 @@ void Renderer3D::init()
     Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
     Assets::add<Shader>("instancepbr", Shader::createFromFile("Engine/src/renderer/shader/default/instancepbr.glsl"));
 
-    data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
+    s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
+    s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("pbr"));
 
-    data.lightingData = UniformBuffer::create(sizeof(DirectionalLight)
+    s_data.lightingData = UniformBuffer::create(sizeof(DirectionalLight)
                                             + sizeof(PointLight) * 64
                                             + sizeof(SpotLight) * 64
                                             + sizeof(uint32_t)
@@ -38,16 +38,16 @@ void Renderer3D::init()
         "Sandbox/assets/skybox/back.jpg"
     };
 
-    data.environment = Skybox::create(skyboxFaces);*/
-    data.skyboxMesh = MeshFactory::skyboxMesh();
+    s_data.environment = Skybox::create(skyboxFaces);*/
+    s_data.skyboxMesh = MeshFactory::skyboxMesh();
 
-    data.skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
-    Assets::add<Shader>("skybox", data.skyboxShader);
+    s_data.skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
+    Assets::add<Shader>("skybox", s_data.skyboxShader);
 
-    data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, true, false);
-    data.shadowMapFramebuffer = Framebuffer::create(data.shadowMap, GL_DEPTH_ATTACHMENT);
-    data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
-    data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);
+    s_data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, true, false);
+    s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
+    s_data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
+    s_data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);
 }
 
 void Renderer3D::shutdown()
@@ -55,107 +55,119 @@ void Renderer3D::shutdown()
     
 }
 
+void Renderer3D::startBatch()
+{
+    s_data.renderObjects.clear();
+}
+
+void Renderer3D::flushBatch()
+{
+    RenderCommand::setDepthTesting(true);
+
+    for (auto& group : s_data.renderObjects)
+    {
+        group.first->bind();
+        group.first->shader->setFloat("exposure", Renderer::hdrExposure);
+        group.first->shader->setFloat3("cameraPos", s_data.cameraPos);
+
+        setLightingUniforms(group.first->shader);
+
+        for (auto& renderObject : group.second)
+        {
+            group.first->shader->setMatrix4("transform", renderObject.transform);
+
+            renderObject.mesh->vertexArray->bind();
+
+            RenderCommand::renderIndexed(renderObject.mesh->vertexArray);
+        }
+    }
+}
+
+void Renderer3D::nextBatch()
+{
+    flushBatch();
+    startBatch();
+}
+
 void Renderer3D::beginScene(PerspectiveCamera& camera)
 {
-    if (data.sceneStarted)
+    if (s_data.sceneStarted)
     {
         Logger::getCoreLogger()->error("beginScene() must be called before endScene()!");
     }
 
-    data.sceneStarted = true;
+    s_data.sceneStarted = true;
 
-    data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
-    data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
+    s_data.matrixData->setVariable("projection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
+    s_data.matrixData->setVariable("view", math::buffer(camera.getViewMatrix()), sizeof(math::mat4));
 
-    data.cameraPos = camera.getPosition();
+    s_data.cameraPos = camera.getPosition();
+
+    startBatch();
 }
 
 void Renderer3D::beginScene(EditorCamera& camera)
 {
-    if (data.sceneStarted)
+    if (s_data.sceneStarted)
     {
         Logger::getCoreLogger()->error("beginScene() must be called before endScene()!");
     }
 
-    data.sceneStarted = true;
+    s_data.sceneStarted = true;
 
-    data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
-    data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
+    s_data.matrixData->setVariable("projection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
+    s_data.matrixData->setVariable("view", math::buffer(camera.getViewMatrix()), sizeof(math::mat4));
 
-    data.cameraPos = camera.getPosition();
+    s_data.cameraPos = camera.getPosition();
+
+    startBatch();
 }
 
 void Renderer3D::endScene()
 {
-    data.sceneStarted = false;
+    s_data.sceneStarted = false;
+
+    flushBatch();
 
     /*glDepthFunc(GL_LEQUAL);
-    data.skyboxShader->bind();
-    data.skyboxMesh->vertexArray->bind();
-    data.environment->getCubemap()->bind();
-    RenderCommand::renderIndexed(data.skyboxMesh->vertexArray);
+    s_data.skyboxShader->bind();
+    s_data.skyboxMesh->vertexArray->bind();
+    s_data.environment->getCubemap()->bind();
+    RenderCommand::renderIndexed(s_data.skyboxMesh->vertexArray);
     glDepthFunc(GL_LESS);*/
 }
 
 void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
 {
-    if (!data.sceneStarted)
+    if (!s_data.sceneStarted)
     {
         Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
     }
-
-    RenderCommand::setDepthTesting(true);
 
     if (!mesh->material->shader)
     {
         return;
     }
 
-    mesh->material->bind();
-    mesh->material->shader->setMatrix4("transform", transform);
-    mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
-    mesh->material->shader->setFloat3("cameraPos", data.cameraPos);
+    if (s_data.renderObjects.find(mesh->material) == s_data.renderObjects.end())
+    {
+        s_data.renderObjects.emplace(std::make_pair(mesh->material, std::vector<RenderObject>()));
+    }
 
-    setLightingUniforms(mesh->material->shader);
-
-    mesh->vertexArray->bind();
-
-    RenderCommand::renderIndexed(mesh->vertexArray);
+    s_data.renderObjects.at(mesh->material).push_back({ mesh, transform });
 }
 
 void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
 {
-    if (!data.sceneStarted)
-    {
-        Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
-    }
-
-    RenderCommand::setDepthTesting(true);
-
-    Shared<Material> lastMaterial = nullptr;
     for (auto& mesh : model->meshes)
     {
-        if (mesh->material != lastMaterial)
-        {
-            mesh->material->bind();
-            mesh->material->shader->setMatrix4("transform", transform);
-            mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
-            mesh->material->shader->setFloat3("cameraPos", data.cameraPos);
-            
-            setLightingUniforms(mesh->material->shader);
-
-            lastMaterial = mesh->material;
-        }
-
-        mesh->vertexArray->bind();
-
-        RenderCommand::renderIndexed(mesh->vertexArray);
+        submit(mesh, transform);
     }
 }
 
 void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material)
 {
-    if (!data.sceneStarted)
+    if (!s_data.sceneStarted)
     {
         Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
     }
@@ -165,23 +177,17 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, c
         return;
     }
 
-    RenderCommand::setDepthTesting(true);
+    if (s_data.renderObjects.find(material) == s_data.renderObjects.end())
+    {
+        s_data.renderObjects.emplace(std::make_pair(material, std::vector<RenderObject>()));
+    }
 
-    material->bind();
-    material->shader->setMatrix4("transform", transform);
-    material->shader->setFloat("exposure", Renderer::hdrExposure);
-    material->shader->setFloat3("cameraPos", data.cameraPos);
-
-    setLightingUniforms(material->shader);
-
-    mesh->vertexArray->bind();
-
-    RenderCommand::renderIndexed(mesh->vertexArray);
+    s_data.renderObjects.at(material).push_back({ mesh, transform });
 }
 
 void Renderer3D::submit(const Shared<InstancedRenderer>& instance)
 {
-    if (!data.sceneStarted)
+    if (!s_data.sceneStarted)
     {
         Logger::getCoreLogger()->error("beginScene() must be called before executing draw calls!");
     }
@@ -195,7 +201,7 @@ void Renderer3D::submit(const Shared<InstancedRenderer>& instance)
         {
             mesh->material->bind();
             mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
-            mesh->material->shader->setFloat3("cameraPos", data.cameraPos);
+            mesh->material->shader->setFloat3("cameraPos", s_data.cameraPos);
             
             setLightingUniforms(mesh->material->shader);
 
@@ -212,7 +218,7 @@ void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
 {
     uint32_t pointLights = 0;
     uint32_t directionalLights = 0;
-    for (auto& light : data.lights)
+    for (auto& light : s_data.lights)
     {
         if (dynamic_cast<const PointLight*>(light))
         {
@@ -237,18 +243,18 @@ void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
 
 void Renderer3D::removeLight(const BaseLight* light)
 {
-    for (std::vector<const BaseLight*>::iterator it = data.lights.begin(); it != data.lights.end(); it++)
+    for (std::vector<const BaseLight*>::iterator it = s_data.lights.begin(); it != s_data.lights.end(); it++)
     {
         if (*(it.base()) == light)
         {
-            data.lights.erase(it);
+            s_data.lights.erase(it);
         }
     }
 }
 
 void Renderer3D::setEnvironment(const Shared<Skybox>& environment)
 {
-    data.environment = environment;
+    s_data.environment = environment;
 }
 
 }

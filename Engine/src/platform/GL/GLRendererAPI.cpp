@@ -10,7 +10,7 @@ void GLAPIENTRY messageCallback(GLenum source, GLenum type, GLuint id, GLenum se
     {
         case GL_DEBUG_SEVERITY_HIGH:
             Logger::getCoreLogger()->error("[OpenGL Debug HIGH] %s", message);
-            //abort();
+            abort();
             break;
         case GL_DEBUG_SEVERITY_MEDIUM:
             Logger::getCoreLogger()->error("[OpenGL Debug MEDIUM] %s", message);

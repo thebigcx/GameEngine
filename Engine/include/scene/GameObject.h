@@ -197,7 +197,7 @@ private:
             {
                 if (&m_parent->getChildren()[i] == this)
                 {
-                    m_parent->getChildren().erase(m_parent->getChildren().begin() + i);// TODO: Recurse the children as well
+                    m_parent->getChildren().erase(m_parent->getChildren().begin() + i);
                     return;
                 }
             }

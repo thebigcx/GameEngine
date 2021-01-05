@@ -5,7 +5,7 @@
 #include <renderer/Texture2D.h>
 #include <renderer/Material.h>
 #include <renderer/Model.h>
-#include <renderer/Lights.h>
+#include <renderer/Lighting.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/Skybox.h>
 #include <renderer/InstancedRenderer.h>
@@ -15,6 +15,12 @@
 
 namespace Engine
 {
+
+struct RenderObject
+{
+    Shared<Mesh> mesh;
+    math::mat4 transform;
+};
 
 struct Renderer3DData
 {
@@ -32,18 +38,17 @@ struct Renderer3DData
     std::vector<const BaseLight*> lights;
 
     math::vec3 cameraPos;
+    
+    std::unordered_map<Shared<Material>, std::vector<RenderObject>> renderObjects;
 };
 
 class Renderer3D
 {
 public:
-    static void init();
-    static void shutdown();
-
     static void beginScene(PerspectiveCamera& camera);
     static void beginScene(EditorCamera& camera);
 
-    static void submit(const Shared<Mesh>& mesh, const math::mat4& transform);
+    static void submit(const Shared<Mesh>& mesh, const math::mat4& transform); // TODO: meshes shouldn't hold materials (research further)
     static void submit(const Shared<Model>& model, const math::mat4& transform);
     static void submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material);
 
@@ -51,17 +56,26 @@ public:
 
     static void setEnvironment(const Shared<Skybox>& environment);
 
-    static inline void addLight(const BaseLight* light) { data.lights.push_back(light); }
-    static inline void clearLights() { std::vector<const BaseLight*>().swap(data.lights); }
+    static void startBatch();
+    static void flushBatch();
+    static void nextBatch();
+
+    static inline void addLight(const BaseLight* light) { s_data.lights.push_back(light); }
+    static inline void clearLights() { std::vector<const BaseLight*>().swap(s_data.lights); }
 
     static void removeLight(const BaseLight* light);
 
     static void endScene();
 
-    static Renderer3DData data;
-
 private:
     static void setLightingUniforms(const Shared<Shader>& shader);
+
+    static void init();
+    static void shutdown();
+
+    static inline Renderer3DData s_data;
+
+    friend class Renderer;
 };
 
 }

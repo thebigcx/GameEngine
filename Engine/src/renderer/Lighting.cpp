@@ -1,4 +1,4 @@
-#include <renderer/Lights.h>
+#include <renderer/Lighting.h>
 #include <renderer/Renderer3D.h>
 
 namespace Engine

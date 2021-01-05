@@ -11,7 +11,7 @@ Shared<Framebuffer> Framebuffer::create(uint32_t width, uint32_t height)
     return createShared<GLFramebuffer>(width, height);
 }
 
-Shared<Framebuffer> Framebuffer::create(const Shared<Texture2D>& texture, GLenum attachment)
+Shared<Framebuffer> Framebuffer::create(const Shared<Texture2D>& texture, Attachment attachment)
 {
     return createShared<GLFramebuffer>(static_cast<const GLTexture2D&>(*texture), attachment);
 }

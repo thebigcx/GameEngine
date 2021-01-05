@@ -8,12 +8,12 @@
 namespace Engine
 {
 
-GLFramebuffer::GLFramebuffer(const GLTexture2D& texture, GLenum attachment)
+GLFramebuffer::GLFramebuffer(const GLTexture2D& texture, Attachment attachment)
 {
     glCreateFramebuffers(1, &m_id);
 
     bind();
-    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture.getId(), 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, getAttachmentEnumValue_(attachment), GL_TEXTURE_2D, texture.getId(), 0);
     unbind();
 }
 
@@ -87,7 +87,7 @@ void GLFramebuffer::resize(uint32_t width, uint32_t height)
     m_width = width;
     m_height = height;
 
-    invalidate(width, height); // FIXME
+    invalidate(width, height);
 }
 
 void GLFramebuffer::bind() const
@@ -153,6 +153,24 @@ GLenum GLFramebuffer::getColorBufferEnumValue_(uint32_t buffer)
         return GL_FRONT_AND_BACK;
 
     return 0;
+}
+
+GLenum GLFramebuffer::getAttachmentEnumValue_(Attachment attachment)
+{
+    if (attachment == Attachment::Color)
+    {
+        return GL_COLOR_ATTACHMENT0;
+    }
+    else if (attachment == Attachment::Depth)
+    {
+        return GL_DEPTH_ATTACHMENT;
+    }
+    else if (attachment == Attachment::Stencil)
+    {
+        return GL_STENCIL_ATTACHMENT;
+    }
+
+    return GL_NONE;
 }
 
 }

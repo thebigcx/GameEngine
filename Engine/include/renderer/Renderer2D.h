@@ -35,13 +35,13 @@ struct Renderer2DData
     static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
     static constexpr uint32_t MAX_VERTICES = MAX_SPRITES * 4;
     static constexpr uint32_t MAX_INDICES = MAX_SPRITES * 6;
+    static constexpr uint32_t MAX_GLYPHS = 512;
 
     uint64_t drawCalls;
 
     math::mat4 projectionMatrix;
     Shared<Shader> textureShader;
     Shared<Shader> textShader;
-    Shared<Texture2D> whiteTexture;
 
     QuadVertex* vertexBase = nullptr;
     QuadVertex* vertexPointer = nullptr;
@@ -51,6 +51,10 @@ struct Renderer2DData
     uint32_t textureSlotIndex = 1;
     
     Mesh mesh;
+    
+    Shared<Mesh> textMesh;
+    GlyphVertex* textVertexBase;
+    GlyphVertex* textVertexPtr;
 
     Shared<UniformBuffer> matrixData;
 
@@ -60,6 +64,9 @@ struct Renderer2DData
         math::vec2(1, 1),
         math::vec2(1, 0)
     };
+
+    // TODO: look into text batching similar to Renderer3D.
+    // At the moment, every string of text is a seperate draw call (inefficient)
 };
 
 struct Statistics
@@ -70,11 +77,6 @@ struct Statistics
 class Renderer2D
 {
 public:
-    static void init();
-    static void shutdown();
-
-    static void render(IRenderable2D& renderable);
-
     static void startBatch();
     static void nextBatch();
     static void flushBatch();
@@ -100,13 +102,16 @@ public:
     static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color = math::vec4(0, 0, 0, 0));
     static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
 
-    //static Statistics stats;
-
 private:
-    static Shared<Mesh> m_textMesh;
     static Shared<Mesh> m_framebufferMesh;
 
     static Renderer2DData s_data;
+    static Statistics s_statistics;
+
+    static void init();
+    static void shutdown();
+
+    friend class Renderer;
 };
 
 }

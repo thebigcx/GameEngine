@@ -9,7 +9,7 @@
 #include <renderer/Texture2D.h>
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Mesh.h>
-#include <renderer/Lights.h>
+#include <renderer/Lighting.h>
 #include <renderer/Assets.h>
 
 namespace Engine
@@ -52,7 +52,7 @@ struct SpriteRendererComponent : public GameComponent
 {
     SpriteRendererComponent()
     {
-        texture = Texture2D::createWhiteTexture(); // TODO: add white_texture to Texture2D class for easier access
+        texture = Texture2D::createWhiteTexture();
     }
 
     math::vec4 color = { 1.f, 1.f, 1.f, 1.f };
@@ -96,7 +96,7 @@ struct MeshComponent : public GameComponent
 {
     Shared<Mesh> mesh;
     std::string filePath;
-    uint32_t meshID = 0; // TODO: mesh id
+    uint32_t meshID = 0;
 };
 
 struct BoxCollider2DComponent : public GameComponent

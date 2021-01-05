@@ -256,7 +256,7 @@ Shared<Texture2D> ModelLoader::loadMaterialTexture_(aiMaterial* mat, aiTextureTy
     }
     if (!skip)
     {
-        texture = Texture2D::create(directory + "/" + str.C_Str(), true);
+        texture = Texture2D::create(directory + "/" + str.C_Str(), GL_SRGB8_ALPHA8);
 
         m_texturesLoaded.push_back(texture);
     }

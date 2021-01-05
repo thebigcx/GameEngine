@@ -60,7 +60,7 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
     m_atlasSize.y = h;
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    m_texture = Texture2D::create(m_atlasSize.x, m_atlasSize.y);
+    m_texture = Texture2D::create(m_atlasSize.x, m_atlasSize.y, GL_RGBA8, true, false);
 
     int x = 0;
     for (unsigned int i = 32; i < 255; i++)
@@ -86,11 +86,11 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
         x += g->bitmap.width;
     }
 
-    m_texture->setParameter(Texture2D::Parameter::WrapS, Texture2D::Value::ClampToEdge);
+    /*m_texture->setParameter(Texture2D::Parameter::WrapS, Texture2D::Value::ClampToEdge);
     m_texture->setParameter(Texture2D::Parameter::WrapT, Texture2D::Value::ClampToEdge);
 
     m_texture->setParameter(Texture2D::Parameter::MinFilter, Texture2D::Value::Nearest);
-    m_texture->setParameter(Texture2D::Parameter::MagFilter, Texture2D::Value::Nearest);
+    m_texture->setParameter(Texture2D::Parameter::MagFilter, Texture2D::Value::Nearest);*/
 
     FT_Done_Face(face);
     FT_Done_FreeType(library);

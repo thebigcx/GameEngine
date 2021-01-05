@@ -6,7 +6,7 @@
 namespace Engine
 {
 
-GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB, bool clamp, bool linear)
+GLTexture2D::GLTexture2D(const std::string& file, GLenum internalFormat, GLenum dataFormat, bool clamp, bool linear)
     : m_path(file)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
@@ -16,21 +16,13 @@ GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB, bool clamp, bool 
 
     if (image->data)
     {
-        if (isSRGB)
-        {
-            m_internalFormat = GL_SRGB8_ALPHA8;
-        }
-        else
-        {
-            m_internalFormat = GL_RGBA8;
-        }
-
-        m_dataFormat = GL_RGBA;
+        m_internalFormat = internalFormat;
+        m_dataFormat = dataFormat;
 
         glTextureStorage2D(m_id, 1, m_internalFormat, image->width, image->height);
 
         glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
-        glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR : GL_NEAREST_MIPMAP_NEAREST);
+        glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_NEAREST);
         glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
         glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
 
@@ -45,8 +37,6 @@ GLTexture2D::GLTexture2D(const std::string& file, bool isSRGB, bool clamp, bool 
                      image->data);
 
         glGenerateTextureMipmap(m_id);
-
-        m_mipmapped = true;
     }
     else
     {
@@ -79,18 +69,13 @@ GLTexture2D::~GLTexture2D()
     glDeleteTextures(1, &m_id);
 }
 
-void GLTexture2D::setData(float xoffset, float yoffset, float width, float height, const void* data, GLenum dataFormat, GLenum type)
+void GLTexture2D::setData(uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height, const void* data, GLenum dataFormat, GLenum type)
 {
     bind();
 
     glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, dataFormat, type, data);
     
     unbind();
-}
-
-void GLTexture2D::setParameter(Parameter parameter, Value value)
-{
-    glTextureParameteri(m_id, (GLenum)parameter, (GLenum)value);
 }
 
 void GLTexture2D::bind(uint32_t slot) const

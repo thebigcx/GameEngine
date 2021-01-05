@@ -5,7 +5,7 @@
 #include <scene/GameObject.h>
 #include <scene/EditorCamera.h>
 #include <renderer/Material.h>
-#include <renderer/Lights.h>
+#include <renderer/Lighting.h>
 #include <script/ScriptEngine.h>
 
 namespace Engine

@@ -88,7 +88,11 @@ public:
     GLUniformBuffer(size_t size, uint32_t bindingPoint); // Dynamic
     GLUniformBuffer(const void* data, size_t size, uint32_t bindingPoint); // Static
 
+    void setBlockDeclaration(const Shader& shader) override;
+
     void setData(const void* data, size_t size, size_t offset = 0) override;
+
+    void setVariable(const std::string& uniform, const void* data, size_t size) override;
 
     void bind() const override;
     void unbind() const override;
@@ -97,6 +101,8 @@ public:
     void* getBufferPtr(size_t offset) const override;
     void unmap() const override;
 
+    size_t getVariableOffset(const std::string& name) const override;
+
 private:
     uint32_t m_id = 0;
     uint32_t m_bindingPoint = 0;
@@ -104,6 +110,8 @@ private:
     BufferUsage m_usage;
 
     size_t m_size = 0;
+
+    std::unordered_map<std::string, size_t> m_variableOffsets;
 };
 
 }

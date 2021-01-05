@@ -254,7 +254,11 @@ class UniformBuffer
 public:
     virtual ~UniformBuffer() = default;
 
+    virtual void setBlockDeclaration(const Shader& shader) = 0;
+
     virtual void setData(const void* data, size_t size, size_t offset = 0) = 0;
+
+    virtual void setVariable(const std::string& uniform, const void* data, size_t size) = 0;
 
     virtual void bind() const = 0;
     virtual void unbind() const = 0;
@@ -262,6 +266,8 @@ public:
     virtual void* getBufferPtr(size_t size, size_t offset) const = 0;
     virtual void* getBufferPtr(size_t offset) const = 0;
     virtual void unmap() const = 0;
+
+    virtual size_t getVariableOffset(const std::string& name) const = 0;
 
     static Shared<UniformBuffer> create(size_t size, uint32_t bindingPoint);
 };
