@@ -39,6 +39,8 @@ void GLRendererAPI::init()
 
     int shaderVersion;
     m_capabilities.shaderVersion = std::stoi(reinterpret_cast<const char*>(glGetStringi(GL_SHADING_LANGUAGE_VERSION, 0)));
+
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 
 void GLRendererAPI::setViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

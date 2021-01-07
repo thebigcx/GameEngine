@@ -51,12 +51,16 @@ struct Material
     vec3 albedoColor;
 };
 
-layout(binding = 0) uniform sampler2D materialAlbedo;
-layout(binding = 1) uniform sampler2D materialNormal;
-layout(binding = 2) uniform sampler2D materialMetallic;
-layout(binding = 3) uniform sampler2D materialRoughness;
-layout(binding = 4) uniform sampler2D materialAo;
-layout(binding = 5) uniform sampler2D materialDepth;
+layout (binding = 0) uniform sampler2D materialAlbedo;
+layout (binding = 1) uniform sampler2D materialNormal;
+layout (binding = 2) uniform sampler2D materialMetallic;
+layout (binding = 3) uniform sampler2D materialRoughness;
+layout (binding = 4) uniform sampler2D materialAo;
+layout (binding = 5) uniform sampler2D materialDepth;
+
+layout (binding = 6) uniform samplerCube irradianceMap;
+layout (binding = 7) uniform samplerCube prefilterMap;
+layout (binding = 8) uniform sampler2D brdfLUT;
 
 struct PointLight
 {
@@ -107,6 +111,11 @@ float PI = 3.1415926535897932384626433832795028841971693993751058209749445923;
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);
+}
+
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);
 }
 
 float distributionGGX(vec3 N, vec3 H, float roughness)
@@ -220,14 +229,19 @@ void main()
         normal = normalize(TBN * fs_in.normal);
     }
 
-    float metallic = (int(bool(material.textureFlags & (1 << 2))) * texture(materialMetallic, fs_in.texCoord).r) + material.metallicScalar;
-    float roughness = (int(bool(material.textureFlags & (1 << 3))) * texture(materialRoughness, fs_in.texCoord).r) + material.roughnessScalar;
+    float metallic = (int(bool(material.textureFlags & (1 << 2))) * texture(materialMetallic, fs_in.texCoord).r);
+    metallic = min(metallic + material.metallicScalar, 1.0);
+
+    float roughness = (int(bool(material.textureFlags & (1 << 3))) * texture(materialRoughness, fs_in.texCoord).r);
+    roughness = min(roughness + material.roughnessScalar, 1.0);
 
     float ao = 1.f;
     if ((material.textureFlags & (1 << 4)) != 0)
     {
         ao = texture(materialAo, texCoord).r;
     }
+
+    vec3 R = reflect(-V, normal);
 
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metallic);
@@ -249,7 +263,7 @@ void main()
         float attenuation = 1.0 / (distance * distance);
         vec3 radiance = pointLights[i].radiance * attenuation;
 
-        float NDF = distributionGGX(H, V, roughness);
+        float NDF = distributionGGX(normal, H, roughness);
         float G = geometrySmith(normal, V, L, roughness);
         vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
@@ -275,7 +289,7 @@ void main()
 
         vec3 radiance = directionalLight.radiance;
 
-        float NDF = distributionGGX(H, V, roughness);
+        float NDF = distributionGGX(normal, H, roughness);
         float G = geometrySmith(normal, V, L, roughness);
         vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
@@ -293,7 +307,22 @@ void main()
         Lo *= directionalLight.intensity;
     }
 
-    vec3 ambient = (skyLight.radiance * skyLight.intensity) * albedo * ao;
+    vec3 F = fresnelSchlickRoughness(max(dot(normal, V), 0.0), F0, roughness);
+
+    vec3 kS = F;
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metallic;
+    
+    vec3 irradiance = texture(irradianceMap, normal).rgb;
+    vec3 diffuse = irradiance * albedo;
+
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;
+    vec2 brdf = texture(brdfLUT, vec2(max(dot(normal, V), 0.0), roughness)).rg;
+    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+
+    vec3 ambient = (kD * diffuse + specular) * ao;
+
     vec3 color = ambient + Lo;
 
     vec3 mapped = vec3(1.0) - exp(-color * exposure);

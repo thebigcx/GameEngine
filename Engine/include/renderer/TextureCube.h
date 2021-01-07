@@ -4,6 +4,8 @@
 
 #include <core/Core.h>
 
+#include <GL/glew.h>
+
 namespace Engine
 {
 
@@ -18,8 +20,11 @@ public:
     virtual bool operator==(const TextureCube& array) const = 0;
     virtual bool operator!=(const TextureCube& array) const = 0;
 
-    static Shared<TextureCube> create(const std::string& filepath);
-    static Shared<TextureCube> create(const std::string* files);
+    virtual uint32_t getId() const = 0;
+
+    static Shared<TextureCube> create(const std::string& filepath, bool clamp = false, bool linear = true, bool mipmap = false);
+    static Shared<TextureCube> create(const std::string* files, bool clamp = false, bool linear = true, bool mipmap = false);
+    static Shared<TextureCube> create(uint32_t width, uint32_t height, GLenum dataFormat = GL_RGBA8, bool clamp = false, bool linear = true, bool mipmap = false); // TODO: platform independent (all data formats)
 };
 
 }

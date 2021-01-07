@@ -6,7 +6,7 @@
 #include <string>
 #include <functional>
 
-#include <util/Image.h>
+#include <util/ImageLoader.h>
 #include <maths/vector/vec2.h>
 #include <renderer/RenderingContext.h>
 #include <events/Event.h>

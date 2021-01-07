@@ -9,9 +9,29 @@
 namespace Engine
 {
 
+class GLRenderbuffer : public Renderbuffer
+{
+public:
+    GLRenderbuffer(uint32_t width, uint32_t height, GLenum internalFormat);
+    ~GLRenderbuffer();
+
+    void bind() const override;
+    void unbind() const override;
+
+    inline uint32_t getWidth() const override { return m_width; }
+    inline uint32_t getHeight() const override { return m_height; }
+
+    inline uint32_t getId() const { return m_id; }
+
+private:
+    uint32_t m_id = 0;
+    uint32_t m_width = 0, m_height = 0;
+};
+
 class GLFramebuffer : public Framebuffer
 {
 public:
+    GLFramebuffer();
     GLFramebuffer(const GLTexture2D& texture, Attachment attachment);
     GLFramebuffer(uint32_t width, uint32_t height);
     ~GLFramebuffer();
@@ -27,6 +47,9 @@ public:
 
     inline uint32_t getColorAttachment() const override { return m_colorAttachment; }
     inline uint32_t getDepthAttachment() const override { return m_depthAttachment; }
+
+    void attachRenderbuffer(const Renderbuffer& buffer, Attachment attachment) override;
+    void attachTexture(const Texture2D& texture, Attachment attachment, GLenum target) override;
 
     void drawBuffer(uint32_t buffer) const override;
     void readBuffer(uint32_t buffer) const override;

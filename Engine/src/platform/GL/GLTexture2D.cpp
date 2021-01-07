@@ -33,7 +33,7 @@ GLTexture2D::GLTexture2D(const std::string& file, GLenum internalFormat, GLenum 
                      image->width,
                      image->height,
                      m_dataFormat,
-                     GL_UNSIGNED_BYTE,
+                     GL_UNSIGNED_BYTE, // TODO: custom type
                      image->data);
 
         glGenerateTextureMipmap(m_id);

@@ -25,11 +25,28 @@ enum class Attachment
     Color, Depth, Stencil
 };
 
+class Renderbuffer
+{
+public:
+    virtual ~Renderbuffer() = default;
+
+    virtual void bind() const = 0;
+    virtual void unbind() const = 0;
+
+    virtual uint32_t getWidth() const = 0;
+    virtual uint32_t getHeight() const = 0;
+
+    virtual uint32_t getId() const = 0;
+
+    static Shared<Renderbuffer> create(uint32_t width, uint32_t height, GLenum internalFormat);
+};
+
 class Framebuffer
 {
 public:
     virtual ~Framebuffer() = default;
 
+    static Shared<Framebuffer> create();
     static Shared<Framebuffer> create(uint32_t width, uint32_t height);
     static Shared<Framebuffer> create(const Shared<Texture2D>& texture, Attachment attachment);
 
@@ -44,6 +61,9 @@ public:
 
     virtual uint32_t getColorAttachment() const = 0;
     virtual uint32_t getDepthAttachment() const = 0;
+
+    virtual void attachRenderbuffer(const Renderbuffer& buffer, Attachment attachment) = 0;
+    virtual void attachTexture(const Texture2D& texture, Attachment attachment, GLenum target = GL_TEXTURE_2D) = 0;
 
     virtual void drawBuffer(uint32_t buffer) const = 0;
     virtual void readBuffer(uint32_t buffer) const = 0;

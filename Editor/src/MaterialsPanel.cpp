@@ -162,7 +162,7 @@ void MaterialsPanel::onImGuiRender()
                     ImGui::Checkbox("Use", &material->usingMetallicMap);
 
                     ImGui::SameLine();
-                    ImGui::SliderFloat("##metallicScalar", &material->metallicScalar, 0.f, 32.f);
+                    ImGui::SliderFloat("##metallicScalar", &material->metallicScalar, 0.f, 1.f);
 
                     ImGui::PopID();
                 }
@@ -177,7 +177,7 @@ void MaterialsPanel::onImGuiRender()
                     ImGui::Checkbox("Use", &material->usingRoughnessMap);
 
                     ImGui::SameLine();
-                    ImGui::SliderFloat("##roughnessScalar", &material->roughnessScalar, 0.f, 32.f);
+                    ImGui::SliderFloat("##roughnessScalar", &material->roughnessScalar, 0.f, 1.f);
 
                     ImGui::PopID();
                 }

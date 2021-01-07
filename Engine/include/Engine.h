@@ -7,7 +7,7 @@
 #include <core/KeyCodes.h>
 #include <core/Core.h>
 
-#include <util/Image.h>
+#include <util/ImageLoader.h>
 #include <util/Timer.h>
 #include <util/OrthographicCamera.h>
 #include <util/OrthographicCameraController.h>

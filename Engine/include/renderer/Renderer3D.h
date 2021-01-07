@@ -9,6 +9,7 @@
 #include <renderer/Framebuffer.h>
 #include <renderer/Skybox.h>
 #include <renderer/InstancedRenderer.h>
+#include <renderer/EnvironmentMap.h>
 
 #include <util/PerspectiveCamera.h>
 #include <scene/EditorCamera.h>
@@ -29,9 +30,14 @@ struct Renderer3DData
 
     Shared<UniformBuffer> matrixData;
 
-    Shared<Skybox> environment;
+    //Shared<Skybox> environment;
+    //Shared<Mesh> skyboxMesh;
+    //Shared<Shader> skyboxShader;
+
+    Shared<EnvironmentMap> environment;
+    Shared<Shader> environmentShader;
     Shared<Mesh> skyboxMesh;
-    Shared<Shader> skyboxShader;
+
     Shared<Texture2D> shadowMap;
     Shared<Framebuffer> shadowMapFramebuffer;
 

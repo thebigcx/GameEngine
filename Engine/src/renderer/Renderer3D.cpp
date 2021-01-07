@@ -21,6 +21,10 @@ void Renderer3D::init()
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
     s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("pbr"));
 
+    s_data.skyboxMesh = MeshFactory::skyboxMesh();
+    s_data.environment = EnvironmentMap::create("Sandbox/assets/environment.hdr");
+    s_data.environmentShader = Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl");
+
     s_data.lightingData = UniformBuffer::create(sizeof(DirectionalLight)
                                             + sizeof(PointLight) * 64
                                             + sizeof(SpotLight) * 64
@@ -28,21 +32,6 @@ void Renderer3D::init()
                                             + sizeof(uint32_t)
                                             + sizeof(math::vec3)
                                             + sizeof(float), 1);
-
-    /*std::array<std::string, 6> skyboxFaces = {
-        "Sandbox/assets/skybox/right.jpg",
-        "Sandbox/assets/skybox/left.jpg",
-        "Sandbox/assets/skybox/top.jpg",
-        "Sandbox/assets/skybox/bottom.jpg",
-        "Sandbox/assets/skybox/front.jpg",
-        "Sandbox/assets/skybox/back.jpg"
-    };
-
-    s_data.environment = Skybox::create(skyboxFaces);*/
-    s_data.skyboxMesh = MeshFactory::skyboxMesh();
-
-    s_data.skyboxShader = Shader::createFromFile("Engine/src/renderer/shader/default/skybox.glsl");
-    Assets::add<Shader>("skybox", s_data.skyboxShader);
 
     s_data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, true, false);
     s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
@@ -63,6 +52,10 @@ void Renderer3D::startBatch()
 void Renderer3D::flushBatch()
 {
     RenderCommand::setDepthTesting(true);
+
+    s_data.environment->getEnvMap()->bind(6);
+    s_data.environment->getPrefilter()->bind(7);
+    s_data.environment->getBRDF()->bind(8);
 
     for (auto& group : s_data.renderObjects)
     {
@@ -129,12 +122,12 @@ void Renderer3D::endScene()
 
     flushBatch();
 
-    /*glDepthFunc(GL_LEQUAL);
-    s_data.skyboxShader->bind();
+    glDepthFunc(GL_LEQUAL);
+    s_data.environmentShader->bind();
     s_data.skyboxMesh->vertexArray->bind();
-    s_data.environment->getCubemap()->bind();
+    s_data.environment->getEnvMap()->bind();
     RenderCommand::renderIndexed(s_data.skyboxMesh->vertexArray);
-    glDepthFunc(GL_LESS);*/
+    glDepthFunc(GL_LESS);
 }
 
 void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
@@ -254,7 +247,7 @@ void Renderer3D::removeLight(const BaseLight* light)
 
 void Renderer3D::setEnvironment(const Shared<Skybox>& environment)
 {
-    s_data.environment = environment;
+    
 }
 
 }

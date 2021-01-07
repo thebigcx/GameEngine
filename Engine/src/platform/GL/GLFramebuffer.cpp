@@ -8,11 +8,42 @@
 namespace Engine
 {
 
+GLRenderbuffer::GLRenderbuffer(uint32_t width, uint32_t height, GLenum internalFormat)
+    : m_width(width), m_height(height)
+{
+    glCreateRenderbuffers(1, &m_id);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_id);
+    glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, width, height);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
+GLRenderbuffer::~GLRenderbuffer()
+{
+    glDeleteRenderbuffers(1, &m_id);
+}
+
+void GLRenderbuffer::bind() const
+{
+    glBindRenderbuffer(GL_RENDERBUFFER, m_id);
+}
+
+void GLRenderbuffer::unbind() const
+{
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
+GLFramebuffer::GLFramebuffer()
+{
+    glCreateFramebuffers(1, &m_id);
+}
+
 GLFramebuffer::GLFramebuffer(const GLTexture2D& texture, Attachment attachment)
+    : m_width(texture.getWidth()), m_height(texture.getHeight())
 {
     glCreateFramebuffers(1, &m_id);
 
     bind();
+    texture.bind();
     glFramebufferTexture2D(GL_FRAMEBUFFER, getAttachmentEnumValue_(attachment), GL_TEXTURE_2D, texture.getId(), 0);
     unbind();
 }
@@ -31,6 +62,28 @@ GLFramebuffer::~GLFramebuffer()
         glDeleteTextures(1, &m_colorAttachment);
         glDeleteTextures(1, &m_depthAttachment);
     }
+}
+
+void GLFramebuffer::attachRenderbuffer(const Renderbuffer& buffer, Attachment attachment)
+{
+    bind();
+    buffer.bind();
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, getAttachmentEnumValue_(attachment), GL_RENDERBUFFER, buffer.getId());
+    m_width = buffer.getWidth();
+    m_height = buffer.getHeight();
+
+    buffer.unbind();
+    unbind();
+}
+
+void GLFramebuffer::attachTexture(const Texture2D& texture, Attachment attachment, GLenum target)
+{
+    bind();
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, getAttachmentEnumValue_(attachment), target, texture.getId(), 0);
+
+    unbind();
 }
 
 void GLFramebuffer::invalidate(uint32_t width, uint32_t height)

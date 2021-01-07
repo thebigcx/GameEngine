@@ -1,6 +1,6 @@
 #include <renderer/Texture2D.h>
 
-#include <util/Image.h>
+#include <util/ImageLoader.h>
 #include <platform/GL/GLTexture2D.h>
 
 #include <iostream>

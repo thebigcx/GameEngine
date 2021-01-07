@@ -1,4 +1,4 @@
-#include <util/Image.h>
+#include <util/ImageLoader.h>
 #include <core/Logger.h>
 
 #include <stb_image/stb_image.h>
@@ -43,6 +43,28 @@ Shared<Image> ImageLoader::loadOpenGLImage(const std::string& file)
     stbi_set_flip_vertically_on_load(true);
 
     return loadImageImpl(file);
+}
+
+HDRImage::~HDRImage()
+{
+    stbi_image_free(data);
+}
+
+Shared<HDRImage> ImageLoader::loadHDRImage(const std::string& path)
+{
+    auto image = createShared<HDRImage>();
+
+    int width, height, channels;
+
+    stbi_set_flip_vertically_on_load(true);
+
+    image->data = stbi_loadf(path.c_str(), &width, &height, &channels, 0);
+
+    image->width = width;
+    image->height = height;
+    image->channels = channels;
+
+    return image;
 }
 
 }
