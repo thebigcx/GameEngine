@@ -155,9 +155,24 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 vec3 getNormalFromNormalMap(vec2 texCoord)
 {
+    /*
     vec3 normal = texture(materialNormal, texCoord).rgb;
     normal = normal * 2.0 - 1.0;
     return normal;
+    */
+    vec3 tangentNormal = texture(materialNormal, texCoord).xyz * 2.0 - 1.0;
+
+    vec3 Q1 = dFdx(fs_in.fragPos);
+    vec3 Q2 = dFdy(fs_in.fragPos);
+    vec2 uv1 = dFdx(texCoord);
+    vec2 uv2 = dFdy(texCoord);
+
+    vec3 N = normalize(fs_in.normal);
+    vec3 T = normalize(Q1 * uv1.s - Q2 * uv2.t);
+    vec3 B = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
 }
 
 vec2 parallaxMapping(vec2 texCoord, vec3 viewDir)
@@ -198,9 +213,7 @@ vec2 parallaxMapping(vec2 texCoord, vec3 viewDir)
 // TODO: tangent space mapping in vertex shader
 void main()
 {
-    mat3 TBN = transpose(fs_in.TBN);
-
-    vec3 V = normalize(TBN * cameraPos - TBN * fs_in.fragPos);
+    vec3 V = normalize(cameraPos - fs_in.fragPos);
 
     vec2 texCoord = fs_in.texCoord;
     if ((material.textureFlags & (1 << 5)) != 0)
@@ -226,7 +239,7 @@ void main()
     }
     else
     {
-        normal = normalize(TBN * fs_in.normal);
+        normal = normalize(fs_in.normal);
     }
 
     float metallic = (int(bool(material.textureFlags & (1 << 2))) * texture(materialMetallic, fs_in.texCoord).r);
@@ -246,7 +259,7 @@ void main()
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metallic);
 
-    vec3 fragPos = TBN * fs_in.fragPos;
+    vec3 fragPos = fs_in.fragPos;
 
     vec3 Lo = vec3(0);
 
@@ -254,7 +267,7 @@ void main()
 
     for (int i = 0; i < numPointLights; i++)
     {
-        vec3 lightPos = TBN * pointLights[i].position;
+        vec3 lightPos = pointLights[i].position;
 
         vec3 L = normalize(lightPos - fragPos);
         vec3 H = normalize(V + L);
@@ -284,7 +297,7 @@ void main()
     // ----------------------------Directional Light-------------------------------------
     if (usingDirectionalLight == 1)
     {
-        vec3 L = TBN * normalize(-directionalLight.direction);
+        vec3 L = normalize(-directionalLight.direction);
         vec3 H = normalize(V + L);
 
         vec3 radiance = directionalLight.radiance;

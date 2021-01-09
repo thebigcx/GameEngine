@@ -131,7 +131,7 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
             indices.push_back(face.mIndices[j]);
         }
     }
-
+/*
     bool needToLoadMaterial = true;
     for (auto& materialLoaded : m_materialsLoaded)
     {
@@ -144,7 +144,7 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
     }
 
     if (needToLoadMaterial)
-    {
+    {*/
         if (mesh->mMaterialIndex > 0)
         {
             aiMaterial* aimaterial = scene->mMaterials[mesh->mMaterialIndex];
@@ -200,7 +200,7 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
             material = material_;
             m_materialsLoaded.emplace(std::pair<int, Shared<Material>>(mesh->mMaterialIndex, material));
         }
-    }
+    //}
 
     Shared<Mesh> mesh_ = createShared<Mesh>();
     mesh_->vertexArray = VertexArray::create();

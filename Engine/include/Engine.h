@@ -51,3 +51,7 @@
 #include <scene/GameComponent.h>
 #include <scene/GameObject.h>
 #include <scene/ScriptableGameObject.h>
+
+#include <physics/PhysicsWorld.h>
+#include <physics/Body.h>
+#include <physics/BoxBody.h>
