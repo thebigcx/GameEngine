@@ -21,6 +21,7 @@ public:
 
     math::vec2 position;
     float mass = 0.f;
+    float restitution = 2.f;
     BodyType type = BodyType::Dynamic;
 
 protected:

@@ -37,7 +37,7 @@ project "GameEngine"
         buildoptions "-pg"
         defines "ENGINE_DEBUG"
         runtime "Release"
-        optimize "On" -- TODO: not optimize in Debug mode
+        --optimize "On" -- TODO: not optimize in Debug mode
         symbols "On"
 
     filter "configurations:Release"
