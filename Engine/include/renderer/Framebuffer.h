@@ -70,6 +70,14 @@ public:
 
     virtual bool operator==(const Framebuffer& buffer) const = 0;
     virtual bool operator!=(const Framebuffer& buffer) const = 0;
+
+    static const Framebuffer* getCurrentBoundFramebuffer()
+    {
+        return s_currentBound;
+    }
+
+protected:
+    static inline const Framebuffer* s_currentBound = nullptr;
 };
 
 }

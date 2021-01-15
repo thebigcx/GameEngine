@@ -32,6 +32,10 @@ void Renderer3D::init()
     outline->name = "Outline";
     Assets::add<Shader>("outline", outline);
 
+    auto shadowmap = Shader::createFromFile("Engine/src/renderer/shader/default/shadowmap.glsl");
+    shadowmap->name = "Shadow Map";
+    Assets::add<Shader>("shadowmap", shadowmap);
+
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
     s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("pbr"));
 
@@ -41,8 +45,15 @@ void Renderer3D::init()
 
     s_data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, false, false);
     s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
-    //s_data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
-    //s_data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);
+    s_data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
+    s_data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);
+
+    s_data.lightProjection = math::ortho(-10.f, 10.f, -10.f, 10.f, 1.f, 7.5f);
+    s_data.lightView = math::lookAt(math::vec3(-2.f, 4.f, -1.f),
+                                    math::vec3( 0.f, 0.f,  0.f),
+                                    math::vec3( 0.f, 1.f,  0.f)); // TODO: use directional light's view matrix
+
+    s_data.lightMatrix = s_data.lightProjection * s_data.lightView;
 }
 
 void Renderer3D::shutdown()
@@ -58,6 +69,9 @@ void Renderer3D::startBatch()
 void Renderer3D::flushBatch()
 {
     RenderCommand::setDepthTesting(true);
+    
+    // Shadows
+    renderShadows();
 
     s_data.environment->getIrradiance()->bind(6);
     s_data.environment->getPrefilter()->bind(7);
@@ -73,19 +87,41 @@ void Renderer3D::flushBatch()
         for (auto& renderObject : group.second)
         {
             group.first->shader->bind();
-
             group.first->shader->setMatrix4("transform", renderObject.transform);
-
             renderObject.mesh->vertexArray->bind();
-
-            glEnable(GL_STENCIL_TEST);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-            glStencilFunc(GL_ALWAYS, 1, 0xFF);
-            glStencilMask(0xFF);
 
             RenderCommand::renderIndexed(renderObject.mesh->vertexArray);
         }
     }
+}
+
+void Renderer3D::renderShadows()
+{
+    RenderCommand::setDepthTesting(true);
+    
+    auto prevFbo = Framebuffer::getCurrentBoundFramebuffer();
+
+    // Shadows
+    RenderCommand::setViewport(0, 0, 1024, 1024);
+    s_data.shadowMapFramebuffer->bind();
+    RenderCommand::clear((uint32_t)RendererBufferType::Depth);
+
+    Assets::get<Shader>("shadowmap")->bind();
+    Assets::get<Shader>("shadowmap")->setMatrix4("lightSpaceMatrix", s_data.lightMatrix);
+
+    for (auto& group : s_data.renderObjects)
+    {
+        for (auto& renderObject : group.second)
+        {
+            renderObject.mesh->vertexArray->bind();
+
+            RenderCommand::renderIndexed(renderObject.mesh->vertexArray);
+        }
+    }
+
+    s_data.shadowMapFramebuffer->unbind();
+
+    prevFbo->bind();
 }
 
 void Renderer3D::nextBatch()

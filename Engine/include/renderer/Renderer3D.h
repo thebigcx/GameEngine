@@ -35,6 +35,9 @@ struct Renderer3DData
 
     Shared<Texture2D> shadowMap;
     Shared<Framebuffer> shadowMapFramebuffer;
+    math::mat4 lightProjection;
+    math::mat4 lightView;
+    math::mat4 lightMatrix;
 
     std::vector<const BaseLight*> lights;
 
@@ -69,6 +72,8 @@ public:
     static void removeLight(const BaseLight* light);
 
     static void endScene();
+
+    static void renderShadows();
 
 private:
     static void setLightingUniforms(const Shared<Shader>& shader);

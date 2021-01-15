@@ -145,12 +145,14 @@ void GLFramebuffer::resize(uint32_t width, uint32_t height)
 
 void GLFramebuffer::bind() const
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+    s_currentBound = this;
     glViewport(0, 0, m_width, m_height);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 }
 
 void GLFramebuffer::unbind() const
 {
+    s_currentBound = nullptr;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
