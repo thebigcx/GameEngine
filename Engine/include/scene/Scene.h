@@ -42,6 +42,9 @@ private:
     void render2DEntities();
     void render3DEntities();
 
+    void recurseRender3D(GameObject& object);
+    void recurseRender2D(GameObject& object);
+
     void setLights();
 };
 

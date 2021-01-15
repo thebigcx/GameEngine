@@ -579,7 +579,7 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
             {
                 ImGui::PushID(material.second.get());
 
-                bool isSelected = material.second == component.material; // TODO: doesn't work
+                bool isSelected = material.second == component.material;
                 if (ImGui::Selectable(material.second->name.c_str(), isSelected))
                 {
                     component.material = material.second;
@@ -597,6 +597,12 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
             ImGui::EndCombo();
         }
 
+        ImGui::NextColumn();
+
+        ImGui::Text("Cast Shadows");
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("##castShadows", &component.castShadows);
         ImGui::NextColumn();
 
         ImGui::Columns(1);

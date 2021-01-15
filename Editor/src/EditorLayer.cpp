@@ -27,6 +27,9 @@ void EditorLayer::onAttach()
 {
     Application::get().getWindow().setSize(math::uvec2(1920, 1080));
 
+    auto icon = ImageLoader::loadImage("Editor/assets/icon.png");
+    Application::get().getWindow().setIcon(*icon);
+
     m_framebuffer = Framebuffer::create(1280, 720);
     m_viewportSize = math::vec2(1280, 720);
     m_editorCamera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
@@ -69,6 +72,20 @@ void EditorLayer::onUpdate(float dt)
     else
     {
         m_scene->onUpdateEditor(dt, m_editorCamera);
+
+        auto obj = m_sceneHeirarchyPanel.getSelectedGameObject();
+        if (obj)
+        {
+            if (obj->hasComponents<MeshComponent, TransformComponent, MeshRendererComponent>())
+            {
+                auto& mesh = obj->getComponent<MeshComponent>().mesh;
+                auto transform = obj->getComponent<TransformComponent>().getTransform();
+
+                if (mesh)
+                    Renderer3D::submitOutline(mesh, transform, math::vec3(1, 1, 1));
+            }
+        }
+        
     }
 
     m_framebuffer->unbind();

@@ -123,6 +123,7 @@ struct MeshRendererComponent : public GameComponent
 {
     //std::vector<Shared<Material>> materials;
     Shared<Material> material;
+    bool castShadows = true;
 };
 
 struct LuaScriptComponent : public GameComponent

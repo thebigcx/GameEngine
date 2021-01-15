@@ -36,7 +36,7 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
     Renderer2D::endScene();
 }
 
-void recurseRender2D(GameObject& object)
+void Scene::recurseRender2D(GameObject& object)
 {
     if (object.hasComponents<TransformComponent, SpriteRendererComponent>())
     {
@@ -54,7 +54,7 @@ void recurseRender2D(GameObject& object)
     }
 }
 
-void recurseRender3D(GameObject& object)
+void Scene::recurseRender3D(GameObject& object)
 {
     if (object.hasComponents<MeshComponent, TransformComponent, MeshRendererComponent>())
     {

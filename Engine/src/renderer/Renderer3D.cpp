@@ -7,6 +7,7 @@
 #include <renderer/Renderer.h>
 #include <renderer/Assets.h>
 #include <util/Timer.h>
+#include <maths/vector/vec_func.h>
 
 namespace Engine
 {
@@ -27,6 +28,10 @@ void Renderer3D::init()
     hdr->name = "HDR Renderpass";
     Assets::add<Shader>("hdr", hdr);
 
+    auto outline = Shader::createFromFile("Engine/src/renderer/shader/default/outline.glsl");
+    outline->name = "Outline";
+    Assets::add<Shader>("outline", outline);
+
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
     s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("pbr"));
 
@@ -34,10 +39,10 @@ void Renderer3D::init()
     s_data.environment = EnvironmentMap::create("Sandbox/assets/environment.hdr");
     s_data.environmentShader = Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl");
 
-    s_data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, true, false);
+    s_data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, false, false);
     s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
-    s_data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
-    s_data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);
+    //s_data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
+    //s_data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);
 }
 
 void Renderer3D::shutdown()
@@ -67,9 +72,16 @@ void Renderer3D::flushBatch()
 
         for (auto& renderObject : group.second)
         {
+            group.first->shader->bind();
+
             group.first->shader->setMatrix4("transform", renderObject.transform);
 
             renderObject.mesh->vertexArray->bind();
+
+            glEnable(GL_STENCIL_TEST);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
 
             RenderCommand::renderIndexed(renderObject.mesh->vertexArray);
         }
@@ -221,6 +233,29 @@ void Renderer3D::submit(const Shared<InstancedRenderer>& instance)
 
         RenderCommand::renderInstanced(mesh->vertexArray, instance->getInstances().size());
     }
+}
+
+void Renderer3D::submitOutline(const Shared<Mesh>& mesh, const math::mat4& transform, const math::vec3& outlineColor)
+{
+    /*
+    mesh->vertexArray->bind();
+
+    float scale = math::dist(s_data.cameraPos, math::vec3(transform[3])) / 100.f + 1;
+
+    Assets::get<Shader>("outline")->bind();
+    Assets::get<Shader>("outline")->setMatrix4("transform", math::scale(transform, math::vec3(scale, scale, scale)));
+    Assets::get<Shader>("outline")->setFloat3("outlineColor", outlineColor);
+
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilMask(0x00);
+    glDisable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LEQUAL);
+    RenderCommand::renderIndexed(mesh->vertexArray);
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 0, 0xFF);
+    glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LESS);
+    */
 }
 
 void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)

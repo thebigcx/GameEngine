@@ -31,14 +31,14 @@ void Renderer::shutdown()
 void Renderer::startFrame()
 {
     m_data.target->bind();
-    RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
+    RenderCommand::clear(RenderCommand::defaultClearBits());
 }
 
 void Renderer::endFrame()
 {
     m_data.target->unbind();
 
-    RenderCommand::clear((uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth);
+    RenderCommand::clear(RenderCommand::defaultClearBits());
 
     glBindTextureUnit(0, m_data.target->getColorAttachment());
 

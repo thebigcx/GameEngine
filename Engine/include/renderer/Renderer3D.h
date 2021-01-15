@@ -53,6 +53,7 @@ public:
     static void submit(const Shared<Mesh>& mesh, const math::mat4& transform); // TODO: meshes shouldn't hold materials (research further)
     static void submit(const Shared<Model>& model, const math::mat4& transform);
     static void submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material);
+    static void submitOutline(const Shared<Mesh>& mesh, const math::mat4& transform, const math::vec3& outlineColor);
 
     static void submit(const Shared<InstancedRenderer>& instance);
 

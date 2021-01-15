@@ -65,7 +65,8 @@ void GLRendererAPI::clear(uint32_t buffer)
     if (buffer & (uint32_t)RendererBufferType::Stencil)
         result |= GL_STENCIL_BUFFER_BIT;
 
-    glClear(result);
+    //glClear(result);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void GLRendererAPI::setDepthTesting(bool enabled)

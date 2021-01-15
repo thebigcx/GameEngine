@@ -56,7 +56,7 @@ public:
 
     static uint32_t defaultClearBits()
     {
-        return (uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth;
+        return (uint32_t)RendererBufferType::Color | (uint32_t)RendererBufferType::Depth | (uint32_t)RendererBufferType::Stencil;
     }
 
     static RendererCapabilities getCapabilities()
