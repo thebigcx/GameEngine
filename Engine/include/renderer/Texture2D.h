@@ -38,6 +38,8 @@ public:
     virtual bool operator==(const Texture2D& other) = 0;
     virtual bool operator!=(const Texture2D& other) = 0;
 
+    std::string name = "";
+
 private:
     static Shared<Texture2D> s_whiteTexture;
 };

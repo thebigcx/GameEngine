@@ -5,32 +5,27 @@
 
 #include <renderer/Framebuffer.h>
 
-#include "FileDialog.h"
+#include "../FileDialog.h"
 
 namespace Engine
 {
 
-class SceneHierarchy
+class SceneHierarchyPanel
 {
 public:
-    SceneHierarchy();
-    SceneHierarchy(const Shared<Scene>& scene);
+    SceneHierarchyPanel();
+    SceneHierarchyPanel(Scene* scene);
 
     template<typename T, typename F>
     void drawComponent(const std::string& name, GameObject& object, const F& func);
 
     void drawProperties(GameObject& object);
     
-    void setContext(const Shared<Scene>& context)
-    {
-        m_context = context;
-    }
+    void setContext(Scene* context) { m_context = context; }
 
     void recurseTree(GameObject& object);
 
     void onImGuiRender();
-
-    void drawSceneRenderer();
 
     GameObject* getSelectedGameObject()
     {
@@ -38,7 +33,7 @@ public:
     }
 
 private:
-    Shared<Scene> m_context;
+    Scene* m_context = nullptr;
 
     GameObject* m_selection = nullptr;
     GameObject* m_deletedGameObject = nullptr;

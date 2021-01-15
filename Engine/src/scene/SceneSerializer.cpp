@@ -10,6 +10,8 @@
 namespace Engine
 {
 
+// TODO: this whole file needs to be revised ASAP.
+
 void SceneSerializer::saveScene(const Shared<Scene>& scene, const std::string& path)
 {
     YAML::Node root;
@@ -260,11 +262,8 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
     {
         auto& meshRenderer = object->addComponent<MeshRendererComponent>();
 
-        auto mats = node["Mesh Renderer"]["Materials"];
-        for (int i = 0; i < node["Mesh Renderer"]["Material Count"].as<int>(); i++)
-        {
-            meshRenderer.materials.push_back(Assets::get<Material>(mats[i].as<std::string>()));
-        }
+        auto mat = node["Mesh Renderer"]["Material"];
+        meshRenderer.material = Assets::get<Material>(mat.as<std::string>());
     }
 
     if (node["Directional Light"])
@@ -400,18 +399,10 @@ void SceneSerializer::saveGameObject(GameObject& object, YAML::Node& node)
         auto comp = object.getComponent<MeshRendererComponent>();
 
         auto meshRenderer = node["Mesh Renderer"];
+    
+        auto& name = Assets::find<Material>(comp.material);
 
-        meshRenderer["Material Count"] = comp.materials.size();
-        
-        int i = 0;
-        for (auto& material : comp.materials)
-        {
-            auto& name = Assets::find<Material>(material);
-
-            meshRenderer["Materials"][i] = name;
-
-            i++;
-        }
+        meshRenderer["Material"] = name;
     }
 
     if (object.hasComponent<DirectionalLightComponent>())

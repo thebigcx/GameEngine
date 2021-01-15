@@ -31,9 +31,15 @@ void EditorLayer::onAttach()
     m_viewportSize = math::vec2(1280, 720);
     m_editorCamera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
 
+    m_hdrBuffer = Framebuffer::create(1280, 720);
+    m_framebufferMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
+
     m_scene = createShared<Scene>();
-    m_sceneHeirarchy.setContext(m_scene);
-    m_materialsPanel.setContext(m_scene);
+    m_sceneHeirarchyPanel.setContext(m_scene.get());
+    m_materialsPanel.setContext(m_scene.get());
+    m_sceneRendererPanel.setContext(m_scene.get());
+    m_debugPanel.setContext(m_scene.get());
+    m_environmentPanel.setContext(m_scene.get());
 
     m_scenePlayButton = Texture2D::create("Editor/assets/scene_play.png");
     m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
@@ -48,6 +54,7 @@ void EditorLayer::onUpdate(float dt)
     {
         m_editorCamera.setViewportSize(m_viewportSize.x, m_viewportSize.y);
         m_framebuffer->resize(m_viewportSize.x, m_viewportSize.y);
+        m_hdrBuffer->resize(m_viewportSize.x, m_viewportSize.y);
         m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
     }
 
@@ -65,6 +72,15 @@ void EditorLayer::onUpdate(float dt)
     }
 
     m_framebuffer->unbind();
+
+    // HDR Pass
+    m_hdrBuffer->bind();
+    RenderCommand::clear(RenderCommand::defaultClearBits());
+    Assets::get<Shader>("hdr")->bind();
+    glBindTextureUnit(0, m_framebuffer->getColorAttachment()); // TODO: platform independent
+    m_framebufferMesh->vertexArray->bind();
+    RenderCommand::renderIndexed(m_framebufferMesh->vertexArray);
+    m_hdrBuffer->unbind();
 
     Application::get().getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
 }
@@ -106,8 +122,8 @@ void EditorLayer::drawMenuBar()
                 m_scene = createShared<Scene>();
                 m_scene = SceneSerializer::loadScene(FileDialog::getSelection());
                 m_scene->onViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
-                m_sceneHeirarchy.setContext(m_scene);
-                m_materialsPanel.setContext(m_scene); // TODO: add a callback system to make this better
+                m_sceneHeirarchyPanel.setContext(m_scene.get());
+                m_materialsPanel.setContext(m_scene.get()); // TODO: add a callback system to make this better
             }
         }
     }
@@ -174,7 +190,7 @@ void EditorLayer::onImGuiRender()
 
     if (!m_playingScene)
     {
-        ImGui::Image(reinterpret_cast<void*>(m_framebuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+        ImGui::Image(reinterpret_cast<void*>(m_hdrBuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     }
 
     // ImGuizmo
@@ -195,7 +211,7 @@ void EditorLayer::onImGuiRender()
         //ImGuizmo::DrawGrid(math::buffer(view), math::buffer(projection), math::buffer(math::mat4(1.f)), 10);
         // TODO: create grid myself, so depth information is correct
 
-        GameObject* object = m_sceneHeirarchy.getSelectedGameObject();
+        GameObject* object = m_sceneHeirarchyPanel.getSelectedGameObject();
         if (object)
         {
             if (m_gizmoType != -1 && object->hasComponent<TransformComponent>())
@@ -246,8 +262,11 @@ void EditorLayer::onImGuiRender()
         ImGui::End();
     }
 
-    m_sceneHeirarchy.onImGuiRender();
+    m_sceneHeirarchyPanel.onImGuiRender();
     m_materialsPanel.onImGuiRender();
+    m_sceneRendererPanel.onImGuiRender();
+    m_debugPanel.onImGuiRender();
+    m_environmentPanel.onImGuiRender();
 
     ImGui::End();
     ImGui::PopStyleVar();

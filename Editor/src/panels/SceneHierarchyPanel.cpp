@@ -1,4 +1,4 @@
-#include "SceneHierarchy.h"
+#include "SceneHierarchyPanel.h"
 
 #include <imgui/imgui.h>
 
@@ -16,31 +16,23 @@
 namespace Engine
 {
 
-SceneHierarchy::SceneHierarchy()
+SceneHierarchyPanel::SceneHierarchyPanel()
 {
     
 }
 
-SceneHierarchy::SceneHierarchy(const Shared<Scene>& scene)
+SceneHierarchyPanel::SceneHierarchyPanel(Scene* scene)
     : m_context(scene)
 {
     
 }
 
-void SceneHierarchy::recurseTree(GameObject& object)
+void SceneHierarchyPanel::recurseTree(GameObject& object)
 {
     ImGui::PushID(&object);
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
-    const char* tag;
-    if (!object.hasComponent<TagComponent>())
-    {
-        //ImGui::PopID();
-        object.addComponent<TagComponent>("?");
-        //return;
-    }
-    else
-        tag = object.getComponent<TagComponent>().tag.c_str();
+    const char* tag = object.getComponent<TagComponent>().tag.c_str();
     
     bool objectExpanded = ImGui::TreeNodeEx(tag, flags);
 
@@ -86,7 +78,7 @@ void SceneHierarchy::recurseTree(GameObject& object)
     ImGui::PopID();
 }
 
-void SceneHierarchy::onImGuiRender()
+void SceneHierarchyPanel::onImGuiRender()
 {
     ImGui::Begin("Scene Hierarchy");
 
@@ -120,18 +112,26 @@ void SceneHierarchy::onImGuiRender()
                 m_selection = object;
             }
 
+            if (ImGui::MenuItem("Directional Light"))
+            {
+                auto object = m_context->createGameObject("Directional Light");
+                object->addComponent<TransformComponent>();
+                object->addComponent<DirectionalLightComponent>();
+                m_selection = object;
+            }
+
             ImGui::EndMenu();
         }
 
         // TODO!!!: IMPORTANT!!!!! change the 3d model system, force the use of a seperate .obj or .fbx file for each mesh
         if (ImGui::MenuItem("Import 3D Model"))
         {
-            FileDialog::open(reinterpret_cast<const void*>("modelload"));
+            //FileDialog::open(reinterpret_cast<const void*>("modelload"));
         }
 
         ImGui::EndPopup();
     }
-
+    /*
     if (FileDialog::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
     {
         if (!FileDialog::display())
@@ -167,6 +167,7 @@ void SceneHierarchy::onImGuiRender()
             }
         }
     }
+    */
 
     if (gameObjectsOpen)
     {   
@@ -189,27 +190,10 @@ void SceneHierarchy::onImGuiRender()
 
     if (m_selection != nullptr)
     {
-        if (m_selection->hasComponent<TagComponent>())
-            drawProperties(*m_selection);
+        drawProperties(*m_selection);
     }
 
     ImGui::End();
-
-    drawSceneRenderer();
-
-    ImGui::Begin("Debug");
-
-    ImGui::End();
-
-    ImGui::Begin("Environment");
-
-    float exposure = Renderer::hdrExposure;
-    ImGui::SliderFloat("Exposure", &exposure, 0.f, 5.f);
-    Renderer::hdrExposure = exposure;
-
-    ImGui::End();
-
-    ImGui::ShowDemoWindow();
 }
 
 #define ADD_COMPONENT(type, str) if (!object.hasComponent<type>())\
@@ -220,7 +204,7 @@ void SceneHierarchy::onImGuiRender()
                                     }\
                                 }
 
-void SceneHierarchy::drawProperties(GameObject& object)
+void SceneHierarchyPanel::drawProperties(GameObject& object)
 {
     char buf[128];
     strcpy(buf, object.getComponent<TagComponent>().tag.c_str());
@@ -410,14 +394,16 @@ void SceneHierarchy::drawProperties(GameObject& object)
         ImGui::Text("Texture");
         ImGui::NextColumn();
 
-        std::string currentTexture = Assets::find<Texture2D>(component.texture);
+        std::string currentTexture = component.texture != nullptr ? component.texture->name : "<empty_texture>";
         
         if (ImGui::BeginCombo("##Texture", currentTexture.c_str()))
         {
             for (auto& texture : Assets::getList<Texture2D>())
             {
-                bool isSelected = currentTexture == texture.first;
-                if (ImGui::Selectable(texture.first.c_str(), isSelected))
+                ImGui::PushID(texture.second.get());
+
+                bool isSelected = component.texture ? component.texture->getId() == texture.second->getId() : false;
+                if (ImGui::Selectable(texture.second->name.c_str(), isSelected))
                 {
                     component.texture = texture.second;
                 }
@@ -426,6 +412,8 @@ void SceneHierarchy::drawProperties(GameObject& object)
                 {
                     ImGui::SetItemDefaultFocus();
                 }
+
+                ImGui::PopID();
             }
 
             ImGui::EndCombo();
@@ -576,81 +564,42 @@ void SceneHierarchy::drawProperties(GameObject& object)
 
     drawComponent<MeshRendererComponent>("Mesh Renderer", object, [](auto& component)
     {
-        if (ImGui::TreeNode("Materials"))
+        ImGui::Columns(2);
+
+        ImGui::Text("Material");
+        ImGui::NextColumn();
+
+        // Material select
+
+        std::string name = component.material != nullptr ? component.material->name : "<empty_material>";
+
+        if (ImGui::BeginCombo("##materialSelect", name.c_str()))
         {
-            char buf[128];
-            strcpy(buf, std::to_string(component.materials.size()).c_str());
-
-            ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-            if (ImGui::InputText("Size", buf, 128, flags))
+            for (auto& material : Assets::getList<Material>().getInternalList())
             {
-                bool isInteger = std::string(buf).find_first_not_of("0123456789 ") == std::string::npos;
+                ImGui::PushID(material.second.get());
 
-                if (isInteger && std::string(buf).size() > 0)
+                bool isSelected = material.second == component.material; // TODO: doesn't work
+                if (ImGui::Selectable(material.second->name.c_str(), isSelected))
                 {
-                    unsigned int materialCount = math::max(std::stoi(buf), 1);
-
-                    if (materialCount > component.materials.size())
-                    {
-                        component.materials.push_back(Material::create());
-                    }
-                    else if (materialCount < component.materials.size())
-                    {
-                        for (size_t i = 0; i < component.materials.size() - materialCount; i++)
-                        {
-                            component.materials.pop_back();
-                        }
-                    }
-                }
-            }
-
-            ImGui::Columns(2);
-
-            int element = 0;
-            for (auto& material : component.materials)
-            {
-                ImGui::PushID(&material);
-
-                ImGui::Text((std::string("Material ") + std::to_string(element)).c_str());
-                ImGui::NextColumn();
-                
-                std::vector<const char*> materialNames;
-                for (auto& asset : Assets::getList<Material>())
-                {
-                    materialNames.push_back(asset.first.c_str());
+                    component.material = material.second;
+                    isSelected = true;
                 }
 
-                const char* currentMaterial = materialNames[0];
-                if (ImGui::BeginCombo("##materialCombo", currentMaterial))
+                if (isSelected)
                 {
-                    for (unsigned int i = 0; i < materialNames.size(); i++)
-                    {
-                        bool isSelected = currentMaterial == materialNames[i];
-                        if (ImGui::Selectable(materialNames[i], isSelected))
-                        {
-                            currentMaterial = materialNames[i];
-                            material = Assets::get<Material>(currentMaterial);
-                        }
-
-                        if (isSelected)
-                        {
-                            ImGui::SetItemDefaultFocus();
-                        }
-                    }
-
-                    ImGui::EndCombo();
+                    ImGui::SetItemDefaultFocus();
                 }
-                
-                ImGui::NextColumn();
-                element++;
 
                 ImGui::PopID();
             }
-            
-            ImGui::Columns(1);
 
-            ImGui::TreePop();
+            ImGui::EndCombo();
         }
+
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
     });
 
     drawComponent<LuaScriptComponent>("C# Script", object, [](auto& component)
@@ -689,7 +638,7 @@ void SceneHierarchy::drawProperties(GameObject& object)
 }
 
 template<typename T, typename F>
-void SceneHierarchy::drawComponent(const std::string& name, GameObject& object, const F& func)
+void SceneHierarchyPanel::drawComponent(const std::string& name, GameObject& object, const F& func)
 {
     if (!object.hasComponent<T>())
     {
@@ -727,7 +676,7 @@ void SceneHierarchy::drawComponent(const std::string& name, GameObject& object, 
     }
 }
 
-void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
+void SceneHierarchyPanel::textureSelect(Shared<Texture2D>& texture)
 {
     if (ImGui::Button("..."))
     {
@@ -752,23 +701,6 @@ void SceneHierarchy::textureSelect(Shared<Texture2D>& texture)
             }
         }
     }
-}
-
-void SceneHierarchy::drawSceneRenderer()
-{
-    ImGui::Begin("Scene Renderer");
-
-    if (ImGui::CollapsingHeader("Shadows"))
-    {
-
-    }
-
-    if (ImGui::CollapsingHeader("Bloom"))
-    {
-
-    }
-
-    ImGui::End();
 }
 
 }

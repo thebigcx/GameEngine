@@ -13,12 +13,9 @@ class MaterialsPanel
 {
 public:
     MaterialsPanel();
-    MaterialsPanel(const Shared<Scene>& context);
+    MaterialsPanel(Scene* context);
 
-    void setContext(const Shared<Scene>& context)
-    {
-        m_context = context;
-    }
+    void setContext(Scene* context) { m_context = context; }
 
     void onImGuiRender();
 
@@ -31,7 +28,7 @@ private:
     void shaderSelect(Shared<Shader>& shader);
 
 private:
-    Shared<Scene> m_context;
+    Scene* m_context = nullptr;
     Shared<Framebuffer> m_materialPreviewViewport;
     Shared<Mesh> m_sphereMesh;
     

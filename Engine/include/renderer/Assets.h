@@ -11,6 +11,7 @@
 namespace Engine
 {
 // TODO: refactor this part of the engine (resource management)
+// TODO: could be good to preload all assets inside a certain folder
 class IAssetList
 {
     friend class Assets;

@@ -32,8 +32,8 @@ public:
 
     virtual void setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const {};
 
-    math::vec3 radiance;
-    float intensity;
+    math::vec3 radiance = math::vec3(1, 1, 1);
+    float intensity = 1.f;
 
     virtual ~BaseLight() = default;
 

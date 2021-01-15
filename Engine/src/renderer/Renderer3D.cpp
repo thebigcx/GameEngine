@@ -15,8 +15,17 @@ void Renderer3D::init()
 {
     math::ivec2 windowSize = Application::get().getWindow().getSize();
     
-    Assets::add<Shader>("pbr", Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl"));
-    Assets::add<Shader>("instancepbr", Shader::createFromFile("Engine/src/renderer/shader/default/instancepbr.glsl"));
+    auto pbr = Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl");
+    pbr->name = "PBR";
+    Assets::add<Shader>("pbr", pbr);
+
+    auto instancepbr = Shader::createFromFile("Engine/src/renderer/shader/default/instancepbr.glsl");
+    instancepbr->name = "Instanced PBR";
+    Assets::add<Shader>("instancepbr", instancepbr);
+
+    auto hdr = Shader::createFromFile("Engine/src/renderer/shader/default/hdr.glsl");
+    hdr->name = "HDR Renderpass";
+    Assets::add<Shader>("hdr", hdr);
 
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
     s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("pbr"));
@@ -24,14 +33,6 @@ void Renderer3D::init()
     s_data.skyboxMesh = MeshFactory::skyboxMesh();
     s_data.environment = EnvironmentMap::create("Sandbox/assets/environment.hdr");
     s_data.environmentShader = Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl");
-
-    s_data.lightingData = UniformBuffer::create(sizeof(DirectionalLight)
-                                            + sizeof(PointLight) * 64
-                                            + sizeof(SpotLight) * 64
-                                            + sizeof(uint32_t)
-                                            + sizeof(uint32_t)
-                                            + sizeof(math::vec3)
-                                            + sizeof(float), 1);
 
     s_data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, true, false);
     s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
@@ -60,7 +61,6 @@ void Renderer3D::flushBatch()
     for (auto& group : s_data.renderObjects)
     {
         group.first->bind();
-        group.first->shader->setFloat("exposure", Renderer::hdrExposure);
         group.first->shader->setFloat3("cameraPos", s_data.cameraPos);
 
         setLightingUniforms(group.first->shader);
@@ -142,7 +142,7 @@ void Renderer3D::endScene()
     glDepthFunc(GL_LEQUAL);
     s_data.environmentShader->bind();
     s_data.skyboxMesh->vertexArray->bind();
-    s_data.environment->getPrefilter()->bind();
+    s_data.environment->getEnvMap()->bind();
     RenderCommand::renderIndexed(s_data.skyboxMesh->vertexArray);
     glDepthFunc(GL_LESS);
 }
@@ -211,7 +211,6 @@ void Renderer3D::submit(const Shared<InstancedRenderer>& instance)
         {
             mesh->material->bind();
             mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
-            mesh->material->shader->setFloat3("cameraPos", s_data.cameraPos);
             
             setLightingUniforms(mesh->material->shader);
 
@@ -262,9 +261,9 @@ void Renderer3D::removeLight(const BaseLight* light)
     }
 }
 
-void Renderer3D::setEnvironment(const Shared<Skybox>& environment)
+void Renderer3D::setEnvironment(const Shared<EnvironmentMap>& environment)
 {
-    
+    s_data.environment = environment;
 }
 
 }

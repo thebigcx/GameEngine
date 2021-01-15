@@ -95,8 +95,6 @@ uniform int usingDirectionalLight;
 
 uniform SkyLight skyLight;
 
-uniform float exposure;
-
 const float PI = 3.1415926535897932384626433832795028841971693993751058209749445923;
 
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
@@ -334,10 +332,5 @@ void main()
     vec3 ambient = (kD * diffuse + specular) * ao;
 
     vec3 color = ambient + Lo;
-
-    vec3 mapped = vec3(1.0) - exp(-color * exposure);
-
-    mapped = pow(mapped, vec3(1.0 / 2.2));
-
-    fragColor = vec4(mapped, 1.0);
+    fragColor = vec4(color, 1.0);
 }

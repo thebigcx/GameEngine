@@ -10,7 +10,7 @@
 #include <maths/quaternion/qua_func.h>
 #include <renderer/Assets.h>
 
-#include "FileDialog.h"
+#include "../FileDialog.h"
 
 namespace Engine
 {
@@ -20,7 +20,7 @@ MaterialsPanel::MaterialsPanel()
     init();
 }
 
-MaterialsPanel::MaterialsPanel(const Shared<Scene>& context)
+MaterialsPanel::MaterialsPanel(Scene* context)
     : m_context(context)
 {
     init();
@@ -80,39 +80,31 @@ void MaterialsPanel::onImGuiRender()
     {
         for (auto& asset : Assets::getList<Material>())
         {
-            if (ImGui::TreeNodeEx(asset.first.c_str()))
+            ImGui::PushID(asset.first.c_str());
+
+            if (ImGui::TreeNode(asset.second->name.c_str()))
             {
                 auto& material = asset.second;
+
                 char buf[128];
-                strcpy(buf, asset.first.c_str());
+                strcpy(buf, material->name.c_str());
+
                 ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-                flags |= ImGuiInputTextFlags_ReadOnly;// TODO: TEMP
                 if (ImGui::InputText("Name", buf, 128, flags))
                 {
-                    if (!Assets::exists<Material>(std::string(buf)))
-                    {
-                        auto nh = Assets::getList<Material>().getInternalList().extract(asset.first);
-                        nh.key() = std::string(buf);
-                        Assets::getList<Material>().getInternalList().insert(std::move(nh));
-                    }
+                    material->name = std::string(buf);
                 }
 
-                std::string currentShader = "";
-
-                for (auto& shader : Assets::getList<Shader>())
-                {
-                    if (shader.second == material->shader)
-                    {
-                        currentShader = shader.first;
-                    }
-                }
+                std::string currentShader = material->shader ? material->shader->name : "<empty_shader>";
 
                 if (ImGui::BeginCombo("Shader", currentShader.c_str()))
                 {
                     for (auto& shader : Assets::getList<Shader>())
                     {
-                        bool isSelected = currentShader == shader.first;
-                        if (ImGui::Selectable(shader.first.c_str(), isSelected))
+                        ImGui::PushID(shader.second.get());
+
+                        bool isSelected = material->shader ? material->shader->getId() == shader.second->getId() : false;
+                        if (ImGui::Selectable(shader.second->name.c_str(), isSelected))
                         {
                             material->shader = shader.second;
                         }
@@ -121,6 +113,8 @@ void MaterialsPanel::onImGuiRender()
                         {
                             ImGui::SetItemDefaultFocus();
                         }
+
+                        ImGui::PopID();
                     }
 
                     ImGui::EndCombo();
@@ -212,8 +206,17 @@ void MaterialsPanel::onImGuiRender()
                 }
 
                 ImGui::TreePop();
-
             }
+
+            ImGui::PopID();
+        }
+
+        if (ImGui::Button("Create Material"))
+        {
+            auto material = Material::create(Assets::get<Shader>("pbr"));
+            material->name = "New Material";
+
+            Assets::add<Material>(std::to_string(Assets::getAssetCount<Material>()), material); // TODO: this will not work if material is deleted and then created
         }
     }
 
@@ -221,7 +224,7 @@ void MaterialsPanel::onImGuiRender()
     {
         for (auto& shader : Assets::getList<Shader>().getInternalList())
         {
-            bool opened = ImGui::TreeNodeEx(shader.first.c_str());
+            bool opened = ImGui::TreeNodeEx(shader.second->name.c_str());
 
             if (ImGui::BeginPopupContextItem())
             {
@@ -268,7 +271,7 @@ void MaterialsPanel::onImGuiRender()
     {
         for (auto& texture : Assets::getList<Texture2D>().getInternalList())
         {
-            bool opened = ImGui::TreeNodeEx(texture.first.c_str());
+            bool opened = ImGui::TreeNodeEx(texture.second->name.c_str());
 
             if (ImGui::BeginPopupContextItem())
             {
@@ -298,8 +301,9 @@ void MaterialsPanel::onImGuiRender()
             {
                 if (FileDialog::madeSelection())
                 {
-                    Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection());
-                    Assets::add<Texture2D>(FileDialog::getSelection(), texture);
+                    Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection(), GL_SRGB8_ALPHA8);
+                    texture->name = "New Texture";
+                    Assets::add<Texture2D>(std::to_string(texture->getId()), texture);
                 }
             }
         }
@@ -326,7 +330,6 @@ void MaterialsPanel::shaderSelect(Shared<Shader>& shader)
         {
             if (FileDialog::madeSelection())
             {
-                // TODO: patch Assets key
                 shader = Shader::createFromFile(FileDialog::getSelection());
             }
         }
@@ -348,11 +351,9 @@ void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
     RenderCommand::setClearColor(math::vec4(0.2f, 0.2f, 0.2f, 1.f));
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
-    //m_directionalLight.addToRenderer();
-    //m_skyLight.addToRenderer();
-    //Renderer3D::clearLights();
-    //Renderer3D::addLight(&m_directionalLight);
-    //Renderer3D::addLight(&m_skyLight);
+    Renderer3D::clearLights();
+    Renderer3D::addLight(&m_directionalLight);
+    Renderer3D::addLight(&m_skyLight);
 
     Renderer3D::beginScene(m_camera);
     Renderer3D::submit(m_sphereMesh, math::to_mat4(math::quat(math::vec3(math::radians(-80), 0, 0))));

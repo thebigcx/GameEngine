@@ -46,6 +46,8 @@ public:
 
     Shared<Shader> shader;
 
+    std::string name = "";
+
     bool operator==(const Material& other)
     {
         return other.albedoMap == albedoMap && 

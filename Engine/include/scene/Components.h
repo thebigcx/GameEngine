@@ -121,7 +121,8 @@ struct PointLightComponent : public GameComponent
 
 struct MeshRendererComponent : public GameComponent
 {
-    std::vector<Shared<Material>> materials;
+    //std::vector<Shared<Material>> materials;
+    Shared<Material> material;
 };
 
 struct LuaScriptComponent : public GameComponent

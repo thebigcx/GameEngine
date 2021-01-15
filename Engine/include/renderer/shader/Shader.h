@@ -79,6 +79,8 @@ public:
     virtual bool operator==(const Shader& shader) const = 0;
     virtual bool operator!=(const Shader& shader) const = 0;
 
+    std::string name = "";
+
     enum class DataType
     {
         Float,  Float2,  Float3,  Float4,

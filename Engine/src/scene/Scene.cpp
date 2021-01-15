@@ -60,15 +60,11 @@ void recurseRender3D(GameObject& object)
     {
         auto& mesh = object.getComponent<MeshComponent>().mesh;
         auto transform = object.getComponent<TransformComponent>().getTransform();
+        auto& material = object.getComponent<MeshRendererComponent>().material;
 
-        if (object.getComponent<MeshRendererComponent>().materials.size() > 0)
+        if (material && mesh)
         {
-            auto& material = object.getComponent<MeshRendererComponent>().materials.at(0);
-
-            if (material && mesh)
-            {
-                Renderer3D::submit(mesh, transform, material);
-            }
+            Renderer3D::submit(mesh, transform, material);
         }
     }
 
@@ -116,7 +112,8 @@ void Scene::setLights()
             auto& light = object->getComponent<DirectionalLightComponent>();
             auto& transform = object->getComponent<TransformComponent>();
 
-            light.light.direction = transform.rotation;
+            math::quat rotation = math::quat(math::radians(transform.rotation));
+            light.light.direction = rotation * math::vec3(0, -1, 0);
 
             Renderer3D::addLight(&light.light);
         }

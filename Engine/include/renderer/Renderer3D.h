@@ -26,13 +26,8 @@ struct RenderObject
 struct Renderer3DData
 {
     bool sceneStarted = false;
-    Shared<UniformBuffer> lightingData;
 
     Shared<UniformBuffer> matrixData;
-
-    //Shared<Skybox> environment;
-    //Shared<Mesh> skyboxMesh;
-    //Shared<Shader> skyboxShader;
 
     Shared<EnvironmentMap> environment;
     Shared<Shader> environmentShader;
@@ -61,7 +56,7 @@ public:
 
     static void submit(const Shared<InstancedRenderer>& instance);
 
-    static void setEnvironment(const Shared<Skybox>& environment);
+    static void setEnvironment(const Shared<EnvironmentMap>& environment);
 
     static void startBatch();
     static void flushBatch();

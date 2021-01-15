@@ -12,8 +12,11 @@
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>
 
-#include "SceneHierarchy.h"
-#include "MaterialsPanel.h"
+#include "panels/SceneHierarchyPanel.h"
+#include "panels/MaterialsPanel.h"
+#include "panels/SceneRendererPanel.h"
+#include "panels/DebugPanel.h"
+#include "panels/EnvironmentPanel.h"
 
 namespace Engine
 {
@@ -37,6 +40,8 @@ private:
 private:
     Shared<Scene> m_scene;
     Shared<Framebuffer> m_framebuffer;
+    Shared<Framebuffer> m_hdrBuffer;
+    Shared<Mesh> m_framebufferMesh;
 
     math::vec2 m_viewportSize;
 
@@ -45,8 +50,11 @@ private:
 
     EditorCamera m_editorCamera;
 
-    SceneHierarchy m_sceneHeirarchy;
+    SceneHierarchyPanel m_sceneHeirarchyPanel;
     MaterialsPanel m_materialsPanel;
+    SceneRendererPanel m_sceneRendererPanel;
+    DebugPanel m_debugPanel;
+    EnvironmentPanel m_environmentPanel;
 
     bool m_playingScene = false;
 
