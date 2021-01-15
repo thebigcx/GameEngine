@@ -19,6 +19,8 @@ public:
 
     virtual ~Body() = default;
 
+    virtual void updateTransform() {}
+
     math::vec2 position;
     float mass = 0.f;
     float restitution = 2.f;

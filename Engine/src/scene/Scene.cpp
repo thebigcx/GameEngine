@@ -22,38 +22,7 @@ Scene::~Scene()
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 {
-    Renderer3D::clearLights();
-    {
-        auto skylights = m_rootObject.getChildrenWithComponent<SkyLightComponent>();
-        for (auto& object : skylights)
-        {   
-            auto& light = object->getComponent<SkyLightComponent>();
-
-            Renderer3D::addLight(&light.light);
-        }
-        
-        auto directionalLights = m_rootObject.getChildrenWithComponents<DirectionalLightComponent, TransformComponent>();
-        for (auto& object : directionalLights)
-        {
-            auto& light = object->getComponent<DirectionalLightComponent>();
-            auto& transform = object->getComponent<TransformComponent>();
-
-            light.light.direction = transform.rotation;
-
-            Renderer3D::addLight(&light.light);
-        }
-
-        auto pointLightObjects = m_rootObject.getChildrenWithComponents<PointLightComponent, TransformComponent>();
-        for (auto& object : pointLightObjects)
-        {
-            auto& light = object->getComponent<PointLightComponent>();
-            auto& transform = object->getComponent<TransformComponent>();
-
-            light.light.position = transform.translation;
-
-            Renderer3D::addLight(&light.light);
-        }
-    }
+    this->setLights();
 
     Renderer3D::beginScene(camera);
 
@@ -129,6 +98,42 @@ void Scene::render2DEntities()
     }
 }
 
+void Scene::setLights()
+{
+    Renderer3D::clearLights();
+    {
+        auto skylights = m_rootObject.getChildrenWithComponent<SkyLightComponent>();
+        for (auto& object : skylights)
+        {   
+            auto& light = object->getComponent<SkyLightComponent>();
+
+            Renderer3D::addLight(&light.light);
+        }
+        
+        auto directionalLights = m_rootObject.getChildrenWithComponents<DirectionalLightComponent, TransformComponent>();
+        for (auto& object : directionalLights)
+        {
+            auto& light = object->getComponent<DirectionalLightComponent>();
+            auto& transform = object->getComponent<TransformComponent>();
+
+            light.light.direction = transform.rotation;
+
+            Renderer3D::addLight(&light.light);
+        }
+
+        auto pointLightObjects = m_rootObject.getChildrenWithComponents<PointLightComponent, TransformComponent>();
+        for (auto& object : pointLightObjects)
+        {
+            auto& light = object->getComponent<PointLightComponent>();
+            auto& transform = object->getComponent<TransformComponent>();
+
+            light.light.position = transform.translation;
+
+            Renderer3D::addLight(&light.light);
+        }
+    }
+}
+
 GameObject* Scene::createGameObject(const std::string& name)
 {
     auto object = m_rootObject.addChild();
@@ -159,6 +164,7 @@ void Scene::onUpdateRuntime(float dt)
     }*/
     // TODO: replace with rigid bodies
 
+    // Native scripts
     auto scripts = m_rootObject.getChildrenWithComponent<NativeScriptComponent>();
     for (auto& object : scripts)
     {
@@ -209,6 +215,14 @@ void Scene::onUpdateRuntime(float dt)
 
     if (camera != nullptr)
     {
+        this->setLights();
+
+        Renderer3D::beginScene(*camera, transform);
+
+        this->render3DEntities();
+
+        Renderer3D::endScene();
+
         Renderer2D::beginScene(*camera, transform);
 
         this->render2DEntities();

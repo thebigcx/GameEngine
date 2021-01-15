@@ -29,7 +29,7 @@ Application::Application()
     m_window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
     math::random::init_seed();
-    //SoundEngine::init();
+    SoundEngine::init();
     Renderer::init();
     Time::init();
 

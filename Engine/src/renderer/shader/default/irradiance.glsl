@@ -25,13 +25,13 @@ const float PI = 3.141592653589793442384626433832;
 
 void main()
 {
-    vec3 normal = normalize(localPos);
+    vec3 N = normalize(localPos);
 
     vec3 irradiance = vec3(0.0);
 
     vec3 up = vec3(0.0, 1.0, 0.0);
-    vec3 right = cross(up, normal);
-    up = cross(normal, right);
+    vec3 right = cross(up, N);
+    up = cross(N, right);
 
     float sampleDelta = 0.025;
     float samples = 0.0;
@@ -41,7 +41,7 @@ void main()
     {
         vec3 tangentSample = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
 
-        vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal; // N? presume normal, could be wrong
+        vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N; // N? presume normal, could be wrong
 
         irradiance += texture(environmentMap, sampleVec).rgb * cos(theta) * sin(theta);
         samples++;

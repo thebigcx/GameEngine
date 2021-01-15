@@ -53,7 +53,7 @@ void Renderer3D::flushBatch()
 {
     RenderCommand::setDepthTesting(true);
 
-    s_data.environment->getEnvMap()->bind(6);
+    s_data.environment->getIrradiance()->bind(6);
     s_data.environment->getPrefilter()->bind(7);
     s_data.environment->getBRDF()->bind(8);
 
@@ -116,6 +116,23 @@ void Renderer3D::beginScene(EditorCamera& camera)
     startBatch();
 }
 
+void Renderer3D::beginScene(Camera& camera, const math::mat4& transform)
+{
+    if (s_data.sceneStarted)
+    {
+        Logger::getCoreLogger()->error("beginScene() must be called before endScene()!");
+    }
+
+    s_data.sceneStarted = true;
+
+    s_data.matrixData->setVariable("projection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
+    s_data.matrixData->setVariable("view", math::buffer(math::inverse<float>(transform)), sizeof(math::mat4));
+
+    s_data.cameraPos = transform[3];
+
+    startBatch();
+}
+
 void Renderer3D::endScene()
 {
     s_data.sceneStarted = false;
@@ -125,7 +142,7 @@ void Renderer3D::endScene()
     glDepthFunc(GL_LEQUAL);
     s_data.environmentShader->bind();
     s_data.skyboxMesh->vertexArray->bind();
-    s_data.environment->getEnvMap()->bind();
+    s_data.environment->getPrefilter()->bind();
     RenderCommand::renderIndexed(s_data.skyboxMesh->vertexArray);
     glDepthFunc(GL_LESS);
 }

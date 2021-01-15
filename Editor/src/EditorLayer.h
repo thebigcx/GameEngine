@@ -2,7 +2,7 @@
 
 #include <core/Layer.h>
 #include <scene/Scene.h>
-#include <scene/ecs/Registry.h>
+
 #include <renderer/Framebuffer.h>
 #include <maths/vector/vec2.h>
 #include <util/OrthographicCameraController.h>

@@ -30,7 +30,8 @@ project "GameEngine"
         "vendor/maths",
         "vendor/stb_image/include",
         "vendor/imgui",
-        "vendor"
+        "vendor",
+        "/usr/include/mono-2.0" -- TODO: fix this
     }
 
     filter "configurations:Debug"

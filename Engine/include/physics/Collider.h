@@ -6,6 +6,7 @@ namespace Engine
 {
 
 class BoxBody;
+class PolygonBody;
 
 struct CollisionData
 {
@@ -17,7 +18,7 @@ struct CollisionData
 
 enum class ColliderType
 {
-    Box
+    Box, Polygon
 };
 
 class Collider
@@ -45,6 +46,14 @@ class BoxCollider : public Collider
 {
 public:
     BoxCollider(const BoxBody* owner);
+
+    CollisionData collide(const Collider& other) override;
+};
+
+class PolygonCollider : public Collider
+{
+public:
+    PolygonCollider(const PolygonBody* owner);
 
     CollisionData collide(const Collider& other) override;
 };

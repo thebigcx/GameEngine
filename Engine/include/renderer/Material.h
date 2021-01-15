@@ -53,17 +53,22 @@ public:
                other.metallicMap == metallicMap && 
                other.roughnessMap == roughnessMap &&
                other.ambientOcclusionMap == ambientOcclusionMap &&
-               other.depthMap == ambientOcclusionMap;
+               other.depthMap == ambientOcclusionMap &&
+
+               other.usingAlbedoMap == usingAlbedoMap &&
+               other.usingNormalMap == usingNormalMap &&
+               other.usingMetallicMap == usingMetallicMap &&
+               other.usingRoughnessMap == usingRoughnessMap &&
+               other.usingAmbientOcclusionMap == usingAmbientOcclusionMap &&
+               other.usingDepthMap == usingDepthMap &&
+
+               other.metallicScalar == metallicScalar &&
+               other.roughnessScalar == roughnessScalar;
     }
 
     bool operator!=(const Material& other)
     {
-        return other.albedoMap != albedoMap || 
-               other.normalMap != normalMap || 
-               other.metallicMap != metallicMap || 
-               other.roughnessMap != roughnessMap ||
-               other.ambientOcclusionMap != ambientOcclusionMap ||
-               other.depthMap != ambientOcclusionMap;
+        return !(*this == other);
     }
 };
 

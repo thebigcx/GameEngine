@@ -33,6 +33,11 @@ void PhysicsWorld::update(float delta)
 
     for (auto& body : m_bodies)
     {
+        body->updateTransform();
+    }
+
+    for (auto& body : m_bodies)
+    {
         if (body->type != BodyType::Static)
         {
             math::vec2 acceleration = m_gravitationalForce;

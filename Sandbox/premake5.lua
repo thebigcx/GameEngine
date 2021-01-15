@@ -8,15 +8,13 @@ project "Sandbox"
 	objdir "%{wks.location}/obj/%{cfg.buildcfg}/Sandbox"
 
 	files {
-		"src/ExampleLayer.cpp",
-		"src/ExampleLayer.h",
-		"src/ExampleApp.cpp"
+		"src/Testing/**.cpp",
+		"src/Testing/**.h"
 	}
 	--[[files {
-		"src/Sandbox.cpp",
-		"src/Sandbox.h",
-		"src/SandboxApp.cpp"
-	};]]--
+		"src/TerrariaDemo/**.cpp",
+		"src/TerrariaDemo/**.h"
+	}]]--
 	
 	includedirs {
 		"%{wks.location}/Engine/include",
@@ -28,6 +26,7 @@ project "Sandbox"
         "%{wks.location}/Engine/vendor/maths",
 		"%{wks.location}/Engine/vendor/stb_image/include",
 		"%{wks.location}/Engine/vendor",
+		"/usr/include/mono-2.0" -- TODO: fix this
 	}
 	
 	libdirs {
@@ -45,6 +44,7 @@ project "Sandbox"
 		"pthread",
 		"yaml-cpp",
 		"lua",
+		"mono-2.0",
 		"dl" -- TODO: move to static library
 	}
 	

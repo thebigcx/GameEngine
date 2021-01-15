@@ -93,14 +93,37 @@ void SceneHierarchy::onImGuiRender()
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_CollapsingHeader;
     bool gameObjectsOpen = ImGui::CollapsingHeader("Game Objects");
 
-    if (ImGui::BeginPopupContextItem())
+    if (ImGui::BeginPopupContextWindow(0, 1, false))
     {
-        if (ImGui::MenuItem("Create Game Object"))
+        if (ImGui::BeginMenu("Create"))
         {
-            auto object = m_context->createGameObject("Untitled Game Object");
-            m_selection = object;
+            if (ImGui::MenuItem("Empty Game Object"))
+            {
+                auto object = m_context->createGameObject("Untitled Game Object");
+                m_selection = object;
+            }
+
+            if (ImGui::MenuItem("Camera"))
+            {
+                auto object = m_context->createGameObject("Camera");
+                object->addComponent<TransformComponent>();
+                object->addComponent<CameraComponent>();
+                m_selection = object;
+            }
+
+            if (ImGui::MenuItem("Mesh"))
+            {
+                auto object = m_context->createGameObject("Mesh");
+                object->addComponent<TransformComponent>();
+                object->addComponent<MeshComponent>();
+                object->addComponent<MeshRendererComponent>();
+                m_selection = object;
+            }
+
+            ImGui::EndMenu();
         }
 
+        // TODO!!!: IMPORTANT!!!!! change the 3d model system, force the use of a seperate .obj or .fbx file for each mesh
         if (ImGui::MenuItem("Import 3D Model"))
         {
             FileDialog::open(reinterpret_cast<const void*>("modelload"));
@@ -185,11 +208,13 @@ void SceneHierarchy::onImGuiRender()
     Renderer::hdrExposure = exposure;
 
     ImGui::End();
+
+    ImGui::ShowDemoWindow();
 }
 
 #define ADD_COMPONENT(type, str) if (!object.hasComponent<type>())\
                                 {\
-                                    if (ImGui::MenuItem(str)) {\
+                                    if (ImGui::Button(str)) {\
                                         object.addComponent<type>();\
                                         ImGui::CloseCurrentPopup();\
                                     }\
@@ -226,29 +251,50 @@ void SceneHierarchy::drawProperties(GameObject& object)
 
     drawComponent<TransformComponent>("Transform", object, [](auto& component)
     {
+        ImGui::Columns(2);
+
         ImGui::PushID("Transform");
 
+        ImGui::Text("Translation");
+        ImGui::NextColumn();
         math::vec3& translation = component.translation;
-        ImGui::DragFloat3("Translation", &translation.x);
+        ImGui::DragFloat3("##T", &translation.x);
+        ImGui::NextColumn();
 
+        ImGui::Text("Rotation");
+        ImGui::NextColumn();
         math::vec3& rotation = component.rotation;
-        ImGui::DragFloat3("Rotation", &rotation.x);
+        ImGui::DragFloat3("##R", &rotation.x);
+        ImGui::NextColumn();
 
+        ImGui::Text("Scale");
+        ImGui::NextColumn();
         math::vec3& scale = component.scale;
-        ImGui::DragFloat3("Scale", &scale.x);
+        ImGui::DragFloat3("##S", &scale.x);
+        ImGui::NextColumn();
 
         ImGui::PopID();
+
+        ImGui::Columns(1);
     });
 
     drawComponent<CameraComponent>("Camera", object, [](auto& component)
     {
-        ImGui::Checkbox("Primary", &component.primary);
+        ImGui::Columns(2);
+
+        ImGui::Text("Primary");
+        ImGui::NextColumn();
+        ImGui::Checkbox("##Primary", &component.primary);
+        ImGui::NextColumn();
 
         auto& camera = component.camera;
 
+        ImGui::Text("Projection");
+        ImGui::NextColumn();
+
         const char* projectionTypes[] = { "Perspective", "Orthographic" };
         const char* currentProjectionType = projectionTypes[(int)camera.getProjectionType()];
-        if (ImGui::BeginCombo("Projection", currentProjectionType))
+        if (ImGui::BeginCombo("##Projection", currentProjectionType))
         {
             for (unsigned int i = 0; i < 2; i++)
             {
@@ -268,60 +314,105 @@ void SceneHierarchy::drawProperties(GameObject& object)
             ImGui::EndCombo();
         }
 
+        ImGui::NextColumn();
+
         if (camera.getProjectionType() == ProjectionType::Orthographic)
         {
             float size = camera.getOrthoSize();
-            if (ImGui::DragFloat("Size", &size))
+            ImGui::Text("Size");
+            ImGui::NextColumn();
+            if (ImGui::DragFloat("##Size", &size))
             {
                 camera.setOrthoSize(size);
             }
+            ImGui::NextColumn();
 
             float near = camera.getOrthoNear();
-            if (ImGui::DragFloat("Near", &near))
+            ImGui::Text("Near");
+            ImGui::NextColumn();
+            if (ImGui::DragFloat("##Near", &near))
             {
                 camera.setOrthoNear(near);
             }
+            ImGui::NextColumn();
 
             float far = camera.getOrthoFar();
-            if (ImGui::DragFloat("Far", &far))
+            ImGui::Text("Far");
+            ImGui::NextColumn();
+            if (ImGui::DragFloat("##Far", &far))
             {
                 camera.setOrthoFar(far);
             }
+            ImGui::NextColumn();
         }
         else if (camera.getProjectionType() == ProjectionType::Perspective)
         {
-            float fov = camera.getPerspectiveFov();
-            if (ImGui::DragFloat("FOV", &fov))
+            float fov = math::degrees(camera.getPerspectiveFov());
+            ImGui::Text("FOV");
+            ImGui::NextColumn();
+            if (ImGui::SliderFloat("##FOV", &fov, 0, 180));
             {
-                camera.setPerspectiveFov(fov);
+                camera.setPerspectiveFov(math::radians(fov));
             }
+            ImGui::NextColumn();
 
             float near = camera.getPerspectiveNear();
-            if (ImGui::DragFloat("Near", &near))
+            ImGui::Text("Near");
+            ImGui::NextColumn();
+            if (ImGui::DragFloat("##Near", &near))
             {
                 camera.setPerspectiveNear(near);
             }
+            ImGui::NextColumn();
 
             float far = camera.getPerspectiveFar();
-            if (ImGui::DragFloat("Far", &far))
+            ImGui::Text("Far");
+            ImGui::NextColumn();
+            if (ImGui::DragFloat("##Far", &far))
             {
                 camera.setPerspectiveFar(far);
             }
+            ImGui::NextColumn();
         }
+
+        ImGui::Text("HDR");
+        ImGui::NextColumn();
+        bool hdr = false;
+        ImGui::Checkbox("##HDR", &hdr);
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
     });
 
     drawComponent<SpriteRendererComponent>("Sprite Renderer", object, [&](auto& component)
     {
-        ImGui::ColorEdit4("Color", &(component.color.x));
+        ImGui::Columns(2);
+        
+        ImGui::Text("Color");
+        ImGui::NextColumn();
+        if (ImGui::ColorButton("##colpicker", { component.color.r, component.color.g, component.color.b, component.color.a }))
+        {
+            ImGui::OpenPopup("colorPickerEnabled");
+        }
+        if (ImGui::BeginPopup("colorPickerEnabled"))
+        {
+            ImGui::ColorPicker4("##Color", &(component.color.x));
+            ImGui::EndPopup();
+        }
+
+        ImGui::NextColumn();
 
         if (component.texture == nullptr)
         {
             component.texture = Texture2D::createWhiteTexture();
         }
         
+        ImGui::Text("Texture");
+        ImGui::NextColumn();
+
         std::string currentTexture = Assets::find<Texture2D>(component.texture);
         
-        if (ImGui::BeginCombo("Texture", currentTexture.c_str()))
+        if (ImGui::BeginCombo("##Texture", currentTexture.c_str()))
         {
             for (auto& texture : Assets::getList<Texture2D>())
             {
@@ -340,12 +431,27 @@ void SceneHierarchy::drawProperties(GameObject& object)
             ImGui::EndCombo();
         }
 
-        ImGui::Checkbox("Using Texture Region", &component.usingTexRect);
-        ImGui::DragFloat("X", &component.textureRect.x);
-        ImGui::DragFloat("Y", &component.textureRect.y);
-        ImGui::DragFloat("Width", &component.textureRect.w);
-        ImGui::DragFloat("Height", &component.textureRect.h);
-        
+        ImGui::NextColumn();
+
+        ImGui::Text("Using Texture Region");
+        ImGui::NextColumn();
+        ImGui::Checkbox("##usingTextureRegion", &component.usingTexRect);
+        ImGui::NextColumn();
+
+        if (component.usingTexRect)
+        {
+            ImGui::Text("Position");
+            ImGui::NextColumn();
+            ImGui::DragFloat2("##Position", &component.textureRect.x);
+            ImGui::NextColumn();
+
+            ImGui::Text("Size");
+            ImGui::NextColumn();
+            ImGui::DragFloat2("##Size", &component.textureRect.w);
+            ImGui::NextColumn();
+        }
+
+        ImGui::Columns(1);
     });
 
     drawComponent<TextRendererComponent>("Text Renderer", object, [](auto& component)
@@ -361,6 +467,8 @@ void SceneHierarchy::drawProperties(GameObject& object)
 
     drawComponent<MeshComponent>("Mesh", object, [&object](auto& component)
     {
+        ImGui::Columns(2);
+
         char buf[128];
         if (component.filePath == "")
         {
@@ -371,6 +479,9 @@ void SceneHierarchy::drawProperties(GameObject& object)
             strcpy(buf, component.filePath.c_str());
         }
 
+        ImGui::Text("Filepath");
+        ImGui::NextColumn();
+
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
         ImGui::InputText("", buf, 128, flags);
 
@@ -380,13 +491,19 @@ void SceneHierarchy::drawProperties(GameObject& object)
             FileDialog::open(&component);
         }
 
+        ImGui::NextColumn();
+
+        ImGui::Text("ID");
+        ImGui::NextColumn();
+
         memset(buf, 0, 128);
         strcpy(buf, std::to_string(component.meshID).c_str());
         flags = ImGuiInputTextFlags_EnterReturnsTrue;
-        if (ImGui::InputText("ID", buf, 128, flags))
+        if (ImGui::InputText("##ID", buf, 128, flags))
         {
             int meshID = std::stoi(std::string(buf));
             component.meshID = meshID;
+            component.mesh = Mesh::load(component.filePath, component.meshID);
         }
 
         if (FileDialog::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
@@ -400,30 +517,61 @@ void SceneHierarchy::drawProperties(GameObject& object)
                 }
             }
         }
+
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
     });
 
     drawComponent<SkyLightComponent>("Sky Light", object, [](auto& component)
     {
-        ImGui::PushID("Skylight");
-        ImGui::ColorEdit3("Radiance", &component.light.radiance.x);
-        ImGui::DragFloat("Intensity", &component.light.intensity, 0.01f, 0.f);
+        ImGui::Columns(2);
+        ImGui::PushID("SkyLight");
+
+        ImGui::Text("Radiance");
+        ImGui::NextColumn();
+        ImGui::ColorEdit3("##Radiance", &component.light.radiance.r);
+        ImGui::NextColumn();
+
+        ImGui::Text("Intensity");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##Intensity", &component.light.intensity, 0.01f, 0.f);
         ImGui::PopID();
+        ImGui::Columns(1);
     });
 
     drawComponent<DirectionalLightComponent>("Directional Light", object, [](auto& component)
     {
+        ImGui::Columns(2);
         ImGui::PushID("Directionallight");
-        ImGui::ColorEdit3("Radiance", &component.light.radiance.x);
-        ImGui::DragFloat("Intensity", &component.light.intensity, 0.01f, 0.f);
+
+        ImGui::Text("Radiance");
+        ImGui::NextColumn();
+        ImGui::ColorEdit3("##Radiance", &component.light.radiance.r);
+        ImGui::NextColumn();
+
+        ImGui::Text("Intensity");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##Intensity", &component.light.intensity, 0.01f, 0.f);
         ImGui::PopID();
+        ImGui::Columns(1);
     });
 
     drawComponent<PointLightComponent>("Point Light", object, [](auto& component)
     {
-        ImGui::PushID("Pointlight");
-        ImGui::ColorEdit3("Radiance", &component.light.radiance.x);
-        ImGui::DragFloat("Intensity", &component.light.intensity, 0.01f, 0.f);
+        ImGui::Columns(2);
+        ImGui::PushID("PointLight");
+
+        ImGui::Text("Radiance");
+        ImGui::NextColumn();
+        ImGui::ColorEdit3("##Radiance", &component.light.radiance.r);
+        ImGui::NextColumn();
+
+        ImGui::Text("Intensity");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##Intensity", &component.light.intensity, 0.01f, 0.f);
         ImGui::PopID();
+        ImGui::Columns(1);
     });
 
     drawComponent<MeshRendererComponent>("Mesh Renderer", object, [](auto& component)
@@ -505,8 +653,13 @@ void SceneHierarchy::drawProperties(GameObject& object)
         }
     });
 
-    drawComponent<LuaScriptComponent>("Lua Script", object, [](auto& component)
+    drawComponent<LuaScriptComponent>("C# Script", object, [](auto& component)
     {
+        ImGui::Columns(2);
+
+        ImGui::Text("Filepath");
+        ImGui::NextColumn();
+
         char buf[128];
         strcpy(buf, component.filePath.c_str());
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
@@ -518,7 +671,7 @@ void SceneHierarchy::drawProperties(GameObject& object)
             FileDialog::open("luaScriptPathSelect");
         }
 
-        if (FileDialog::selectFile("luaScriptPathSelect", "Choose script...", ".lua"))
+        if (FileDialog::selectFile("luaScriptPathSelect", "Choose script...", ".cs"))
         {
             if (!FileDialog::display())
             {
@@ -529,6 +682,9 @@ void SceneHierarchy::drawProperties(GameObject& object)
                 }
             }
         }
+
+        ImGui::NextColumn();
+        ImGui::Columns(1);
     });
 }
 
@@ -545,7 +701,6 @@ void SceneHierarchy::drawComponent(const std::string& name, GameObject& object, 
     ImGui::Separator();
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
-    flags |= ImGuiTreeNodeFlags_CollapsingHeader;
     bool opened = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), flags, name.c_str());
 
     bool deleted = false;
@@ -562,6 +717,8 @@ void SceneHierarchy::drawComponent(const std::string& name, GameObject& object, 
     if (opened)
     {
         func(component);
+
+        ImGui::TreePop();
     }
 
     if (deleted)

@@ -150,7 +150,7 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
             aiMaterial* aimaterial = scene->mMaterials[mesh->mMaterialIndex];
 
             auto albedo = loadMaterialTexture_(aimaterial, aiTextureType_DIFFUSE, model->directory);
-            auto normal = loadMaterialTexture_(aimaterial, aiTextureType_HEIGHT, model->directory);
+            auto normal = loadMaterialTexture_(aimaterial, aiTextureType_NORMALS, model->directory);
             auto metallic = loadMaterialTexture_(aimaterial, aiTextureType_REFLECTION, model->directory);
             auto roughness = loadMaterialTexture_(aimaterial, aiTextureType_SHININESS, model->directory);
             auto ambientOcclusion = loadMaterialTexture_(aimaterial, aiTextureType_LIGHTMAP, model->directory);
@@ -182,7 +182,10 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
             }
 
             if (!roughness)
+            {
                 material_->usingRoughnessMap = false;
+                material_->roughnessScalar = 1.f;
+            }
             else
             {
                 material_->roughnessMap = roughness;

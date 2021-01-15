@@ -21,10 +21,7 @@ public:
         m_components.clear();
     }
 
-    ~GameObject()
-    {
-        
-    }
+    ~GameObject() = default;
 
     void destroy()
     {

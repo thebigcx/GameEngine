@@ -94,8 +94,8 @@ struct NativeScriptComponent : public GameComponent
 
 struct MeshComponent : public GameComponent
 {
-    Shared<Mesh> mesh;
-    std::string filePath;
+    Shared<Mesh> mesh = nullptr;
+    std::string filePath = "";
     uint32_t meshID = 0;
 };
 
