@@ -14,7 +14,7 @@ Shared<TextureCube> TextureCube::create(const std::string* files, bool clamp, bo
     return createShared<GLTextureCube>(files, clamp, linear, mipmap);
 }
 
-Shared<TextureCube> TextureCube::create(uint32_t width, uint32_t height, GLenum internalFormat, bool clamp, bool linear, bool mipmap)
+Shared<TextureCube> TextureCube::create(uint32_t width, uint32_t height, SizedTextureFormat internalFormat, bool clamp, bool linear, bool mipmap)
 {
     return createShared<GLTextureCube>(width, height, internalFormat, clamp, linear, mipmap);
 }

@@ -1,5 +1,6 @@
 #include <platform/GL/GLTextureCube.h>
 #include <util/ImageLoader.h>
+#include <platform/GL/GLTexture2D.h>
 
 #include <GL/glew.h>
 
@@ -46,7 +47,7 @@ GLTextureCube::GLTextureCube(const std::string* files, bool clamp, bool linear, 
     glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
 }
 
-GLTextureCube::GLTextureCube(uint32_t width, uint32_t height, GLenum internalFormat, bool clamp, bool linear, bool mipmap)
+GLTextureCube::GLTextureCube(uint32_t width, uint32_t height, SizedTextureFormat internalFormat, bool clamp, bool linear, bool mipmap)
 {
     glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_id);
     glBindTextureUnit(0, m_id);
@@ -54,7 +55,7 @@ GLTextureCube::GLTextureCube(uint32_t width, uint32_t height, GLenum internalFor
     for (uint32_t i = 0; i < 6; i++)
     {
         //glTexStorage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height); // TODO: fix this
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, Utils::getSizedTextureFormatEnumValue_(internalFormat), width, height, 0, GL_RGB, GL_FLOAT, nullptr);
     }
 
     if (mipmap)

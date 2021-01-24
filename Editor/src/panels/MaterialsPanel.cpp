@@ -28,15 +28,7 @@ MaterialsPanel::MaterialsPanel(Scene* context)
 
 void MaterialsPanel::init()
 {
-    FramebufferSpec spec;
-    spec.width = 100;
-    spec.height = 100;
-    spec.attachments = {
-        { Attachment::Color, FramebufferTextureSpec(FramebufferTextureFormat::RGBA8) },
-        { Attachment::Depth, FramebufferTextureSpec(FramebufferTextureFormat::Depth) }
-    };
-
-    m_materialPreviewViewport = Framebuffer::create(spec);
+    m_materialPreviewViewport = RenderTarget::create(100, 100);
 
     m_camera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
     m_sphereMesh = MeshFactory::sphereMesh(2.f, 36, 18);
@@ -321,7 +313,7 @@ void MaterialsPanel::onImGuiRender()
             {
                 if (FileDialog::madeSelection())
                 {
-                    Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection(), GL_SRGB8_ALPHA8);
+                    Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection(), SizedTextureFormat::sRGBA8);
                     texture->name = "New Texture";
                     Assets::add<Texture2D>(std::to_string(texture->getId()), texture);
                 }

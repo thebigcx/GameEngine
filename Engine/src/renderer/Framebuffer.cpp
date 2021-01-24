@@ -21,7 +21,7 @@ Shared<Framebuffer> Framebuffer::create()
     return createShared<GLFramebuffer>();
 }
 
-Shared<Framebuffer> Framebuffer::create(const FramebufferSpec& spec)
+Shared<Framebuffer> Framebuffer::create(const Specification& spec)
 {
     return createShared<GLFramebuffer>(spec);
 }

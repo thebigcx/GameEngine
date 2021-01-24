@@ -37,7 +37,7 @@ GLFramebuffer::GLFramebuffer()
     glCreateFramebuffers(1, &m_id);
 }
 
-GLFramebuffer::GLFramebuffer(const FramebufferSpec& spec)
+GLFramebuffer::GLFramebuffer(const Specification& spec)
     : m_width(spec.width), m_height(spec.height)
 {
     glCreateFramebuffers(1, &m_id);
@@ -113,7 +113,7 @@ void GLFramebuffer::invalidate()
     // Create and bind the framebuffer
     glCreateFramebuffers(1, &m_id);
     glBindFramebuffer(GL_FRAMEBUFFER, m_id);
-    
+
     if (m_colorAttachmentSpecs.size() > 0)
     {
         m_colorAttachments.resize(m_colorAttachmentSpecs.size());
@@ -130,7 +130,7 @@ void GLFramebuffer::invalidate()
         }
     }
 
-    if (m_depthAttachmentSpec.format != FramebufferTextureFormat::None)
+    if (m_depthAttachmentSpec.format != SizedTextureFormat::None)
     {
         auto format = getTextureFormatEnumValue_(m_depthAttachmentSpec.format);
 
@@ -254,13 +254,13 @@ GLenum GLFramebuffer::getAttachmentEnumValue_(Attachment attachment)
     };
 }
 
-GLenum GLFramebuffer::getTextureFormatEnumValue_(FramebufferTextureFormat format)
+GLenum GLFramebuffer::getTextureFormatEnumValue_(SizedTextureFormat format)
 {
     switch (format)
     {
-        case FramebufferTextureFormat::RGBA8: return GL_RGBA8;
-        case FramebufferTextureFormat::Depth16: return GL_DEPTH_COMPONENT16;
-        case FramebufferTextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
+        case SizedTextureFormat::RGBA8: return GL_RGBA8;
+        case SizedTextureFormat::Depth16: return GL_DEPTH_COMPONENT16;
+        case SizedTextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
         default: return GL_NONE;
     };
 }

@@ -6,7 +6,63 @@
 namespace Engine
 {
 
-GLTexture2D::GLTexture2D(const std::string& file, GLenum internalFormat, GLenum dataFormat, bool clamp, bool linear)
+namespace Utils
+{
+    GLenum getSizedTextureFormatEnumValue_(SizedTextureFormat format)
+    {
+        switch (format)
+        {
+            case SizedTextureFormat::RGBA8: return GL_RGBA8;
+            case SizedTextureFormat::Depth16: return GL_DEPTH_COMPONENT16;
+            case SizedTextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
+            case SizedTextureFormat::RGB16F: return GL_RGB16F;
+            case SizedTextureFormat::sRGB8: return GL_SRGB8;
+            case SizedTextureFormat::sRGBA8: return GL_SRGB8_ALPHA8;
+        };
+        return 0;
+    }
+
+    GLenum getTextureFormatEnumValue_(TextureFormat format)
+    {
+        switch (format)
+        {
+            case TextureFormat::RG: return GL_RG;
+            case TextureFormat::RGB: return GL_RGB;
+            case TextureFormat::RGBA: return GL_RGBA;
+            case TextureFormat::Red: return GL_RED;
+            case TextureFormat::BGR: return GL_BGR;
+            case TextureFormat::BGRA: return GL_BGRA;
+            case TextureFormat::IntegerRed: return GL_RED_INTEGER;
+            case TextureFormat::IntegerRG: return GL_RG_INTEGER;
+            case TextureFormat::IntegerRGB: return GL_RGB_INTEGER;
+            case TextureFormat::IntegerBGR: return GL_BGR_INTEGER;
+            case TextureFormat::IntegerRGBA: return GL_RGBA_INTEGER;
+            case TextureFormat::IntegerBGRA: return GL_BGRA_INTEGER;
+            case TextureFormat::StencilIndex: return GL_STENCIL_INDEX;
+            case TextureFormat::DepthComponent: return GL_DEPTH_COMPONENT;
+            case TextureFormat::DepthStencil: return GL_DEPTH_STENCIL;
+        };
+        return 0;
+    }
+
+    GLenum getDataTypeEnumValue_(DataType type)
+    {
+        switch (type)
+        {
+            case DataType::UnsignedByte: return GL_UNSIGNED_BYTE;
+            case DataType::Byte: return GL_BYTE;
+            case DataType::UnsignedShort: return GL_UNSIGNED_SHORT;
+            case DataType::Short: return GL_SHORT;
+            case DataType::UnsignedInt: return GL_UNSIGNED_INT;
+            case DataType::Int: return GL_INT;
+            case DataType::HalfFloat: return GL_HALF_FLOAT;
+            case DataType::Float: return GL_FLOAT;
+        }
+        return 0;
+    }
+}
+
+GLTexture2D::GLTexture2D(const std::string& file, SizedTextureFormat internalFormat, TextureFormat dataFormat, bool clamp, bool linear)
     : m_path(file)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
@@ -19,7 +75,7 @@ GLTexture2D::GLTexture2D(const std::string& file, GLenum internalFormat, GLenum 
         m_internalFormat = internalFormat;
         m_dataFormat = dataFormat;
 
-        glTextureStorage2D(m_id, 1, m_internalFormat, image->width, image->height);
+        glTextureStorage2D(m_id, 1, Utils::getSizedTextureFormatEnumValue_(m_internalFormat), image->width, image->height);
 
         glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
         glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_NEAREST);
@@ -32,7 +88,7 @@ GLTexture2D::GLTexture2D(const std::string& file, GLenum internalFormat, GLenum 
                      0,
                      image->width,
                      image->height,
-                     m_dataFormat,
+                     Utils::getTextureFormatEnumValue_(m_dataFormat),
                      GL_UNSIGNED_BYTE, // TODO: custom type
                      image->data);
 
@@ -49,8 +105,8 @@ GLTexture2D::GLTexture2D(const std::string& file, GLenum internalFormat, GLenum 
     unbind();
 }
 
-GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat, bool clamp, bool linear)
-    : m_internalFormat(dataFormat), m_dataFormat(dataFormat), m_path("")
+GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, SizedTextureFormat dataFormat, bool clamp, bool linear)
+    : m_internalFormat(dataFormat), m_path("")
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
 
@@ -61,7 +117,7 @@ GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat, boo
     glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR : GL_NEAREST);
     glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
 
-    glTextureStorage2D(m_id, 1, dataFormat, width, height);
+    glTextureStorage2D(m_id, 1, Utils::getSizedTextureFormatEnumValue_(dataFormat), width, height);
 }
 
 GLTexture2D::~GLTexture2D()
@@ -69,11 +125,11 @@ GLTexture2D::~GLTexture2D()
     glDeleteTextures(1, &m_id);
 }
 
-void GLTexture2D::setData(uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height, const void* data, GLenum dataFormat, GLenum type)
+void GLTexture2D::setData(uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height, const void* data, TextureFormat dataFormat, DataType type)
 {
     bind();
 
-    glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, dataFormat, type, data);
+    glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, Utils::getTextureFormatEnumValue_(dataFormat), Utils::getDataTypeEnumValue_(type), data);
     
     unbind();
 }

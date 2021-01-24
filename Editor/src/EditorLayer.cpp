@@ -30,12 +30,12 @@ void EditorLayer::onAttach()
     auto icon = ImageLoader::loadImage("Editor/assets/icon.png");
     Application::get().getWindow().setIcon(*icon);
 
-    FramebufferSpec spec;
+    Framebuffer::Specification spec;
     spec.width = 1280;
     spec.height = 720;
     spec.attachments = {
-        { Attachment::Color, FramebufferTextureSpec(FramebufferTextureFormat::RGBA8) },
-        { Attachment::Depth, FramebufferTextureSpec(FramebufferTextureFormat::Depth) }
+        { Framebuffer::Attachment::Color, Framebuffer::TextureSpecification(SizedTextureFormat::RGBA8) },
+        { Framebuffer::Attachment::Depth, Framebuffer::TextureSpecification(SizedTextureFormat::Depth) }
     };
 
     m_framebuffer = Framebuffer::create(spec);

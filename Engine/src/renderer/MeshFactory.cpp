@@ -247,7 +247,7 @@ Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
         z = radius * sinf(stackAngle);
 
         for (int j = 0; j <= sectors; ++j)
-        { // TODO: change loop indices (++j)
+        {
             ModelVertex vertex;
 
             sectorAngle = j * sectorStep;

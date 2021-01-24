@@ -20,11 +20,6 @@ enum class ColorBuffer
     BackRight = 1 << 3
 };
 
-enum class Attachment
-{
-    Color, Depth, Stencil, DepthStencil
-};
-
 class Renderbuffer
 {
 public:
@@ -41,45 +36,42 @@ public:
     static Shared<Renderbuffer> create(uint32_t width, uint32_t height, GLenum internalFormat);
 };
 
-enum class FramebufferTextureFormat
-{
-    None = 0,
-    RGBA8,
-    Depth24Stencil8,
-    Depth16,
-
-    Depth = Depth24Stencil8
-};
-
-struct FramebufferTextureSpec
-{
-    FramebufferTextureSpec() = default;
-    FramebufferTextureSpec(FramebufferTextureFormat format_)
-        : format(format_) {}
-    
-    FramebufferTextureFormat format = FramebufferTextureFormat::None;
-};
-
-struct FramebufferAttachmentSpec
-{
-    Attachment attachment;
-    FramebufferTextureSpec texture;
-};
-
-struct FramebufferSpec
-{
-    uint32_t width = 0, height = 0;
-    std::vector<FramebufferAttachmentSpec> attachments;
-};
-
 class Framebuffer
 {
+public:
+
+    enum class Attachment
+    {
+        Color, Depth, Stencil, DepthStencil
+    };
+
+    struct TextureSpecification
+    {
+        TextureSpecification() = default;
+        TextureSpecification(SizedTextureFormat format_)
+            : format(format_) {}
+        
+        SizedTextureFormat format = SizedTextureFormat::None;
+    };
+
+    struct AttachmentSpecification
+    {
+        Attachment attachment;
+        TextureSpecification texture;
+    };
+
+    struct Specification
+    {
+        uint32_t width = 0, height = 0;
+        std::vector<AttachmentSpecification> attachments;
+    };
+
 public:
     virtual ~Framebuffer() = default;
 
     static Shared<Framebuffer> create();
     static Shared<Framebuffer> create(uint32_t width, uint32_t height);
-    static Shared<Framebuffer> create(const FramebufferSpec& spec);
+    static Shared<Framebuffer> create(const Specification& spec);
 
     virtual void resize(uint32_t width, uint32_t height) = 0;
 

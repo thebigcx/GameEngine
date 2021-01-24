@@ -3,6 +3,7 @@
 #include <string>
 
 #include <core/Core.h>
+#include <renderer/Texture2D.h>
 
 #include <GL/glew.h>
 
@@ -24,7 +25,15 @@ public:
 
     static Shared<TextureCube> create(const std::string& filepath, bool clamp = false, bool linear = true, bool mipmap = false);
     static Shared<TextureCube> create(const std::string* files, bool clamp = false, bool linear = true, bool mipmap = false);
-    static Shared<TextureCube> create(uint32_t width, uint32_t height, GLenum dataFormat = GL_RGBA8, bool clamp = false, bool linear = true, bool mipmap = false); // TODO: platform independent (all data formats)
+    static Shared<TextureCube> create(uint32_t width, uint32_t height, SizedTextureFormat dataFormat = SizedTextureFormat::RGBA8, bool clamp = false, bool linear = true, bool mipmap = false);
+
+    enum class Face
+    {
+        PositiveX, NegativeX,
+        PositiveY, NegativeY,
+        PositiveZ, NegativeZ
+    };
+
 };
 
 }

@@ -7,14 +7,21 @@
 namespace Engine
 {
 
+namespace Utils
+{
+    GLenum getSizedTextureFormatEnumValue_(SizedTextureFormat format);
+    GLenum getTextureFormatEnumValue_(TextureFormat format);
+}
+
 class GLTexture2D : public Texture2D
 {
 public:
-    GLTexture2D(const std::string& path, GLenum internalFormat = GL_RGBA8, GLenum dataFormat = GL_RGBA, bool clamp = false, bool linear = true);
-    GLTexture2D(uint32_t width, uint32_t height, GLenum dataFormat = GL_RGBA8, bool clamp = false, bool linear = true);
+    GLTexture2D(const std::string& path, SizedTextureFormat internalFormat = SizedTextureFormat::RGBA8, 
+                TextureFormat dataFormat = TextureFormat::RGBA, bool clamp = false, bool linear = true);
+    GLTexture2D(uint32_t width, uint32_t height, SizedTextureFormat dataFormat = SizedTextureFormat::RGBA8, bool clamp = false, bool linear = true);
     ~GLTexture2D();
 
-    void setData(uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height, const void* data, GLenum dataFormat = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE) override;
+    void setData(uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height, const void* data, TextureFormat dataFormat = TextureFormat::RGBA, DataType type = DataType::UnsignedByte) override;
 
     void bind(uint32_t slot = 0) const override;
     void unbind(uint32_t slot = 0) const override;
@@ -30,12 +37,14 @@ public:
 private:
     uint32_t m_id = 0;
 
-    GLenum m_internalFormat;
-    GLenum m_dataFormat;
+    SizedTextureFormat m_internalFormat;
+    TextureFormat m_dataFormat;
 
     uint32_t m_width = 0, m_height = 0;
 
     std::string m_path = "";
+
+    
 };
 
 }

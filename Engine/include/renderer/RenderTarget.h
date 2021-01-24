@@ -6,6 +6,10 @@
 namespace Engine
 {
 
+/**
+ * A simple wrapper over Framebuffer that provides the defaults for 
+ * a render target.
+ */
 class RenderTarget
 {
 public:
@@ -23,15 +27,7 @@ public:
 private:
     RenderTarget(uint32_t width, uint32_t height);
 
-    void invalidate();
-
     Shared<Framebuffer> m_framebuffer = nullptr;
-
-    //Shared<Texture2D> m_colorBuffer;
-    //Shared<Texture2D> m_depthBuffer;
-    //Shared<Texture2D> m_stencilBuffer;
-
-    uint32_t m_width = 0, m_height = 0;
 };
 
 }

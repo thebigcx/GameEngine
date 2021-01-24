@@ -33,7 +33,7 @@ class GLFramebuffer : public Framebuffer
 {
 public:
     GLFramebuffer();
-    GLFramebuffer(const FramebufferSpec& spec);
+    GLFramebuffer(const Specification& spec);
     GLFramebuffer(uint32_t width, uint32_t height);
     ~GLFramebuffer();
 
@@ -71,8 +71,8 @@ private:
     std::vector<uint32_t> m_colorAttachments;
     uint32_t m_depthAttachment = 0;
 
-    std::vector<FramebufferTextureSpec> m_colorAttachmentSpecs;
-    FramebufferTextureSpec m_depthAttachmentSpec;
+    std::vector<TextureSpecification> m_colorAttachmentSpecs;
+    TextureSpecification m_depthAttachmentSpec;
 
     uint32_t m_linearFiltering = true;
 
@@ -84,7 +84,7 @@ private:
 
     static GLenum getAttachmentEnumValue_(Attachment attachment);
 
-    static GLenum getTextureFormatEnumValue_(FramebufferTextureFormat format);
+    static GLenum getTextureFormatEnumValue_(SizedTextureFormat format);
 
     static constexpr int s_maxSize = 8192;
 };

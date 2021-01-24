@@ -11,12 +11,12 @@ namespace Engine
 
 Shared<Texture2D> Texture2D::s_whiteTexture = nullptr;
 
-Shared<Texture2D> Texture2D::create(const std::string& file, GLenum internalFormat, GLenum dataFormat, bool clamp, bool linear)
+Shared<Texture2D> Texture2D::create(const std::string& file, SizedTextureFormat internalFormat, TextureFormat dataFormat, bool clamp, bool linear)
 {
     return createShared<GLTexture2D>(file, internalFormat, dataFormat, clamp, linear);
 }
 
-Shared<Texture2D> Texture2D::create(uint32_t width, uint32_t height, GLenum dataFormat, bool clamp, bool linear)
+Shared<Texture2D> Texture2D::create(uint32_t width, uint32_t height, SizedTextureFormat dataFormat, bool clamp, bool linear)
 {
     return createShared<GLTexture2D>(width, height, dataFormat, clamp, linear);
 }

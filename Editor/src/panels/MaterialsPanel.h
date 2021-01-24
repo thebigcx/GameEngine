@@ -2,7 +2,7 @@
 
 #include <core/Core.h>
 #include <scene/Scene.h>
-#include <renderer/Framebuffer.h>
+#include <renderer/RenderTarget.h>
 #include <util/PerspectiveCamera.h>
 #include <renderer/Model.h>
 
@@ -29,7 +29,8 @@ private:
 
 private:
     Scene* m_context = nullptr;
-    Shared<Framebuffer> m_materialPreviewViewport;
+    //Shared<Framebuffer> m_materialPreviewViewport;
+    Shared<RenderTarget> m_materialPreviewViewport;
     Shared<Mesh> m_sphereMesh;
     
     DirectionalLight m_directionalLight;

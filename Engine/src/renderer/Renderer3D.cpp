@@ -43,14 +43,14 @@ void Renderer3D::init()
     s_data.environment = EnvironmentMap::create("Sandbox/assets/environment.hdr");
     s_data.environmentShader = Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl");
 
-    FramebufferSpec spec = {
+    Framebuffer::Specification spec = {
         1024, 1024,
         {
-            { Attachment::Depth, FramebufferTextureSpec(FramebufferTextureFormat::Depth24Stencil8) }
+            { Framebuffer::Attachment::Depth, Framebuffer::TextureSpecification(SizedTextureFormat::Depth24Stencil8) }
         }
     };
 
-    s_data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, false, false);
+    s_data.shadowMap = Texture2D::create(1024, 1024, SizedTextureFormat::Depth16, false, false);
     //s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
     s_data.shadowMapFramebuffer = Framebuffer::create(spec);
     s_data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
