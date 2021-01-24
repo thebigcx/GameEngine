@@ -31,27 +31,38 @@ void GLRenderbuffer::unbind() const
 {
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
-
+// TODO: add multisample
 GLFramebuffer::GLFramebuffer()
 {
     glCreateFramebuffers(1, &m_id);
 }
 
-GLFramebuffer::GLFramebuffer(const GLTexture2D& texture, Attachment attachment)
-    : m_width(texture.getWidth()), m_height(texture.getHeight())
+GLFramebuffer::GLFramebuffer(const FramebufferSpec& spec)
+    : m_width(spec.width), m_height(spec.height)
 {
     glCreateFramebuffers(1, &m_id);
 
     bind();
-    texture.bind();
-    glFramebufferTexture2D(GL_FRAMEBUFFER, getAttachmentEnumValue_(attachment), GL_TEXTURE_2D, texture.getId(), 0);
-    unbind();
+
+    for (auto& attachment : spec.attachments)
+    {
+        if (attachment.attachment == Attachment::Color)
+        {
+            m_colorAttachmentSpecs.emplace_back(attachment.texture);
+        }
+        else if (attachment.attachment == Attachment::Depth)
+        {
+            m_depthAttachmentSpec = attachment.texture;
+        }
+    }
+
+    invalidate();
 }
 
 GLFramebuffer::GLFramebuffer(uint32_t width, uint32_t height)
     : m_width(width), m_height(height)
 {
-    invalidate(width, height);
+    invalidate();
 }
 
 GLFramebuffer::~GLFramebuffer()
@@ -59,7 +70,7 @@ GLFramebuffer::~GLFramebuffer()
     if (m_id != 0)
     {
         glDeleteFramebuffers(1, &m_id);
-        glDeleteTextures(1, &m_colorAttachment);
+        glDeleteTextures(m_colorAttachments.size(), &m_colorAttachments[0]);
         glDeleteTextures(1, &m_depthAttachment);
     }
 }
@@ -81,44 +92,65 @@ void GLFramebuffer::attachTexture(const Texture2D& texture, Attachment attachmen
 {
     bind();
 
+    texture.bind();
     glFramebufferTexture2D(GL_FRAMEBUFFER, getAttachmentEnumValue_(attachment), target, texture.getId(), 0);
 
     unbind();
 }
 
-void GLFramebuffer::invalidate(uint32_t width, uint32_t height)
+void GLFramebuffer::invalidate()
 {
     if (m_id != 0)
     {
         glDeleteFramebuffers(1, &m_id);
-        glDeleteTextures(1, &m_colorAttachment);
+        glDeleteTextures(m_colorAttachments.size(), &m_colorAttachments[0]);
         glDeleteTextures(1, &m_depthAttachment);
+
+        m_colorAttachments.clear();
+        m_depthAttachment = 0;
     }
-     
+    
     // Create and bind the framebuffer
     glCreateFramebuffers(1, &m_id);
     glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+    
+    if (m_colorAttachmentSpecs.size() > 0)
+    {
+        m_colorAttachments.resize(m_colorAttachmentSpecs.size());
+        glCreateTextures(GL_TEXTURE_2D, m_colorAttachments.size(), &m_colorAttachments[0]);
 
-    // Generate and allocate storage for the color attachment of framebuffer
-    glCreateTextures(GL_TEXTURE_2D, 1, &(m_colorAttachment));
+        for (size_t i = 0; i < m_colorAttachments.size(); i++)
+        {
+            auto format = getTextureFormatEnumValue_(m_colorAttachmentSpecs[i].format);
 
-    glBindTextureUnit(0, m_colorAttachment);
-    glTextureStorage2D(m_colorAttachment, 1, GL_RGBA16F, width, height);
+            glBindTextureUnit(0, m_colorAttachments[i]);
+            glTextureStorage2D(m_colorAttachments[i], 1, format, m_width, m_height);
 
-    glTextureParameteri(m_colorAttachment, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(m_colorAttachment, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_colorAttachments[i], 0);
+        }
+    }
 
-    // Attach the color buffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorAttachment, 0);
+    if (m_depthAttachmentSpec.format != FramebufferTextureFormat::None)
+    {
+        auto format = getTextureFormatEnumValue_(m_depthAttachmentSpec.format);
 
-    // Create and allocate storage for depth attachment
-    glCreateTextures(GL_TEXTURE_2D, 1, &(m_depthAttachment));
-
-    glBindTextureUnit(0, m_depthAttachment);
-    glTextureStorage2D(m_depthAttachment, 1, GL_DEPTH24_STENCIL8, width, height);
-
-    // Attach the depth buffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachment, 0);
+        glCreateTextures(GL_TEXTURE_2D, 1, &m_depthAttachment);
+        glBindTextureUnit(0, m_depthAttachment);
+        glTextureStorage2D(m_depthAttachment, 1, format, m_width, m_height);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachment, 0);
+    }
+    
+    if (m_colorAttachments.size() > 1)
+    {
+        assert(m_colorAttachments.size() <= 4);
+        GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+        glDrawBuffers(m_colorAttachments.size(), buffers);
+    }
+    else if (m_colorAttachments.empty())
+    {
+        glDrawBuffer(GL_NONE);
+    }
+    
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -140,7 +172,7 @@ void GLFramebuffer::resize(uint32_t width, uint32_t height)
     m_width = width;
     m_height = height;
 
-    invalidate(width, height);
+    invalidate();
 }
 
 void GLFramebuffer::bind() const
@@ -212,20 +244,25 @@ GLenum GLFramebuffer::getColorBufferEnumValue_(uint32_t buffer)
 
 GLenum GLFramebuffer::getAttachmentEnumValue_(Attachment attachment)
 {
-    if (attachment == Attachment::Color)
+    switch (attachment)
     {
-        return GL_COLOR_ATTACHMENT0;
-    }
-    else if (attachment == Attachment::Depth)
-    {
-        return GL_DEPTH_ATTACHMENT;
-    }
-    else if (attachment == Attachment::Stencil)
-    {
-        return GL_STENCIL_ATTACHMENT;
-    }
+        case Attachment::Color: return GL_COLOR_ATTACHMENT0;
+        case Attachment::Depth: return GL_DEPTH_ATTACHMENT;
+        case Attachment::Stencil: return GL_STENCIL_ATTACHMENT;
+        case Attachment::DepthStencil: return GL_DEPTH_STENCIL_ATTACHMENT;
+        default: return GL_NONE;
+    };
+}
 
-    return GL_NONE;
+GLenum GLFramebuffer::getTextureFormatEnumValue_(FramebufferTextureFormat format)
+{
+    switch (format)
+    {
+        case FramebufferTextureFormat::RGBA8: return GL_RGBA8;
+        case FramebufferTextureFormat::Depth16: return GL_DEPTH_COMPONENT16;
+        case FramebufferTextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
+        default: return GL_NONE;
+    };
 }
 
 }

@@ -62,6 +62,12 @@ void Material::bind() const
         textureFlags |= (1 << 5);
     }
 
+    if (usingEmissionMap && emissionMap)
+    {
+        emissionMap->bind(6);
+        textureFlags |= (1 << 6);
+    }
+
     shader->setInt("material.textureFlags", textureFlags);
 }
 
@@ -78,6 +84,7 @@ void Material::unbind() const
     roughnessMap->unbind(3);
     ambientOcclusionMap->unbind(4);
     depthMap->unbind(5);
+    emissionMap->unbind(6);
 }
 
 Shared<Material> Material::create(const Shared<Shader>& shader)
@@ -98,7 +105,8 @@ Shared<Material> create(const Shared<Shader>& shader,
                         const Shared<Texture2D>& metallic,
                         const Shared<Texture2D>& roughness,
                         const Shared<Texture2D>& ao,
-                        const Shared<Texture2D>& depth)
+                        const Shared<Texture2D>& depth,
+                        const Shared<Texture2D>& emission)
 {
     auto material = createShared<Material>();
     
@@ -109,6 +117,7 @@ Shared<Material> create(const Shared<Shader>& shader,
     material->roughnessMap = roughness;
     material->ambientOcclusionMap = ao;
     material->depthMap = depth;
+    material->emissionMap = emission;
 
     return material;
 }

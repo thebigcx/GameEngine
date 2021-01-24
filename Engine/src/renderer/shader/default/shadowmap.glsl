@@ -10,12 +10,14 @@ uniform mat4 transform = mat4(1.f);
 
 void main()
 {
-    gl_Position = lightSpaceMatrix * transform * vec4(aPos, 1.0);
+    vec4 pos = lightSpaceMatrix * transform * vec4(aPos, 1.0);
+    pos.z = 2;
+    gl_Position = pos;
 }
 
 #shader fragment
 
 void main()
 {
-
+    
 }

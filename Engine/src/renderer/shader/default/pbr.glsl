@@ -10,6 +10,7 @@ out DATA
     vec2 texCoord;
     vec3 normal;
     vec3 fragPos;
+    vec4 fragPosLightSpace;
 } vs_out;
 
 layout (std140, binding = 0) uniform matrices
@@ -18,13 +19,15 @@ layout (std140, binding = 0) uniform matrices
     mat4 view;
 };
 
+uniform mat4 lightSpaceMatrix;
 uniform mat4 transform = mat4(1.f);
 
 void main()
 {
-    vs_out.normal = mat3(transform) * aNormal;
+    vs_out.normal = transpose(inverse(mat3(transform))) * aNormal;
     vs_out.texCoord = aTexCoord;
     vs_out.fragPos = vec3(transform * vec4(aPos, 1.0));
+    vs_out.fragPosLightSpace = lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
 
     gl_Position = projection * view * vec4(vs_out.fragPos, 1.0);
 }
@@ -49,10 +52,12 @@ layout (binding = 2) uniform sampler2D materialMetallic;
 layout (binding = 3) uniform sampler2D materialRoughness;
 layout (binding = 4) uniform sampler2D materialAo;
 layout (binding = 5) uniform sampler2D materialDepth;
+layout (binding = 6) uniform sampler2D materialEmission;
 
-layout (binding = 6) uniform samplerCube irradianceMap;
-layout (binding = 7) uniform samplerCube prefilterMap;
-layout (binding = 8) uniform sampler2D brdfLUT;
+layout (binding = 7) uniform samplerCube irradianceMap;
+layout (binding = 8) uniform samplerCube prefilterMap;
+layout (binding = 9) uniform sampler2D brdfLUT;
+layout (binding = 10) uniform sampler2D shadowMap;
 
 struct PointLight
 {
@@ -79,6 +84,7 @@ in DATA
     vec2 texCoord;
     vec3 normal;
     vec3 fragPos;
+    vec4 fragPosLightSpace;
 } fs_in;
 
 out vec4 fragColor;
@@ -204,7 +210,17 @@ vec2 parallaxMapping(vec2 texCoord, vec3 viewDir)
     return finalTexCoord;
 }
 
-// TODO: tangent space mapping in vertex shader
+float shadowCalculation(vec4 fragPosLightSpace)
+{
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth = texture(shadowMap, projCoords.xy).r; 
+    float currentDepth = projCoords.z;
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+
+    return shadow;
+}  
+
 void main()
 {
     vec3 V = normalize(cameraPos - fs_in.fragPos);
@@ -226,7 +242,7 @@ void main()
         albedo = material.albedoColor;
     }
 
-    float metallic = 0.f;
+    float metallic = 0.0;
     if ((material.textureFlags & (1 << 2)) != 0)
     {
         metallic = texture(materialMetallic, texCoord).r;
@@ -234,7 +250,7 @@ void main()
 
     metallic = min(metallic + material.metallicScalar, 1.0);
 
-    float roughness = 0.f;
+    float roughness = 0.0;
     if ((material.textureFlags & (1 << 3)) != 0)
     {
         roughness = texture(materialRoughness, texCoord).r;
@@ -242,10 +258,16 @@ void main()
 
     roughness = min(roughness + material.roughnessScalar, 1.0);
 
-    float ao = 1.f;
+    float ao = 1.0;
     if ((material.textureFlags & (1 << 4)) != 0)
     {
         ao = texture(materialAo, texCoord).r;
+    }
+
+    vec3 emission = vec3(0.0);
+    if ((material.textureFlags & (1 << 6)) != 0)
+    {
+        emission = texture(materialEmission, texCoord).rgb;
     }
     
     vec3 N = getNormalFromNormalMap(texCoord);
@@ -331,6 +353,8 @@ void main()
 
     vec3 ambient = (kD * diffuse + specular) * ao;
 
-    vec3 color = ambient + Lo;
+    float shadow = shadowCalculation(fs_in.fragPosLightSpace);
+
+    vec3 color = emission + ambient + (1.0 - shadow) * Lo;
     fragColor = vec4(color, 1.0);
 }

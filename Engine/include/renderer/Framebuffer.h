@@ -22,7 +22,7 @@ enum class ColorBuffer
 
 enum class Attachment
 {
-    Color, Depth, Stencil
+    Color, Depth, Stencil, DepthStencil
 };
 
 class Renderbuffer
@@ -41,6 +41,37 @@ public:
     static Shared<Renderbuffer> create(uint32_t width, uint32_t height, GLenum internalFormat);
 };
 
+enum class FramebufferTextureFormat
+{
+    None = 0,
+    RGBA8,
+    Depth24Stencil8,
+    Depth16,
+
+    Depth = Depth24Stencil8
+};
+
+struct FramebufferTextureSpec
+{
+    FramebufferTextureSpec() = default;
+    FramebufferTextureSpec(FramebufferTextureFormat format_)
+        : format(format_) {}
+    
+    FramebufferTextureFormat format = FramebufferTextureFormat::None;
+};
+
+struct FramebufferAttachmentSpec
+{
+    Attachment attachment;
+    FramebufferTextureSpec texture;
+};
+
+struct FramebufferSpec
+{
+    uint32_t width = 0, height = 0;
+    std::vector<FramebufferAttachmentSpec> attachments;
+};
+
 class Framebuffer
 {
 public:
@@ -48,7 +79,7 @@ public:
 
     static Shared<Framebuffer> create();
     static Shared<Framebuffer> create(uint32_t width, uint32_t height);
-    static Shared<Framebuffer> create(const Shared<Texture2D>& texture, Attachment attachment);
+    static Shared<Framebuffer> create(const FramebufferSpec& spec);
 
     virtual void resize(uint32_t width, uint32_t height) = 0;
 
@@ -59,7 +90,7 @@ public:
     virtual uint32_t getHeight() const = 0;
     virtual math::vec2 getSize() const = 0;
 
-    virtual uint32_t getColorAttachment() const = 0;
+    virtual uint32_t getColorAttachment(uint32_t index = 0) const = 0;
     virtual uint32_t getDepthAttachment() const = 0;
 
     virtual void attachRenderbuffer(const Renderbuffer& buffer, Attachment attachment) = 0;

@@ -42,6 +42,7 @@ EnvironmentMap::EnvironmentMap(const std::string& hdrFile)
 
     Shared<Framebuffer> framebuffer = Framebuffer::create();
     framebuffer->bind();
+    RenderCommand::setViewport(0, 0, 512, 512);
     Shared<Renderbuffer> renderbuffer = Renderbuffer::create(512, 512, GL_DEPTH_COMPONENT24);
     framebuffer->attachRenderbuffer(*renderbuffer, Attachment::Depth);
     // TODO: platform independent and refactor

@@ -43,15 +43,23 @@ void Renderer3D::init()
     s_data.environment = EnvironmentMap::create("Sandbox/assets/environment.hdr");
     s_data.environmentShader = Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl");
 
+    FramebufferSpec spec = {
+        1024, 1024,
+        {
+            { Attachment::Depth, FramebufferTextureSpec(FramebufferTextureFormat::Depth24Stencil8) }
+        }
+    };
+
     s_data.shadowMap = Texture2D::create(1024, 1024, GL_DEPTH_COMPONENT16, false, false);
-    s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
+    //s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
+    s_data.shadowMapFramebuffer = Framebuffer::create(spec);
     s_data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
     s_data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);
 
     s_data.lightProjection = math::ortho(-10.f, 10.f, -10.f, 10.f, 1.f, 7.5f);
-    s_data.lightView = math::lookAt(math::vec3(-2.f, 4.f, -1.f),
-                                    math::vec3( 0.f, 0.f,  0.f),
-                                    math::vec3( 0.f, 1.f,  0.f)); // TODO: use directional light's view matrix
+    s_data.lightView = math::lookAt(math::vec3(-2.0f, 4.0f, -1.0f), 
+                                    math::vec3( 0.0f, 0.0f,  0.0f), 
+                                    math::vec3( 0.0f, 1.0f,  0.0f));
 
     s_data.lightMatrix = s_data.lightProjection * s_data.lightView;
 }
@@ -73,20 +81,21 @@ void Renderer3D::flushBatch()
     // Shadows
     renderShadows();
 
-    s_data.environment->getIrradiance()->bind(6);
-    s_data.environment->getPrefilter()->bind(7);
-    s_data.environment->getBRDF()->bind(8);
+    s_data.environment->getIrradiance()->bind(7);
+    s_data.environment->getPrefilter()->bind(8);
+    s_data.environment->getBRDF()->bind(9);
+    s_data.shadowMap->bind(10);
 
     for (auto& group : s_data.renderObjects)
     {
         group.first->bind();
         group.first->shader->setFloat3("cameraPos", s_data.cameraPos);
+        group.first->shader->setMatrix4("lightSpaceMatrix", s_data.lightMatrix);
 
         setLightingUniforms(group.first->shader);
 
         for (auto& renderObject : group.second)
         {
-            group.first->shader->bind();
             group.first->shader->setMatrix4("transform", renderObject.transform);
             renderObject.mesh->vertexArray->bind();
 
@@ -114,6 +123,8 @@ void Renderer3D::renderShadows()
         for (auto& renderObject : group.second)
         {
             renderObject.mesh->vertexArray->bind();
+
+            Assets::get<Shader>("shadowmap")->setMatrix4("transform", renderObject.transform);
 
             RenderCommand::renderIndexed(renderObject.mesh->vertexArray);
         }
@@ -308,6 +319,11 @@ void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
         else if (dynamic_cast<const DirectionalLight*>(light))
         {
             light->setShaderUniforms(shader, 0);
+
+            /*auto dirLight = static_cast<const DirectionalLight*>(light);
+            s_data.lightView = math::lookAt(dirLight->direction * 10, dirLight->direction, math::vec3(0, 1, 0));
+            s_data.lightMatrix = s_data.lightProjection * s_data.lightView;*/
+
             directionalLights++;
         }
         else if (dynamic_cast<const SkyLight*>(light))

@@ -154,6 +154,7 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
             auto metallic = loadMaterialTexture_(aimaterial, aiTextureType_REFLECTION, model->directory);
             auto roughness = loadMaterialTexture_(aimaterial, aiTextureType_SHININESS, model->directory);
             auto ambientOcclusion = loadMaterialTexture_(aimaterial, aiTextureType_LIGHTMAP, model->directory);
+            auto emission = loadMaterialTexture_(aimaterial, aiTextureType_EMISSIVE, model->directory);
 
             auto material_ = Material::create(Assets::get<Shader>("pbr")); // TODO: material shaders
 
@@ -198,6 +199,14 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
             {
                 material_->ambientOcclusionMap = ambientOcclusion;
                 material_->usingAmbientOcclusionMap = true;
+            }
+
+            if (!emission)
+                material_->usingEmissionMap = false;
+            else
+            {
+                material_->emissionMap = emission;
+                material_->usingEmissionMap = true;
             }
 
             material = material_;

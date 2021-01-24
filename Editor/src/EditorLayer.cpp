@@ -30,11 +30,19 @@ void EditorLayer::onAttach()
     auto icon = ImageLoader::loadImage("Editor/assets/icon.png");
     Application::get().getWindow().setIcon(*icon);
 
-    m_framebuffer = Framebuffer::create(1280, 720);
+    FramebufferSpec spec;
+    spec.width = 1280;
+    spec.height = 720;
+    spec.attachments = {
+        { Attachment::Color, FramebufferTextureSpec(FramebufferTextureFormat::RGBA8) },
+        { Attachment::Depth, FramebufferTextureSpec(FramebufferTextureFormat::Depth) }
+    };
+
+    m_framebuffer = Framebuffer::create(spec);
     m_viewportSize = math::vec2(1280, 720);
     m_editorCamera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
 
-    m_hdrBuffer = Framebuffer::create(1280, 720);
+    m_hdrBuffer = Framebuffer::create(spec);
     m_framebufferMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
 
     m_scene = createShared<Scene>();
@@ -61,6 +69,7 @@ void EditorLayer::onUpdate(float dt)
         m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
     }
 
+    RenderCommand::setViewport(0, 0, m_viewportSize.x, m_viewportSize.y);
     m_framebuffer->bind();
     RenderCommand::setClearColor(math::vec4(0, 0, 0, 1));
     RenderCommand::clear(RenderCommand::defaultClearBits());

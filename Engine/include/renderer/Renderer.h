@@ -6,13 +6,15 @@
 #include <renderer/Renderer3D.h>
 #include <renderer/RenderCommand.h>
 #include <events/Event.h>
+#include <renderer/RenderTarget.h>
 
 namespace Engine
 {
 
 struct RendererData
 {
-    Shared<Framebuffer> target;
+    //Shared<Framebuffer> target;
+    Shared<RenderTarget> target;
     Shared<Shader> fboShader;
     Shared<Mesh> fboMesh;
 };

@@ -19,7 +19,8 @@ void Renderer::init()
     m_data.fboShader = ShaderFactory::createShader("hdr");
     
     math::ivec2 windowSize = Application::get().getWindow().getSize();
-    m_data.target = Framebuffer::create(windowSize.x, windowSize.y);
+    //m_data.target = Framebuffer::create(windowSize.x, windowSize.y);
+    m_data.target = RenderTarget::create(windowSize.x, windowSize.y);
 }
 
 void Renderer::shutdown()
@@ -41,6 +42,7 @@ void Renderer::endFrame()
     RenderCommand::clear(RenderCommand::defaultClearBits());
 
     glBindTextureUnit(0, m_data.target->getColorAttachment());
+    //m_data.target->getColorAttachment()->bind();
 
     m_data.fboShader->bind();
     m_data.fboMesh->vertexArray->bind();

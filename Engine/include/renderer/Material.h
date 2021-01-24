@@ -24,7 +24,8 @@ public:
                                    const Shared<Texture2D>& metallic,
                                    const Shared<Texture2D>& roughness,
                                    const Shared<Texture2D>& ao,
-                                   const Shared<Texture2D>& depth);
+                                   const Shared<Texture2D>& depth,
+                                   const Shared<Texture2D>& emission);
 
     bool usingAlbedoMap = true;
     bool usingNormalMap = false;
@@ -32,6 +33,7 @@ public:
     bool usingRoughnessMap = false;
     bool usingAmbientOcclusionMap = false;
     bool usingDepthMap = false;
+    bool usingEmissionMap = false; // TODO: refactor this
 
     float metallicScalar = 0.f;
     float roughnessScalar = 0.f;
@@ -41,6 +43,7 @@ public:
     Shared<Texture2D> roughnessMap = nullptr;
     Shared<Texture2D> ambientOcclusionMap = nullptr;
     Shared<Texture2D> depthMap = nullptr;
+    Shared<Texture2D> emissionMap = nullptr;
 
     math::vec4 albedoColor = math::vec4(1.f);
 
@@ -56,6 +59,7 @@ public:
                other.roughnessMap == roughnessMap &&
                other.ambientOcclusionMap == ambientOcclusionMap &&
                other.depthMap == ambientOcclusionMap &&
+               other.emissionMap == emissionMap &&
 
                other.usingAlbedoMap == usingAlbedoMap &&
                other.usingNormalMap == usingNormalMap &&
@@ -63,6 +67,7 @@ public:
                other.usingRoughnessMap == usingRoughnessMap &&
                other.usingAmbientOcclusionMap == usingAmbientOcclusionMap &&
                other.usingDepthMap == usingDepthMap &&
+               other.usingEmissionMap == usingEmissionMap &&
 
                other.metallicScalar == metallicScalar &&
                other.roughnessScalar == roughnessScalar;

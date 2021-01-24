@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <unordered_map>
 
 #include <renderer/Framebuffer.h>
 #include <maths/math.h>
@@ -32,7 +33,7 @@ class GLFramebuffer : public Framebuffer
 {
 public:
     GLFramebuffer();
-    GLFramebuffer(const GLTexture2D& texture, Attachment attachment);
+    GLFramebuffer(const FramebufferSpec& spec);
     GLFramebuffer(uint32_t width, uint32_t height);
     ~GLFramebuffer();
 
@@ -45,7 +46,7 @@ public:
     inline uint32_t getHeight() const override { return m_height; }
     inline math::vec2 getSize() const override { return math::vec2(m_width, m_height); }
 
-    inline uint32_t getColorAttachment() const override { return m_colorAttachment; }
+    inline uint32_t getColorAttachment(uint32_t index = 0) const override { return m_colorAttachments[index]; }
     inline uint32_t getDepthAttachment() const override { return m_depthAttachment; }
 
     void attachRenderbuffer(const Renderbuffer& buffer, Attachment attachment) override;
@@ -66,17 +67,24 @@ public:
 
 private:
     uint32_t m_id = 0;
-    uint32_t m_colorAttachment = 0;
+
+    std::vector<uint32_t> m_colorAttachments;
     uint32_t m_depthAttachment = 0;
+
+    std::vector<FramebufferTextureSpec> m_colorAttachmentSpecs;
+    FramebufferTextureSpec m_depthAttachmentSpec;
+
     uint32_t m_linearFiltering = true;
 
     uint32_t m_width = 0, m_height = 0;
 
-    void invalidate(uint32_t width, uint32_t height);
+    void invalidate();
 
     static GLenum getColorBufferEnumValue_(uint32_t buffer);
 
     static GLenum getAttachmentEnumValue_(Attachment attachment);
+
+    static GLenum getTextureFormatEnumValue_(FramebufferTextureFormat format);
 
     static constexpr int s_maxSize = 8192;
 };
