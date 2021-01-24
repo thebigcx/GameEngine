@@ -121,7 +121,7 @@ void GLFramebuffer::invalidate()
 
         for (size_t i = 0; i < m_colorAttachments.size(); i++)
         {
-            auto format = getTextureFormatEnumValue_(m_colorAttachmentSpecs[i].format);
+            auto format = Utils::getSizedTextureFormatEnumValue_(m_colorAttachmentSpecs[i].format);
 
             glBindTextureUnit(0, m_colorAttachments[i]);
             glTextureStorage2D(m_colorAttachments[i], 1, format, m_width, m_height);
@@ -132,7 +132,7 @@ void GLFramebuffer::invalidate()
 
     if (m_depthAttachmentSpec.format != SizedTextureFormat::None)
     {
-        auto format = getTextureFormatEnumValue_(m_depthAttachmentSpec.format);
+        auto format = Utils::getSizedTextureFormatEnumValue_(m_depthAttachmentSpec.format);
 
         glCreateTextures(GL_TEXTURE_2D, 1, &m_depthAttachment);
         glBindTextureUnit(0, m_depthAttachment);
@@ -250,17 +250,6 @@ GLenum GLFramebuffer::getAttachmentEnumValue_(Attachment attachment)
         case Attachment::Depth: return GL_DEPTH_ATTACHMENT;
         case Attachment::Stencil: return GL_STENCIL_ATTACHMENT;
         case Attachment::DepthStencil: return GL_DEPTH_STENCIL_ATTACHMENT;
-        default: return GL_NONE;
-    };
-}
-
-GLenum GLFramebuffer::getTextureFormatEnumValue_(SizedTextureFormat format)
-{
-    switch (format)
-    {
-        case SizedTextureFormat::RGBA8: return GL_RGBA8;
-        case SizedTextureFormat::Depth16: return GL_DEPTH_COMPONENT16;
-        case SizedTextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
         default: return GL_NONE;
     };
 }

@@ -84,7 +84,7 @@ private:
 
     static GLenum getAttachmentEnumValue_(Attachment attachment);
 
-    static GLenum getTextureFormatEnumValue_(SizedTextureFormat format);
+    //static GLenum getTextureFormatEnumValue_(SizedTextureFormat format);
 
     static constexpr int s_maxSize = 8192;
 };
