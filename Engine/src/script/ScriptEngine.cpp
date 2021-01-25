@@ -1,27 +1,36 @@
 #include <script/ScriptEngine.h>
 #include <scene/Components.h>
+#include <scene/Scene.h>
 
 namespace Engine
 {
 
 ScriptEngine::ScriptEngine()
 {
-    m_state.open_libs();
+    
+}
+
+Shared<CSharpScript> ScriptEngine::loadScript(const std::string& filepath)
+{
+    auto script = CSharpScript::create(filepath, m_domain);
+
+    return script;
 }
 
 void ScriptEngine::onStart()
 {
-    m_state.callVoid("onCreate");
+    mono::init("mono");
+    m_domain.create("Engine");
 }
 
 void ScriptEngine::onUpdate(float dt)
 {
-    m_state.callVoid("onUpdate", dt);
+    
 }
 
 void ScriptEngine::onDetach()
 {
-    m_state.callVoid("onDestroy");
+    mono::shutdown();
 }
 
 void ScriptEngine::onEvent(Event& event)
@@ -32,13 +41,13 @@ void ScriptEngine::onEvent(Event& event)
 
 bool ScriptEngine::onMousePressed(MousePressedEvent& event)
 {
-    m_state.callVoid("onMousePressed");
+    
     return false;
 }
 
 bool ScriptEngine::onKeyPressed(KeyPressedEvent& event)
 {
-    m_state.callVoid("onKeyPressed");
+    
     return false;
 }
 

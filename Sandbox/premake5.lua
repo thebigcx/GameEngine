@@ -8,8 +8,8 @@ project "Sandbox"
 	objdir "%{wks.location}/obj/%{cfg.buildcfg}/Sandbox"
 
 	files {
-		"src/Testing/**.cpp",
-		"src/Testing/**.h"
+		"src/SceneTesting/**.cpp",
+		"src/SceneTesting/**.h"
 	}
 	--[[files {
 		"src/TerrariaDemo/**.cpp",

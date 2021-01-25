@@ -44,6 +44,10 @@ public:
         return m_children;
     }
 
+    /**
+     * Adds a component to the game object. NOTE: When using the return value
+     * as 'auto', make sure to take by reference. i.e. auto& comp = obj->addComponent();
+     */
     template<typename T, typename... Args>
     T& addComponent(Args&& ...args)
     {

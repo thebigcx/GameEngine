@@ -35,7 +35,7 @@ void domain::create(const std::string& name)
     m_domain = mono_domain_create_appdomain(const_cast<char*>(name.c_str()), nullptr);
 }
 
-assembly domain::get_assembly(const std::string& file)
+assembly domain::get_assembly(const std::string& file) const
 {
     assembly assem(mono_domain_assembly_open(m_domain, file.c_str()));
     

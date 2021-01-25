@@ -25,7 +25,7 @@ public:
 
     void create(const std::string& name);
 
-    assembly get_assembly(const std::string& file);
+    assembly get_assembly(const std::string& file) const;
 
     MonoDomain* get() const { return m_domain; }
 

@@ -12,12 +12,12 @@ namespace Engine
 
 Scene::Scene()
 {
-    
+    m_scriptEngine.onStart();
 }
 
 Scene::~Scene()
 {
-    
+    m_scriptEngine.onDetach();
 }
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
@@ -177,21 +177,20 @@ void Scene::onUpdateRuntime(float dt)
         script.instance->onUpdate(dt);
     }
 
-    // Lua scripts
-    auto luaScripts = m_rootObject.getChildrenWithComponent<LuaScriptComponent>();
-    for (auto& object : luaScripts)
+    // C# scripts
+    auto csscripts = m_rootObject.getChildrenWithComponent<CSharpScriptComponent>();
+    for (auto& object : csscripts)
     {
-        auto& script = object->getComponent<LuaScriptComponent>();
-        script.scriptEngine.setScript(script.filePath); // TODO: possibly not do this every frame (50-100microseconds)
+        auto& script = object->getComponent<CSharpScriptComponent>();
 
         if (!script.initialized)
         {
-            script.scriptEngine.onStart();
+            script.script = m_scriptEngine.loadScript(script.filepath);
             script.initialized = true;
         }
-        
-        script.scriptEngine.onUpdate(dt);
     }
+
+    m_scriptEngine.onUpdate(dt);
 
     // Rendering
     Camera* camera = nullptr;
@@ -273,6 +272,6 @@ template<> void Scene::onComponentAdded<SkyLightComponent>(GameObject& object, S
 template<> void Scene::onComponentAdded<PointLightComponent>(GameObject& object, PointLightComponent& component) {}
 template<> void Scene::onComponentAdded<DirectionalLightComponent>(GameObject& object, DirectionalLightComponent& component) {}
 template<> void Scene::onComponentAdded<MeshRendererComponent>(GameObject& object, MeshRendererComponent& component) {}
-template<> void Scene::onComponentAdded<LuaScriptComponent>(GameObject& object, LuaScriptComponent& component) {}
+template<> void Scene::onComponentAdded<CSharpScriptComponent>(GameObject& object, CSharpScriptComponent& component) {}
 
 }

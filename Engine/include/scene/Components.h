@@ -11,6 +11,7 @@
 #include <renderer/Mesh.h>
 #include <renderer/Lighting.h>
 #include <renderer/Assets.h>
+#include <script/CSharpScript.h>
 
 namespace Engine
 {
@@ -126,11 +127,10 @@ struct MeshRendererComponent : public GameComponent
     bool castShadows = true;
 };
 
-struct LuaScriptComponent : public GameComponent
+struct CSharpScriptComponent : public GameComponent
 {
-    std::string filePath = "";
-    std::string source = "";
-    ScriptEngine scriptEngine;
+    std::string filepath = "";
+    Shared<CSharpScript> script;
     bool initialized = false;
 };
 

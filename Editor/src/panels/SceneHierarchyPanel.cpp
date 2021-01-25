@@ -91,21 +91,29 @@ void SceneHierarchyPanel::onImGuiRender()
         {
             if (ImGui::MenuItem("Empty Game Object"))
             {
-                auto object = m_context->createGameObject("Untitled Game Object");
+                auto object = m_context->createGameObject("New Game Object");
                 m_selection = object;
             }
 
             if (ImGui::MenuItem("Camera"))
             {
-                auto object = m_context->createGameObject("Camera");
+                auto object = m_context->createGameObject("New Camera");
                 object->addComponent<TransformComponent>();
                 object->addComponent<CameraComponent>();
                 m_selection = object;
             }
 
+            if (ImGui::MenuItem("Sprite"))
+            {
+                auto object = m_context->createGameObject("New Sprite");
+                object->addComponent<TransformComponent>();
+                object->addComponent<SpriteRendererComponent>();
+                m_selection = object;
+            }
+
             if (ImGui::MenuItem("Mesh"))
             {
-                auto object = m_context->createGameObject("Mesh");
+                auto object = m_context->createGameObject("New Mesh");
                 object->addComponent<TransformComponent>();
                 object->addComponent<MeshComponent>();
                 object->addComponent<MeshRendererComponent>();
@@ -228,7 +236,7 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         ADD_COMPONENT(DirectionalLightComponent, "Directional Light");
         ADD_COMPONENT(PointLightComponent, "Point Light");
         ADD_COMPONENT(MeshRendererComponent, "Mesh Renderer");
-        ADD_COMPONENT(LuaScriptComponent, "Script");
+        ADD_COMPONENT(CSharpScriptComponent, "Script");
 
         ImGui::EndPopup();
     }
@@ -608,7 +616,7 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         ImGui::Columns(1);
     });
 
-    drawComponent<LuaScriptComponent>("C# Script", object, [](auto& component)
+    drawComponent<CSharpScriptComponent>("C# Script", object, [](auto& component)
     {
         ImGui::Columns(2);
 
@@ -616,24 +624,23 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         ImGui::NextColumn();
 
         char buf[128];
-        strcpy(buf, component.filePath.c_str());
+        strcpy(buf, component.filepath.c_str());
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
-        ImGui::InputText("##luaScriptPath", buf, 128, flags);
+        ImGui::InputText("##csharpScriptPath", buf, 128, flags);
         ImGui::SameLine();
 
-        if (ImGui::Button("...##luaScriptPathSelect"))
+        if (ImGui::Button("...##csharpScriptPathSelect"))
         {
-            FileDialog::open("luaScriptPathSelect");
+            FileDialog::open("csharpScriptPathSelect");
         }
 
-        if (FileDialog::selectFile("luaScriptPathSelect", "Choose script...", ".cs"))
+        if (FileDialog::selectFile("csharpScriptPathSelect", "Choose script...", ".cs"))
         {
             if (!FileDialog::display())
             {
                 if (FileDialog::madeSelection())
                 {
-                    component.filePath = FileDialog::getSelection();
-                    component.source = Files::readFile(component.filePath);
+                    component.filepath = FileDialog::getSelection();
                 }
             }
         }

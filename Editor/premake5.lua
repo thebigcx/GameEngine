@@ -25,7 +25,8 @@ project "Editor"
 		"%{wks.location}/Engine/vendor/stb_image/include",
 		"%{wks.location}/Engine/vendor",
 		"%{wks.location}/Engine/vendor/imgui",
-		"%{wks.location}/Engine/vendor/yaml"
+		"%{wks.location}/Engine/vendor/yaml",
+		"/usr/include/mono-2.0" -- TODO: fix this
 	}
 	
 	libdirs {
@@ -43,7 +44,8 @@ project "Editor"
 		"pthread",
 		"yaml-cpp",
 		"lua",
-		"dl"
+		"dl",
+		"mono-2.0"
 	}
 	
 	filter "configurations:Debug"

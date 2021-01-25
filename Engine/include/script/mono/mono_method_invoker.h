@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <script/mono/mono_method.h>
 #include <script/mono/mono_object.h>
 #include <script/mono/mono_exception.h>
