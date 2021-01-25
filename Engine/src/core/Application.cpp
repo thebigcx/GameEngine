@@ -1,6 +1,6 @@
 #include <core/Application.h>
 
-#include <sound/SoundEngine.h>
+#include <audio/AudioController.h>
 #include <maths/math.h>
 #include <core/Input.h>
 #include <events/EventDispatcher.h>
@@ -29,7 +29,7 @@ Application::Application()
     m_window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
 
     math::random::init_seed();
-    SoundEngine::init();
+    AudioController::getInstance()->initialize();
     Renderer::init();
     Time::init();
 
@@ -46,6 +46,8 @@ Application::~Application()
     }
     m_window->close();
     Renderer::shutdown();
+
+    AudioController::getInstance()->finalize();
 }
 
 void Application::run()

@@ -1,4 +1,4 @@
-#include <sound/SoundBuffer.h>
+#include <audio/AudioBuffer.h>
 
 #include <AL/al.h>
 
@@ -9,32 +9,18 @@
 namespace Engine
 {
 
-SoundBuffer::SoundBuffer()
+AudioBuffer::AudioBuffer(const std::string& filepath)
 {
+    alGenBuffers(1, &m_id);
 
-}
-
-SoundBuffer::SoundBuffer(unsigned int id)
-    : m_id(id)
-{
-    
-}
-
-void SoundBuffer::load(const std::string& path)
-{
-    if (m_id != 0)
-    {
-        destroy();
-    }
-
-    auto extension = path.substr(path.find_last_of(".") + 1);
+    auto extension = filepath.substr(filepath.find_last_of(".") + 1);
     if (extension == "wav")
     {
-        m_id = loadWAV(path);
+        loadWAV(filepath, m_id);
     }
     else if (extension == "mp3")
     {
-        m_id = loadMP3(path);
+        loadMP3(filepath, m_id);
     }
     else
     {
@@ -42,17 +28,24 @@ void SoundBuffer::load(const std::string& path)
     }
 }
 
-unsigned int SoundBuffer::loadWAV(const std::string& path)
+AudioBuffer::~AudioBuffer()
 {
-    unsigned int buffer;
-    alGenBuffers(1, &buffer);
+    alDeleteBuffers(1, &m_id);
+}
 
+Shared<AudioBuffer> AudioBuffer::create(const std::string& filepath)
+{
+    return Shared<AudioBuffer>(new AudioBuffer(filepath));
+}
+
+void AudioBuffer::loadWAV(const std::string& path, uint32_t buffer)
+{
     // Load the .wav file
     drwav wav;
     if (!drwav_init_file(&wav, path.c_str(), nullptr))
     {
         Logger::getCoreLogger()->error("Could not open .wav file: %s", path);
-        return 0;
+        return;
     }
 
     size_t dataSize = wav.totalPCMFrameCount * wav.channels * sizeof(drwav_int16);
@@ -62,21 +55,16 @@ unsigned int SoundBuffer::loadWAV(const std::string& path)
     alBufferData(buffer, AL_FORMAT_STEREO16, data, dataSize, wav.sampleRate);
 
     drwav_uninit(&wav);
-    
-    return buffer;
 }
 
-unsigned int SoundBuffer::loadMP3(const std::string& path)
+void AudioBuffer::loadMP3(const std::string& path, uint32_t buffer)
 {
-    unsigned int buffer;
-    alGenBuffers(1, &buffer);
-
     // Load the .mp3 file
     drmp3 mp3;
     if (!drmp3_init_file(&mp3, path.c_str(), nullptr))
     {
         Logger::getCoreLogger()->error("Could not open .mp3 file: %s", path);
-        return 0;
+        return;
     }
 
     drmp3_uint64 frameCount;
@@ -89,21 +77,6 @@ unsigned int SoundBuffer::loadMP3(const std::string& path)
     alBufferData(buffer, AL_FORMAT_STEREO16, data, dataSize, mp3.sampleRate);
 
     drmp3_uninit(&mp3);
-    
-    return buffer;
-}
-
-void SoundBuffer::destroy()
-{
-    if (m_id != 0)
-    {
-        alDeleteBuffers(1, &m_id);
-    }
-}
-
-SoundBuffer::~SoundBuffer()
-{
-    destroy();
 }
 
 }

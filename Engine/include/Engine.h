@@ -41,10 +41,10 @@
 
 #include <maths/math.h>
 
-#include <sound/SoundEngine.h>
-#include <sound/SoundSource.h>
-#include <sound/SoundBuffer.h>
-#include <sound/SoundListener.h>
+#include <audio/AudioController.h>
+#include <audio/AudioSource.h>
+#include <audio/AudioBuffer.h>
+#include <audio/AudioListener.h>
 
 #include <scene/Scene.h>
 #include <scene/Components.h>
