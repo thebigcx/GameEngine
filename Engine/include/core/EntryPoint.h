@@ -1,14 +1,14 @@
-#include <core/Application.h>
+#include <core/Game.h>
 #include <core/Core.h>
 
 #include <iostream>
 
-extern Engine::Application* Engine::createApplication();
+extern Engine::Game* Engine::createGame();
 
 int main(int argc, char** argv)
 {
     BEGIN_PROFILE_SESSION("Startup");
-    auto application = Engine::createApplication();
+    auto application = Engine::createGame();
     END_PROFILE_SESSION();
 
     BEGIN_PROFILE_SESSION("Runtime");

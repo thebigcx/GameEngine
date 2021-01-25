@@ -1,4 +1,4 @@
-#include <core/Application.h>
+#include <core/Game.h>
 
 #include <audio/AudioController.h>
 #include <maths/math.h>
@@ -14,19 +14,19 @@
 namespace Engine
 {
 
-Application* Application::m_instance = nullptr;
+Game* Game::m_instance = nullptr;
 
-Application::Application()
+Game::Game()
 {
     if (m_instance != nullptr)
     {
-        Logger::getCoreLogger()->critical("Multiple instances of Application class!");
+        Logger::getCoreLogger()->critical("Multiple instances of Game class!");
     }
 
     m_instance = this;
 
-    m_window = Window::create(1280, 720, "Application");
-    m_window->setEventCallback(BIND_EVENT_FN(Application::onEvent));
+    m_window = Window::create(1280, 720, "Game");
+    m_window->setEventCallback(BIND_EVENT_FN(Game::onEvent));
 
     math::random::init_seed();
     AudioController::getInstance()->initialize();
@@ -38,7 +38,7 @@ Application::Application()
     m_layers.emplace_back(m_imguiLayer);
 }
 
-Application::~Application()
+Game::~Game()
 {
     for (auto& layer : m_layers)
     {
@@ -50,7 +50,7 @@ Application::~Application()
     AudioController::getInstance()->finalize();
 }
 
-void Application::run()
+void Game::run()
 {
     while (m_running)
     {
@@ -88,11 +88,11 @@ void Application::run()
     }
 }
 
-void Application::onEvent(Event& event)
+void Game::onEvent(Event& event)
 {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::onWindowResize));
-    dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::onWindowClose));
+    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(Game::onWindowResize));
+    dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(Game::onWindowClose));
 
     for (auto& layer : m_layers)
     {
@@ -104,28 +104,28 @@ void Application::onEvent(Event& event)
     }
 }
 
-void Application::addLayer(Layer* layer)
+void Game::addLayer(Layer* layer)
 {
     m_layers.push_back(layer);
     layer->onAttach();
 }
 
-Application& Application::get()
+Game& Game::getInstance()
 {
     if (m_instance == nullptr)
     {
-        Logger::getCoreLogger()->error("Application instance is undefined!");
+        Logger::getCoreLogger()->error("Game instance is undefined!");
     }
 
     return *m_instance;
 }
 
-void Application::quit()
+void Game::quit()
 {
     m_running = false;
 }
 
-bool Application::onWindowResize(WindowResizeEvent& event)
+bool Game::onWindowResize(WindowResizeEvent& event)
 {
     m_window->m_width = event.getWidth();
     m_window->m_height = event.getHeight();
@@ -134,18 +134,18 @@ bool Application::onWindowResize(WindowResizeEvent& event)
     return false;
 }
 
-bool Application::onWindowClose(WindowCloseEvent& event)
+bool Game::onWindowClose(WindowCloseEvent& event)
 {
     m_running = false;
     return true;
 }
 
-Window& Application::getWindow()
+Window& Game::getWindow()
 {
     return *m_window;
 }
 
-void Application::setCursorEnabled(bool enabled)
+void Game::setCursorEnabled(bool enabled)
 {
     uint32_t glfwEnabled = enabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
 

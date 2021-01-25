@@ -48,7 +48,7 @@ private:
     inline static TimePoint m_startTime; // Beginning of program
     inline static TimePoint m_lastFrame; // Beginning of frame
 
-    friend class Application;
+    friend class Game;
 };
 
 }

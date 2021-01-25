@@ -1,7 +1,7 @@
 #pragma once
 
 #include <core/Window.h>
-#include <core/Application.h>
+#include <core/Game.h>
 #include <core/Cursor.h>
 #include <core/Input.h>
 #include <core/KeyCodes.h>

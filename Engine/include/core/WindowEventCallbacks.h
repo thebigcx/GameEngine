@@ -2,7 +2,7 @@
 
 #include <events/EventDispatcher.h>
 
-#include <core/Application.h>
+#include <core/Game.h>
 #include <events/Event.h>
 
 #include <GLFW/glfw3.h>
@@ -21,7 +21,7 @@ static void framebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t h
 {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     WindowResizeEvent event(width, height);
-    Application::get().onEvent(event);
+    Game::getInstance().onEvent(event);
 }
 
 static void windowMaximizeCallback(GLFWwindow* window, int maximized)

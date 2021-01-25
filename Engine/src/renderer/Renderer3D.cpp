@@ -1,5 +1,5 @@
 #include <renderer/Renderer3D.h>
-#include <core/Application.h>
+#include <core/Game.h>
 #include <maths/matrix/matrix_transform.h>
 #include <renderer/RenderCommand.h>
 #include <renderer/shader/ShaderFactory.h>
@@ -14,7 +14,7 @@ namespace Engine
 
 void Renderer3D::init()
 {
-    math::ivec2 windowSize = Application::get().getWindow().getSize();
+    math::ivec2 windowSize = Game::getInstance().getWindow().getSize();
     
     auto pbr = Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl");
     pbr->name = "PBR";

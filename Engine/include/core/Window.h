@@ -22,7 +22,7 @@ struct WindowData
 class Window
 {
 private:
-    friend class Application;
+    friend class Game;
 
 public:
     Window(unsigned int width, unsigned int height, const std::string& title);

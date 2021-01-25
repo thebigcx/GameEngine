@@ -3,7 +3,7 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
-#include <core/Application.h>
+#include <core/Game.h>
 #include <renderer/RenderCommand.h>
 #include <scene/Components.h>
 #include <renderer/Renderer2D.h>
@@ -25,10 +25,10 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::onAttach()
 {
-    Application::get().getWindow().setSize(math::uvec2(1920, 1080));
+    Game::getInstance().getWindow().setSize(math::uvec2(1920, 1080));
 
     auto icon = ImageLoader::loadImage("Editor/assets/icon.png");
-    Application::get().getWindow().setIcon(*icon);
+    Game::getInstance().getWindow().setIcon(*icon);
 
     Framebuffer::Specification spec;
     spec.width = 1280;
@@ -108,7 +108,7 @@ void EditorLayer::onUpdate(float dt)
     RenderCommand::renderIndexed(m_framebufferMesh->vertexArray);
     m_hdrBuffer->unbind();
 
-    Application::get().getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
+    Game::getInstance().getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
 }
 
 void EditorLayer::drawMenuBar()
@@ -209,7 +209,7 @@ void EditorLayer::onImGuiRender()
 
     m_viewportFocused = ImGui::IsWindowFocused();
     m_viewportHovered = ImGui::IsWindowHovered();
-    Application::get().getImGuiLayer()->blockEvents(!m_viewportFocused && !m_viewportHovered);
+    Game::getInstance().getImGuiLayer()->blockEvents(!m_viewportFocused && !m_viewportHovered);
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };

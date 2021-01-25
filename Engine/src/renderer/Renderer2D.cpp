@@ -1,5 +1,5 @@
 #include <renderer/Renderer2D.h>
-#include <core/Application.h>
+#include <core/Game.h>
 #include <renderer/MeshFactory.h>
 #include <renderer/shader/ShaderFactory.h>
 #include <maths/matrix/matrix_transform.h>
@@ -16,7 +16,7 @@ Shared<Mesh> Renderer2D::m_framebufferMesh;
 
 void Renderer2D::init()
 {
-    auto windowSize = Application::get().getWindow().getSize();
+    auto windowSize = Game::getInstance().getWindow().getSize();
 
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
     

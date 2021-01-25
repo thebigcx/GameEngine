@@ -1,5 +1,5 @@
 #include <core/Input.h>
-#include <core/Application.h>
+#include <core/Game.h>
 #include <util/io/Files.h>
 
 namespace Engine
@@ -7,7 +7,7 @@ namespace Engine
 
 math::ivec2 Input::getMousePosition()
 {
-    auto& window = Application::get().getWindow();
+    auto& window = Game::getInstance().getWindow();
     double x, y;
     glfwGetCursorPos(window.getNative(), &x, &y);
     return math::ivec2(x, window.getSize().y - y);
@@ -15,13 +15,13 @@ math::ivec2 Input::getMousePosition()
     
 bool Input::isMousePressed(MouseButton button)
 {
-    auto& window = Application::get().getWindow();
+    auto& window = Game::getInstance().getWindow();
     return glfwGetMouseButton(window.getNative(), static_cast<uint32_t>(button));
 }
 
 bool Input::isKeyPressed(Key key)
 {
-    return glfwGetKey(Application::get().getWindow().getNative(), static_cast<uint32_t>(key));
+    return glfwGetKey(Game::getInstance().getWindow().getNative(), static_cast<uint32_t>(key));
 }
 
 bool Input::isGamepadButtonPressed(Gamepad gamepad, GamepadButton button)

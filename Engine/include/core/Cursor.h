@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include <core/Application.h>
+#include <core/Game.h>
 
 namespace Engine
 {
@@ -32,7 +32,7 @@ public:
 
     void setCurrent(bool current = true)
     {
-        auto& window = Application::get().getWindow();
+        auto& window = Game::getInstance().getWindow();
         if (current)
         {
             glfwSetCursor(window.getNative(), m_cursor);

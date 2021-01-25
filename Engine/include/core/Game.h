@@ -13,14 +13,14 @@ namespace Engine
 {
 
 // Singleton
-class Application
+class Game
 {
 public:
-    Application();
-    ~Application();
+    Game();
+    ~Game();
 
-    Application(const Application& app) = delete;
-    Application(Application&& app) = delete;
+    Game(const Game& app) = delete;
+    Game(Game&& app) = delete;
 
     void run();
     void addLayer(Layer* layer);
@@ -35,10 +35,10 @@ public:
 
     Window& getWindow();
 
-    static Application& get();
+    static Game& getInstance();
 
 private:
-    static Application* m_instance;
+    static Game* m_instance;
 
     friend int ::main(int argc, char** argv);
 
@@ -52,6 +52,6 @@ private:
     uint64_t m_frames;
 };
 
-Application* createApplication();
+Game* createGame();
 
 }

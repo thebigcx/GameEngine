@@ -5,7 +5,7 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include <imguizmo/ImGuizmo.h>
 
-#include <core/Application.h>
+#include <core/Game.h>
 #include <renderer/RenderCommand.h>
 
 namespace Engine
@@ -32,7 +32,7 @@ void ImGuiLayer::onAttach()
     style.WindowRounding = 0.0f;
 	style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 
-    auto& window = Application::get().getWindow();
+    auto& window = Game::getInstance().getWindow();
 
     ImGui_ImplGlfw_InitForOpenGL(window.getNative(), true);
 	ImGui_ImplOpenGL3_Init("#version 460");
@@ -55,7 +55,7 @@ void ImGuiLayer::end()
 {
     auto& io = ImGui::GetIO();
 
-    Application& app = Application::get();
+    Game& app = Game::getInstance();
     io.DisplaySize = ImVec2((float)app.getWindow().getWidth(), (float)app.getWindow().getHeight());
 
     ImGui::Render();

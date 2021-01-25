@@ -1,4 +1,4 @@
-#include <core/Application.h>
+#include <core/Game.h>
 #include <core/EntryPoint.h>
 
 #include "EditorLayer.h"
@@ -6,17 +6,17 @@
 namespace Engine
 {
 
-class EditorApp : public Application
+class EditorApp : public Game
 {
 public:
     EditorApp()
-        : Application()
+        : Game()
     {
         addLayer(new Engine::EditorLayer());
     }
 };
 
-Application* createApplication()
+Game* createGame()
 {
     return new EditorApp();
 }
