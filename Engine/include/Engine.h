@@ -56,5 +56,4 @@
 #include <physics/Body.h>
 #include <physics/BoxBody.h>
 
-#include <script/mono/mono_assembly.h>
-#include <script/mono/mono_domain.h>
+#include <script/mono/mono.h>

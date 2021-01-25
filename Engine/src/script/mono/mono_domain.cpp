@@ -12,7 +12,7 @@ static MonoDomain* s_domain = nullptr;
 
 bool init(const std::string& dom)
 {
-    mono_config_parse("/etc/mono/config");
+    //mono_config_parse("/etc/mono/config");
     mono_set_dirs("/usr/lib", "/etc");
 
     s_domain = mono_jit_init(dom.c_str());
