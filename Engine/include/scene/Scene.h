@@ -13,9 +13,15 @@ namespace Engine
 
 class Scene
 {
-public:
+    friend class SceneSerializer;
+
+private:
     Scene();
+
+public:
     ~Scene();
+
+    static Shared<Scene> create();
     
     void onUpdateEditor(float dt, EditorCamera& camera);
     void onUpdateRuntime(float dt);
@@ -33,6 +39,8 @@ public:
     
     template<typename T>
     void onComponentAdded(GameObject& object, T& component);
+
+    void onScenePlay();
 
 private:
     GameObject m_rootObject;

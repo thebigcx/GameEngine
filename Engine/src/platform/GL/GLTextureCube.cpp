@@ -1,5 +1,5 @@
 #include <platform/GL/GLTextureCube.h>
-#include <util/ImageLoader.h>
+#include <util/Image.h>
 #include <platform/GL/GLTexture2D.h>
 
 #include <GL/glew.h>
@@ -100,17 +100,17 @@ uint32_t GLTextureCube::loadFromMultipleFiles(const std::string* files)
 
     for (unsigned int i = 0; i < 6; i++)
     {
-        auto image = ImageLoader::loadImage(files[i]);
+        auto image = Image::create(files[i], true);
 
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
                      0, 
                      GL_SRGB_ALPHA, 
-                     image->width, 
-                     image->height, 
+                     image->getWidth(), 
+                     image->getHeight(), 
                      0, 
                      GL_RGBA, 
                      GL_UNSIGNED_BYTE, 
-                     image->data);
+                     image->getData());
     }
 
     return id;

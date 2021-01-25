@@ -6,7 +6,7 @@
 #include <string>
 #include <functional>
 
-#include <util/ImageLoader.h>
+#include <util/Image.h>
 #include <maths/vector/vec2.h>
 #include <renderer/RenderingContext.h>
 #include <events/Event.h>
@@ -50,7 +50,7 @@ public:
     void setTitle(const std::string& title);
 
     void setIcon(const std::string& iconPath);
-    void setIcon(const Image& image);
+    void setIcon(const Shared<Image>& image);
 
     void setSize(const math::uvec2& size);
 

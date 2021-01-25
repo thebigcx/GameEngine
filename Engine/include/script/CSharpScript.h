@@ -12,8 +12,11 @@ namespace Engine
 class CSharpScript
 {
 public:
-    
     static Shared<CSharpScript> create(const std::string& filepath, const mono::domain& domain);
+
+    void onStart();
+    void onUpdate(float dt);
+    void onDestroy();
 
 private:
     CSharpScript(const std::string& filepath, const mono::domain& domain);

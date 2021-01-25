@@ -12,12 +12,17 @@ namespace Engine
 
 Scene::Scene()
 {
-    m_scriptEngine.onStart();
+    m_scriptEngine.initialize();
 }
 
 Scene::~Scene()
 {
-    m_scriptEngine.onDetach();
+    m_scriptEngine.finalize();
+}
+
+Shared<Scene> Scene::create()
+{
+    return Shared<Scene>(new Scene());
 }
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
@@ -138,29 +143,18 @@ GameObject* Scene::createGameObject(const std::string& name)
     return object;
 }
 
+void Scene::onScenePlay()
+{
+    auto csscripts = m_rootObject.getChildrenWithComponent<CSharpScriptComponent>();
+    for (auto& object : csscripts)
+    {
+        auto& script = object->getComponent<CSharpScriptComponent>();
+        script.script = m_scriptEngine.loadScript(script.filepath);
+    }
+}
+
 void Scene::onUpdateRuntime(float dt)
 {
-    // Game logic updating
-    /*auto colliders = m_rootObject.getChildrenWithComponents<BoxCollider2DComponent, NativeScriptComponent>();
-    for (auto& object1 : colliders)
-    {
-        for (auto& object2 : colliders)
-        {
-            if (object1 == object2)
-                continue;
-
-            if (math::intersects(object1->getComponent<BoxCollider2DComponent>().box, object2->getComponent<BoxCollider2DComponent>().box))
-            {
-                if (object1->getComponent<NativeScriptComponent>().instance)
-                    object1->getComponent<NativeScriptComponent>().instance->onCollide2D();
-
-                if (object2->getComponent<NativeScriptComponent>().instance)
-                    object2->getComponent<NativeScriptComponent>().instance->onCollide2D();
-            }
-        }
-    }*/
-    // TODO: replace with rigid bodies
-
     // Native scripts
     auto scripts = m_rootObject.getChildrenWithComponent<NativeScriptComponent>();
     for (auto& object : scripts)
@@ -185,9 +179,11 @@ void Scene::onUpdateRuntime(float dt)
 
         if (!script.initialized)
         {
-            script.script = m_scriptEngine.loadScript(script.filepath);
+            script.script->onStart();
             script.initialized = true;
         }
+
+        script.script->onUpdate(dt);
     }
 
     m_scriptEngine.onUpdate(dt);

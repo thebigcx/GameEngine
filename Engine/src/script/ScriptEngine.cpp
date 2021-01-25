@@ -17,7 +17,7 @@ Shared<CSharpScript> ScriptEngine::loadScript(const std::string& filepath)
     return script;
 }
 
-void ScriptEngine::onStart()
+void ScriptEngine::initialize()
 {
     mono::init("mono");
     m_domain.create("Engine");
@@ -28,7 +28,7 @@ void ScriptEngine::onUpdate(float dt)
     
 }
 
-void ScriptEngine::onDetach()
+void ScriptEngine::finalize()
 {
     mono::shutdown();
 }

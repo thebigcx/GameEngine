@@ -14,7 +14,7 @@ namespace Engine
 
 void Renderer3D::init()
 {
-    math::ivec2 windowSize = Game::getInstance().getWindow().getSize();
+    math::ivec2 windowSize = Game::getInstance()->getWindow().getSize();
     
     auto pbr = Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl");
     pbr->name = "PBR";

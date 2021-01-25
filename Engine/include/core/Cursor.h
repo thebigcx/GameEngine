@@ -32,7 +32,7 @@ public:
 
     void setCurrent(bool current = true)
     {
-        auto& window = Game::getInstance().getWindow();
+        auto& window = Game::getInstance()->getWindow();
         if (current)
         {
             glfwSetCursor(window.getNative(), m_cursor);

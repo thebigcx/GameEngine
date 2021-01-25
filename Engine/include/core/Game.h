@@ -22,12 +22,17 @@ public:
     Game(const Game& app) = delete;
     Game(Game&& app) = delete;
 
-    void run();
+    int run();
     void addLayer(Layer* layer);
     bool onWindowResize(WindowResizeEvent& event);
     bool onWindowClose(WindowCloseEvent& event);
     void quit();
     void setCursorEnabled(bool enabled);
+
+    void shutdown();
+
+    virtual void initialize() {}
+    virtual void finalize() {}
 
     void onEvent(Event& event);
 
@@ -35,7 +40,7 @@ public:
 
     Window& getWindow();
 
-    static Game& getInstance();
+    static Game* getInstance();
 
 private:
     static Game* m_instance;

@@ -32,7 +32,7 @@ void ImGuiLayer::onAttach()
     style.WindowRounding = 0.0f;
 	style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 
-    auto& window = Game::getInstance().getWindow();
+    auto& window = Game::getInstance()->getWindow();
 
     ImGui_ImplGlfw_InitForOpenGL(window.getNative(), true);
 	ImGui_ImplOpenGL3_Init("#version 460");
@@ -55,8 +55,8 @@ void ImGuiLayer::end()
 {
     auto& io = ImGui::GetIO();
 
-    Game& app = Game::getInstance();
-    io.DisplaySize = ImVec2((float)app.getWindow().getWidth(), (float)app.getWindow().getHeight());
+    Game* app = Game::getInstance();
+    io.DisplaySize = ImVec2((float)app->getWindow().getWidth(), (float)app->getWindow().getHeight());
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

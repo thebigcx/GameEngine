@@ -17,8 +17,8 @@ public:
 
     void onUpdate(float dt);
     void onEvent(Event& event);
-    void onStart();
-    void onDetach();
+    void initialize();
+    void finalize();
 
     // Events
     bool onMousePressed(MousePressedEvent& event);

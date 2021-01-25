@@ -7,7 +7,7 @@
 #include <core/KeyCodes.h>
 #include <core/Core.h>
 
-#include <util/ImageLoader.h>
+#include <util/Image.h>
 #include <util/Timer.h>
 #include <util/OrthographicCamera.h>
 #include <util/OrthographicCameraController.h>
@@ -15,7 +15,7 @@
 #include <util/PerspectiveCameraController.h>
 #include <util/Time.h>
 #include <util/Transform.h>
-#include <util/io/Files.h>
+#include <util/io/FileSystem.h>
 
 #include <events/Event.h>
 #include <events/EventDispatcher.h>

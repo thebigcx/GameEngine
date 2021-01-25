@@ -1,6 +1,6 @@
 #include <renderer/Texture2D.h>
 
-#include <util/ImageLoader.h>
+#include <util/Image.h>
 #include <platform/GL/GLTexture2D.h>
 
 #include <iostream>
@@ -38,12 +38,12 @@ Shared<Texture2D> Texture2D::asyncCreate(const std::string& file, bool isSRGB)
     Shared<Image> img;
     std::thread thr([&]
     {
-        img = ImageLoader::loadOpenGLImage(file);
+        img = Image::create(file, true);
     });
     
 
-    Shared<Texture2D> texture = createShared<GLTexture2D>(img->width, img->height);
-    texture->setData(0, 0, img->width, img->height, img->data);
+    Shared<Texture2D> texture = createShared<GLTexture2D>(img->getWidth(), img->getHeight());
+    texture->setData(0, 0, img->getWidth(), img->getHeight(), img->getData());
 }
 
 }

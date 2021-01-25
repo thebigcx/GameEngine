@@ -68,14 +68,14 @@ GLTexture2D::GLTexture2D(const std::string& file, SizedTextureFormat internalFor
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     bind();
 
-    auto image = ImageLoader::loadOpenGLImage(file);
+    auto image = Image::create(file, true);
 
-    if (image->data)
+    if (image->getData())
     {
         m_internalFormat = internalFormat;
         m_dataFormat = dataFormat;
 
-        glTextureStorage2D(m_id, 1, Utils::getSizedTextureFormatEnumValue_(m_internalFormat), image->width, image->height);
+        glTextureStorage2D(m_id, 1, Utils::getSizedTextureFormatEnumValue_(m_internalFormat), image->getWidth(), image->getHeight());
 
         glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
         glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_NEAREST);
@@ -86,11 +86,11 @@ GLTexture2D::GLTexture2D(const std::string& file, SizedTextureFormat internalFor
                      0,
                      0,
                      0,
-                     image->width,
-                     image->height,
+                     image->getWidth(),
+                     image->getHeight(),
                      Utils::getTextureFormatEnumValue_(m_dataFormat),
                      GL_UNSIGNED_BYTE, // TODO: custom type
-                     image->data);
+                     image->getData());
 
         glGenerateTextureMipmap(m_id);
     }
@@ -99,8 +99,8 @@ GLTexture2D::GLTexture2D(const std::string& file, SizedTextureFormat internalFor
         Logger::getCoreLogger()->error("Image is corrupted or contains unknown formatted data!");
     }
 
-    m_width = image->width;
-    m_height = image->height;
+    m_width = image->getWidth();
+    m_height = image->getHeight();
 
     unbind();
 }

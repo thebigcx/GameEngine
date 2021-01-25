@@ -13,7 +13,7 @@
 #include <scene/SceneSerializer.h>
 #include <script/lua/state.h>
 #include <util/Timer.h>
-#include <util/io/Files.h>
+#include <util/io/FileSystem.h>
 
 namespace Engine
 {
@@ -25,10 +25,11 @@ EditorLayer::EditorLayer()
 
 void EditorLayer::onAttach()
 {
-    Game::getInstance().getWindow().setSize(math::uvec2(1920, 1080));
+    Game::getInstance()->getWindow().setSize(math::uvec2(1920, 1080));
+    FileSystem::setAssetDirectoryPath("Editor/assets/");
 
-    auto icon = ImageLoader::loadImage("Editor/assets/icon.png");
-    Game::getInstance().getWindow().setIcon(*icon);
+    auto icon = Image::create(FileSystem::getAssetPath("icon.png"));
+    Game::getInstance()->getWindow().setIcon(icon);
 
     Framebuffer::Specification spec;
     spec.width = 1280;
@@ -45,15 +46,15 @@ void EditorLayer::onAttach()
     m_hdrBuffer = Framebuffer::create(spec);
     m_framebufferMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
 
-    m_scene = createShared<Scene>();
+    m_scene = Scene::create();
     m_sceneHeirarchyPanel.setContext(m_scene.get());
     m_materialsPanel.setContext(m_scene.get());
     m_sceneRendererPanel.setContext(m_scene.get());
     m_debugPanel.setContext(m_scene.get());
     m_environmentPanel.setContext(m_scene.get());
 
-    m_scenePlayButton = Texture2D::create("Editor/assets/scene_play.png");
-    m_sceneStopButton = Texture2D::create("Editor/assets/scene_stop.png");
+    m_scenePlayButton = Texture2D::create(FileSystem::getAssetPath("scene_play.png"));
+    m_sceneStopButton = Texture2D::create(FileSystem::getAssetPath("scene_stop.png"));
 }
 
 void EditorLayer::onUpdate(float dt)
@@ -108,7 +109,7 @@ void EditorLayer::onUpdate(float dt)
     RenderCommand::renderIndexed(m_framebufferMesh->vertexArray);
     m_hdrBuffer->unbind();
 
-    Game::getInstance().getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
+    Game::getInstance()->getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
 }
 
 void EditorLayer::drawMenuBar()
@@ -145,11 +146,14 @@ void EditorLayer::drawMenuBar()
             if (FileDialog::madeSelection())
             {
                 Assets::flush();
-                m_scene = createShared<Scene>();
+                m_scene.reset();
                 m_scene = SceneSerializer::loadScene(FileDialog::getSelection());
                 m_scene->onViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
                 m_sceneHeirarchyPanel.setContext(m_scene.get());
-                m_materialsPanel.setContext(m_scene.get()); // TODO: add a callback system to make this better
+                m_materialsPanel.setContext(m_scene.get()); // TODO: This is dumb.
+                m_sceneRendererPanel.setContext(m_scene.get());
+                m_debugPanel.setContext(m_scene.get());
+                m_environmentPanel.setContext(m_scene.get());
             }
         }
     }
@@ -209,7 +213,7 @@ void EditorLayer::onImGuiRender()
 
     m_viewportFocused = ImGui::IsWindowFocused();
     m_viewportHovered = ImGui::IsWindowHovered();
-    Game::getInstance().getImGuiLayer()->blockEvents(!m_viewportFocused && !m_viewportHovered);
+    Game::getInstance()->getImGuiLayer()->blockEvents(!m_viewportFocused && !m_viewportHovered);
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };

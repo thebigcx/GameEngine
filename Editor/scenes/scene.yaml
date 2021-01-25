@@ -1,30 +1,15 @@
 Scene:
   GameObjects:
-    Mesh:
+    New Sprite:
       Transform:
         Translation: [0, 0, 0]
         Rotation: [0, 0, 0]
         Scale: [1, 1, 1]
-      Mesh:
-        Mesh: Sandbox/assets/Donut.obj
-        Mesh ID: 0
-      Mesh Renderer:
-        Material: 0
-  Materials:
-    0:
-      Albedo: ""
-      Using Albedo: true
-      Normal: ""
-      Using Normal: false
-      Metallic: ""
-      Using Metallic: false
-      Roughness: ""
-      Using Roughness: false
-      Ambient Occlusion: ""
-      Using Ambient Occlusion: false
-      Depth: ""
-      Using Depth: false
-      Shader: pbr
+      Sprite Renderer:
+        Color: [1, 1, 1, 1]
+        Texture: ""
+        Using Texture Rect: false
+        Texture Rect: [0, 0, 0, 0]
   Shaders:
     shadowmap: Engine/src/renderer/shader/default/shadowmap.glsl
     outline: Engine/src/renderer/shader/default/outline.glsl

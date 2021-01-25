@@ -101,7 +101,7 @@ Shared<Scene> SceneSerializer::loadScene(const std::string& path)
     YAML::Node root = YAML::LoadFile(path);
     auto sceneNode = root["Scene"];
 
-    Shared<Scene> scene = createShared<Scene>();
+    Shared<Scene> scene = Scene::create();
 
     for (YAML::const_iterator it = sceneNode["Shaders"].begin(); it != sceneNode["Shaders"].end(); it++)
     {

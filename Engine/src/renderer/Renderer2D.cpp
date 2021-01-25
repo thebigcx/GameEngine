@@ -16,7 +16,7 @@ Shared<Mesh> Renderer2D::m_framebufferMesh;
 
 void Renderer2D::init()
 {
-    auto windowSize = Game::getInstance().getWindow().getSize();
+    auto windowSize = Game::getInstance()->getWindow().getSize();
 
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
     

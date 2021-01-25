@@ -6,7 +6,7 @@
 #include <string>
 
 #include <maths/vector/vec2.h>
-#include <util/ImageLoader.h>
+#include <util/Image.h>
 #include <core/Core.h>
 
 namespace Engine

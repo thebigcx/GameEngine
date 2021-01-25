@@ -18,7 +18,7 @@ void Renderer::init()
     m_data.fboMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
     m_data.fboShader = ShaderFactory::createShader("hdr");
     
-    math::ivec2 windowSize = Game::getInstance().getWindow().getSize();
+    math::ivec2 windowSize = Game::getInstance()->getWindow().getSize();
     //m_data.target = Framebuffer::create(windowSize.x, windowSize.y);
     m_data.target = RenderTarget::create(windowSize.x, windowSize.y);
 }

@@ -21,7 +21,7 @@ static void framebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t h
 {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
     WindowResizeEvent event(width, height);
-    Game::getInstance().onEvent(event);
+    Game::getInstance()->onEvent(event);
 }
 
 static void windowMaximizeCallback(GLFWwindow* window, int maximized)

@@ -7,7 +7,7 @@ namespace Engine
 
 template<typename T>
 using Shared = std::shared_ptr<T>;
-
+// TODO: look into custom deleters to allow for private destructors
 template<typename T, typename... Args>
 constexpr Shared<T> createShared(Args&&... args)
 {

@@ -24,7 +24,31 @@ Game::Game()
     }
 
     m_instance = this;
+}
 
+Game::~Game()
+{
+    
+}
+
+void Game::shutdown()
+{
+    finalize();
+
+    for (auto& layer : m_layers)
+    {
+        layer->onDetach();
+    }
+    m_window->close();
+    Renderer::shutdown();
+
+    AudioController::getInstance()->finalize();
+
+    m_window.reset();
+}
+
+int Game::run()
+{
     m_window = Window::create(1280, 720, "Game");
     m_window->setEventCallback(BIND_EVENT_FN(Game::onEvent));
 
@@ -36,22 +60,9 @@ Game::Game()
     m_imguiLayer = new ImGuiLayer();
     m_imguiLayer->onAttach();
     m_layers.emplace_back(m_imguiLayer);
-}
 
-Game::~Game()
-{
-    for (auto& layer : m_layers)
-    {
-        layer->onDetach();
-    }
-    m_window->close();
-    Renderer::shutdown();
+    initialize();
 
-    AudioController::getInstance()->finalize();
-}
-
-void Game::run()
-{
     while (m_running)
     {
         m_window->pollEvents();
@@ -86,6 +97,10 @@ void Game::run()
 
         m_window->onUpdate();
     }
+
+    shutdown();
+
+    return 0;
 }
 
 void Game::onEvent(Event& event)
@@ -110,14 +125,14 @@ void Game::addLayer(Layer* layer)
     layer->onAttach();
 }
 
-Game& Game::getInstance()
+Game* Game::getInstance()
 {
     if (m_instance == nullptr)
     {
         Logger::getCoreLogger()->error("Game instance is undefined!");
     }
 
-    return *m_instance;
+    return m_instance;
 }
 
 void Game::quit()

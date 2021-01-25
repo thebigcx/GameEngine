@@ -14,4 +14,19 @@ CSharpScript::CSharpScript(const std::string& filepath, const mono::domain& doma
     m_assembly = domain.get_assembly(filepath);
 }
 
+void CSharpScript::onStart()
+{
+
+}
+
+void CSharpScript::onUpdate(float dt)
+{
+
+}
+
+void CSharpScript::onDestroy()
+{
+
+}
+
 }

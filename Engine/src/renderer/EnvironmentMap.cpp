@@ -1,6 +1,6 @@
 #include <renderer/EnvironmentMap.h>
 #include <renderer/Texture2D.h>
-#include <util/ImageLoader.h>
+#include <util/Image.h>
 #include <renderer/Framebuffer.h>
 #include <renderer/MeshFactory.h>
 #include <renderer/RenderCommand.h>
@@ -33,10 +33,10 @@ Shared<TextureCube> EnvironmentMap::hdrToCubemap(const std::string& hdrFile)
 {
     Shared<TextureCube> cubemap;
 
-    Shared<HDRImage> image = ImageLoader::loadHDRImage(hdrFile);
+    Shared<Image> image = Image::create(hdrFile, true);
 
-    Shared<Texture2D> hdrTexture = Texture2D::create(image->width, image->height, SizedTextureFormat::RGB16F, true, true);
-    hdrTexture->setData(0, 0, image->width, image->height, image->data, TextureFormat::RGB, DataType::Float);
+    Shared<Texture2D> hdrTexture = Texture2D::create(image->getWidth(), image->getHeight(), SizedTextureFormat::RGB16F, true, true);
+    hdrTexture->setData(0, 0, image->getWidth(), image->getHeight(), image->getData(), TextureFormat::RGB, DataType::Float);
 
     cubemap = TextureCube::create(512, 512, SizedTextureFormat::RGB16F, true, true);
 
