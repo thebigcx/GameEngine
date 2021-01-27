@@ -62,7 +62,7 @@ namespace Utils
     }
 }
 
-GLTexture2D::GLTexture2D(const std::string& file, SizedTextureFormat internalFormat, TextureFormat dataFormat, bool clamp, bool linear)
+GLTexture2D::GLTexture2D(const std::string& file, bool clamp, bool linear)
     : m_path(file)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
@@ -72,8 +72,20 @@ GLTexture2D::GLTexture2D(const std::string& file, SizedTextureFormat internalFor
 
     if (image->getData())
     {
-        m_internalFormat = internalFormat;
-        m_dataFormat = dataFormat;
+        switch (image->getFormat())
+        {
+            case Image::Format::RGB:
+                m_internalFormat = SizedTextureFormat::sRGB8;
+                m_dataFormat = TextureFormat::RGB;
+                break;
+            case Image::Format::RGBA:
+                m_internalFormat = SizedTextureFormat::sRGBA8;
+                m_dataFormat = TextureFormat::RGBA;
+                break;
+        };
+
+        m_width = image->getWidth();
+        m_height = image->getHeight();
 
         glTextureStorage2D(m_id, 1, Utils::getSizedTextureFormatEnumValue_(m_internalFormat), image->getWidth(), image->getHeight());
 
@@ -86,8 +98,8 @@ GLTexture2D::GLTexture2D(const std::string& file, SizedTextureFormat internalFor
                      0,
                      0,
                      0,
-                     image->getWidth(),
-                     image->getHeight(),
+                     m_width,
+                     m_height,
                      Utils::getTextureFormatEnumValue_(m_dataFormat),
                      GL_UNSIGNED_BYTE, // TODO: custom type
                      image->getData());
@@ -98,9 +110,6 @@ GLTexture2D::GLTexture2D(const std::string& file, SizedTextureFormat internalFor
     {
         Logger::getCoreLogger()->error("Image is corrupted or contains unknown formatted data!");
     }
-
-    m_width = image->getWidth();
-    m_height = image->getHeight();
 
     unbind();
 }

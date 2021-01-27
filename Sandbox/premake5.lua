@@ -46,7 +46,7 @@ project "Sandbox"
 		"lua",
 		"mono-2.0",
 		"dl", -- TODO: move to static library
-		"uuid"
+		"box2d"
 	}
 	
 	filter "configurations:Debug"

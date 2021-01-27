@@ -24,6 +24,7 @@ public:
     inline unsigned int getHeight() const { return m_height; }
     inline Image::Format getFormat() const { return m_format; }
     inline void* getData() const { return m_data; }
+    inline int getChannels() const { return m_channels; }
 
 private:
     Image();
@@ -33,6 +34,7 @@ private:
     unsigned int m_height;
     Format m_format;
     void* m_data;
+    int m_channels = 0;
 };
 
 }

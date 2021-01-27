@@ -29,42 +29,36 @@ void SceneSerializer::saveScene(const Shared<Scene>& scene, const std::string& p
             sceneNode["Materials"][name]["Albedo"] = mat->albedoMap->getPath();
         else
             sceneNode["Materials"][name]["Albedo"] = "";
-        sceneNode["Materials"][name]["Using Albedo"] = mat->usingAlbedoMap;
 
 
         if (mat->normalMap)
             sceneNode["Materials"][name]["Normal"] = mat->normalMap->getPath();
         else
             sceneNode["Materials"][name]["Normal"] = "";
-        sceneNode["Materials"][name]["Using Normal"] = mat->usingNormalMap;
 
 
         if (mat->metallicMap)
             sceneNode["Materials"][name]["Metallic"] = mat->metallicMap->getPath();
         else
             sceneNode["Materials"][name]["Metallic"] = "";
-        sceneNode["Materials"][name]["Using Metallic"] = mat->usingMetallicMap;
 
         
         if (mat->roughnessMap)
             sceneNode["Materials"][name]["Roughness"] = mat->roughnessMap->getPath();
         else
             sceneNode["Materials"][name]["Roughness"] = "";
-        sceneNode["Materials"][name]["Using Roughness"] = mat->usingRoughnessMap;
 
 
         if (mat->ambientOcclusionMap)
             sceneNode["Materials"][name]["Ambient Occlusion"] = mat->ambientOcclusionMap->getPath();
         else
             sceneNode["Materials"][name]["Ambient Occlusion"] = "";
-        sceneNode["Materials"][name]["Using Ambient Occlusion"] = mat->usingAmbientOcclusionMap;
 
 
         if (mat->depthMap)
             sceneNode["Materials"][name]["Depth"] = mat->depthMap->getPath();
         else
             sceneNode["Materials"][name]["Depth"] = "";
-        sceneNode["Materials"][name]["Using Depth"] = mat->usingDepthMap;
 
 
         sceneNode["Materials"][name]["Shader"] = Assets::find<Shader>(mat->shader);

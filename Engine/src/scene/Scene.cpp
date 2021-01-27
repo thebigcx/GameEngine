@@ -1,6 +1,7 @@
 #include <scene/Scene.h>
 #include <renderer/Renderer2D.h>
 #include <maths/matrix/matrix_func.h>
+#include <physics/2D/PhysicsController2D.h>
 
 #include <renderer/Renderer3D.h>
 #include <renderer/MeshFactory.h>
@@ -12,22 +13,22 @@ namespace Engine
 
 Scene::Scene()
 {
-    ScriptController::getInstance()->initialize();
+    
 }
 
 Scene::~Scene()
 {
-    ScriptController::getInstance()->finalize();
+
 }
 
 Shared<Scene> Scene::create()
 {
     auto scene = Shared<Scene>(new Scene());
-    auto cam = scene->createGameObject("Main Camera");
+    /*auto cam = scene->createGameObject("Main Camera");
     auto& cameraComp = cam->addComponent<CameraComponent>();
     cameraComp.primary = true;
     cameraComp.camera.setProjectionType(ProjectionType::Perspective);
-    cam->addComponent<TransformComponent>();
+    cam->addComponent<TransformComponent>();*/
 
     return scene;
 }
@@ -172,7 +173,7 @@ void Scene::onUpdateRuntime(float dt)
         {
             script.instance = script.instantiateScript();
             script.instance->m_gameObject = object;
-            script.instance->onCreate();
+            script.instance->onStart();
         }
 
         script.instance->onUpdate(dt);
@@ -264,7 +265,6 @@ void Scene::onComponentAdded<CameraComponent>(GameObject& object, CameraComponen
 
 template<> void Scene::onComponentAdded<TransformComponent>(GameObject& object, TransformComponent& component) {}
 template<> void Scene::onComponentAdded<SpriteRendererComponent>(GameObject& object, SpriteRendererComponent& component) {}
-template<> void Scene::onComponentAdded<BoxCollider2DComponent>(GameObject& object, BoxCollider2DComponent& component) {}
 template<> void Scene::onComponentAdded<NativeScriptComponent>(GameObject& object, NativeScriptComponent& component) {}
 template<> void Scene::onComponentAdded<TagComponent>(GameObject& object, TagComponent& component) {}
 template<> void Scene::onComponentAdded<TextRendererComponent>(GameObject& object, TextRendererComponent& component) {}
@@ -274,5 +274,7 @@ template<> void Scene::onComponentAdded<PointLightComponent>(GameObject& object,
 template<> void Scene::onComponentAdded<DirectionalLightComponent>(GameObject& object, DirectionalLightComponent& component) {}
 template<> void Scene::onComponentAdded<MeshRendererComponent>(GameObject& object, MeshRendererComponent& component) {}
 template<> void Scene::onComponentAdded<CSharpScriptComponent>(GameObject& object, CSharpScriptComponent& component) {}
+template<> void Scene::onComponentAdded<BoxCollider2DComponent>(GameObject& object, BoxCollider2DComponent& component) {}
+template<> void Scene::onComponentAdded<RigidBody2DComponent>(GameObject& object, RigidBody2DComponent& component) {}
 
 }

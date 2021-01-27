@@ -62,8 +62,7 @@ class Texture2D
 public:
     virtual ~Texture2D() = default;
 
-    static Shared<Texture2D> create(const std::string& file, SizedTextureFormat internalFormat = SizedTextureFormat::RGBA8, 
-                                    TextureFormat dataFormat = TextureFormat::RGBA, bool clamp = false, bool linear = true);
+    static Shared<Texture2D> create(const std::string& file, bool clamp = false, bool linear = true);
     static Shared<Texture2D> create(uint32_t width, uint32_t height, SizedTextureFormat dataFormat = SizedTextureFormat::RGBA8, bool clamp = false, bool linear = true);
     static Shared<Texture2D> createWhiteTexture();
 

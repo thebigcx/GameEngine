@@ -16,8 +16,7 @@ namespace Utils
 class GLTexture2D : public Texture2D
 {
 public:
-    GLTexture2D(const std::string& path, SizedTextureFormat internalFormat = SizedTextureFormat::RGBA8, 
-                TextureFormat dataFormat = TextureFormat::RGBA, bool clamp = false, bool linear = true);
+    GLTexture2D(const std::string& path, bool clamp = false, bool linear = true);
     GLTexture2D(uint32_t width, uint32_t height, SizedTextureFormat dataFormat = SizedTextureFormat::RGBA8, bool clamp = false, bool linear = true);
     ~GLTexture2D();
 

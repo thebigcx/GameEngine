@@ -11,7 +11,7 @@ namespace Engine
 {
 class ScriptController
 {
-    friend class Scene;
+    friend class Game;
 
 private:
     ScriptController();

@@ -50,7 +50,7 @@
 #include <scene/Components.h>
 #include <scene/GameComponent.h>
 #include <scene/GameObject.h>
-#include <scene/ScriptableGameObject.h>
+#include <scene/ScriptableObject.h>
 
 #include <physics/PhysicsWorld.h>
 #include <physics/Body.h>

@@ -17,7 +17,7 @@ void Material::bind() const
 
     int32_t textureFlags = 0;
 
-    if (usingAlbedoMap && albedoMap)
+    if (albedoMap)
     {
         albedoMap->bind(0);
         textureFlags |= (1 << 0);
@@ -27,13 +27,13 @@ void Material::bind() const
         shader->setFloat3("material.albedoColor", albedoColor);
     }
 
-    if (usingNormalMap && normalMap)
+    if (normalMap)
     {
         normalMap->bind(1);
         textureFlags |= (1 << 1);
     }
 
-    if (usingMetallicMap && metallicMap)
+    if (metallicMap)
     {
         metallicMap->bind(2);
         textureFlags |= (1 << 2);
@@ -41,7 +41,7 @@ void Material::bind() const
     shader->setFloat("material.metallicScalar", metallicScalar);
     
 
-    if (usingRoughnessMap && roughnessMap)
+    if (roughnessMap)
     {
         roughnessMap->bind(3);
         textureFlags |= (1 << 3);
@@ -49,20 +49,20 @@ void Material::bind() const
     shader->setFloat("material.roughnessScalar", roughnessScalar);
     
 
-    if (usingAmbientOcclusionMap && ambientOcclusionMap)
+    if (ambientOcclusionMap)
     {
         ambientOcclusionMap->bind(4);
         textureFlags |= (1 << 4);
     }
     
 
-    if (usingDepthMap && depthMap)
+    if (depthMap)
     {
         depthMap->bind(5);
         textureFlags |= (1 << 5);
     }
 
-    if (usingEmissionMap && emissionMap)
+    if (emissionMap)
     {
         emissionMap->bind(6);
         textureFlags |= (1 << 6);

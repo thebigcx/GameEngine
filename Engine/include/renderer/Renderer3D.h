@@ -44,6 +44,8 @@ struct Renderer3DData
     math::vec3 cameraPos;
     
     std::unordered_map<Shared<Material>, std::vector<RenderObject>> renderObjects;
+
+    bool usingSkybox = true;
 };
 
 class Renderer3D
@@ -74,6 +76,8 @@ public:
     static void endScene();
 
     static void renderShadows();
+
+    static void useSkybox(bool use) { s_data.usingSkybox = use; }
 
 private:
     static void setLightingUniforms(const Shared<Shader>& shader);

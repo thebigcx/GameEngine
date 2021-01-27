@@ -5,13 +5,15 @@
 #include <util/Transform.h>
 #include <util/OrthographicCameraController.h>
 #include <scene/SceneCamera.h>
-#include <scene/ScriptableGameObject.h>
+#include <scene/ScriptableObject.h>
 #include <renderer/Texture2D.h>
 #include <renderer/text/TrueTypeFont.h>
 #include <renderer/Mesh.h>
 #include <renderer/Lighting.h>
 #include <renderer/Assets.h>
 #include <script/CSharpScript.h>
+
+#include <box2d/b2_body.h>
 
 namespace Engine
 {
@@ -72,9 +74,9 @@ struct TextRendererComponent : public GameComponent
 
 struct NativeScriptComponent : public GameComponent
 {
-    ScriptableGameObject* instance = nullptr;
+    ScriptableObject* instance = nullptr;
 
-    ScriptableGameObject*(*instantiateScript)();
+    ScriptableObject*(*instantiateScript)();
     void (*destroyScript)(NativeScriptComponent*);
 
     template<typename T, typename... Args>
@@ -82,7 +84,7 @@ struct NativeScriptComponent : public GameComponent
     {
         instantiateScript = [&args...]()
         {
-            return static_cast<ScriptableGameObject*>(new T(std::forward<Args>(args)...));
+            return static_cast<ScriptableObject*>(new T(std::forward<Args>(args)...));
         };
 
         destroyScript = [](NativeScriptComponent* component)
@@ -98,11 +100,6 @@ struct MeshComponent : public GameComponent
     Shared<Mesh> mesh = nullptr;
     std::string filePath = "";
     uint32_t meshID = 0;
-};
-
-struct BoxCollider2DComponent : public GameComponent
-{
-    math::frect box;
 };
 
 struct DirectionalLightComponent : public GameComponent
@@ -132,6 +129,16 @@ struct CSharpScriptComponent : public GameComponent
     std::string filepath = "";
     Shared<CSharpScript> script;
     bool initialized = false;
+};
+
+struct RigidBody2DComponent : public GameComponent
+{
+    b2Body* body;
+};
+
+struct BoxCollider2DComponent : public GameComponent
+{
+    
 };
 
 }

@@ -199,12 +199,15 @@ void Renderer3D::endScene()
 
     flushBatch();
 
-    glDepthFunc(GL_LEQUAL);
-    s_data.environmentShader->bind();
-    s_data.skyboxMesh->vertexArray->bind();
-    s_data.environment->getEnvMap()->bind();
-    RenderCommand::renderIndexed(s_data.skyboxMesh->vertexArray);
-    glDepthFunc(GL_LESS);
+    if (s_data.usingSkybox)
+    {
+        glDepthFunc(GL_LEQUAL);
+        s_data.environmentShader->bind();
+        s_data.skyboxMesh->vertexArray->bind();
+        s_data.environment->getEnvMap()->bind();
+        RenderCommand::renderIndexed(s_data.skyboxMesh->vertexArray);
+        glDepthFunc(GL_LESS);
+    }
 }
 
 void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)

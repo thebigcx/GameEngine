@@ -28,7 +28,7 @@ Shared<Model> ModelLoader::load(const std::string& path)
 
 const aiScene* ModelLoader::setupAssimp_(const std::string& modelPath)
 {
-    const aiScene* scene = m_importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene* scene = m_importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
@@ -158,56 +158,12 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
 
             auto material_ = Material::create(Assets::get<Shader>("pbr")); // TODO: material shaders
 
-            if (!albedo)
-                material_->usingAlbedoMap = false;
-            else
-            {
-                material_->albedoMap = albedo;
-                material_->usingAlbedoMap = true;
-            }
-
-            if (!normal)
-                material_->usingNormalMap = false;
-            else
-            {
-                material_->normalMap = normal;
-                material_->usingNormalMap = true;
-            }
-
-            if (!metallic)
-                material_->usingMetallicMap = false;
-            else
-            {
-                material_->metallicMap = metallic;
-                material_->usingMetallicMap = true;
-            }
-
-            if (!roughness)
-            {
-                material_->usingRoughnessMap = false;
-                material_->roughnessScalar = 1.f;
-            }
-            else
-            {
-                material_->roughnessMap = roughness;
-                material_->usingRoughnessMap = true;
-            }
-
-            if (!ambientOcclusion)
-                material_->usingAmbientOcclusionMap = false;
-            else
-            {
-                material_->ambientOcclusionMap = ambientOcclusion;
-                material_->usingAmbientOcclusionMap = true;
-            }
-
-            if (!emission)
-                material_->usingEmissionMap = false;
-            else
-            {
-                material_->emissionMap = emission;
-                material_->usingEmissionMap = true;
-            }
+            material->albedoMap = albedo;
+            material->normalMap = normal;
+            material->metallicMap = metallic;
+            material->roughnessMap = roughness;
+            material->ambientOcclusionMap = ambientOcclusion;
+            material->emissionMap = emission;
 
             material = material_;
             m_materialsLoaded.emplace(std::pair<int, Shared<Material>>(mesh->mMaterialIndex, material));
@@ -268,7 +224,7 @@ Shared<Texture2D> ModelLoader::loadMaterialTexture_(aiMaterial* mat, aiTextureTy
     }
     if (!skip)
     {
-        texture = Texture2D::create(directory + "/" + str.C_Str(), SizedTextureFormat::sRGBA8);
+        texture = Texture2D::create(directory + "/" + str.C_Str());
 
         m_texturesLoaded.push_back(texture);
     }

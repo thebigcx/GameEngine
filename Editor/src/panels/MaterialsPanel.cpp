@@ -349,7 +349,7 @@ void MaterialsPanel::onImGuiRender()
             {
                 if (FileDialog::madeSelection())
                 {
-                    Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection(), SizedTextureFormat::sRGBA8);
+                    Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection());
                     texture->name = "New Texture";
                     Assets::add<Texture2D>(Utils::genUUID(), texture);
                 }

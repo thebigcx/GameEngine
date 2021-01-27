@@ -46,7 +46,8 @@ project "Editor"
 		"lua",
 		"dl",
 		"mono-2.0",
-		"uuid"
+		"uuid",
+		"box2d"
 	}
 	
 	filter "configurations:Debug"

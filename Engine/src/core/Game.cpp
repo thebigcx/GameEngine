@@ -10,6 +10,8 @@
 #include <util/Time.h>
 #include <renderer/RenderCommand.h>
 #include <util/Timer.h>
+#include <physics/2D/PhysicsController2D.h>
+#include <script/ScriptController.h>
 
 namespace Engine
 {
@@ -34,6 +36,9 @@ Game::~Game()
 void Game::shutdown()
 {
     finalize();
+    ScriptController::getInstance()->finalize();
+    PhysicsController2D::getInstance()->finalize();
+    AudioController::getInstance()->finalize();
 
     for (auto& layer : m_layers)
     {
@@ -41,8 +46,6 @@ void Game::shutdown()
     }
     m_window->close();
     Renderer::shutdown();
-
-    AudioController::getInstance()->finalize();
 
     m_window.reset();
 }
@@ -53,7 +56,6 @@ int Game::run()
     m_window->setEventCallback(BIND_EVENT_FN(Game::onEvent));
 
     math::random::init_seed();
-    AudioController::getInstance()->initialize();
     Renderer::init();
     Time::init();
 
@@ -62,6 +64,9 @@ int Game::run()
     m_layers.emplace_back(m_imguiLayer);
 
     initialize();
+    AudioController::getInstance()->initialize();
+    ScriptController::getInstance()->initialize();
+    PhysicsController2D::getInstance()->initialize();
 
     while (m_running)
     {

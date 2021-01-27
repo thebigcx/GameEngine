@@ -5,10 +5,10 @@
 namespace Engine
 {
 
-class ScriptableGameObject
+class ScriptableObject
 {
 public:
-    virtual ~ScriptableGameObject() = default;
+    virtual ~ScriptableObject() = default;
 
     template<typename T>
     T& getComponent()
@@ -17,10 +17,9 @@ public:
     }
 
 protected:
-    virtual void onCreate() {}
+    virtual void onStart() {}
     virtual void onDestroy() {}
     virtual void onUpdate(float dt) {}
-    virtual void onCollide2D() {}
 
 private:
     GameObject* m_gameObject;

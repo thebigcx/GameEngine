@@ -9,7 +9,7 @@ namespace Engine
 Image::Image()
     : m_data(nullptr), m_width(0), m_height(0)
 {
-
+    
 }
 
 Image::~Image()
@@ -49,6 +49,7 @@ Shared<Image> Image::create(const std::string& path, bool flipped)
     image->m_data = data;
     image->m_width = width;
     image->m_height = height;
+    image->m_channels = channels;
     
     switch (channels)
     {
@@ -56,6 +57,9 @@ Shared<Image> Image::create(const std::string& path, bool flipped)
             image->m_format = Image::Format::RGB;
             break;
         case 4:
+            image->m_format = Image::Format::RGBA;
+            break;
+        default:
             image->m_format = Image::Format::RGBA;
             break;
     };
