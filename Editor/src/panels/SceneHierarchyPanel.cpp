@@ -111,13 +111,41 @@ void SceneHierarchyPanel::onImGuiRender()
                 m_selection = object;
             }
 
-            if (ImGui::MenuItem("Mesh"))
+            if (ImGui::BeginMenu("Mesh"))
             {
-                auto object = m_context->createGameObject("New Mesh");
-                object->addComponent<TransformComponent>();
-                object->addComponent<MeshComponent>();
-                object->addComponent<MeshRendererComponent>();
-                m_selection = object;
+                if (ImGui::MenuItem("Import"))
+                {
+                    FileDialog::open("meshload");
+                }
+
+                if (ImGui::MenuItem("Empty Mesh"))
+                {
+                    auto object = m_context->createGameObject("New Mesh");
+                    object->addComponent<TransformComponent>();
+                    object->addComponent<MeshComponent>();
+                    object->addComponent<MeshRendererComponent>();
+                    m_selection = object;
+                }
+                if (ImGui::MenuItem("Cube"))
+                {
+                    auto object = m_context->createGameObject("Cube");
+                    object->addComponent<TransformComponent>();
+                    auto& mesh = object->addComponent<MeshComponent>();
+                    mesh.mesh = MeshFactory::cubeMesh(1.f);
+                    auto& render = object->addComponent<MeshRendererComponent>();
+                    m_selection = object;
+                }
+                if (ImGui::MenuItem("Sphere"))
+                {
+                    auto object = m_context->createGameObject("Sphere");
+                    object->addComponent<TransformComponent>();
+                    auto& mesh = object->addComponent<MeshComponent>();
+                    mesh.mesh = MeshFactory::sphereMesh(1.f, 20, 20);
+                    auto& render = object->addComponent<MeshRendererComponent>();
+                    m_selection = object;
+                }
+
+                ImGui::EndMenu();
             }
 
             if (ImGui::MenuItem("Directional Light"))
@@ -130,52 +158,32 @@ void SceneHierarchyPanel::onImGuiRender()
 
             ImGui::EndMenu();
         }
-
-        // TODO!!!: IMPORTANT!!!!! change the 3d model system, force the use of a seperate .obj or .fbx file for each mesh
-        if (ImGui::MenuItem("Import 3D Model"))
-        {
-            //FileDialog::open(reinterpret_cast<const void*>("modelload"));
-        }
-
         ImGui::EndPopup();
     }
-    /*
-    if (FileDialog::selectFile(reinterpret_cast<const void*>("modelload"), "Choose model...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
+    
+    if (FileDialog::selectFile("meshload", "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
     {
         if (!FileDialog::display())
         {
             if (FileDialog::madeSelection())
             {
-                Shared<Model> model = Model::load(FileDialog::getSelection());
+                Shared<Mesh> mesh = Mesh::load(FileDialog::getSelection(), 0);
 
-                auto object = m_context->createGameObject("Model");
+                auto object = m_context->createGameObject("Imported Mesh");
+                object->addComponent<TransformComponent>();
+                auto& meshRender = object->addComponent<MeshRendererComponent>();
+                meshRender.material = mesh->material;
 
-                int meshID = 0;
-                for (auto& mesh : model->meshes)
-                {
-                    auto child = object->addChild();
-                    child->addComponent<TagComponent>(std::string("Mesh_") + std::to_string(meshID));
-
-                    child->addComponent<MeshComponent>();
-                    child->getComponent<MeshComponent>().mesh = mesh;
-                    child->getComponent<MeshComponent>().meshID = meshID;
-                    child->getComponent<MeshComponent>().filePath = FileDialog::getSelection();
-                    child->addComponent<TransformComponent>();
-
-                    Assets::addIfNotExists(Assets::generateID<Material>(), child->getComponent<MeshComponent>().mesh->material);
-
-                    auto& meshRenderer = child->addComponent<MeshRendererComponent>();
-
-                    meshRenderer.materials.push_back(mesh->material);
-
-                    meshID++;
-                }
+                auto& meshComp = object->addComponent<MeshComponent>();
+                meshComp.filePath = FileDialog::getSelection();
+                meshComp.mesh = mesh;
+                meshComp.meshID = 0;
 
                 m_selection = object;
             }
         }
     }
-    */
+    
 
     if (gameObjectsOpen)
     {   
@@ -194,7 +202,7 @@ void SceneHierarchyPanel::onImGuiRender()
 
     ImGui::End();
 
-    ImGui::Begin("Properties");
+    ImGui::Begin("Inspector");
 
     if (m_selection != nullptr)
     {

@@ -37,6 +37,9 @@ public:
     static void setAssetDirectoryPath(const std::string& path);
     static inline const std::string& getAssetDirectoryPath() { return m_assetDirectoryPath; }
 
+    static void setCurrentDirectory(const std::string& path);
+    static std::string getCurrentDirectory();
+
     static std::string getAssetPath(const std::string& asset);
 
     static void writeToFile(const std::string& path, const std::string& text);

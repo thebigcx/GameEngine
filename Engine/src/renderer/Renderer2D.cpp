@@ -23,7 +23,7 @@ void Renderer2D::init()
     std::unordered_map<std::string, std::string> defines = {
         { "MAX_TEXTURE_SLOTS", std::to_string(s_data.MAX_TEXTURE_SLOTS) }  
     };
-    s_data.textureShader = Shader::createFromFileWithMacros("Engine/src/renderer/shader/default/texture.glsl", defines);
+    s_data.textureShader = Shader::createFromFileWithMacros("Engine/assets/shaders/texture.glsl", defines);
 
     s_data.textShader = ShaderFactory::textShader();
 

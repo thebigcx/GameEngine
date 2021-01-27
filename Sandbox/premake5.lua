@@ -45,7 +45,8 @@ project "Sandbox"
 		"yaml-cpp",
 		"lua",
 		"mono-2.0",
-		"dl" -- TODO: move to static library
+		"dl", -- TODO: move to static library
+		"uuid"
 	}
 	
 	filter "configurations:Debug"

@@ -8,6 +8,7 @@
 #include <renderer/Assets.h>
 #include <util/Timer.h>
 #include <maths/vector/vec_func.h>
+#include <util/io/FileSystem.h>
 
 namespace Engine
 {
@@ -16,23 +17,23 @@ void Renderer3D::init()
 {
     math::ivec2 windowSize = Game::getInstance()->getWindow().getSize();
     
-    auto pbr = Shader::createFromFile("Engine/src/renderer/shader/default/pbr.glsl");
+    auto pbr = Shader::createFromFile("Engine/assets/shaders/pbr.glsl");
     pbr->name = "PBR";
     Assets::add<Shader>("pbr", pbr);
 
-    auto instancepbr = Shader::createFromFile("Engine/src/renderer/shader/default/instancepbr.glsl");
+    auto instancepbr = Shader::createFromFile("Engine/assets/shaders/instancepbr.glsl");
     instancepbr->name = "Instanced PBR";
     Assets::add<Shader>("instancepbr", instancepbr);
 
-    auto hdr = Shader::createFromFile("Engine/src/renderer/shader/default/hdr.glsl");
+    auto hdr = Shader::createFromFile("Engine/assets/shaders/hdr.glsl");
     hdr->name = "HDR Renderpass";
     Assets::add<Shader>("hdr", hdr);
 
-    auto outline = Shader::createFromFile("Engine/src/renderer/shader/default/outline.glsl");
+    auto outline = Shader::createFromFile("Engine/assets/shaders/outline.glsl");
     outline->name = "Outline";
     Assets::add<Shader>("outline", outline);
 
-    auto shadowmap = Shader::createFromFile("Engine/src/renderer/shader/default/shadowmap.glsl");
+    auto shadowmap = Shader::createFromFile("Engine/assets/shaders/shadowmap.glsl");
     shadowmap->name = "Shadow Map";
     Assets::add<Shader>("shadowmap", shadowmap);
 
@@ -41,7 +42,7 @@ void Renderer3D::init()
 
     s_data.skyboxMesh = MeshFactory::skyboxMesh();
     s_data.environment = EnvironmentMap::create("Sandbox/assets/environment.hdr");
-    s_data.environmentShader = Shader::createFromFile("Engine/src/renderer/shader/default/environmentMap.glsl");
+    s_data.environmentShader = Shader::createFromFile("Engine/assets/shaders/environment_map.glsl");
 
     Framebuffer::Specification spec = {
         1024, 1024,

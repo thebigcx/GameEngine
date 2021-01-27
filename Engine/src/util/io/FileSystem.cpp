@@ -1,5 +1,7 @@
 #include <util/io/FileSystem.h>
 
+#include <filesystem>
+
 namespace Engine
 {
 
@@ -36,6 +38,16 @@ void FileSystem::setAssetDirectoryPath(const std::string& path)
 std::string FileSystem::getAssetPath(const std::string& asset)
 {
     return m_assetDirectoryPath + asset;
+}
+
+std::string FileSystem::getCurrentDirectory()
+{
+    return static_cast<std::string>(std::filesystem::current_path()) + "/";
+}
+
+void FileSystem::setCurrentDirectory(const std::string& path)
+{
+    std::filesystem::current_path(path);
 }
 
 void FileSystem::writeToFile(const std::string& path, const std::string& text)

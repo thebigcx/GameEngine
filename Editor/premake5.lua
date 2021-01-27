@@ -45,7 +45,8 @@ project "Editor"
 		"yaml-cpp",
 		"lua",
 		"dl",
-		"mono-2.0"
+		"mono-2.0",
+		"uuid"
 	}
 	
 	filter "configurations:Debug"

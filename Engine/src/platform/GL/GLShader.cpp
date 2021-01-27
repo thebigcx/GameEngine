@@ -11,6 +11,11 @@ namespace Engine
 GLShader::GLShader(const std::string& path)
     : m_path(path)
 {
+    if (!FileSystem::exists(path))
+    {
+        Logger::getCoreLogger()->error("Shader does not exist: %s", path.c_str());
+    }
+
     std::string source = FileSystem::readFile(path);
     ShaderSource shaderSource = preProcess(source);
     compileShader(shaderSource);
@@ -25,6 +30,11 @@ GLShader::GLShader(const std::string& vertSource, const std::string& fragSource)
 GLShader::GLShader(const std::string& path, const std::unordered_map<std::string, std::string>& macros)
     : m_path(path)
 {
+    if (!FileSystem::exists(path))
+    {
+        Logger::getCoreLogger()->error("Shader does not exist: %s", path.c_str());
+    }
+
     std::string source = FileSystem::readFile(path);
     source = processMacros(source, macros);
     ShaderSource shaderSource = preProcess(source);

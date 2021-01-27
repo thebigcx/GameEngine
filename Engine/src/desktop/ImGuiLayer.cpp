@@ -24,7 +24,7 @@ void ImGuiLayer::onAttach()
 
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-    io.FontDefault = io.Fonts->AddFontFromFileTTF("Editor/assets/Roboto.ttf", 18.f);
+    io.FontDefault = io.Fonts->AddFontFromFileTTF("Editor/assets/Roboto-Regular.ttf", 18.f);
 
     ImGui::StyleColorsDark();
 

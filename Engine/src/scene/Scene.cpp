@@ -12,17 +12,24 @@ namespace Engine
 
 Scene::Scene()
 {
-    m_scriptEngine.initialize();
+    ScriptController::getInstance()->initialize();
 }
 
 Scene::~Scene()
 {
-    m_scriptEngine.finalize();
+    ScriptController::getInstance()->finalize();
 }
 
 Shared<Scene> Scene::create()
 {
-    return Shared<Scene>(new Scene());
+    auto scene = Shared<Scene>(new Scene());
+    auto cam = scene->createGameObject("Main Camera");
+    auto& cameraComp = cam->addComponent<CameraComponent>();
+    cameraComp.primary = true;
+    cameraComp.camera.setProjectionType(ProjectionType::Perspective);
+    cam->addComponent<TransformComponent>();
+
+    return scene;
 }
 
 void Scene::onUpdateEditor(float dt, EditorCamera& camera)
@@ -149,7 +156,7 @@ void Scene::onScenePlay()
     for (auto& object : csscripts)
     {
         auto& script = object->getComponent<CSharpScriptComponent>();
-        script.script = m_scriptEngine.loadScript(script.filepath);
+        script.script = ScriptController::getInstance()->loadScript(script.filepath);
     }
 }
 
@@ -185,8 +192,6 @@ void Scene::onUpdateRuntime(float dt)
 
         script.script->onUpdate(dt);
     }
-
-    m_scriptEngine.onUpdate(dt);
 
     // Rendering
     Camera* camera = nullptr;

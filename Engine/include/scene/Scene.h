@@ -6,7 +6,7 @@
 #include <scene/EditorCamera.h>
 #include <renderer/Material.h>
 #include <renderer/Lighting.h>
-#include <script/ScriptEngine.h>
+#include <script/ScriptController.h>
 
 namespace Engine
 {
@@ -44,8 +44,6 @@ public:
 
 private:
     GameObject m_rootObject;
-
-    ScriptEngine m_scriptEngine;
 
     uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 

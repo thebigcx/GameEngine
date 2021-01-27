@@ -7,7 +7,7 @@
 #include <maths/vector/vec2.h>
 #include <util/OrthographicCameraController.h>
 #include <renderer/text/TrueTypeFont.h>
-#include <script/ScriptEngine.h>
+#include <script/ScriptController.h>
 
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>

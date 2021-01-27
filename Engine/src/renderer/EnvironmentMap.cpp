@@ -91,6 +91,7 @@ Shared<TextureCube> EnvironmentMap::createIrradianceMap(const Shared<TextureCube
     framebuffer->bind();
     Shared<Renderbuffer> renderbuffer = Renderbuffer::create(32, 32, GL_DEPTH_COMPONENT24);
     framebuffer->attachRenderbuffer(*renderbuffer, Framebuffer::Attachment::Depth);
+    RenderCommand::setViewport(0, 0, 32, 32);
 
     s_irradianceShader->bind();
     s_irradianceShader->setMatrix4("projection", s_captureProjection);
@@ -125,7 +126,7 @@ Shared<TextureCube> EnvironmentMap::createPrefilterMap(const Shared<TextureCube>
     prefilterMap = TextureCube::create(128, 128, SizedTextureFormat::RGB16F, true, true, true);
 
     if (!s_prefilterShader)
-        s_prefilterShader = Shader::createFromFile("Engine/src/renderer/shader/default/prefilter.glsl");
+        s_prefilterShader = Shader::createFromFile("Engine/assets/shaders/prefilter.glsl");
 
     s_prefilterShader->bind();
     s_prefilterShader->setMatrix4("projection", s_captureProjection);
@@ -172,7 +173,7 @@ Shared<Texture2D> EnvironmentMap::createBRDFLUT()
     Shared<Texture2D> brdfLUT;
 
     if (!s_brdfShader)
-        s_brdfShader = Shader::createFromFile("Engine/src/renderer/shader/default/brdf.glsl");
+        s_brdfShader = Shader::createFromFile("Engine/assets/shaders/brdf.glsl");
 
     brdfLUT = Texture2D::create(512, 512, SizedTextureFormat::RGB16F, true, true);
     brdfLUT->bind();
@@ -182,7 +183,7 @@ Shared<Texture2D> EnvironmentMap::createBRDFLUT()
     Shared<Renderbuffer> renderbuffer = Renderbuffer::create(512, 512, GL_DEPTH_COMPONENT24);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUT->getId(), 0);
 
-    glViewport(0, 0, 512, 512);
+    RenderCommand::setViewport(0, 0, 512, 512);
     s_brdfShader->bind();
     RenderCommand::clear(RenderCommand::defaultClearBits());
     auto mesh = MeshFactory::quadMesh(-1.f, -1.f, 1.f, 1.f);
@@ -196,10 +197,10 @@ Shared<Texture2D> EnvironmentMap::createBRDFLUT()
 void EnvironmentMap::initialise()
 {
     if (!s_convertShader)
-        s_convertShader = Shader::createFromFile("Engine/src/renderer/shader/default/equirectangular_to_cubemap.glsl");
+        s_convertShader = Shader::createFromFile("Engine/assets/shaders/equirectangular_to_cubemap.glsl");
 
     if (!s_irradianceShader)
-        s_irradianceShader = Shader::createFromFile("Engine/src/renderer/shader/default/irradiance.glsl");
+        s_irradianceShader = Shader::createFromFile("Engine/assets/shaders/irradiance.glsl");
 
     s_captureProjection = math::perspective((float)math::radians(90.f), 1.f, 0.1f, 10.f);
     s_captureViews =

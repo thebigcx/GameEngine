@@ -28,9 +28,6 @@ void EditorLayer::onAttach()
     Game::getInstance()->getWindow().setSize(math::uvec2(1920, 1080));
     FileSystem::setAssetDirectoryPath("Editor/assets/");
 
-    auto icon = Image::create(FileSystem::getAssetPath("icon.png"));
-    Game::getInstance()->getWindow().setIcon(icon);
-
     Framebuffer::Specification spec;
     spec.width = 1280;
     spec.height = 720;
@@ -47,6 +44,7 @@ void EditorLayer::onAttach()
     m_framebufferMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
 
     m_scene = Scene::create();
+    
     m_sceneHeirarchyPanel.setContext(m_scene.get());
     m_materialsPanel.setContext(m_scene.get());
     m_sceneRendererPanel.setContext(m_scene.get());
@@ -139,7 +137,7 @@ void EditorLayer::drawMenuBar()
         ImGui::EndMenuBar();
     }
 
-    if (FileDialog::selectFile("loadScene", "Choose scene...", ".yaml"))
+    if (FileDialog::selectFile("loadScene", "Choose scene...", ".scene"))
     {
         if (!FileDialog::display())
         {
@@ -158,7 +156,7 @@ void EditorLayer::drawMenuBar()
         }
     }
 
-    if (FileDialog::saveFile("saveSceneAs", "Save scene...", ".yaml"))
+    if (FileDialog::saveFile("saveSceneAs", "Save scene...", ".scene"))
     {
         if (!FileDialog::display())
         {

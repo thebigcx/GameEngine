@@ -14,13 +14,14 @@ EditorCamera::EditorCamera(float fov, float aspect, float near, float far)
 
 void EditorCamera::onUpdate(float dt)
 {
+    
+    math::vec2 mouse(Input::getMousePosition().x, Input::getMousePosition().y);
+    math::vec2 delta = (mouse - m_lastMousePosition) * 0.003f;
+    delta.y = -delta.y; // Flip y-axis
+    m_lastMousePosition = mouse;
+
     if (Input::isKeyPressed(Key::LeftAlt))
     {
-        math::vec2 mouse(Input::getMousePosition().x, Input::getMousePosition().y);
-        math::vec2 delta = (mouse - m_lastMousePosition) * 0.003f;
-        delta.y = -delta.y; // Flip y-axis
-        m_lastMousePosition = mouse;
-
         if (Input::isMousePressed(MouseButton::Left))
         {
             mouseRotate(delta);
@@ -28,13 +29,19 @@ void EditorCamera::onUpdate(float dt)
 
         if (Input::isMousePressed(MouseButton::Right))
         {
-            mousePan(delta);
+            // Zoom
+            mouseZoom(delta.y);
         }
+    }
 
-        if (Input::isMousePressed(MouseButton::Middle))
-        {
-            
-        }
+    if (Input::isMousePressed(MouseButton::Right))
+    {
+        // Rotate camera itself
+    }
+
+    if (Input::isMousePressed(MouseButton::Middle))
+    {
+        mousePan(delta);
     }
 
     updateView();

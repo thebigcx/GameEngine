@@ -1,0 +1,7 @@
+Scene:
+  Shaders:
+    shadowmap: Engine/src/renderer/shader/default/shadowmap.glsl
+    outline: Engine/src/renderer/shader/default/outline.glsl
+    hdr: Engine/src/renderer/shader/default/hdr.glsl
+    instancepbr: Engine/src/renderer/shader/default/instancepbr.glsl
+    pbr: Engine/src/renderer/shader/default/pbr.glsl

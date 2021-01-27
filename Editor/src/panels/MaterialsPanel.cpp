@@ -9,6 +9,7 @@
 #include <maths/quaternion/qua.h>
 #include <maths/quaternion/qua_func.h>
 #include <renderer/Assets.h>
+#include <util/uuid.h>
 
 #include "../FileDialog.h"
 
@@ -39,6 +40,36 @@ void MaterialsPanel::init()
 
 void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
 {
+    uint32_t id = texture ? texture->getId() : Texture2D::createWhiteTexture()->getId();
+
+    // Constrain image preview to line height
+    ImVec2 size = {25, 25};
+    ImGui::Image(reinterpret_cast<void*>(id), ImVec2{size.y, size.y}, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    ImGui::SameLine();
+        
+    if (ImGui::BeginCombo("##Texture", nullptr, ImGuiComboFlags_NoPreview))
+    {
+        for (auto& textureAsset : Assets::getList<Texture2D>())
+        {
+            ImGui::PushID(textureAsset.second.get());
+
+            bool isSelected = texture ? texture->getId() == textureAsset.second->getId() : false;
+            if (ImGui::Selectable(textureAsset.second->name.c_str(), isSelected))
+            {
+                texture = textureAsset.second;
+            }
+
+            if (isSelected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::PopID();
+        }
+
+        ImGui::EndCombo();
+    }
+    /*
     bool open = false;
     if (texture)
         open = ImGui::ImageButton(reinterpret_cast<void*>(texture->getId()), ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -67,7 +98,7 @@ void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
                 }
             }
         }
-    }
+    }*/
 }
 
 void MaterialsPanel::onImGuiRender()
@@ -89,15 +120,20 @@ void MaterialsPanel::onImGuiRender()
                 char buf[128];
                 strcpy(buf, material->name.c_str());
 
-                ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-                if (ImGui::InputText("Name", buf, 128, flags))
+                ImGui::Text("Name");
+                ImGui::SameLine();
+
+                if (ImGui::InputText("##Name", buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
                     material->name = std::string(buf);
                 }
 
+                ImGui::Text("Shader");
+                ImGui::SameLine();
+
                 std::string currentShader = material->shader ? material->shader->name : "<empty_shader>";
 
-                if (ImGui::BeginCombo("Shader", currentShader.c_str()))
+                if (ImGui::BeginCombo("##Shader", currentShader.c_str()))
                 {
                     for (auto& shader : Assets::getList<Shader>())
                     {
@@ -120,97 +156,97 @@ void MaterialsPanel::onImGuiRender()
                     ImGui::EndCombo();
                 }
 
-                if (ImGui::CollapsingHeader("Albedo"))
+                ImGui::NewLine();
+
+                ImGui::Columns(2, nullptr, false);
                 {
                     ImGui::PushID("Albedo");
 
                     textureSelect(material->albedoMap);
+                    ImGui::SameLine();
+                    ImGui::Text("Albedo");
 
-                    ImGui::SameLine();
-                    ImGui::Checkbox("Use", &material->usingAlbedoMap);
-                    ImGui::SameLine();
-                    ImGui::ColorEdit3("Color", &material->albedoColor.x);
+                    ImGui::NextColumn();
+
+                    ImGuiColorEditFlags flags = ImGuiColorEditFlags_NoInputs;
+                    ImGui::ColorEdit3("##Color", &material->albedoColor.x, flags);
+                    ImGui::NextColumn();
 
                     ImGui::PopID();
                 }
-
-                if (ImGui::CollapsingHeader("Normals"))
                 {
                     ImGui::PushID("Normals");
 
                     textureSelect(material->normalMap);
-
                     ImGui::SameLine();
-                    ImGui::Checkbox("Use", &material->usingNormalMap);
+                    ImGui::Text("Normal Map");
+
+                    ImGui::NextColumn();
+                    ImGui::NextColumn();
 
                     ImGui::PopID();
                 }
-
-                if (ImGui::CollapsingHeader("Metallic"))
                 {
                     ImGui::PushID("Metallic");
 
                     textureSelect(material->metallicMap);
-
                     ImGui::SameLine();
-                    ImGui::Checkbox("Use", &material->usingMetallicMap);
+                    ImGui::Text("Metallic");
+                    ImGui::NextColumn();
 
-                    ImGui::SameLine();
                     ImGui::SliderFloat("##metallicScalar", &material->metallicScalar, 0.f, 1.f);
+                    ImGui::NextColumn();
 
                     ImGui::PopID();
                 }
-
-                if (ImGui::CollapsingHeader("Roughness"))
                 {
                     ImGui::PushID("Roughness");
 
                     textureSelect(material->roughnessMap);
-
                     ImGui::SameLine();
-                    ImGui::Checkbox("Use", &material->usingRoughnessMap);
+                    ImGui::Text("Roughness");
+                    ImGui::NextColumn();
 
-                    ImGui::SameLine();
                     ImGui::SliderFloat("##roughnessScalar", &material->roughnessScalar, 0.f, 1.f);
+                    ImGui::NextColumn();
 
                     ImGui::PopID();
                 }
-
-                if (ImGui::CollapsingHeader("Ambient Occlusion"))
                 {
                     ImGui::PushID("AmbientOcclusion");
 
                     textureSelect(material->ambientOcclusionMap);
-
                     ImGui::SameLine();
-                    ImGui::Checkbox("Use", &material->usingAmbientOcclusionMap);
-
+                    ImGui::Text("Ambient Occlusion");
+                    ImGui::NextColumn();
+                    ImGui::NextColumn();
+       
                     ImGui::PopID();
                 }
-
-                if (ImGui::CollapsingHeader("Depth Map"))
                 {
                     ImGui::PushID("DepthMap");
 
                     textureSelect(material->depthMap);
-
                     ImGui::SameLine();
-                    ImGui::Checkbox("Use", &material->usingDepthMap);
+                    ImGui::Text("Height Map");
+                    ImGui::NextColumn();
+                    ImGui::NextColumn();
 
                     ImGui::PopID();
                 }
-
-                if (ImGui::CollapsingHeader("Emission"))
                 {
                     ImGui::PushID("EmissionMap");
 
                     textureSelect(material->emissionMap);
-
                     ImGui::SameLine();
-                    ImGui::Checkbox("Use", &material->usingEmissionMap);
+                    ImGui::Text("Emission");
+                    ImGui::NextColumn();
+                    ImGui::NextColumn();
 
                     ImGui::PopID();
                 }
+
+                ImGui::Columns(1);
                 
                 if (ImGui::CollapsingHeader("Preview"))
                 {
@@ -228,7 +264,7 @@ void MaterialsPanel::onImGuiRender()
             auto material = Material::create(Assets::get<Shader>("pbr"));
             material->name = "New Material";
 
-            Assets::add<Material>(std::to_string(Assets::getAssetCount<Material>()), material); // TODO: this will not work if material is deleted and then created
+            Assets::add<Material>(Utils::genUUID(), material);
         }
     }
 
@@ -315,7 +351,7 @@ void MaterialsPanel::onImGuiRender()
                 {
                     Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection(), SizedTextureFormat::sRGBA8);
                     texture->name = "New Texture";
-                    Assets::add<Texture2D>(std::to_string(texture->getId()), texture);
+                    Assets::add<Texture2D>(Utils::genUUID(), texture);
                 }
             }
         }
