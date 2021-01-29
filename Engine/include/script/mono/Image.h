@@ -4,15 +4,15 @@
 
 namespace Engine
 {
-namespace mono
+namespace Mono
 {
 
-class image
+class Image
 {
 public:
-    image() = default;
-    image(MonoImage* img)
-        : m_image(img) {}
+    Image() = default;
+    Image(MonoImage* image)
+        : m_image(image) {}
 
     MonoImage* get() const { return m_image; }
 

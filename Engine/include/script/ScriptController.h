@@ -4,7 +4,7 @@
 
 #include <core/Core.h>
 #include <script/CSharpScript.h>
-#include <script/mono/mono.h>
+#include <script/mono/Mono.h>
 #include <events/Event.h>
 
 namespace Engine
@@ -34,7 +34,7 @@ public:
     void onEvent(Event& event);
 
 private:
-    mono::domain m_domain;
+    Mono::Domain m_domain;
 
     std::vector<Shared<CSharpScript>> m_scripts;
 };

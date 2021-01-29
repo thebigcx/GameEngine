@@ -3,8 +3,8 @@
 #include <string>
 
 #include <core/Core.h>
-#include <script/mono/mono_assembly.h>
-#include <script/mono/mono_domain.h>
+#include <script/mono/Assembly.h>
+#include <script/mono/Domain.h>
 
 namespace Engine
 {
@@ -12,17 +12,17 @@ namespace Engine
 class CSharpScript
 {
 public:
-    static Shared<CSharpScript> create(const std::string& filepath, const mono::domain& domain);
+    static Shared<CSharpScript> create(const std::string& filepath, const Mono::Domain& domain);
 
     void onStart();
     void onUpdate(float dt);
     void onDestroy();
 
 private:
-    CSharpScript(const std::string& filepath, const mono::domain& domain);
+    CSharpScript(const std::string& filepath, const Mono::Domain& domain);
 
 private:
-    mono::assembly m_assembly;
+    Mono::Assembly m_assembly;
 };
 
 }

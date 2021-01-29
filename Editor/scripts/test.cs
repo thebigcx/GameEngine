@@ -1,21 +1,36 @@
 using System;
 using System.Windows.Forms;
+using Engine;
 
 namespace Example
 {
 
 public class Dog
 {
-    public Dog()
+    private int m_barks;
+
+    public int Barks
     {
-        //Console.WriteLine("New dog object constructed!");
-        Engine.Test tst;
+        get { return m_barks; }
+        set { m_barks = value; }
     }
 
-    static public void bark()
+    public Dog()
     {
-        Console.WriteLine("Bark!");
+
     }
+
+    public void bark()
+    {
+        m_barks++;
+    }
+
+    static public float pow(float x, float y)
+    {
+        return (float)Math.Pow(x, y);
+    }
+
+    
 }
 
 }

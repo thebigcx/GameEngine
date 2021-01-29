@@ -1,6 +1,7 @@
 #include <script/ScriptController.h>
 #include <scene/Components.h>
 #include <scene/Scene.h>
+#include <util/io/FileSystem.h>
 
 namespace Engine
 {
@@ -43,13 +44,28 @@ void ScriptController::unloadScript(const Shared<CSharpScript>& script)
 
 void ScriptController::initialize()
 {
-    mono::init("mono");
+    Mono::init("mono");
     m_domain.create("Engine");
+    Engine::Mono::Domain::setCurrentDomain(m_domain);
+
+    auto assembly = m_domain.getAssembly("Engine.dll");
+    auto type = assembly.getType("Example", "Dog");
+    auto object = type.createInstance();
+    auto method = type.getMethod("bark");
+
+    auto thunk = Engine::Mono::makeMethodInvoker<void(void)>(method);
+    thunk(object);
+    thunk(object);
+
+    auto prop = type.getProperty("Barks");
+    auto propInvoker = Mono::makePropertyInvoker<int>(prop);
+
+    std::cout << propInvoker.getValue(object) << "\n";
 }
 
 void ScriptController::finalize()
 {
-    mono::shutdown();
+    Mono::shutdown();
 }
 
 void ScriptController::onEvent(Event& event)
