@@ -18,7 +18,7 @@ public:
     ~Image();
 
 public:
-    static Shared<Image> create(const std::string& path, bool flipped = false);
+    static Reference<Image> create(const std::string& path, bool flipped = false);
 
     inline unsigned int getWidth() const { return m_width; }
     inline unsigned int getHeight() const { return m_height; }

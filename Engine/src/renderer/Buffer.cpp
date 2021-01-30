@@ -4,24 +4,24 @@
 namespace Engine
 {
 
-Shared<VertexBuffer> VertexBuffer::create(size_t size)
+Reference<VertexBuffer> VertexBuffer::create(size_t size)
 {
-    return createShared<GLVertexBuffer>(size);
+    return createReference<GLVertexBuffer>(size);
 }
 
-Shared<IndexBuffer> IndexBuffer::create(uint32_t count, IndexDataType type)
+Reference<IndexBuffer> IndexBuffer::create(uint32_t count, IndexDataType type)
 {
-    return createShared<GLIndexBuffer>(count, type);
+    return createReference<GLIndexBuffer>(count, type);
 }
 
-Shared<IndexBuffer> IndexBuffer::create(const uint32_t* data, uint32_t count, IndexDataType type)
+Reference<IndexBuffer> IndexBuffer::create(const uint32_t* data, uint32_t count, IndexDataType type)
 {
-    return createShared<GLIndexBuffer>(data, count, type);
+    return createReference<GLIndexBuffer>(data, count, type);
 }
 
-Shared<UniformBuffer> UniformBuffer::create(size_t size, uint32_t bindingPoint)
+Reference<UniformBuffer> UniformBuffer::create(size_t size, uint32_t bindingPoint)
 {
-    return createShared<GLUniformBuffer>(size, bindingPoint);
+    return createReference<GLUniformBuffer>(size, bindingPoint);
 }
 
 }

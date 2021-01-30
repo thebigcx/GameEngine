@@ -26,16 +26,16 @@ struct Particle
 class ParticleSystem
 {
 public:
-    ParticleSystem(const Shared<Texture2D>& texture);
+    ParticleSystem(const Reference<Texture2D>& texture);
     std::vector<Particle> particles;
 
     void update();
     void render();
 
-    static Shared<ParticleSystem> create(const Shared<Texture2D>& texture);
+    static Reference<ParticleSystem> create(const Reference<Texture2D>& texture);
 
 private:
-    Shared<Texture2D> m_texture;
+    Reference<Texture2D> m_texture;
 };
 
 }

@@ -2,8 +2,6 @@
 
 #include <cstdlib>
 
-#include <GL/glew.h>
-
 #include <renderer/Buffer.h>
 
 namespace Engine

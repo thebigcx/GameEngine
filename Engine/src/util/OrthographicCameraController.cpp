@@ -1,26 +1,26 @@
 #include <util/OrthographicCameraController.h>
-#include <core/Input.h>
+#include <core/Keyboard.h>
 
 namespace Engine
 {
 
 void OrthographicCameraController::update(float dt)
 {
-    if (Input::isKeyPressed(Key::W))
+    if (Keyboard::isPressed(Keyboard::Key::W))
     {
-        this->translate(0.f, m_speed * dt);
+        this->translate(0.f, m_speed * dt, 0.f);
     }
-    if (Input::isKeyPressed(Key::A))
+    if (Keyboard::isPressed(Keyboard::Key::A))
     {
-        this->translate(-m_speed * dt, 0.f);
+        this->translate(-m_speed * dt, 0.f, 0.f);
     }
-    if (Input::isKeyPressed(Key::S))
+    if (Keyboard::isPressed(Keyboard::Key::S))
     {
-        this->translate(0.f, -m_speed * dt);
+        this->translate(0.f, -m_speed * dt, 0.f);
     }
-    if (Input::isKeyPressed(Key::D))
+    if (Keyboard::isPressed(Keyboard::Key::D))
     {
-        this->translate(m_speed * dt, 0.f);
+        this->translate(m_speed * dt, 0.f, 0.f);
     }
 }
 

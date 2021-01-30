@@ -3,6 +3,11 @@
 #include <scene/Scene.h>
 #include <util/io/FileSystem.h>
 
+#include <events/Event.h>
+#include <events/EventDispatcher.h>
+#include <events/MouseEvent.h>
+#include <events/KeyboardEvent.h>
+
 namespace Engine
 {
 
@@ -22,7 +27,7 @@ ScriptController* ScriptController::getInstance()
     return &controller;
 }
 
-Shared<CSharpScript> ScriptController::loadScript(const std::string& filepath)
+Reference<CSharpScript> ScriptController::loadScript(const std::string& filepath)
 {
     auto script = CSharpScript::create(filepath, m_domain);
     m_scripts.push_back(script);
@@ -30,9 +35,9 @@ Shared<CSharpScript> ScriptController::loadScript(const std::string& filepath)
     return script;
 }
 
-void ScriptController::unloadScript(const Shared<CSharpScript>& script)
+void ScriptController::unloadScript(const Reference<CSharpScript>& script)
 {
-    for (std::vector<Shared<CSharpScript>>::iterator iter = m_scripts.begin(); iter != m_scripts.end(); iter++)
+    for (std::vector<Reference<CSharpScript>>::iterator iter = m_scripts.begin(); iter != m_scripts.end(); iter++)
     {
         if (*iter == script)
         {

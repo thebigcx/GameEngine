@@ -5,14 +5,14 @@
 namespace Engine
 {
 
-Shared<Model> ModelLoader::load(const std::string& path)
+Reference<Model> ModelLoader::load(const std::string& path)
 {
     if (m_modelsLoaded.find(path) != m_modelsLoaded.end())
     {
         return m_modelsLoaded.at(path); // NOTE: Need to test, a deep copy might be necessary for specific use cases
     }
 
-    Shared<Model> model = createShared<Model>();
+    Reference<Model> model = createReference<Model>();
 
     auto scene = setupAssimp_(path);
 
@@ -38,11 +38,11 @@ const aiScene* ModelLoader::setupAssimp_(const std::string& modelPath)
     return scene;
 }
 
-Shared<Mesh> ModelLoader::loadMesh(const std::string& path, unsigned int id)
+Reference<Mesh> ModelLoader::loadMesh(const std::string& path, unsigned int id)
 {
     auto scene = setupAssimp_(path);
 
-    Shared<Model> temp = createShared<Model>();
+    Reference<Model> temp = createReference<Model>();
     temp->path = path;
     temp->directory = path.substr(0, path.find_last_of('/'));
 
@@ -60,7 +60,7 @@ Shared<Mesh> ModelLoader::loadMesh(const std::string& path, unsigned int id)
     return processMesh_(mesh, scene, temp);
 }
 
-void ModelLoader::processNode_(aiNode* node, const aiScene* scene, const Shared<Model>& model)
+void ModelLoader::processNode_(aiNode* node, const aiScene* scene, const Reference<Model>& model)
 {
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
@@ -74,9 +74,9 @@ void ModelLoader::processNode_(aiNode* node, const aiScene* scene, const Shared<
     }
 }
 
-Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const Shared<Model>& model)
+Reference<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const Reference<Model>& model)
 {
-    Shared<Material> material;
+    Reference<Material> material;
     std::vector<ModelVertex> vertices;
     std::vector<uint32_t> indices;
 
@@ -166,11 +166,11 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
             material->emissionMap = emission;
 
             material = material_;
-            m_materialsLoaded.emplace(std::pair<int, Shared<Material>>(mesh->mMaterialIndex, material));
+            m_materialsLoaded.emplace(std::pair<int, Reference<Material>>(mesh->mMaterialIndex, material));
         }
     //}
 
-    Shared<Mesh> mesh_ = createShared<Mesh>();
+    Reference<Mesh> mesh_ = createReference<Mesh>();
     mesh_->vertexArray = VertexArray::create();
     mesh_->vertexArray->bind();
 
@@ -196,9 +196,9 @@ Shared<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, const
     return mesh_;
 }
 
-Shared<Texture2D> ModelLoader::loadMaterialTexture_(aiMaterial* mat, aiTextureType type, const std::string& directory)
+Reference<Texture2D> ModelLoader::loadMaterialTexture_(aiMaterial* mat, aiTextureType type, const std::string& directory)
 {
-    Shared<Texture2D> texture = nullptr;
+    Reference<Texture2D> texture = nullptr;
 
     if (mat->GetTextureCount(type) == 0)
     {

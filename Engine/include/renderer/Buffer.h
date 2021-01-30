@@ -217,7 +217,7 @@ public:
     virtual void* getBufferPtr(size_t offset) const = 0;
     virtual void unmap() const = 0;
 
-    static Shared<VertexBuffer> create(size_t size = 0);
+    static Reference<VertexBuffer> create(size_t size = 0);
 };
 
 enum class IndexDataType
@@ -245,8 +245,8 @@ public:
     virtual void* getBufferPtr(uint32_t offset) const = 0;
     virtual void unmap() const = 0;
 
-    static Shared<IndexBuffer> create(uint32_t count, IndexDataType type);
-    static Shared<IndexBuffer> create(const uint32_t* data, uint32_t count, IndexDataType type);
+    static Reference<IndexBuffer> create(uint32_t count, IndexDataType type);
+    static Reference<IndexBuffer> create(const uint32_t* data, uint32_t count, IndexDataType type);
 };
 
 class UniformBuffer
@@ -269,7 +269,7 @@ public:
 
     virtual size_t getVariableOffset(const std::string& name) const = 0;
 
-    static Shared<UniformBuffer> create(size_t size, uint32_t bindingPoint);
+    static Reference<UniformBuffer> create(size_t size, uint32_t bindingPoint);
 };
 
 }

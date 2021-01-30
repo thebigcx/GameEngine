@@ -123,8 +123,8 @@ private:
 
     std::string m_searchQuery;
 
-    Shared<Texture2D> m_folderIcon;
-    Shared<Texture2D> m_fileIcon;
+    Reference<Texture2D> m_folderIcon;
+    Reference<Texture2D> m_fileIcon;
 
     uint32_t m_flags;
 

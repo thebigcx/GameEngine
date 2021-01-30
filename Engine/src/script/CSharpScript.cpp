@@ -3,7 +3,7 @@
 namespace Engine
 {
 
-Shared<CSharpScript> CSharpScript::create(const std::string& filepath, const Mono::Domain& domain)
+Reference<CSharpScript> CSharpScript::create(const std::string& filepath, const Mono::Domain& domain)
 {
     CSharpScript* script = new CSharpScript(filepath, domain);
     return std::shared_ptr<CSharpScript>(script);

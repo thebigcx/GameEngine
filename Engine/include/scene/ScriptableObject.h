@@ -7,6 +7,8 @@ namespace Engine
 
 class ScriptableObject
 {
+    friend class Scene;
+
 public:
     virtual ~ScriptableObject() = default;
 
@@ -23,7 +25,6 @@ protected:
 
 private:
     GameObject* m_gameObject;
-    friend class Scene;
 };
 
 }

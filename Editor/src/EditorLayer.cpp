@@ -7,13 +7,15 @@
 #include <renderer/RenderCommand.h>
 #include <scene/Components.h>
 #include <renderer/Renderer2D.h>
-#include <renderer/Renderer.h>
 #include <renderer/Assets.h>
 #include <renderer/MeshFactory.h>
 #include <scene/SceneSerializer.h>
-#include <script/lua/state.h>
 #include <util/Timer.h>
 #include <util/io/FileSystem.h>
+#include <desktop/ImGuiLayer.h>
+#include <events/EventDispatcher.h>
+#include <core/Keyboard.h>
+#include <events/KeyboardEvent.h>
 
 namespace Engine
 {
@@ -80,20 +82,6 @@ void EditorLayer::onUpdate(float dt)
     else
     {
         m_scene->onUpdateEditor(dt, m_editorCamera);
-
-        auto obj = m_sceneHeirarchyPanel.getSelectedGameObject();
-        if (obj)
-        {
-            if (obj->hasComponents<MeshComponent, TransformComponent, MeshRendererComponent>())
-            {
-                auto& mesh = obj->getComponent<MeshComponent>().mesh;
-                auto transform = obj->getComponent<TransformComponent>().getTransform();
-
-                if (mesh)
-                    Renderer3D::submitOutline(mesh, transform, math::vec3(1, 1, 1));
-            }
-        }
-        
     }
 
     m_framebuffer->unbind();
@@ -247,7 +235,7 @@ void EditorLayer::onImGuiRender()
                 auto& tc = object->getComponent<TransformComponent>();
                 math::mat4 transform = tc.getTransform();
 
-                bool snap = Input::isKeyPressed(Key::LeftControl);
+                bool snap = Keyboard::isPressed(Keyboard::Key::LeftControl);
                 float snapValue = 0.5f;
 
                 if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
@@ -314,18 +302,18 @@ void EditorLayer::onEvent(Event& event)
 
 bool EditorLayer::onKeyPressed(KeyPressedEvent& event)
 {
-    switch ((Key)event.getKeyCode())
+    switch (static_cast<Keyboard::Key>(event.getKeyCode()))
     {
-        case Key::Q:
+        case Keyboard::Key::Q:
             m_gizmoType = -1;
             break;
-        case Key::W:
+        case Keyboard::Key::W:
             m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
             break;
-        case Key::E:
+        case Keyboard::Key::E:
             m_gizmoType = ImGuizmo::OPERATION::ROTATE;
             break;
-        case Key::R:
+        case Keyboard::Key::R:
             m_gizmoType = ImGuizmo::OPERATION::SCALE;
             break;
         default:

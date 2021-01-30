@@ -13,7 +13,7 @@ namespace Engine
 class RenderTarget
 {
 public:
-    static Shared<RenderTarget> create(uint32_t width, uint32_t height);
+    static Reference<RenderTarget> create(uint32_t width, uint32_t height);
 
     void bind() const;
     void unbind() const;
@@ -27,7 +27,7 @@ public:
 private:
     RenderTarget(uint32_t width, uint32_t height);
 
-    Shared<Framebuffer> m_framebuffer = nullptr;
+    Reference<Framebuffer> m_framebuffer = nullptr;
 };
 
 }

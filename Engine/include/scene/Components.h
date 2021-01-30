@@ -2,21 +2,22 @@
 
 #include <maths/math.h>
 
+#include <scene/GameComponent.h>
 #include <util/Transform.h>
-#include <util/OrthographicCameraController.h>
 #include <scene/SceneCamera.h>
 #include <scene/ScriptableObject.h>
 #include <renderer/Texture2D.h>
-#include <renderer/text/TrueTypeFont.h>
-#include <renderer/Mesh.h>
 #include <renderer/Lighting.h>
-#include <renderer/Assets.h>
-#include <script/CSharpScript.h>
 
 #include <box2d/b2_body.h>
 
 namespace Engine
 {
+
+class Mesh;
+class Material;
+class TrueTypeFont;
+class CSharpScript;
 
 struct TransformComponent : public GameComponent
 {
@@ -59,7 +60,7 @@ struct SpriteRendererComponent : public GameComponent
     }
 
     math::vec4 color = { 1.f, 1.f, 1.f, 1.f };
-    Shared<Texture2D> texture;
+    Reference<Texture2D> texture;
 
     bool usingTexRect = false;
     math::frect textureRect;
@@ -68,7 +69,7 @@ struct SpriteRendererComponent : public GameComponent
 struct TextRendererComponent : public GameComponent
 {
     math::vec4 color;
-    Shared<TrueTypeFont> font;
+    Reference<TrueTypeFont> font;
     std::string text;
 };
 
@@ -97,7 +98,7 @@ struct NativeScriptComponent : public GameComponent
 
 struct MeshComponent : public GameComponent
 {
-    Shared<Mesh> mesh = nullptr;
+    Reference<Mesh> mesh = nullptr;
     std::string filePath = "";
     uint32_t meshID = 0;
 };
@@ -119,15 +120,15 @@ struct PointLightComponent : public GameComponent
 
 struct MeshRendererComponent : public GameComponent
 {
-    //std::vector<Shared<Material>> materials;
-    Shared<Material> material;
+    //std::vector<Reference<Material>> materials;
+    Reference<Material> material;
     bool castShadows = true;
 };
 
 struct CSharpScriptComponent : public GameComponent
 {
     std::string filepath = "";
-    Shared<CSharpScript> script;
+    Reference<CSharpScript> script;
     bool initialized = false;
 };
 

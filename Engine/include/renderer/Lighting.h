@@ -30,7 +30,7 @@ public:
     BaseLight(const math::vec3& radiance_, float intensity_)
         : radiance(radiance_), intensity(intensity_), m_shadowInfo(nullptr) {}
 
-    virtual void setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const {};
+    virtual void setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const {};
 
     math::vec3 radiance = math::vec3(1, 1, 1);
     float intensity = 1.f;
@@ -51,7 +51,7 @@ public:
     PointLight(const math::vec3& radiance, float intensity, const math::vec3& position_)
         : BaseLight(radiance, intensity), position(position_) {}
 
-    void setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const override;
+    void setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const override;
 
     math::vec3 position;
 };
@@ -62,7 +62,7 @@ public:
     DirectionalLight() {}
     DirectionalLight(const math::vec3& radiance, float intensity, const math::vec3& direction_);
 
-    void setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const override;
+    void setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const override;
 
     math::vec3 direction;
 };
@@ -88,7 +88,7 @@ public:
     SkyLight(const math::vec3& radiance, float intensity)
         : BaseLight(radiance, intensity) {}
 
-    void setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const override;
+    void setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const override;
 };
 
 }

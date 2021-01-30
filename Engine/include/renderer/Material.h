@@ -15,31 +15,31 @@ public:
     void bind() const;
     void unbind() const;
 
-    static Shared<Material> create();
-    static Shared<Material> create(const Shared<Shader>& shader);
+    static Reference<Material> create();
+    static Reference<Material> create(const Reference<Shader>& shader);
 
-    static Shared<Material> create(const Shared<Shader>& shader,
-                                   const Shared<Texture2D>& albedo,
-                                   const Shared<Texture2D>& normal,
-                                   const Shared<Texture2D>& metallic,
-                                   const Shared<Texture2D>& roughness,
-                                   const Shared<Texture2D>& ao,
-                                   const Shared<Texture2D>& depth,
-                                   const Shared<Texture2D>& emission);
+    static Reference<Material> create(const Reference<Shader>& shader,
+                                   const Reference<Texture2D>& albedo,
+                                   const Reference<Texture2D>& normal,
+                                   const Reference<Texture2D>& metallic,
+                                   const Reference<Texture2D>& roughness,
+                                   const Reference<Texture2D>& ao,
+                                   const Reference<Texture2D>& depth,
+                                   const Reference<Texture2D>& emission);
 
     float metallicScalar = 0.f;
     float roughnessScalar = 0.f;
-    Shared<Texture2D> albedoMap = nullptr;
-    Shared<Texture2D> normalMap = nullptr;
-    Shared<Texture2D> metallicMap = nullptr;
-    Shared<Texture2D> roughnessMap = nullptr;
-    Shared<Texture2D> ambientOcclusionMap = nullptr;
-    Shared<Texture2D> depthMap = nullptr;
-    Shared<Texture2D> emissionMap = nullptr;
+    Reference<Texture2D> albedoMap = nullptr;
+    Reference<Texture2D> normalMap = nullptr;
+    Reference<Texture2D> metallicMap = nullptr;
+    Reference<Texture2D> roughnessMap = nullptr;
+    Reference<Texture2D> ambientOcclusionMap = nullptr;
+    Reference<Texture2D> depthMap = nullptr;
+    Reference<Texture2D> emissionMap = nullptr;
 
     math::vec4 albedoColor = math::vec4(1.f);
 
-    Shared<Shader> shader;
+    Reference<Shader> shader;
 
     std::string name = "";
 

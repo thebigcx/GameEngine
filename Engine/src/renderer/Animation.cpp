@@ -3,9 +3,9 @@
 namespace Engine
 {
 
-Shared<Animation> Animation::create(Shared<Texture2D> texture)
+Reference<Animation> Animation::create(Reference<Texture2D> texture)
 {
-    auto animation = createShared<Animation>();
+    auto animation = createReference<Animation>();
     animation->m_pTexture = texture;
     return animation;
 }

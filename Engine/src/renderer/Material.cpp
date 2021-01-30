@@ -87,9 +87,9 @@ void Material::unbind() const
     emissionMap->unbind(6);
 }
 
-Shared<Material> Material::create(const Shared<Shader>& shader)
+Reference<Material> Material::create(const Reference<Shader>& shader)
 {
-    auto material = createShared<Material>();
+    auto material = createReference<Material>();
 
     if (shader)
     {
@@ -99,16 +99,16 @@ Shared<Material> Material::create(const Shared<Shader>& shader)
     return material;
 }
 
-Shared<Material> create(const Shared<Shader>& shader,
-                        const Shared<Texture2D>& albedo,
-                        const Shared<Texture2D>& normal,
-                        const Shared<Texture2D>& metallic,
-                        const Shared<Texture2D>& roughness,
-                        const Shared<Texture2D>& ao,
-                        const Shared<Texture2D>& depth,
-                        const Shared<Texture2D>& emission)
+Reference<Material> create(const Reference<Shader>& shader,
+                        const Reference<Texture2D>& albedo,
+                        const Reference<Texture2D>& normal,
+                        const Reference<Texture2D>& metallic,
+                        const Reference<Texture2D>& roughness,
+                        const Reference<Texture2D>& ao,
+                        const Reference<Texture2D>& depth,
+                        const Reference<Texture2D>& emission)
 {
-    auto material = createShared<Material>();
+    auto material = createReference<Material>();
     
     material->shader = shader;
     material->albedoMap = albedo;
@@ -122,7 +122,7 @@ Shared<Material> create(const Shared<Shader>& shader,
     return material;
 }
 
-Shared<Material> Material::create()
+Reference<Material> Material::create()
 {
     return Material::create(nullptr);
 }

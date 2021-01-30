@@ -1,5 +1,8 @@
 #include <platform/GL/GLTexture2D.h>
 #include <core/Logger.h>
+#include <util/Image.h>
+
+#include <GL/glew.h>
 
 #include <iostream>
 
@@ -8,7 +11,7 @@ namespace Engine
 
 namespace Utils
 {
-    GLenum getSizedTextureFormatEnumValue_(SizedTextureFormat format)
+    uint32_t getSizedTextureFormatEnumValue_(SizedTextureFormat format)
     {
         switch (format)
         {
@@ -22,7 +25,7 @@ namespace Utils
         return 0;
     }
 
-    GLenum getTextureFormatEnumValue_(TextureFormat format)
+    uint32_t getTextureFormatEnumValue_(TextureFormat format)
     {
         switch (format)
         {
@@ -45,7 +48,7 @@ namespace Utils
         return 0;
     }
 
-    GLenum getDataTypeEnumValue_(DataType type)
+    uint32_t getDataTypeEnumValue_(DataType type)
     {
         switch (type)
         {

@@ -1,13 +1,15 @@
 #pragma once
 
 #include <core/Core.h>
-#include <scene/Scene.h>
 #include <renderer/RenderTarget.h>
-#include <util/PerspectiveCamera.h>
+#include <scene/EditorCamera.h>
 #include <renderer/Model.h>
+#include <renderer/Lighting.h>
 
 namespace Engine
 {
+
+class Scene;
 
 class MaterialsPanel
 {
@@ -22,16 +24,15 @@ public:
 private:
     void init();
 
-    void renderMaterialPreview(const Shared<Material>& material);
+    void renderMaterialPreview(const Reference<Material>& material);
 
-    void textureSelect(Shared<Texture2D>& texture);
-    void shaderSelect(Shared<Shader>& shader);
+    void textureSelect(Reference<Texture2D>& texture);
+    void shaderSelect(Reference<Shader>& shader);
 
 private:
     Scene* m_context = nullptr;
-    //Shared<Framebuffer> m_materialPreviewViewport;
-    Shared<RenderTarget> m_materialPreviewViewport;
-    Shared<Mesh> m_sphereMesh;
+    Reference<RenderTarget> m_materialPreviewViewport;
+    Reference<Mesh> m_sphereMesh;
     
     DirectionalLight m_directionalLight;
     SkyLight m_skyLight;

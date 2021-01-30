@@ -1,4 +1,5 @@
 #include <script/mono/String.h>
+#include <script/mono/Domain.h>
 
 #include <mono/jit/jit.h>
 

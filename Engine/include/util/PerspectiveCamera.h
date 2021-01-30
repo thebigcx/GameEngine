@@ -2,12 +2,13 @@
 
 #include <maths/math.h>
 
-#include <events/Event.h>
-#include <events/EventDispatcher.h>
 #include <util/Camera.h>
 
 namespace Engine
 {
+
+class Event;
+class WindowResizeEvent;
 
 class PerspectiveCamera : public Camera
 {
@@ -29,10 +30,10 @@ public:
     inline constexpr float getRenderDistance() const noexcept { return m_renderDistance; }
     inline constexpr float getFieldOfView() const noexcept { return m_fieldOfView; }
 
-    math::mat4 getViewMatrix() const;
+    void setViewportSize(uint32_t width, uint32_t height);
 
-    virtual void onEvent(Event& event);
-    virtual void onWindowResize(WindowResizeEvent& event);
+protected:
+    void recalculateView();
 
 protected:
     math::vec3 m_position;

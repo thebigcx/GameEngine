@@ -3,6 +3,7 @@
 #include <script/mono/Object.h>
 #include <script/mono/Property.h>
 #include <script/mono/Field.h>
+#include <script/mono/Method.h>
 
 namespace Engine
 {

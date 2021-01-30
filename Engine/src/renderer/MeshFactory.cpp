@@ -6,9 +6,9 @@
 namespace Engine
 {
 
-Shared<Mesh> MeshFactory::textMesh(uint32_t charCount)
+Reference<Mesh> MeshFactory::textMesh(uint32_t charCount)
 {
-    auto text = createShared<Mesh>();
+    auto text = createReference<Mesh>();
     
     text->vertexArray = VertexArray::create();
     text->vertexArray->bind();
@@ -43,9 +43,9 @@ Shared<Mesh> MeshFactory::textMesh(uint32_t charCount)
     return text;
 }
 
-Shared<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
+Reference<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
 {
-    auto quad = createShared<Mesh>();
+    auto quad = createReference<Mesh>();
 
     quad->vertexArray = VertexArray::create();
     quad->vertexArray->bind();
@@ -78,9 +78,9 @@ Shared<Mesh> MeshFactory::quadMesh(float x1, float y1, float x2, float y2)
     return quad;
 }
 
-Shared<Mesh> MeshFactory::cubeMesh(float size)
+Reference<Mesh> MeshFactory::cubeMesh(float size)
 {
-    auto quad = createShared<Mesh>();
+    auto quad = createReference<Mesh>();
 
     quad->vertexArray = VertexArray::create();
     quad->vertexArray->bind();
@@ -161,9 +161,9 @@ Shared<Mesh> MeshFactory::cubeMesh(float size)
     return quad;
 }
 
-Shared<Mesh> MeshFactory::skyboxMesh()
+Reference<Mesh> MeshFactory::skyboxMesh()
 {
-    auto box = createShared<Mesh>();
+    auto box = createReference<Mesh>();
 
     box->vertexArray = VertexArray::create();
     box->vertexArray->bind();
@@ -225,7 +225,7 @@ Shared<Mesh> MeshFactory::skyboxMesh()
     return box;
 }
 
-Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
+Reference<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
 {
     std::vector<uint32_t> indices;
     std::vector<ModelVertex> vertices;
@@ -319,7 +319,7 @@ Shared<Mesh> MeshFactory::sphereMesh(float radius, int sectors, int stacks)
         }
     }
 
-    auto sphere = createShared<Mesh>();
+    auto sphere = createReference<Mesh>();
 
     sphere->vertexArray = VertexArray::create();
     sphere->vertexArray->bind();

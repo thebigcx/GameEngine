@@ -33,7 +33,7 @@ public:
 
     virtual uint32_t getId() const = 0;
 
-    static Shared<Renderbuffer> create(uint32_t width, uint32_t height, GLenum internalFormat);
+    static Reference<Renderbuffer> create(uint32_t width, uint32_t height, GLenum internalFormat);
 };
 
 class Framebuffer
@@ -69,9 +69,9 @@ public:
 public:
     virtual ~Framebuffer() = default;
 
-    static Shared<Framebuffer> create();
-    static Shared<Framebuffer> create(uint32_t width, uint32_t height);
-    static Shared<Framebuffer> create(const Specification& spec);
+    static Reference<Framebuffer> create();
+    static Reference<Framebuffer> create(uint32_t width, uint32_t height);
+    static Reference<Framebuffer> create(const Specification& spec);
 
     virtual void resize(uint32_t width, uint32_t height) = 0;
 

@@ -5,13 +5,13 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 
-#include <script/mono/Image.h>
-#include <script/mono/Type.h>
-
 namespace Engine
 {
 namespace Mono
 {
+
+class Image;
+class Type;
 
 class Assembly
 {

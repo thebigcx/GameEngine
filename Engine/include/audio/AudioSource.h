@@ -4,16 +4,17 @@
 #include <AL/alc.h>
 
 #include <core/Core.h>
-#include <audio/AudioBuffer.h>
 #include <maths/math.h>
 
 namespace Engine
 {
 
+class AudioBuffer;
+
 class AudioSource
 {
 private:
-    AudioSource(const Shared<AudioBuffer>&);
+    AudioSource(const Reference<AudioBuffer>&);
 
 public:
     enum class State
@@ -27,7 +28,7 @@ public:
 public:
     ~AudioSource();
 
-    static Shared<AudioSource> create(const std::string& path);
+    static Reference<AudioSource> create(const std::string& path);
 
     void play();
     void pause();
@@ -59,7 +60,7 @@ public:
 private:
     ALuint m_id;
 
-    Shared<AudioBuffer> m_buffer;
+    Reference<AudioBuffer> m_buffer;
 
     bool m_looped;
 

@@ -33,9 +33,9 @@ AudioBuffer::~AudioBuffer()
     alDeleteBuffers(1, &m_id);
 }
 
-Shared<AudioBuffer> AudioBuffer::create(const std::string& filepath)
+Reference<AudioBuffer> AudioBuffer::create(const std::string& filepath)
 {
-    return Shared<AudioBuffer>(new AudioBuffer(filepath));
+    return Reference<AudioBuffer>(new AudioBuffer(filepath));
 }
 
 void AudioBuffer::loadWAV(const std::string& path, uint32_t buffer)

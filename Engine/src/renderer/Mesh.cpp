@@ -6,7 +6,7 @@
 namespace Engine
 {
 
-Shared<Mesh> Mesh::load(const std::string& path, unsigned int id)
+Reference<Mesh> Mesh::load(const std::string& path, unsigned int id)
 {
     return ModelLoader::loadMesh(path, id);
 }

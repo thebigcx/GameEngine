@@ -1,12 +1,9 @@
 #include <scene/Scene.h>
 #include <renderer/Renderer2D.h>
 #include <maths/matrix/matrix_func.h>
-#include <physics/2D/PhysicsController2D.h>
-
 #include <renderer/Renderer3D.h>
-#include <renderer/MeshFactory.h>
 #include <scene/Components.h>
-#include <util/Timer.h>
+#include <script/ScriptController.h>
 
 namespace Engine
 {
@@ -21,9 +18,9 @@ Scene::~Scene()
 
 }
 
-Shared<Scene> Scene::create()
+Reference<Scene> Scene::create()
 {
-    auto scene = Shared<Scene>(new Scene());
+    auto scene = Reference<Scene>(new Scene());
     /*auto cam = scene->createGameObject("Main Camera");
     auto& cameraComp = cam->addComponent<CameraComponent>();
     cameraComp.primary = true;

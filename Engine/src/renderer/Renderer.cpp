@@ -2,6 +2,7 @@
 #include <renderer/MeshFactory.h>
 #include <renderer/shader/ShaderFactory.h>
 #include <core/Game.h>
+#include <events/WindowEvent.h>
 
 namespace Engine
 {

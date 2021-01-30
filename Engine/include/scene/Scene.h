@@ -2,14 +2,13 @@
 
 #include <vector>
 
+#include <core/Core.h>
 #include <scene/GameObject.h>
-#include <scene/EditorCamera.h>
-#include <renderer/Material.h>
-#include <renderer/Lighting.h>
-#include <script/ScriptController.h>
 
 namespace Engine
 {
+
+class EditorCamera;
 
 class Scene
 {
@@ -21,7 +20,7 @@ private:
 public:
     ~Scene();
 
-    static Shared<Scene> create();
+    static Reference<Scene> create();
     
     void onUpdateEditor(float dt, EditorCamera& camera);
     void onUpdateRuntime(float dt);

@@ -112,7 +112,7 @@ void GLRendererAPI::setBlendFunction(BlendFunction src, BlendFunction dst)
     glBlendFunc(glsrc, gldst);
 }
 
-void GLRendererAPI::renderIndexed(Shared<VertexArray> array, uint32_t count, uint32_t offset)
+void GLRendererAPI::renderIndexed(Reference<VertexArray> array, uint32_t count, uint32_t offset)
 {
     if (count == 0)
     {
@@ -131,7 +131,7 @@ void GLRendererAPI::renderIndexed(Shared<VertexArray> array, uint32_t count, uin
     glDrawElements(GL_TRIANGLES, count, type, (void*)(offset * sizeof(uint32_t)));
 }
 
-void GLRendererAPI::renderInstanced(const Shared<VertexArray>& array, uint32_t instanceCount, uint32_t count, uint32_t offset)
+void GLRendererAPI::renderInstanced(const Reference<VertexArray>& array, uint32_t instanceCount, uint32_t count, uint32_t offset)
 {
     if (count == 0)
     {

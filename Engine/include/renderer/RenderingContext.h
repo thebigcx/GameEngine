@@ -1,7 +1,6 @@
 #pragma once
 
 #include <core/Core.h>
-#include <GLFW/glfw3.h>
 
 namespace Engine
 {
@@ -15,7 +14,7 @@ public:
     virtual void swapBuffers() = 0;
     virtual void vsync(bool enabled) = 0;
 
-    static Unique<RenderingContext> create(GLFWwindow* window);
+    static Owned<RenderingContext> create(void* window);
 };
 
 }

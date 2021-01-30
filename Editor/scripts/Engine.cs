@@ -1,12 +1,12 @@
 namespace Engine
 {
 
-public class Test
+abstract class GameObject
 {
-    public Test()
+    void getComponent<T>()
     {
         
     }
-}
+};
 
 }

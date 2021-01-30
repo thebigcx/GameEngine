@@ -38,7 +38,7 @@ void MaterialsPanel::init()
     m_skyLight = SkyLight(math::vec3(1, 1, 1), 0.1);
 }
 
-void MaterialsPanel::textureSelect(Shared<Texture2D>& texture)
+void MaterialsPanel::textureSelect(Reference<Texture2D>& texture)
 {
     uint32_t id = texture ? texture->getId() : Texture2D::createWhiteTexture()->getId();
 
@@ -349,7 +349,7 @@ void MaterialsPanel::onImGuiRender()
             {
                 if (FileDialog::madeSelection())
                 {
-                    Shared<Texture2D> texture = Texture2D::create(FileDialog::getSelection());
+                    Reference<Texture2D> texture = Texture2D::create(FileDialog::getSelection());
                     texture->name = "New Texture";
                     Assets::add<Texture2D>(Utils::genUUID(), texture);
                 }
@@ -365,7 +365,7 @@ void MaterialsPanel::onImGuiRender()
     ImGui::End();
 }
 
-void MaterialsPanel::shaderSelect(Shared<Shader>& shader)
+void MaterialsPanel::shaderSelect(Reference<Shader>& shader)
 {
     if (ImGui::Button("Load"))
     {
@@ -384,7 +384,7 @@ void MaterialsPanel::shaderSelect(Shared<Shader>& shader)
     }
 }
 
-void MaterialsPanel::renderMaterialPreview(const Shared<Material>& material)
+void MaterialsPanel::renderMaterialPreview(const Reference<Material>& material)
 {
     m_sphereMesh->material = material;
 

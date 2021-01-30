@@ -1,13 +1,7 @@
 #pragma once
 
 #include <core/Layer.h>
-#include <scene/Scene.h>
-
-#include <renderer/Framebuffer.h>
 #include <maths/vector/vec2.h>
-#include <util/OrthographicCameraController.h>
-#include <renderer/text/TrueTypeFont.h>
-#include <script/ScriptController.h>
 
 #include <imgui/imgui.h>
 #include <imguizmo/ImGuizmo.h>
@@ -20,6 +14,10 @@
 
 namespace Engine
 {
+
+class Framebuffer;
+class Scene;
+class KeyPressedEvent;
 
 class EditorLayer : public Layer
 {
@@ -38,10 +36,10 @@ private:
     void drawMenuBar();
 
 private:
-    Shared<Scene> m_scene;
-    Shared<Framebuffer> m_framebuffer;
-    Shared<Framebuffer> m_hdrBuffer;
-    Shared<Mesh> m_framebufferMesh;
+    Reference<Scene> m_scene;
+    Reference<Framebuffer> m_framebuffer;
+    Reference<Framebuffer> m_hdrBuffer;
+    Reference<Mesh> m_framebufferMesh;
 
     math::vec2 m_viewportSize;
 
@@ -58,8 +56,8 @@ private:
 
     bool m_playingScene = false;
 
-    Shared<Texture2D> m_scenePlayButton;
-    Shared<Texture2D> m_sceneStopButton;
+    Reference<Texture2D> m_scenePlayButton;
+    Reference<Texture2D> m_sceneStopButton;
 
     uint32_t m_gizmoType = 0;
 };

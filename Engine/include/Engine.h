@@ -3,9 +3,11 @@
 #include <core/Window.h>
 #include <core/Game.h>
 #include <core/Cursor.h>
-#include <core/Input.h>
-#include <core/KeyCodes.h>
+#include <core/Keyboard.h>
+#include <core/Mouse.h>
+#include <core/Gamepad.h>
 #include <core/Core.h>
+#include <core/Layer.h>
 
 #include <util/Image.h>
 #include <util/Timer.h>

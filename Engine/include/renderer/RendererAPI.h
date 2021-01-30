@@ -57,15 +57,15 @@ public:
     virtual void setClearColor(const math::vec4& color) = 0;
     virtual void clear(uint32_t buffer) = 0;
 
-    virtual void renderIndexed(Shared<VertexArray> array, uint32_t count = 0, uint32_t offset = 0) = 0;
-    virtual void renderInstanced(const Shared<VertexArray>& array, uint32_t instanceCount, uint32_t count = 0, uint32_t offset = 0) = 0;
+    virtual void renderIndexed(Reference<VertexArray> array, uint32_t count = 0, uint32_t offset = 0) = 0;
+    virtual void renderInstanced(const Reference<VertexArray>& array, uint32_t instanceCount, uint32_t count = 0, uint32_t offset = 0) = 0;
 
     inline constexpr const RendererCapabilities& getCapabilities() const noexcept
     {
         return m_capabilities;
     }
 
-    static Unique<RendererAPI> create();
+    static Owned<RendererAPI> create();
 
 protected:
     RendererCapabilities m_capabilities;

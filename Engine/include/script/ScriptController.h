@@ -5,10 +5,14 @@
 #include <core/Core.h>
 #include <script/CSharpScript.h>
 #include <script/mono/Mono.h>
-#include <events/Event.h>
 
 namespace Engine
 {
+
+class Event;
+class KeyPressedEvent;
+class MousePressedEvent;
+
 class ScriptController
 {
     friend class Game;
@@ -21,8 +25,8 @@ public:
 
     static ScriptController* getInstance();
 
-    Shared<CSharpScript> loadScript(const std::string& filepath);
-    void unloadScript(const Shared<CSharpScript>& script);
+    Reference<CSharpScript> loadScript(const std::string& filepath);
+    void unloadScript(const Reference<CSharpScript>& script);
 
 private:
     void initialize();
@@ -36,7 +40,7 @@ public:
 private:
     Mono::Domain m_domain;
 
-    std::vector<Shared<CSharpScript>> m_scripts;
+    std::vector<Reference<CSharpScript>> m_scripts;
 };
 
 }

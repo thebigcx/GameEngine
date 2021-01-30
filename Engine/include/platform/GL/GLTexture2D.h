@@ -9,8 +9,8 @@ namespace Engine
 
 namespace Utils
 {
-    GLenum getSizedTextureFormatEnumValue_(SizedTextureFormat format);
-    GLenum getTextureFormatEnumValue_(TextureFormat format);
+    uint32_t getSizedTextureFormatEnumValue_(SizedTextureFormat format);
+    uint32_t getTextureFormatEnumValue_(TextureFormat format);
 }
 
 class GLTexture2D : public Texture2D

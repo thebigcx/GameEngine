@@ -3,9 +3,9 @@
 namespace Engine
 {
 
-Shared<Skybox> Skybox::create(const std::array<std::string, 6>& files)
+Reference<Skybox> Skybox::create(const std::array<std::string, 6>& files)
 {
-    Shared<Skybox> skybox = createShared<Skybox>();
+    Reference<Skybox> skybox = createReference<Skybox>();
 
     skybox->m_cubemap = TextureCube::create(&files[0]);
 

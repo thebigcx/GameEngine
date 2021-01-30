@@ -14,7 +14,7 @@ void InstancedRenderer::add(const RenderingInstance& instance)
     m_instances.push_back(instance);
 }
 
-void InstancedRenderer::setInstance_(const Shared<Mesh>& mesh)
+void InstancedRenderer::setInstance_(const Reference<Mesh>& mesh)
 {
     m_meshes.push_back(mesh);
 
@@ -37,12 +37,12 @@ void InstancedRenderer::setInstance_(const Shared<Mesh>& mesh)
     glVertexAttribDivisor(7, 1);
 }
 
-void InstancedRenderer::setInstance(const Shared<Mesh>& mesh)
+void InstancedRenderer::setInstance(const Reference<Mesh>& mesh)
 {
     setInstance_(mesh);
 }
 
-void InstancedRenderer::setInstance(const std::vector<Shared<Mesh>>& meshes)
+void InstancedRenderer::setInstance(const std::vector<Reference<Mesh>>& meshes)
 {
     for (auto& mesh : meshes)
     {
@@ -60,9 +60,9 @@ void InstancedRenderer::updateInstances()
     m_instanceBuffer->setData(math::buffer(m_instances[0].transform), m_instances.size() * sizeof(math::mat4));
 }
 
-Shared<InstancedRenderer> InstancedRenderer::create()
+Reference<InstancedRenderer> InstancedRenderer::create()
 {
-    return createShared<InstancedRenderer>();
+    return createReference<InstancedRenderer>();
 }
 
 };

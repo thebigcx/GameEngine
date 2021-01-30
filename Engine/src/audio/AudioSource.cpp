@@ -1,9 +1,10 @@
 #include <audio/AudioSource.h>
+#include <audio/AudioBuffer.h>
 
 namespace Engine
 {
 
-AudioSource::AudioSource(const Shared<AudioBuffer>& buffer)
+AudioSource::AudioSource(const Reference<AudioBuffer>& buffer)
     : m_buffer(buffer)
 {
     alGenSources(1, &m_id);
@@ -15,10 +16,10 @@ AudioSource::~AudioSource()
     alDeleteSources(1, &m_id);
 }
 
-Shared<AudioSource> AudioSource::create(const std::string& path)
+Reference<AudioSource> AudioSource::create(const std::string& path)
 {
     auto buffer = AudioBuffer::create(path);
-    return Shared<AudioSource>(new AudioSource(buffer));
+    return Reference<AudioSource>(new AudioSource(buffer));
 }
 
 void AudioSource::play()

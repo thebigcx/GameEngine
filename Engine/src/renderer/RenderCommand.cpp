@@ -3,6 +3,6 @@
 namespace Engine
 {
 
-Unique<RendererAPI> RenderCommand::m_api;
+Owned<RendererAPI> RenderCommand::m_api;
 
 }

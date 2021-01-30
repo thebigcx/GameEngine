@@ -3,27 +3,27 @@
 namespace Engine
 {
 
-Shared<Shader> ShaderFactory::textureShader()
+Reference<Shader> ShaderFactory::textureShader()
 {
     return createShader("texture");
 }
 
-Shared<Shader> ShaderFactory::textShader()
+Reference<Shader> ShaderFactory::textShader()
 {
     return createShader("text");
 }
 
-Shared<Shader> ShaderFactory::framebufferShader()
+Reference<Shader> ShaderFactory::framebufferShader()
 {
     return createShader("framebuffer");
 }
 
-Shared<Shader> ShaderFactory::lightingShader()
+Reference<Shader> ShaderFactory::lightingShader()
 {
     return createShader("lighting");
 }
 
-Shared<Shader> ShaderFactory::createShader(const std::string& name)
+Reference<Shader> ShaderFactory::createShader(const std::string& name)
 {
     return Shader::createFromFile("Engine/assets/shaders/" + name + ".glsl");
 }

@@ -19,7 +19,7 @@ namespace Engine
 
 struct RenderObject
 {
-    Shared<Mesh> mesh;
+    Reference<Mesh> mesh;
     math::mat4 transform;
 };
 
@@ -27,14 +27,14 @@ struct Renderer3DData
 {
     bool sceneStarted = false;
 
-    Shared<UniformBuffer> matrixData;
+    Reference<UniformBuffer> matrixData;
 
-    Shared<EnvironmentMap> environment;
-    Shared<Shader> environmentShader;
-    Shared<Mesh> skyboxMesh;
+    Reference<EnvironmentMap> environment;
+    Reference<Shader> environmentShader;
+    Reference<Mesh> skyboxMesh;
 
-    Shared<Texture2D> shadowMap;
-    Shared<Framebuffer> shadowMapFramebuffer;
+    Reference<Texture2D> shadowMap;
+    Reference<Framebuffer> shadowMapFramebuffer;
     math::mat4 lightProjection;
     math::mat4 lightView;
     math::mat4 lightMatrix;
@@ -43,7 +43,7 @@ struct Renderer3DData
 
     math::vec3 cameraPos;
     
-    std::unordered_map<Shared<Material>, std::vector<RenderObject>> renderObjects;
+    std::unordered_map<Reference<Material>, std::vector<RenderObject>> renderObjects;
 
     bool usingSkybox = true;
 };
@@ -55,14 +55,14 @@ public:
     static void beginScene(EditorCamera& camera);
     static void beginScene(Camera& camera, const math::mat4& transform);
 
-    static void submit(const Shared<Mesh>& mesh, const math::mat4& transform); // TODO: meshes shouldn't hold materials (research further)
-    static void submit(const Shared<Model>& model, const math::mat4& transform);
-    static void submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material);
-    static void submitOutline(const Shared<Mesh>& mesh, const math::mat4& transform, const math::vec3& outlineColor);
+    static void submit(const Reference<Mesh>& mesh, const math::mat4& transform); // TODO: meshes shouldn't hold materials (research further)
+    static void submit(const Reference<Model>& model, const math::mat4& transform);
+    static void submit(const Reference<Mesh>& mesh, const math::mat4& transform, const Reference<Material>& material);
+    static void submitOutline(const Reference<Mesh>& mesh, const math::mat4& transform, const math::vec3& outlineColor);
 
-    static void submit(const Shared<InstancedRenderer>& instance);
+    static void submit(const Reference<InstancedRenderer>& instance);
 
-    static void setEnvironment(const Shared<EnvironmentMap>& environment);
+    static void setEnvironment(const Reference<EnvironmentMap>& environment);
 
     static void startBatch();
     static void flushBatch();
@@ -80,7 +80,7 @@ public:
     static void useSkybox(bool use) { s_data.usingSkybox = use; }
 
 private:
-    static void setLightingUniforms(const Shared<Shader>& shader);
+    static void setLightingUniforms(const Reference<Shader>& shader);
 
     static void init();
     static void shutdown();

@@ -7,9 +7,6 @@
 #include <core/Core.h>
 #include <renderer/Texture2D.h>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 namespace Engine
 {
 
@@ -29,17 +26,17 @@ public:
 
     void load(const std::string& path, int characterSize);
 
-    static Shared<TrueTypeFont> create(const std::string& path, int characterSize);
+    static Reference<TrueTypeFont> create(const std::string& path, int characterSize);
 
     inline const std::unordered_map<char, Glyph>& getGlyphs() const { return m_glyphs; }
     inline const math::vec2& getAtlasSize() const { return m_atlasSize; }
-    inline Shared<Texture2D> getTextureAtlas() const { return m_texture; }
+    inline Reference<Texture2D> getTextureAtlas() const { return m_texture; }
     inline int getCharacterSize() const { return m_characterSize; }
 
 private:
     math::vec2 m_atlasSize;
 
-    Shared<Texture2D> m_texture;
+    Reference<Texture2D> m_texture;
     int m_characterSize = 0;
 
     std::unordered_map<char, Glyph> m_glyphs;

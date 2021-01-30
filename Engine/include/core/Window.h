@@ -1,15 +1,13 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include <string>
 #include <functional>
 
 #include <util/Image.h>
 #include <maths/vector/vec2.h>
-#include <renderer/RenderingContext.h>
 #include <events/Event.h>
+
+struct GLFWwindow;
 
 namespace Engine
 {
@@ -19,13 +17,15 @@ struct WindowData
     std::function<void(Event&)> eventCallback;
 };
 
+class RenderingContext;
+
 class Window
 {
 private:
     friend class Game;
 
 public:
-    Window(unsigned int width, unsigned int height, const std::string& title);
+    Window(uint32_t width, uint32_t height, const std::string& title);
     ~Window();
 
     bool isOpen();
@@ -41,8 +41,8 @@ public:
         return m_window;
     }
 
-    inline constexpr unsigned int getWidth() const noexcept { return m_height; }
-    inline constexpr unsigned int getHeight() const noexcept { return m_width; }
+    inline constexpr uint32_t getWidth() const noexcept { return m_height; }
+    inline constexpr uint32_t getHeight() const noexcept { return m_width; }
     inline math::uvec2 getSize() const { return math::uvec2(m_width, m_height); }
 
     void close();
@@ -50,7 +50,7 @@ public:
     void setTitle(const std::string& title);
 
     void setIcon(const std::string& iconPath);
-    void setIcon(const Shared<Image>& image);
+    void setIcon(const Reference<Image>& image);
 
     void setSize(const math::uvec2& size);
 
@@ -60,18 +60,16 @@ public:
 
     void setOpacity(float opacity);
 
-    static Unique<Window> create(unsigned int width, unsigned height, const std::string& title);
+    static Owned<Window> create(uint32_t width, uint32_t height, const std::string& title);
 
 private:
     GLFWwindow* m_window;
 
-    Unique<RenderingContext> m_context;
-
-    void init(unsigned int width, unsigned int height, const std::string& title);
+    Owned<RenderingContext> m_context;
 
     WindowData m_data;
 
-    unsigned int m_width = 0, m_height = 0;
+    uint32_t m_width = 0, m_height = 0;
 };
 
 }

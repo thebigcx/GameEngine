@@ -4,9 +4,9 @@
 namespace Engine
 {
 
-Shared<VertexArray> VertexArray::create()
+Reference<VertexArray> VertexArray::create()
 {
-    return createShared<GLVertexArray>();
+    return createReference<GLVertexArray>();
 }
 
 }

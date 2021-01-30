@@ -12,7 +12,7 @@ namespace Engine
 {
 
 Renderer2DData Renderer2D::s_data;
-Shared<Mesh> Renderer2D::m_framebufferMesh;
+Reference<Mesh> Renderer2D::m_framebufferMesh;
 
 void Renderer2D::init()
 {
@@ -156,22 +156,22 @@ void Renderer2D::flushBatch()
     s_data.drawCalls++;
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color)
+void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color)
 {
     renderSprite(texture, position, size, math::frect(0, 0, texture->getWidth(), texture->getHeight()), 0, color);
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect)
+void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect)
 {
     renderSprite(texture, position, size, texRect, 0, math::vec2(), math::vec4(1, 1, 1, 1));
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, math::vec4 color)
+void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, math::vec4 color)
 {
     renderSprite(texture, position, size, texRect, rotation, math::vec2(), color);
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform, const math::frect& texRect, const math::vec4& color)
+void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::mat4& transform, const math::frect& texRect, const math::vec4& color)
 {
     constexpr size_t quadVertexCount = 4;
 
@@ -227,12 +227,12 @@ void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4
     s_data.indexCount += 6;
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform)
+void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::mat4& transform)
 {
     renderSprite(texture, transform, math::frect(0, 0, texture->getWidth(), texture->getHeight()), math::vec4(1, 1, 1, 1));
 }
 
-void Renderer2D::renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)
+void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)
 {
     Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size) };
     renderSprite(texture, transform.matrix(), texRect, color);
@@ -272,12 +272,12 @@ void Renderer2D::renderQuad(const math::mat4& transform, const math::vec4& color
     s_data.indexCount += 6;
 }
 
-void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color)
+void Renderer2D::renderText(const std::string& text, const Reference<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color)
 {
     renderText(text, font, position, math::vec2(font->getCharacterSize()), color);
 }
 
-void Renderer2D::renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color)
+void Renderer2D::renderText(const std::string& text, const Reference<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color)
 {
     math::vec2 scale = size / (float)font->getCharacterSize();
 

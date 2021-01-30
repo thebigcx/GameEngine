@@ -5,6 +5,7 @@
 #include <mono/jit/jit.h>
 
 #include <script/mono/Type.h>
+#include <script/mono/Access.h>
 
 namespace Engine
 {

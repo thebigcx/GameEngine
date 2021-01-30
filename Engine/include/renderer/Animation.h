@@ -15,7 +15,7 @@ class Animation
 public:
     Animation() = default;
 
-    static Shared<Animation> create(Shared<Texture2D> texture);
+    static Reference<Animation> create(Reference<Texture2D> texture);
 
     void pushFrame(const math::frect& frame);
     void setFrames(const std::initializer_list<math::frect> frames);
@@ -44,7 +44,7 @@ public:
     }
 
 private:
-    Shared<Texture2D> m_pTexture;
+    Reference<Texture2D> m_pTexture;
     std::vector<math::frect> m_frames;
 
     unsigned int m_currentFrameIndex = 0;

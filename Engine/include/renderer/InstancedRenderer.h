@@ -19,26 +19,26 @@ public:
     InstancedRenderer();
 
     void add(const RenderingInstance& instance);
-    void setInstance(const std::vector<Shared<Mesh>>& model);
-    void setInstance(const Shared<Mesh>& mesh);
+    void setInstance(const std::vector<Reference<Mesh>>& model);
+    void setInstance(const Reference<Mesh>& mesh);
 
     void updateInstances();
     void resetInstances();
 
-    const std::vector<Shared<Mesh>>& getInstance() const { return m_meshes; }
+    const std::vector<Reference<Mesh>>& getInstance() const { return m_meshes; }
     const std::vector<RenderingInstance>& getInstances() const { return m_instances; }
 
-    static Shared<InstancedRenderer> create();
+    static Reference<InstancedRenderer> create();
 
 private:
     std::vector<RenderingInstance> m_instances;
-    std::vector<Shared<Mesh>> m_meshes;
+    std::vector<Reference<Mesh>> m_meshes;
 
-    Shared<VertexBuffer> m_instanceBuffer;
+    Reference<VertexBuffer> m_instanceBuffer;
 
     bool m_instanceChanged = false;
 
-    void setInstance_(const Shared<Mesh>& mesh);
+    void setInstance_(const Reference<Mesh>& mesh);
 };
 
 }

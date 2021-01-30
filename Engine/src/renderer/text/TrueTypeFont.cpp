@@ -1,9 +1,11 @@
+#include <renderer/text/TrueTypeFont.h>
+#include <core/Logger.h>
+
 #include <algorithm>
 
 #include <GL/glew.h>
-
-#include <renderer/text/TrueTypeFont.h>
-#include <core/Logger.h>
+#include <ft2build.h>
+#include <freetype/freetype.h>
 
 namespace Engine
 {
@@ -13,9 +15,9 @@ TrueTypeFont::TrueTypeFont()
     
 }
 
-Shared<TrueTypeFont> TrueTypeFont::create(const std::string& path, int characterSize)
+Reference<TrueTypeFont> TrueTypeFont::create(const std::string& path, int characterSize)
 {
-    auto ptr = createShared<TrueTypeFont>();
+    auto ptr = createReference<TrueTypeFont>();
     ptr->load(path, characterSize);
     return ptr;
 }

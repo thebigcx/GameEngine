@@ -17,7 +17,7 @@ Image::~Image()
     stbi_image_free(m_data);
 }
 
-Shared<Image> Image::create(const std::string& path, bool flipped)
+Reference<Image> Image::create(const std::string& path, bool flipped)
 {
     stbi_set_flip_vertically_on_load(static_cast<int>(flipped));
 
@@ -44,7 +44,7 @@ Shared<Image> Image::create(const std::string& path, bool flipped)
         Logger::getCoreLogger()->error("Image does not exist or contains corrupted data: %s", path.c_str());
     }
 
-    auto image = Shared<Image>(new Image());
+    auto image = Reference<Image>(new Image());
 
     image->m_data = data;
     image->m_width = width;

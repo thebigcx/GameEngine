@@ -14,10 +14,10 @@ public:
     void bind() const override;
     void unbind() const override;
 
-    void addVertexBuffer(const Shared<VertexBuffer>& buffer) override;
-    void setIndexBuffer(const Shared<IndexBuffer>& buffer) override;
+    void addVertexBuffer(const Reference<VertexBuffer>& buffer) override;
+    void setIndexBuffer(const Reference<IndexBuffer>& buffer) override;
 
-    inline Shared<IndexBuffer> getIndexBuffer() const { return m_indexBuffer; }
+    inline Reference<IndexBuffer> getIndexBuffer() const { return m_indexBuffer; }
 
     inline bool operator==(const VertexArray& array) const override
     {
@@ -34,7 +34,7 @@ private:
 
     uint32_t m_attribCount = 0;
 
-    Shared<IndexBuffer> m_indexBuffer;
+    Reference<IndexBuffer> m_indexBuffer;
 };
 
 }

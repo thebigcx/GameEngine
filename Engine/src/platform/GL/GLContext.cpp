@@ -1,6 +1,9 @@
 #include <platform/GL/GLContext.h>
 #include <core/Logger.h>
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 namespace Engine
 {
 

@@ -5,7 +5,7 @@
 namespace Engine
 {
 
-ParticleSystem::ParticleSystem(const Shared<Texture2D>& texture)
+ParticleSystem::ParticleSystem(const Reference<Texture2D>& texture)
     : m_texture(texture)
 {
 
@@ -47,9 +47,9 @@ void ParticleSystem::render()
     RenderCommand::setBlend(false);*/
 }
 
-Shared<ParticleSystem> ParticleSystem::create(const Shared<Texture2D>& texture)
+Reference<ParticleSystem> ParticleSystem::create(const Reference<Texture2D>& texture)
 {
-    return createShared<ParticleSystem>(texture);
+    return createReference<ParticleSystem>(texture);
 }
 
 }

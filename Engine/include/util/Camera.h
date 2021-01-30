@@ -16,8 +16,14 @@ public:
         return m_projectionMatrix;
     }
 
+    const math::mat4& getViewMatrix()
+    {
+        return m_viewMatrix;
+    }
+
 protected:
     math::mat4 m_projectionMatrix = math::mat4(1.f);
+    math::mat4 m_viewMatrix = math::mat4(1.f);
 };
 
 }

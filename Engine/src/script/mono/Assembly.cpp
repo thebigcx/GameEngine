@@ -1,4 +1,6 @@
 #include <script/mono/Assembly.h>
+#include <script/mono/Image.h>
+#include <script/mono/Type.h>
 
 namespace Engine
 {

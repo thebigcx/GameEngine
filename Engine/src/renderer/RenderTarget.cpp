@@ -17,7 +17,7 @@ RenderTarget::RenderTarget(uint32_t width, uint32_t height)
     m_framebuffer = Framebuffer::create(spec);
 }
 
-Shared<RenderTarget> RenderTarget::create(uint32_t width, uint32_t height)
+Reference<RenderTarget> RenderTarget::create(uint32_t width, uint32_t height)
 {
     RenderTarget* target = new RenderTarget(width, height);
     return std::shared_ptr<RenderTarget>(target);

@@ -7,6 +7,9 @@
 
 #include <core/Game.h>
 #include <renderer/RenderCommand.h>
+#include <core/Window.h>
+
+#include <GLFW/glfw3.h>
 
 namespace Engine
 {

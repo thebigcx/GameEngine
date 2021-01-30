@@ -2,13 +2,14 @@
 
 #include <string>
 
-#include <script/mono/Domain.h>
 #include <script/mono/Object.h>
 
 namespace Engine
 {
 namespace Mono
 {
+
+class Domain;
 
 class String : public Object
 {

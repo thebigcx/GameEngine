@@ -1,4 +1,5 @@
 #include <script/mono/Domain.h>
+#include <script/mono/Assembly.h>
 #include <core/Logger.h>
 
 #include <mono/metadata/mono-config.h>

@@ -12,21 +12,25 @@ PerspectiveCamera::PerspectiveCamera()
 void PerspectiveCamera::setPosition(const math::vec3& position)
 {
     m_position = position;
+    recalculateView();
 }
 
 void PerspectiveCamera::setPosition(float x, float y, float z)
 {
     m_position = { x, y, z };
+    recalculateView();
 }
 
 void PerspectiveCamera::setDirection(const math::vec3& direction)
 {
     m_direction = direction;
+    recalculateView();
 }
 
 void PerspectiveCamera::setDirection(float x, float y, float z)
 {
     m_direction = { x, y, z };
+    recalculateView();
 }
 
 void PerspectiveCamera::setRenderDistance(float renderDistance)
@@ -39,22 +43,14 @@ void PerspectiveCamera::setFieldOfView(float fov)
     m_fieldOfView = fov;
 }
 
-math::mat4 PerspectiveCamera::getViewMatrix() const
+void PerspectiveCamera::recalculateView()
 {
-    math::mat4 view = math::lookAt(m_position, m_position + m_direction, m_up);
-
-    return view;
+    m_viewMatrix = math::lookAt(m_position, m_position + m_direction, m_up);
 }
 
-void PerspectiveCamera::onEvent(Event& event)
+void PerspectiveCamera::setViewportSize(uint32_t width, uint32_t height)
 {
-    EventDispatcher dispatcher(event);
-    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(onWindowResize));
-}
-
-void PerspectiveCamera::onWindowResize(WindowResizeEvent& event)
-{
-    m_projectionMatrix = math::perspective((float)math::radians(m_fieldOfView), (float)event.getWidth() / (float)event.getHeight(), 0.1f, m_renderDistance);
+    m_projectionMatrix = math::perspective((float)math::radians(m_fieldOfView), (float)width / (float)height, 0.1f, m_renderDistance);
 }
 
 }

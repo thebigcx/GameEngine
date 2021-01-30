@@ -9,15 +9,15 @@ namespace Engine
 class Skybox
 {
 public:
-    static Shared<Skybox> create(const std::array<std::string, 6>& files);
+    static Reference<Skybox> create(const std::array<std::string, 6>& files);
 
-    Shared<TextureCube> getCubemap() const
+    Reference<TextureCube> getCubemap() const
     {
         return m_cubemap;
     }
 
 private:
-    Shared<TextureCube> m_cubemap;
+    Reference<TextureCube> m_cubemap;
 };
 
 }

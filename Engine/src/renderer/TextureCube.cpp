@@ -4,19 +4,19 @@
 namespace Engine
 {
 
-Shared<TextureCube> TextureCube::create(const std::string& filepath, bool clamp, bool linear, bool mipmap)
+Reference<TextureCube> TextureCube::create(const std::string& filepath, bool clamp, bool linear, bool mipmap)
 {
-    return createShared<GLTextureCube>(filepath, clamp, linear, mipmap);
+    return createReference<GLTextureCube>(filepath, clamp, linear, mipmap);
 }
 
-Shared<TextureCube> TextureCube::create(const std::string* files, bool clamp, bool linear, bool mipmap)
+Reference<TextureCube> TextureCube::create(const std::string* files, bool clamp, bool linear, bool mipmap)
 {
-    return createShared<GLTextureCube>(files, clamp, linear, mipmap);
+    return createReference<GLTextureCube>(files, clamp, linear, mipmap);
 }
 
-Shared<TextureCube> TextureCube::create(uint32_t width, uint32_t height, SizedTextureFormat internalFormat, bool clamp, bool linear, bool mipmap)
+Reference<TextureCube> TextureCube::create(uint32_t width, uint32_t height, SizedTextureFormat internalFormat, bool clamp, bool linear, bool mipmap)
 {
-    return createShared<GLTextureCube>(width, height, internalFormat, clamp, linear, mipmap);
+    return createReference<GLTextureCube>(width, height, internalFormat, clamp, linear, mipmap);
 }
 
 }

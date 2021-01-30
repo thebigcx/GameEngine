@@ -17,7 +17,7 @@ private:
     AudioBuffer(const std::string& filepath);
     AudioBuffer(uint32_t id);
 
-    static Shared<AudioBuffer> create(const std::string& path);
+    static Reference<AudioBuffer> create(const std::string& path);
 
     // 16-bit bitdepth
     static void loadWAV(const std::string& path, uint32_t buffer);

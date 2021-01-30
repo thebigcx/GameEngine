@@ -1,7 +1,13 @@
 #include <scene/EditorCamera.h>
-#include <events/EventDispatcher.h>
+
 #include <maths/matrix/matrix_func.h>
 #include <maths/quaternion/qua_func.h>
+
+#include <core/Keyboard.h>
+#include <core/Mouse.h>
+
+#include <events/EventDispatcher.h>
+#include <events/MouseEvent.h>
 
 namespace Engine
 {
@@ -15,31 +21,31 @@ EditorCamera::EditorCamera(float fov, float aspect, float near, float far)
 void EditorCamera::onUpdate(float dt)
 {
     
-    math::vec2 mouse(Input::getMousePosition().x, Input::getMousePosition().y);
+    math::vec2 mouse(Mouse::getPosition().x, Mouse::getPosition().y);
     math::vec2 delta = (mouse - m_lastMousePosition) * 0.003f;
     delta.y = -delta.y; // Flip y-axis
     m_lastMousePosition = mouse;
 
-    if (Input::isKeyPressed(Key::LeftAlt))
+    if (Keyboard::isPressed(Keyboard::Key::LeftAlt))
     {
-        if (Input::isMousePressed(MouseButton::Left))
+        if (Mouse::isPressed(Mouse::Button::Left))
         {
             mouseRotate(delta);
         }
 
-        if (Input::isMousePressed(MouseButton::Right))
+        if (Mouse::isPressed(Mouse::Button::Right))
         {
             // Zoom
             mouseZoom(delta.y);
         }
     }
 
-    if (Input::isMousePressed(MouseButton::Right))
+    if (Mouse::isPressed(Mouse::Button::Right))
     {
         // Rotate camera itself
     }
 
-    if (Input::isMousePressed(MouseButton::Middle))
+    if (Mouse::isPressed(Mouse::Button::Middle))
     {
         mousePan(delta);
     }
@@ -79,14 +85,14 @@ void EditorCamera::updateView()
     m_position = getPosition();
 
     math::quat orientation = getOrientation();
-    m_view = math::translate(math::mat4(1.f), m_position) * math::to_mat4(orientation);
-    m_view = math::inverse<float>(m_view);
+    m_viewMatrix = math::translate(math::mat4(1.f), m_position) * math::to_mat4(orientation);
+    m_viewMatrix = math::inverse<float>(m_viewMatrix);
 }
 
 void EditorCamera::updateProjection()
 {
     m_aspect = static_cast<float>(m_viewportSize.x) / static_cast<float>(m_viewportSize.y);
-    m_projection = math::perspective(static_cast<float>(math::radians(m_fov)), m_aspect, m_near, m_far);
+    m_projectionMatrix = math::perspective(static_cast<float>(math::radians(m_fov)), m_aspect, m_near, m_far);
 }
 
 math::vec2 EditorCamera::panSpeed() const

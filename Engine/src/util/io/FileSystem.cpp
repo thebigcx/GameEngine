@@ -18,7 +18,7 @@ FileStream::~FileStream()
     fclose(m_file);
 }
 
-Shared<FileStream> FileStream::create(const std::string& filepath, Mode mode)
+Reference<FileStream> FileStream::create(const std::string& filepath, Mode mode)
 {
     FILE* file;
 
@@ -27,7 +27,7 @@ Shared<FileStream> FileStream::create(const std::string& filepath, Mode mode)
     else if (mode == FileStream::Mode::Write)
         file = fopen(filepath.c_str(), "w");
         
-    return Shared<FileStream>(new FileStream(file, mode));
+    return Reference<FileStream>(new FileStream(file, mode));
 }
 
 void FileSystem::setAssetDirectoryPath(const std::string& path)

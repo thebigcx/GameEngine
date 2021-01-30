@@ -1,25 +1,22 @@
-#include <vector>
-
 #include <renderer/shader/Shader.h>
-#include <util/Timer.h>
 #include <platform/GL/GLShader.h>
 
 namespace Engine
 {
 
-Shared<Shader> Shader::createFromFile(const std::string& path)
+Reference<Shader> Shader::createFromFile(const std::string& path)
 {
-    return createShared<GLShader>(path);
+    return createReference<GLShader>(path);
 }
 
-Shared<Shader> Shader::createFromSource(const std::string& vertSource, const std::string& fragSource)
+Reference<Shader> Shader::createFromSource(const std::string& vertSource, const std::string& fragSource)
 {
-    return createShared<GLShader>(vertSource, fragSource);
+    return createReference<GLShader>(vertSource, fragSource);
 }
 
-Shared<Shader> Shader::createFromFileWithMacros(const std::string& path, const std::unordered_map<std::string, std::string>& macros)
+Reference<Shader> Shader::createFromFileWithMacros(const std::string& path, const std::unordered_map<std::string, std::string>& macros)
 {
-    return createShared<GLShader>(path, macros);
+    return createReference<GLShader>(path, macros);
 }
 
 }

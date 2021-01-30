@@ -167,7 +167,7 @@ void SceneHierarchyPanel::onImGuiRender()
         {
             if (FileDialog::madeSelection())
             {
-                Shared<Mesh> mesh = Mesh::load(FileDialog::getSelection(), 0);
+                Reference<Mesh> mesh = Mesh::load(FileDialog::getSelection(), 0);
 
                 auto object = m_context->createGameObject("Imported Mesh");
                 object->addComponent<TransformComponent>();
@@ -697,7 +697,7 @@ void SceneHierarchyPanel::drawComponent(const std::string& name, GameObject& obj
     }
 }
 
-void SceneHierarchyPanel::textureSelect(Shared<Texture2D>& texture)
+void SceneHierarchyPanel::textureSelect(Reference<Texture2D>& texture)
 {
     if (ImGui::Button("..."))
     {

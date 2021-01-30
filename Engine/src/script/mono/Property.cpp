@@ -1,5 +1,6 @@
 #include <script/mono/Property.h>
 #include <script/mono/Exception.h>
+#include <script/mono/Method.h>
 
 namespace Engine
 {

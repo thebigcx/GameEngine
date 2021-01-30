@@ -1,7 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
-
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -25,7 +23,7 @@ struct ShaderSource
 struct Uniform
 {
     size_t size;
-    GLenum type;
+    uint32_t type;
     int location;
 };
 
@@ -34,9 +32,9 @@ class Shader
 public:
     virtual ~Shader() = default;
 
-    static Shared<Shader> createFromFile(const std::string& path);
-    static Shared<Shader> createFromSource(const std::string& vertSource, const std::string& fragSource);
-    static Shared<Shader> createFromFileWithMacros(const std::string& path, const std::unordered_map<std::string, std::string>& macros);
+    static Reference<Shader> createFromFile(const std::string& path);
+    static Reference<Shader> createFromSource(const std::string& vertSource, const std::string& fragSource);
+    static Reference<Shader> createFromFileWithMacros(const std::string& path, const std::unordered_map<std::string, std::string>& macros);
 
     virtual void bind() const = 0;
     virtual void unbind() const = 0;

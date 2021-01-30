@@ -6,24 +6,24 @@
 namespace Engine
 {
 
-Shared<Renderbuffer> Renderbuffer::create(uint32_t width, uint32_t height, GLenum internalFormat)
+Reference<Renderbuffer> Renderbuffer::create(uint32_t width, uint32_t height, GLenum internalFormat)
 {
-    return createShared<GLRenderbuffer>(width, height, internalFormat);
+    return createReference<GLRenderbuffer>(width, height, internalFormat);
 }
 
-Shared<Framebuffer> Framebuffer::create(uint32_t width, uint32_t height)
+Reference<Framebuffer> Framebuffer::create(uint32_t width, uint32_t height)
 {
-    return createShared<GLFramebuffer>(width, height);
+    return createReference<GLFramebuffer>(width, height);
 }
 
-Shared<Framebuffer> Framebuffer::create()
+Reference<Framebuffer> Framebuffer::create()
 {
-    return createShared<GLFramebuffer>();
+    return createReference<GLFramebuffer>();
 }
 
-Shared<Framebuffer> Framebuffer::create(const Specification& spec)
+Reference<Framebuffer> Framebuffer::create(const Specification& spec)
 {
-    return createShared<GLFramebuffer>(spec);
+    return createReference<GLFramebuffer>(spec);
 }
 
 }

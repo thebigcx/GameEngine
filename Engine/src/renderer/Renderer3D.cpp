@@ -210,7 +210,7 @@ void Renderer3D::endScene()
     }
 }
 
-void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
+void Renderer3D::submit(const Reference<Mesh>& mesh, const math::mat4& transform)
 {
     if (!s_data.sceneStarted)
     {
@@ -230,7 +230,7 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform)
     s_data.renderObjects.at(mesh->material).push_back({ mesh, transform });
 }
 
-void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
+void Renderer3D::submit(const Reference<Model>& model, const math::mat4& transform)
 {
     for (auto& mesh : model->meshes)
     {
@@ -238,7 +238,7 @@ void Renderer3D::submit(const Shared<Model>& model, const math::mat4& transform)
     }
 }
 
-void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, const Shared<Material>& material)
+void Renderer3D::submit(const Reference<Mesh>& mesh, const math::mat4& transform, const Reference<Material>& material)
 {
     if (!s_data.sceneStarted)
     {
@@ -258,7 +258,7 @@ void Renderer3D::submit(const Shared<Mesh>& mesh, const math::mat4& transform, c
     s_data.renderObjects.at(material).push_back({ mesh, transform });
 }
 
-void Renderer3D::submit(const Shared<InstancedRenderer>& instance)
+void Renderer3D::submit(const Reference<InstancedRenderer>& instance)
 {
     if (!s_data.sceneStarted)
     {
@@ -267,7 +267,7 @@ void Renderer3D::submit(const Shared<InstancedRenderer>& instance)
 
     RenderCommand::setDepthTesting(true);
 
-    Shared<Material> lastMaterial = nullptr;
+    Reference<Material> lastMaterial = nullptr;
     for (auto& mesh : instance->getInstance())
     {
         if (mesh->material != lastMaterial)
@@ -286,7 +286,7 @@ void Renderer3D::submit(const Shared<InstancedRenderer>& instance)
     }
 }
 
-void Renderer3D::submitOutline(const Shared<Mesh>& mesh, const math::mat4& transform, const math::vec3& outlineColor)
+void Renderer3D::submitOutline(const Reference<Mesh>& mesh, const math::mat4& transform, const math::vec3& outlineColor)
 {
     /*
     mesh->vertexArray->bind();
@@ -309,7 +309,7 @@ void Renderer3D::submitOutline(const Shared<Mesh>& mesh, const math::mat4& trans
     */
 }
 
-void Renderer3D::setLightingUniforms(const Shared<Shader>& shader)
+void Renderer3D::setLightingUniforms(const Reference<Shader>& shader)
 {
     uint32_t pointLights = 0;
     uint32_t directionalLights = 0;
@@ -352,7 +352,7 @@ void Renderer3D::removeLight(const BaseLight* light)
     }
 }
 
-void Renderer3D::setEnvironment(const Shared<EnvironmentMap>& environment)
+void Renderer3D::setEnvironment(const Reference<EnvironmentMap>& environment)
 {
     s_data.environment = environment;
 }

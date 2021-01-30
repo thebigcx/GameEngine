@@ -13,10 +13,10 @@ namespace Engine
 
 struct RendererData
 {
-    //Shared<Framebuffer> target;
-    Shared<RenderTarget> target;
-    Shared<Shader> fboShader;
-    Shared<Mesh> fboMesh;
+    //Reference<Framebuffer> target;
+    Reference<RenderTarget> target;
+    Reference<Shader> fboShader;
+    Reference<Mesh> fboMesh;
 };
 
 class Renderer

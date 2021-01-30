@@ -2,15 +2,17 @@
 
 #include <vector>
 
-#include <core/Window.h>
-#include <core/Layer.h>
 #include <events/Event.h>
-#include <desktop/ImGuiLayer.h>
-
-int main(int argc, char** argv);
+#include <core/Core.h>
 
 namespace Engine
 {
+
+class Window;
+class Layer;
+class ImGuiLayer;
+class WindowResizeEvent;
+class WindowCloseEvent;
 
 // Singleton
 class Game
@@ -45,9 +47,7 @@ public:
 private:
     static Game* m_instance;
 
-    friend int ::main(int argc, char** argv);
-
-    Unique<Window> m_window;
+    Owned<Window> m_window;
 
     std::vector<Layer*> m_layers;
     ImGuiLayer* m_imguiLayer;
@@ -56,7 +56,5 @@ private:
 
     uint64_t m_frames;
 };
-
-Game* createGame();
 
 }

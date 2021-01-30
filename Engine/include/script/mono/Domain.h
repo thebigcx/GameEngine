@@ -5,8 +5,6 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 
-#include <script/mono/Assembly.h>
-
 namespace Engine
 {
 namespace Mono
@@ -14,6 +12,8 @@ namespace Mono
 
 bool init(const std::string& dom);
 void shutdown();
+
+class Assembly;
 
 class Domain
 {

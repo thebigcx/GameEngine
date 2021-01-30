@@ -40,23 +40,21 @@ struct Renderer2DData
     uint64_t drawCalls;
 
     math::mat4 projectionMatrix;
-    Shared<Shader> textureShader;
-    Shared<Shader> textShader;
 
     QuadVertex* vertexBase = nullptr;
     QuadVertex* vertexPointer = nullptr;
     uint32_t indexCount = 0;
     
-    Shared<Texture2D> textureSlots[MAX_TEXTURE_SLOTS];
+    Reference<Texture2D> textureSlots[MAX_TEXTURE_SLOTS];
     uint32_t textureSlotIndex = 1;
     
     Mesh mesh;
     
-    Shared<Mesh> textMesh;
+    Reference<Mesh> textMesh;
     GlyphVertex* textVertexBase;
     GlyphVertex* textVertexPtr;
 
-    Shared<UniformBuffer> matrixData;
+    Reference<UniformBuffer> matrixData;
 
     static inline const math::vec2 quadPositions[] = {
         math::vec2(0, 0),
@@ -85,12 +83,12 @@ public:
     static void beginScene(EditorCamera& camera);
     static void beginScene(Camera& camera, const math::mat4& transform);
 
-    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(1));
-    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect);
-    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, math::vec4 color);
-    static void renderSprite(const Shared<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color);
-    static void renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform, const math::frect& texRect, const math::vec4& color = math::vec4(1));
-    static void renderSprite(const Shared<Texture2D>& texture, const math::mat4& transform);
+    static void renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(1));
+    static void renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect);
+    static void renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, math::vec4 color);
+    static void renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color);
+    static void renderSprite(const Reference<Texture2D>& texture, const math::mat4& transform, const math::frect& texRect, const math::vec4& color = math::vec4(1));
+    static void renderSprite(const Reference<Texture2D>& texture, const math::mat4& transform);
 
     static void renderQuad(const math::vec2& position, const math::vec2& size, const math::vec4& color);
     static void renderQuad(const math::vec2& position, const math::vec2& size, float rotation, const math::vec4& color);
@@ -99,11 +97,11 @@ public:
     
     static void endScene();
 
-    static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color = math::vec4(0, 0, 0, 0));
-    static void renderText(const std::string& text, const Shared<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
+    static void renderText(const std::string& text, const Reference<TrueTypeFont>& font, const math::vec2& position, const math::vec4& color = math::vec4(0, 0, 0, 0));
+    static void renderText(const std::string& text, const Reference<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
 
 private:
-    static Shared<Mesh> m_framebufferMesh;
+    static Reference<Mesh> m_framebufferMesh;
 
     static Renderer2DData s_data;
     static Statistics s_statistics;

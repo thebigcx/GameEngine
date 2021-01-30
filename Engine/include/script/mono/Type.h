@@ -1,8 +1,9 @@
 #pragma once
 
-#include <mono/jit/jit.h>
+#include <vector>
+#include <string>
 
-#include <script/mono/Method.h>
+#include <mono/jit/jit.h>
 
 namespace Engine
 {
@@ -12,6 +13,7 @@ namespace Mono
 class Object;
 class Field;
 class Property;
+class Method;
 
 class Type
 {

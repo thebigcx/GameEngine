@@ -1,11 +1,13 @@
 #pragma once
 
 #include <util/Camera.h>
-#include <events/Event.h>
 #include <maths/quaternion/qua.h>
 
 namespace Engine
 {
+
+class Event;
+class MouseScrollEvent;
 
 class EditorCamera : public Camera
 {
@@ -27,16 +29,6 @@ public:
     math::vec3 getForwardDirection();
     math::vec3 getRightDirection();
 
-    inline constexpr const math::mat4& getProjectionMatrix() const noexcept
-    {
-        return m_projection;
-    }
-
-    inline constexpr const math::mat4& getViewMatrix() const noexcept
-    {
-        return m_view;
-    }
-
     math::vec2 panSpeed() const;
     float zoomSpeed() const;
     float rotationSpeed() const;
@@ -48,8 +40,6 @@ public:
     math::vec3 getPosition();
 
 private:
-    math::mat4 m_projection, m_view;
-
     float m_fov, m_aspect, m_near, m_far;
 
     math::uvec2 m_viewportSize;

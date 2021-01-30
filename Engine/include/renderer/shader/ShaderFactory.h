@@ -9,11 +9,11 @@ namespace Engine
 class ShaderFactory
 {
 public:
-    static Shared<Shader> textureShader();
-    static Shared<Shader> textShader();
-    static Shared<Shader> framebufferShader();
-    static Shared<Shader> lightingShader();
-    static Shared<Shader> createShader(const std::string& name);
+    static Reference<Shader> textureShader();
+    static Reference<Shader> textShader();
+    static Reference<Shader> framebufferShader();
+    static Reference<Shader> lightingShader();
+    static Reference<Shader> createShader(const std::string& name);
 };
 
 }

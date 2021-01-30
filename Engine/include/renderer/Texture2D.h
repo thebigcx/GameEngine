@@ -1,12 +1,8 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <stb_image/stb_image.h>
-
 #include <string>
 
 #include <maths/vector/vec2.h>
-#include <util/Image.h>
 #include <core/Core.h>
 
 namespace Engine
@@ -62,11 +58,11 @@ class Texture2D
 public:
     virtual ~Texture2D() = default;
 
-    static Shared<Texture2D> create(const std::string& file, bool clamp = false, bool linear = true);
-    static Shared<Texture2D> create(uint32_t width, uint32_t height, SizedTextureFormat dataFormat = SizedTextureFormat::RGBA8, bool clamp = false, bool linear = true);
-    static Shared<Texture2D> createWhiteTexture();
+    static Reference<Texture2D> create(const std::string& file, bool clamp = false, bool linear = true);
+    static Reference<Texture2D> create(uint32_t width, uint32_t height, SizedTextureFormat dataFormat = SizedTextureFormat::RGBA8, bool clamp = false, bool linear = true);
+    static Reference<Texture2D> createWhiteTexture();
 
-    static Shared<Texture2D> asyncCreate(const std::string& file, bool isSRGB = false);
+    static Reference<Texture2D> asyncCreate(const std::string& file, bool isSRGB = false);
 
     virtual void setData(uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height, const void* data, 
                          TextureFormat dataFormat = TextureFormat::RGBA, DataType type = DataType::UnsignedByte) = 0;
@@ -87,7 +83,7 @@ public:
     std::string name = "";
 
 private:
-    static Shared<Texture2D> s_whiteTexture;
+    static Reference<Texture2D> s_whiteTexture;
 };
 
 }

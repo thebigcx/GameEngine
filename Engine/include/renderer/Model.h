@@ -24,9 +24,9 @@ struct ModelVertex
 class Model
 {
 public:
-    static Shared<Model> load(const std::string& file);
+    static Reference<Model> load(const std::string& file);
 
-    std::vector<Shared<Mesh>> meshes;
+    std::vector<Reference<Mesh>> meshes;
 
     std::string path;
     std::string directory;

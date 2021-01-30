@@ -16,14 +16,14 @@ DirectionalLight::DirectionalLight(const math::vec3& radiance, float intensity, 
     setShadowInfo(new ShadowInfo(math::ortho(-40.f, 40.f, -40.f, 40.f, -40.f, 40.f)));
 }
 
-void DirectionalLight::setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const
+void DirectionalLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
     shader->setFloat3("directionalLight.radiance", radiance);
     shader->setFloat("directionalLight.intensity", intensity);
     shader->setFloat3("directionalLight.direction", direction);
 }
 
-void PointLight::setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const
+void PointLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
     std::string idx = std::to_string(index);
 
@@ -32,7 +32,7 @@ void PointLight::setShaderUniforms(const Shared<Shader>& shader, uint32_t index)
     shader->setFloat3("pointLights[" + idx + "].position", position);
 }
 
-void SkyLight::setShaderUniforms(const Shared<Shader>& shader, uint32_t index) const
+void SkyLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
     shader->setFloat3("skyLight.radiance", radiance);
     shader->setFloat("skyLight.intensity", intensity);

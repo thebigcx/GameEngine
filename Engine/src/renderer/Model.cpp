@@ -4,7 +4,7 @@
 namespace Engine
 {
 
-Shared<Model> Model::load(const std::string& file)
+Reference<Model> Model::load(const std::string& file)
 {
     return ModelLoader::load(file);
 }

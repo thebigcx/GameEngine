@@ -10,6 +10,6 @@ bool _trace(char* format, ...);
 namespace Engine
 {
 
-Shared<Logger> Logger::m_coreLogger = createShared<Logger>();
+Logger* Logger::m_coreLogger = new Logger();
 
 }

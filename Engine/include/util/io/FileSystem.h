@@ -19,7 +19,7 @@ public:
     };
 
 public:
-    static Shared<FileStream> create(const std::string& filepath, Mode mode);
+    static Reference<FileStream> create(const std::string& filepath, Mode mode);
 
 private:
     FileStream(FILE* file, Mode mode);

@@ -4,9 +4,9 @@
 namespace Engine
 {
 
-Unique<RendererAPI> RendererAPI::create()
+Owned<RendererAPI> RendererAPI::create()
 {
-    return createUnique<GLRendererAPI>();
+    return createOwned<GLRendererAPI>();
 }
 
 }

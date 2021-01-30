@@ -4,9 +4,9 @@
 namespace Engine
 {
 
-Unique<RenderingContext> RenderingContext::create(GLFWwindow* window)
+Owned<RenderingContext> RenderingContext::create(void* window)
 {
-    return createUnique<GLContext>(window);
+    return createOwned<GLContext>(static_cast<GLFWwindow*>(window));
 }
 
 }

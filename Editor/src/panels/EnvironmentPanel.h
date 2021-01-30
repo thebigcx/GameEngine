@@ -1,9 +1,9 @@
 #pragma once
 
-#include <scene/Scene.h>
-
 namespace Engine
 {
+
+class Scene;
 
 class EnvironmentPanel
 {

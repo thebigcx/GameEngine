@@ -5,8 +5,6 @@
 #include <cstdarg>
 #include <cstdio>
 
-#include <core/Core.h>
-
 namespace Engine
 {
 
@@ -83,13 +81,13 @@ public:
         return getFormat(str, args...);
     }
 
-    static Shared<Logger> getCoreLogger()
+    static Logger* getCoreLogger()
     {
         return m_coreLogger;
     }
 
 private:
-    static Shared<Logger> m_coreLogger;
+    static Logger* m_coreLogger;
 
     template<typename ...Args>
     std::string getFormat(const std::string& format, Args... args)
