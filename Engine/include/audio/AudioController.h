@@ -6,8 +6,6 @@
 #include <string>
 #include <vector>
 
-#include <audio/AudioBuffer.h>
-#include <audio/AudioSource.h>
 #include <core/Core.h>
 
 namespace Engine

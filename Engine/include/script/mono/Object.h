@@ -18,7 +18,10 @@ public:
 
     const Type& getType() const { return m_type; }
 
+    Object operator[](const std::string& field);
+
     MonoObject* get() const { return m_object; }
+    MonoObject*& get() { return m_object; }
 
 protected:
     MonoObject* m_object = nullptr;

@@ -8,7 +8,7 @@ namespace Engine
 namespace Utils
 {
 
-std::string genUUID()
+inline std::string genUUID()
 {
     sole::uuid id = sole::uuid4();
     return id.str();

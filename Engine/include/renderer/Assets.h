@@ -7,31 +7,75 @@
 
 #include <core/Logger.h>
 #include <core/Core.h>
+#include <util/io/Deserializer.h>
+#include <renderer/Texture2D.h>
+#include <renderer/shader/Shader.h>
+#include <util/uuid.h>
 
 namespace Engine
 {
 // TODO: refactor this part of the engine (resource management)
 // TODO: could be good to preload all assets inside a certain folder
-class IAssetPool
+
+template<typename T>
+struct AssetLoader;
+
+template<>
+struct AssetLoader<Texture2D>
+{
+    static Reference<Texture2D> load(const std::string& path)
+    {
+        return Deserializer::loadTexture(path);
+    }
+};
+
+template<>
+struct AssetLoader<Shader>
+{
+    static Reference<Shader> load(const std::string& path)
+    {
+        return Deserializer::loadShader(path);
+    }
+};
+
+template<>
+struct AssetLoader<Material>
+{
+    static Reference<Material> load(const std::string& path)
+    {
+        return Deserializer::loadMaterial(path);
+    }
+};
+
+template<>
+struct AssetLoader<Mesh>
+{
+    static Reference<Mesh> load(const std::string& path)
+    {
+        return Deserializer::loadMesh(path);
+    }
+};
+
+class IAssetCache
 {
     friend class Assets;
 
 protected:
-    IAssetPool() {}
-    virtual ~IAssetPool() = default;
+    IAssetCache() {}
+    virtual ~IAssetCache() = default;
 
     virtual const int getAssetCount() noexcept = 0;
 };
 
 template <typename T>
-class AssetPool : public IAssetPool
+class AssetCache : public IAssetCache
 {
     friend class Assets;
 
 public:
     void add(const std::string& key, const Reference<T>& asset);
 
-    const Reference<T>& get(const std::string& key);
+    Weak<T> get(const std::string& key);
 
     void remove(const std::string& key);
 
@@ -46,6 +90,11 @@ public:
 
     std::unordered_map<std::string, Reference<T>>& getInternalList();
 
+    void load(const std::string& path)
+    {
+        m_assets.insert(std::make_pair(Utils::genUUID(), AssetLoader<T>::load(path)));
+    }
+
 private:
     std::unordered_map<std::string, Reference<T>> m_assets;
 };
@@ -53,28 +102,25 @@ private:
 // -------------------------------------------------------------------------------------------
 
 template<typename T>
-void AssetPool<T>::add(const std::string& key, const Reference<T>& asset)
+void AssetCache<T>::add(const std::string& key, const Reference<T>& asset)
 {
     m_assets.insert(std::make_pair(key, asset));
 }
 
 template<typename T>
-const Reference<T>& AssetPool<T>::get(const std::string& key)
+Weak<T> AssetCache<T>::get(const std::string& key)
 {
     if (!exists(key))
     {
-        Logger::getCoreLogger()->error("Asset does not exist: %s", key.c_str());
-        abort();
-
-        static Reference<T> fail = nullptr;
-        return fail;
+        Reference<T> ref(nullptr);
+        return ref;
     }
 
     return m_assets.at(key);
 }
 
 template<typename T>
-void AssetPool<T>::remove(const std::string& key)
+void AssetCache<T>::remove(const std::string& key)
 {
     if (this->exists(key))
     {
@@ -83,19 +129,19 @@ void AssetPool<T>::remove(const std::string& key)
 }
 
 template<typename T>
-const bool AssetPool<T>::exists(const std::string& key)
+const bool AssetCache<T>::exists(const std::string& key)
 {
     return m_assets.find(key) != m_assets.end();
 }
 
 template<typename T>
-const int AssetPool<T>::getAssetCount() noexcept
+const int AssetCache<T>::getAssetCount() noexcept
 {
     return m_assets.size();
 }
 
 template<typename T>
-std::unordered_map<std::string, Reference<T>>& AssetPool<T>::getInternalList()
+std::unordered_map<std::string, Reference<T>>& AssetCache<T>::getInternalList()
 {
     return m_assets;
 }
@@ -114,12 +160,12 @@ public:
     template<typename T>
     static void add(const std::string& key, Reference<T> asset)
     {
-        if (!listExists<T>())
+        if (!cacheExists<T>())
         {
-            m_instance->m_lists.insert(std::pair<std::type_index, IAssetPool*>(typeid(T), new AssetPool<T>()));
+            m_instance->m_caches.insert(std::pair<std::type_index, IAssetCache*>(typeid(T), new AssetCache<T>()));
         }
 
-        getList<T>().add(key, asset);
+        getCache<T>().add(key, asset);
     }
 
     template<typename T>
@@ -132,39 +178,36 @@ public:
     }
 
     template<typename T>
-    static const Reference<T>& get(const std::string& key)
+    static Weak<T> get(const std::string& key)
     {
-        if (!listExists<T>())
+        if (!cacheExists<T>())
         {
-            Logger::getCoreLogger()->error("Asset List does not exist.");
-
-            static Reference<T> fail = nullptr;
-            return fail;
+            m_instance->m_caches.insert(std::pair<std::type_index, IAssetCache*>(typeid(T), new AssetCache<T>()));
         }
 
-        return getList<T>().get(key);
+        return getCache<T>().get(key);
     }
 
     template<typename T>
     static bool exists(const std::string& key)
     {
-        if (!listExists<T>())
+        if (!cacheExists<T>())
         {
             return false;
         }
 
-        return getList<T>().exists(key);
+        return getCache<T>().exists(key);
     }
 
     template<typename T>
     static void remove(const std::string& key)
     {
-        if (!listExists<T>())
+        if (!cacheExists<T>())
         {
             return;
         }
 
-        getList<T>().remove(key);
+        getCache<T>().remove(key);
     }
 
     static void flush();
@@ -172,35 +215,35 @@ public:
     template<typename T>
     static unsigned int getAssetCount() noexcept
     {
-        if (!listExists<T>())
+        if (!cacheExists<T>())
         {
             return 0;
         }
 
-        return getList<T>().getAssetCount();
+        return getCache<T>().getAssetCount();
     }
 
     template<typename T>
-    static AssetPool<T>& getList()
+    static AssetCache<T>& getCache()
     {
-        if (!listExists<T>())
+        if (!cacheExists<T>())
         {
-            m_instance->m_lists.emplace(std::make_pair(static_cast<std::type_index>(typeid(T)), new AssetPool<T>()));
+            m_instance->m_caches.emplace(std::make_pair(static_cast<std::type_index>(typeid(T)), new AssetCache<T>()));
         }
 
-        return *static_cast<AssetPool<T>*>(m_instance->m_lists.at(typeid(T)));
+        return *static_cast<AssetCache<T>*>(m_instance->m_caches.at(typeid(T)));
     }
 
     template<typename T>
-    static bool listExists()
+    static bool cacheExists()
     {
-        return m_instance->m_lists.find(typeid(T)) != m_instance->m_lists.end();
+        return m_instance->m_caches.find(typeid(T)) != m_instance->m_caches.end();
     }
 
     template<typename T>
     static const std::string& find(const Reference<T>& assetToFind)
     {
-        for (auto& asset : getList<T>().getInternalList())
+        for (auto& asset : getCache<T>().getInternalList())
         {
             if (asset.second == assetToFind)
             {
@@ -213,7 +256,7 @@ public:
     }
 
 private:
-    std::unordered_map<std::type_index, IAssetPool*> m_lists;
+    std::unordered_map<std::type_index, IAssetCache*> m_caches;
 
     static Assets* m_instance;
 };

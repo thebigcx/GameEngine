@@ -16,6 +16,7 @@
 #include <events/EventDispatcher.h>
 #include <core/Keyboard.h>
 #include <events/KeyboardEvent.h>
+#include <util/io/Serializer.h>
 
 namespace Engine
 {
@@ -89,7 +90,7 @@ void EditorLayer::onUpdate(float dt)
     // HDR Pass
     m_hdrBuffer->bind();
     RenderCommand::clear(RenderCommand::defaultClearBits());
-    Assets::get<Shader>("hdr")->bind();
+    Assets::get<Shader>("hdr").lock()->bind();
     glBindTextureUnit(0, m_framebuffer->getColorAttachment()); // TODO: platform independent
     m_framebufferMesh->vertexArray->bind();
     RenderCommand::renderIndexed(m_framebufferMesh->vertexArray);
@@ -150,7 +151,8 @@ void EditorLayer::drawMenuBar()
         {
             if (FileDialog::madeSelection())
             {
-                SceneSerializer::saveScene(m_scene, FileDialog::getSelection() + std::string("/") + FileDialog::getSaveFileName());
+                //SceneSerializer::saveScene(m_scene, FileDialog::getSelection() + std::string("/") + FileDialog::getSaveFileName());
+                Serializer::saveScene(m_scene, FileDialog::getSelection() + "/" + FileDialog::getSaveFileName());
             }
         }
     }

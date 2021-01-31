@@ -17,12 +17,12 @@ Assets::~Assets()
 
 void Assets::flush()
 {
-    for (auto& list : m_instance->m_lists)
+    for (auto& cache : m_instance->m_caches)
     {
-        delete list.second;
+        delete cache.second;
     }
 
-    m_instance->m_lists.clear();
+    m_instance->m_caches.clear();
 }
 
 }

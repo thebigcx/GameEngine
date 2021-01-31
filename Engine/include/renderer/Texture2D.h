@@ -12,6 +12,7 @@ enum class SizedTextureFormat
 {
     None = 0,
     RGBA8,
+    RGB8,
     Depth24Stencil8,
     Depth16,
     RGB16F,
@@ -58,7 +59,7 @@ class Texture2D
 public:
     virtual ~Texture2D() = default;
 
-    static Reference<Texture2D> create(const std::string& file, bool clamp = false, bool linear = true);
+    static Reference<Texture2D> create(const std::string& file, bool clamp = false, bool linear = true, bool isSRGB = true);
     static Reference<Texture2D> create(uint32_t width, uint32_t height, SizedTextureFormat dataFormat = SizedTextureFormat::RGBA8, bool clamp = false, bool linear = true);
     static Reference<Texture2D> createWhiteTexture();
 
@@ -73,6 +74,10 @@ public:
     virtual uint32_t getWidth() const = 0;
     virtual uint32_t getHeight() const = 0;
 
+    virtual bool isClamped() const = 0;
+    virtual bool isLinear() const = 0;
+    virtual bool isSRGB() const = 0;
+
     virtual uint32_t getId() const = 0;
 
     virtual const std::string& getPath() const = 0;
@@ -81,6 +86,7 @@ public:
     virtual bool operator!=(const Texture2D& other) = 0;
 
     std::string name = "";
+    std::string uuid = "";
 
 private:
     static Reference<Texture2D> s_whiteTexture;

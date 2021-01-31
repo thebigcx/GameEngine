@@ -49,7 +49,7 @@ void MaterialsPanel::textureSelect(Reference<Texture2D>& texture)
         
     if (ImGui::BeginCombo("##Texture", nullptr, ImGuiComboFlags_NoPreview))
     {
-        for (auto& textureAsset : Assets::getList<Texture2D>())
+        for (auto& textureAsset : Assets::getCache<Texture2D>())
         {
             ImGui::PushID(textureAsset.second.get());
 
@@ -69,36 +69,6 @@ void MaterialsPanel::textureSelect(Reference<Texture2D>& texture)
 
         ImGui::EndCombo();
     }
-    /*
-    bool open = false;
-    if (texture)
-        open = ImGui::ImageButton(reinterpret_cast<void*>(texture->getId()), ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-    else
-        open = ImGui::ImageButton(0, ImVec2{ 50, 50 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-    
-    if (open)
-    {
-        FileDialog::open(&texture);
-    }
-
-    if (FileDialog::selectFile(&texture, "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
-    {
-        if (!FileDialog::display())
-        {
-            if (FileDialog::madeSelection())
-            {
-                std::string key = FileDialog::getSelection();
-                if (Assets::exists<Texture2D>(key))
-                {
-                    texture = Assets::get<Texture2D>(key);
-                }
-                else
-                {
-                    texture = Texture2D::create(key);
-                }
-            }
-        }
-    }*/
 }
 
 void MaterialsPanel::onImGuiRender()
@@ -109,7 +79,7 @@ void MaterialsPanel::onImGuiRender()
 
     if (ImGui::CollapsingHeader("Materials"))
     {
-        for (auto& asset : Assets::getList<Material>())
+        for (auto& asset : Assets::getCache<Material>())
         {
             ImGui::PushID(asset.first.c_str());
 
@@ -135,7 +105,7 @@ void MaterialsPanel::onImGuiRender()
 
                 if (ImGui::BeginCombo("##Shader", currentShader.c_str()))
                 {
-                    for (auto& shader : Assets::getList<Shader>())
+                    for (auto& shader : Assets::getCache<Shader>())
                     {
                         ImGui::PushID(shader.second.get());
 
@@ -261,32 +231,34 @@ void MaterialsPanel::onImGuiRender()
 
         if (ImGui::Button("Create Material"))
         {
-            auto material = Material::create(Assets::get<Shader>("pbr"));
+            auto material = Material::create(Assets::get<Shader>("pbr").lock());
             material->name = "New Material";
+            material->uuid = Utils::genUUID();
 
-            Assets::add<Material>(Utils::genUUID(), material);
+            Assets::add<Material>(material->uuid, material);
         }
     }
 
     if (ImGui::CollapsingHeader("Shaders"))
     {
-        for (auto& shader : Assets::getList<Shader>().getInternalList())
+        for (auto& shader : Assets::getCache<Shader>().getInternalList())
         {
             bool opened = ImGui::TreeNodeEx(shader.second->name.c_str());
-
-            if (ImGui::BeginPopupContextItem())
-            {
-                if (ImGui::MenuItem("Change Name"))
-                {
-                    ImGui::OpenPopup("Change Shader Name");
-                }
-
-                ImGui::EndPopup();
-            }
 
             if (opened)
             {
                 ImGui::PushID(&shader.second);
+
+                char buf[128];
+                strcpy(buf, shader.second->name.c_str());
+
+                ImGui::Text("Name");
+                ImGui::SameLine();
+
+                if (ImGui::InputText("##Name", buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    shader.second->name = std::string(buf);
+                }
 
                 shaderSelect(shader.second);
 
@@ -308,7 +280,10 @@ void MaterialsPanel::onImGuiRender()
                 if (FileDialog::madeSelection())
                 {
                     std::string name = FileDialog::getSelection();
-                    Assets::add<Shader>(name, Shader::createFromFile(FileDialog::getSelection()));
+                    auto shader = Shader::createFromFile(FileDialog::getSelection());
+                    shader->name = name;
+                    shader->uuid = Utils::genUUID();
+                    Assets::add<Shader>(shader->uuid, shader);
                 }
             }
         }
@@ -317,7 +292,7 @@ void MaterialsPanel::onImGuiRender()
     std::string deletedTexture = "";
     if (ImGui::CollapsingHeader("Textures"))
     {
-        for (auto& texture : Assets::getList<Texture2D>().getInternalList())
+        for (auto& texture : Assets::getCache<Texture2D>().getInternalList())
         {
             bool opened = ImGui::TreeNodeEx(texture.second->name.c_str());
 
@@ -333,6 +308,17 @@ void MaterialsPanel::onImGuiRender()
 
             if (opened)
             {
+                char buf[128];
+                strcpy(buf, texture.second->name.c_str());
+
+                ImGui::Text("Name");
+                ImGui::SameLine();
+
+                if (ImGui::InputText("##Name", buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    texture.second->name = std::string(buf);
+                }
+
                 ImGui::Image(reinterpret_cast<void*>(texture.second->getId()), ImVec2{30, 30}, ImVec2{0, 1}, ImVec2{1, 0});
                 ImGui::TreePop();
             }
@@ -351,7 +337,8 @@ void MaterialsPanel::onImGuiRender()
                 {
                     Reference<Texture2D> texture = Texture2D::create(FileDialog::getSelection());
                     texture->name = "New Texture";
-                    Assets::add<Texture2D>(Utils::genUUID(), texture);
+                    texture->uuid = Utils::genUUID();
+                    Assets::add<Texture2D>(texture->uuid, texture);
                 }
             }
         }

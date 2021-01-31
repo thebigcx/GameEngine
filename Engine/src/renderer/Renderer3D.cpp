@@ -38,7 +38,7 @@ void Renderer3D::init()
     Assets::add<Shader>("shadowmap", shadowmap);
 
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
-    s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("pbr"));
+    s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("pbr").lock());
 
     s_data.skyboxMesh = MeshFactory::skyboxMesh();
     s_data.environment = EnvironmentMap::create("Sandbox/assets/environment.hdr");
@@ -116,8 +116,8 @@ void Renderer3D::renderShadows()
     s_data.shadowMapFramebuffer->bind();
     RenderCommand::clear((uint32_t)RendererBufferType::Depth);
 
-    Assets::get<Shader>("shadowmap")->bind();
-    Assets::get<Shader>("shadowmap")->setMatrix4("lightSpaceMatrix", s_data.lightMatrix);
+    Assets::get<Shader>("shadowmap").lock()->bind();
+    Assets::get<Shader>("shadowmap").lock()->setMatrix4("lightSpaceMatrix", s_data.lightMatrix);
 
     for (auto& group : s_data.renderObjects)
     {
@@ -125,7 +125,7 @@ void Renderer3D::renderShadows()
         {
             renderObject.mesh->vertexArray->bind();
 
-            Assets::get<Shader>("shadowmap")->setMatrix4("transform", renderObject.transform);
+            Assets::get<Shader>("shadowmap").lock()->setMatrix4("transform", renderObject.transform);
 
             RenderCommand::renderIndexed(renderObject.mesh->vertexArray);
         }

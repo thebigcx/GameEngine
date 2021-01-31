@@ -15,6 +15,8 @@ public:
     void bind() const;
     void unbind() const;
 
+    static Reference<Material> createFromFile(const std::string& path);
+
     static Reference<Material> create();
     static Reference<Material> create(const Reference<Shader>& shader);
 
@@ -42,6 +44,7 @@ public:
     Reference<Shader> shader;
 
     std::string name = "";
+    std::string uuid = "";
 
     bool operator==(const Material& other)
     {

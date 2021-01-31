@@ -25,6 +25,16 @@ decltype(auto) apply(F&& f, Tuple&& t)
 }
 
 template<typename T>
+struct BoxMonoValue
+{
+    static Object toMono(T& cppType, const Type& monoType)
+    {
+        auto domain = Domain::getCurrentDomain();
+        return Object(mono_value_box(domain->get(), monoType.get(), &cppType));
+    }
+};
+
+template<typename T>
 struct ConvertMonoType
 {
     static T toMono(const T& type)

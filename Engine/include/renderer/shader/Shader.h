@@ -78,6 +78,7 @@ public:
     virtual bool operator!=(const Shader& shader) const = 0;
 
     std::string name = "";
+    std::string uuid = "";
 
     enum class DataType
     {

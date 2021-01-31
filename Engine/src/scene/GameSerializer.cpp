@@ -1,7 +1,7 @@
 #include <scene/GameSerializer.h>
 #include <renderer/Assets.h>
 #include <renderer/Material.h>
-#include <script/CSharpScript.h>
+#include <script/Script.h>
 
 #include <yaml-cpp/yaml.h>
 
@@ -16,7 +16,7 @@ void GameSerializer::saveProject(const std::string& path)
 
     YAML::Node scenes = root["Scenes"];
 
-    for (auto& material : Assets::getList<Material>())
+    for (auto& material : Assets::getCache<Material>())
     {
         YAML::Node matNode;
 

@@ -63,14 +63,15 @@ int Game::run()
     Renderer::init();
     Time::init();
 
+    AudioController::getInstance()->initialize();
+    ScriptController::getInstance()->initialize();
+    PhysicsController2D::getInstance()->initialize();
+
     m_imguiLayer = new ImGuiLayer();
     m_imguiLayer->onAttach();
     m_layers.emplace_back(m_imguiLayer);
 
     initialize();
-    AudioController::getInstance()->initialize();
-    ScriptController::getInstance()->initialize();
-    PhysicsController2D::getInstance()->initialize();
 
     while (m_running)
     {

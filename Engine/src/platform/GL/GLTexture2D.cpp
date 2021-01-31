@@ -16,6 +16,7 @@ namespace Utils
         switch (format)
         {
             case SizedTextureFormat::RGBA8: return GL_RGBA8;
+            case SizedTextureFormat::RGB8: return GL_RGB8;
             case SizedTextureFormat::Depth16: return GL_DEPTH_COMPONENT16;
             case SizedTextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
             case SizedTextureFormat::RGB16F: return GL_RGB16F;
@@ -65,8 +66,8 @@ namespace Utils
     }
 }
 
-GLTexture2D::GLTexture2D(const std::string& file, bool clamp, bool linear)
-    : m_path(file)
+GLTexture2D::GLTexture2D(const std::string& file, bool clamp, bool linear, bool isSRGB)
+    : m_path(file), m_clamp(clamp), m_linear(linear), m_isSRGB(isSRGB)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
     bind();
@@ -78,11 +79,18 @@ GLTexture2D::GLTexture2D(const std::string& file, bool clamp, bool linear)
         switch (image->getFormat())
         {
             case Image::Format::RGB:
-                m_internalFormat = SizedTextureFormat::sRGB8;
+                if (isSRGB)
+                    m_internalFormat = SizedTextureFormat::sRGB8;
+                else
+                    m_internalFormat = SizedTextureFormat::RGB8;
+
                 m_dataFormat = TextureFormat::RGB;
                 break;
             case Image::Format::RGBA:
-                m_internalFormat = SizedTextureFormat::sRGBA8;
+                if (isSRGB)
+                    m_internalFormat = SizedTextureFormat::sRGBA8;
+                else
+                    m_internalFormat = SizedTextureFormat::RGBA8;
                 m_dataFormat = TextureFormat::RGBA;
                 break;
         };
@@ -118,7 +126,8 @@ GLTexture2D::GLTexture2D(const std::string& file, bool clamp, bool linear)
 }
 
 GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, SizedTextureFormat dataFormat, bool clamp, bool linear)
-    : m_internalFormat(dataFormat), m_path("")
+    : m_internalFormat(dataFormat), m_path(""), m_clamp(clamp), m_linear(linear)
+    , m_isSRGB(dataFormat == SizedTextureFormat::sRGB8 || dataFormat == SizedTextureFormat::sRGBA8)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
 

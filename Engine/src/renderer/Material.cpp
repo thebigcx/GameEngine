@@ -1,5 +1,6 @@
 #include <renderer/Material.h>
 #include <renderer/Renderer3D.h>
+#include <util/io/Deserializer.h>
 
 namespace Engine
 {
@@ -85,6 +86,11 @@ void Material::unbind() const
     ambientOcclusionMap->unbind(4);
     depthMap->unbind(5);
     emissionMap->unbind(6);
+}
+
+Reference<Material> Material::createFromFile(const std::string& path)
+{
+    return Deserializer::loadMaterial(path);
 }
 
 Reference<Material> Material::create(const Reference<Shader>& shader)

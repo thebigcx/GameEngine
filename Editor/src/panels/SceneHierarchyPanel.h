@@ -37,8 +37,6 @@ private:
 
     GameObject* m_selection = nullptr;
     GameObject* m_deletedGameObject = nullptr;
-
-    void textureSelect(Reference<Texture2D>& texture);
 };
 
 }

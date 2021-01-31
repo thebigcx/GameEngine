@@ -40,6 +40,8 @@ struct Renderer2DData
     uint64_t drawCalls;
 
     math::mat4 projectionMatrix;
+    Reference<Shader> textureShader;
+    Reference<Shader> textShader;
 
     QuadVertex* vertexBase = nullptr;
     QuadVertex* vertexPointer = nullptr;

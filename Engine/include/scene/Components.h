@@ -17,7 +17,7 @@ namespace Engine
 class Mesh;
 class Material;
 class TrueTypeFont;
-class CSharpScript;
+class Script;
 
 struct TransformComponent : public GameComponent
 {
@@ -128,7 +128,7 @@ struct MeshRendererComponent : public GameComponent
 struct CSharpScriptComponent : public GameComponent
 {
     std::string filepath = "";
-    Reference<CSharpScript> script;
+    Reference<Script> script;
     bool initialized = false;
 };
 

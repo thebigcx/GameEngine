@@ -20,7 +20,7 @@ void SceneSerializer::saveScene(const Reference<Scene>& scene, const std::string
     auto objects = root["Scene"]["GameObjects"];
 
     // Materials
-    for (auto& material : Assets::getList<Material>())
+    for (auto& material : Assets::getCache<Material>())
     {
         auto& name = material.first;
         auto& mat = material.second;
@@ -64,7 +64,7 @@ void SceneSerializer::saveScene(const Reference<Scene>& scene, const std::string
         sceneNode["Materials"][name]["Shader"] = Assets::find<Shader>(mat->shader);
     }
 
-    for (auto& texture : Assets::getList<Texture2D>())
+    for (auto& texture : Assets::getCache<Texture2D>())
     {
         if (texture.first == "white_texture")
             sceneNode["Texture2Ds"][texture.first] = "white_texture";
@@ -72,7 +72,7 @@ void SceneSerializer::saveScene(const Reference<Scene>& scene, const std::string
             sceneNode["Texture2Ds"][texture.first] = texture.second->getPath();
     }
 
-    for (auto& shader : Assets::getList<Shader>())
+    for (auto& shader : Assets::getCache<Shader>())
     {
         sceneNode["Shaders"][shader.first] = shader.second->getPath();
     }
@@ -125,7 +125,7 @@ Reference<Scene> SceneSerializer::loadScene(const std::string& path)
         auto node = sceneNode["Materials"][it->first];
 
         auto shader = Assets::get<Shader>(node["Shader"].as<std::string>());
-        Reference<Material> material = Material::create(shader);
+        Reference<Material> material = Material::create(shader.lock());
 
         // Make sure they aren't invalid texture
         if (node["Albedo"].as<std::string>() != "")
@@ -231,9 +231,9 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
         mesh.meshID = node["Mesh"]["Mesh ID"].as<uint32_t>();
         
         bool needToLoad = true;
-        if (Assets::listExists<Model>())
+        if (Assets::cacheExists<Model>())
         {
-            for (auto& model : Assets::getList<Model>())
+            for (auto& model : Assets::getCache<Model>())
             {
                 if (model.second->path == mesh.filePath)
                 {
@@ -257,7 +257,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
         auto& meshRenderer = object->addComponent<MeshRendererComponent>();
 
         auto mat = node["Mesh Renderer"]["Material"];
-        meshRenderer.material = Assets::get<Material>(mat.as<std::string>());
+        meshRenderer.material = Assets::get<Material>(mat.as<std::string>()).lock();
     }
 
     if (node["Directional Light"])

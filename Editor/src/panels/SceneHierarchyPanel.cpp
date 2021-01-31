@@ -13,6 +13,7 @@
 #include <renderer/Assets.h>
 #include <util/io/FileSystem.h>
 
+
 namespace Engine
 {
 
@@ -414,7 +415,7 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         
         if (ImGui::BeginCombo("##Texture", currentTexture.c_str()))
         {
-            for (auto& texture : Assets::getList<Texture2D>())
+            for (auto& texture : Assets::getCache<Texture2D>())
             {
                 ImGui::PushID(texture.second.get());
 
@@ -591,7 +592,7 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
 
         if (ImGui::BeginCombo("##materialSelect", name.c_str()))
         {
-            for (auto& material : Assets::getList<Material>().getInternalList())
+            for (auto& material : Assets::getCache<Material>().getInternalList())
             {
                 ImGui::PushID(material.second.get());
 
@@ -694,33 +695,6 @@ void SceneHierarchyPanel::drawComponent(const std::string& name, GameObject& obj
     if (deleted)
     {
         object.removeComponent<T>();
-    }
-}
-
-void SceneHierarchyPanel::textureSelect(Reference<Texture2D>& texture)
-{
-    if (ImGui::Button("..."))
-    {
-        FileDialog::open(&texture);
-    }
-
-    if (FileDialog::selectFile(&texture, "Choose texture...", ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".pic"))
-    {
-        if (!FileDialog::display())
-        {
-            if (FileDialog::madeSelection())
-            {
-                std::string key = FileDialog::getSelection();
-                if (Assets::exists<Texture2D>(key))
-                {
-                    texture = Assets::get<Texture2D>(key);
-                }
-                else
-                {
-                    texture = Texture2D::create(key);
-                }
-            }
-        }
     }
 }
 
