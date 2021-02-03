@@ -25,7 +25,7 @@ Reference<Scene> Scene::create()
     auto& cameraComp = cam->addComponent<CameraComponent>();
     cameraComp.primary = true;
     cameraComp.camera.setProjectionType(ProjectionType::Perspective);
-    cam->addComponent<TransformComponent>();*/
+    cam->addComponent<Transform>();*/
 
     return scene;
 }
@@ -48,10 +48,10 @@ void Scene::onUpdateEditor(float dt, EditorCamera& camera)
 
 void Scene::recurseRender2D(GameObject& object)
 {
-    if (object.hasComponents<TransformComponent, SpriteRendererComponent>())
+    if (object.hasComponents<Transform, SpriteRendererComponent>())
     {
         auto& sprite = object.getComponent<SpriteRendererComponent>();
-        auto transform = object.getComponent<TransformComponent>().getTransform();
+        auto transform = object.getComponent<Transform>().matrix();
 
         math::frect textureRect = sprite.usingTexRect ? sprite.textureRect : math::frect(0, 0, sprite.texture->getWidth(), sprite.texture->getHeight());
 
@@ -66,10 +66,10 @@ void Scene::recurseRender2D(GameObject& object)
 
 void Scene::recurseRender3D(GameObject& object)
 {
-    if (object.hasComponents<MeshComponent, TransformComponent, MeshRendererComponent>())
+    if (object.hasComponents<MeshComponent, Transform, MeshRendererComponent>())
     {
         auto& mesh = object.getComponent<MeshComponent>().mesh;
-        auto transform = object.getComponent<TransformComponent>().getTransform();
+        auto transform = object.getComponent<Transform>().matrix();
         auto& material = object.getComponent<MeshRendererComponent>().material;
 
         if (material && mesh)
@@ -108,35 +108,35 @@ void Scene::setLights()
 {
     Renderer3D::clearLights();
     {
-        auto skylights = m_rootObject.getChildrenWithComponent<SkyLightComponent>();
+        auto skylights = m_rootObject.getChildrenWithComponent<SkyLight>();
         for (auto& object : skylights)
         {   
-            auto& light = object->getComponent<SkyLightComponent>();
+            auto& light = object->getComponent<SkyLight>();
 
-            Renderer3D::addLight(&light.light);
+            Renderer3D::addLight(&light);
         }
         
-        auto directionalLights = m_rootObject.getChildrenWithComponents<DirectionalLightComponent, TransformComponent>();
+        auto directionalLights = m_rootObject.getChildrenWithComponents<DirectionalLight, Transform>();
         for (auto& object : directionalLights)
         {
-            auto& light = object->getComponent<DirectionalLightComponent>();
-            auto& transform = object->getComponent<TransformComponent>();
+            auto& light = object->getComponent<DirectionalLight>();
+            auto& transform = object->getComponent<Transform>();
 
             math::quat rotation = math::quat(math::radians(transform.rotation));
-            light.light.direction = rotation * math::vec3(0, -1, 0);
+            light.direction = rotation * math::vec3(0, -1, 0); // TODO: use onTransformChange event
 
-            Renderer3D::addLight(&light.light);
+            Renderer3D::addLight(&light);
         }
 
-        auto pointLightObjects = m_rootObject.getChildrenWithComponents<PointLightComponent, TransformComponent>();
+        auto pointLightObjects = m_rootObject.getChildrenWithComponents<PointLight, Transform>();
         for (auto& object : pointLightObjects)
         {
-            auto& light = object->getComponent<PointLightComponent>();
-            auto& transform = object->getComponent<TransformComponent>();
+            auto& light = object->getComponent<PointLight>();
+            auto& transform = object->getComponent<Transform>();
 
-            light.light.position = transform.translation;
+            light.position = transform.translation;
 
-            Renderer3D::addLight(&light.light);
+            Renderer3D::addLight(&light);
         }
     }
 }
@@ -144,27 +144,27 @@ void Scene::setLights()
 GameObject* Scene::createGameObject(const std::string& name)
 {
     auto object = m_rootObject.addChild();
-    object->addComponent<TagComponent>(name);
+    object->addComponent<Tag>(name);
     return object;
 }
 
 void Scene::onScenePlay()
 {
-    auto csscripts = m_rootObject.getChildrenWithComponent<CSharpScriptComponent>();
+    auto csscripts = m_rootObject.getChildrenWithComponent<ScriptInstance>();
     for (auto& object : csscripts)
     {
-        auto& script = object->getComponent<CSharpScriptComponent>();
-        script.script = ScriptController::getInstance()->loadScript(script.filepath);
+        auto& script = object->getComponent<ScriptInstance>();
+        //script.setScript(ScriptController::getInstance()->loadScript(script.getScript()->getPath()));
     }
 }
 
 void Scene::onUpdateRuntime(float dt)
 {
     // Native scripts
-    auto scripts = m_rootObject.getChildrenWithComponent<NativeScriptComponent>();
+    auto scripts = m_rootObject.getChildrenWithComponent<NativeScript>();
     for (auto& object : scripts)
     {
-        auto& script = object->getComponent<NativeScriptComponent>();
+        auto& script = object->getComponent<NativeScript>();
 
         if (!script.instance)
         {
@@ -177,18 +177,18 @@ void Scene::onUpdateRuntime(float dt)
     }
 
     // C# scripts
-    auto csscripts = m_rootObject.getChildrenWithComponent<CSharpScriptComponent>();
+    auto csscripts = m_rootObject.getChildrenWithComponent<ScriptInstance>();
     for (auto& object : csscripts)
     {
-        auto& script = object->getComponent<CSharpScriptComponent>();
+        auto& script = object->getComponent<ScriptInstance>();
 
-        if (!script.initialized)
+        /*if (!script.initialized)
         {
             script.script->onStart();
             script.initialized = true;
-        }
+        }*/
 
-        script.script->onUpdate(dt);
+        script.getScript()->onUpdate(dt);
     }
 
     // Rendering
@@ -196,13 +196,13 @@ void Scene::onUpdateRuntime(float dt)
     math::mat4 transform;
 
     {
-        auto cameras = m_rootObject.getChildrenWithComponents<TransformComponent, CameraComponent>();
+        auto cameras = m_rootObject.getChildrenWithComponents<Transform, SceneCamera>();
         for (auto& object : cameras)
         {
-            if (object->getComponent<CameraComponent>().primary)
+            if (object->getComponent<SceneCamera>().primary)
             {
-                camera = &(object->getComponent<CameraComponent>().camera);
-                transform = object->getComponent<TransformComponent>().getTransform();
+                camera = &object->getComponent<SceneCamera>();
+                transform = object->getComponent<Transform>().matrix();
                 break;
             }
         }
@@ -228,10 +228,10 @@ void Scene::onUpdateRuntime(float dt)
 
 GameObject* Scene::getPrimaryCameraGameObject()
 {
-    auto cameras = m_rootObject.getChildrenWithComponent<CameraComponent>();
+    auto cameras = m_rootObject.getChildrenWithComponent<SceneCamera>();
     for (auto& object : cameras)
     {
-        auto& camera = object->getComponent<CameraComponent>();
+        auto& camera = object->getComponent<SceneCamera>();
         if (camera.primary)
         {
             return object;
@@ -246,19 +246,19 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
     m_viewportWidth = width;
     m_viewportHeight = height;
 
-    auto cameras = m_rootObject.getChildrenWithComponent<CameraComponent>();
+    auto cameras = m_rootObject.getChildrenWithComponent<SceneCamera>();
     for (auto& object : cameras)
     {
-        auto& cameraComponent = object->getComponent<CameraComponent>();
-        cameraComponent.camera.setViewportSize(width, height);
+        auto& camera = object->getComponent<SceneCamera>();
+        camera.setViewportSize(width, height);
     }
 }
 
 void Scene::onComponentAdded(GameObject& object, GameComponent* component)
 {
-    if (dynamic_cast<CameraComponent*>(component))
+    if (dynamic_cast<SceneCamera*>(component))
     {
-        static_cast<CameraComponent*>(component)->camera.setViewportSize(m_viewportWidth, m_viewportHeight);
+        static_cast<SceneCamera*>(component)->setViewportSize(m_viewportWidth, m_viewportHeight);
     }
 }
 

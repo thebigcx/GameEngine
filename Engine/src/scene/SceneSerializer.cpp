@@ -1,4 +1,4 @@
-#include <scene/SceneSerializer.h>
+/*#include <scene/SceneSerializer.h>
 
 #include <scene/Components.h>
 #include <renderer/Model.h>
@@ -81,7 +81,7 @@ void SceneSerializer::saveScene(const Reference<Scene>& scene, const std::string
 
     for (auto& object : children)
     {
-        auto objectNode = objects[object.getComponent<TagComponent>().tag];
+        auto objectNode = objects[object.getComponent<Tag>().tag];
 
         saveGameObject(object, objectNode);
     }
@@ -165,11 +165,11 @@ Reference<Scene> SceneSerializer::loadScene(const std::string& path)
 void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const Reference<Scene>& scene, const std::string& name)
 {
     auto object = parent.addChild();
-    object->addComponent<TagComponent>(name);
+    object->addComponent<Tag>(name);
 
     if (node["Transform"])
     {
-        auto& transform = object->addComponent<TransformComponent>();
+        auto& transform = object->addComponent<Transform>();
 
         transform.translation.x = node["Transform"]["Translation"][0].as<float>();
         transform.translation.y = node["Transform"]["Translation"][1].as<float>();
@@ -186,17 +186,17 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
     if (node["Camera"])
     {
-        auto& camera = object->addComponent<CameraComponent>();
+        auto& camera = object->addComponent<SceneCamera>();
 
-        camera.camera.setProjectionType(static_cast<ProjectionType>(node["Camera"]["Projection Type"].as<uint32_t>()));
+        camera.setProjectionType(static_cast<ProjectionType>(node["Camera"]["Projection Type"].as<uint32_t>()));
 
-        camera.camera.setOrthoSize(node["Camera"]["Ortho Size"].as<float>());
-        camera.camera.setOrthoNear(node["Camera"]["Ortho Near"].as<float>());
-        camera.camera.setOrthoFar(node["Camera"]["Ortho Far"].as<float>());
+        camera.setOrthoSize(node["Camera"]["Ortho Size"].as<float>());
+        camera.setOrthoNear(node["Camera"]["Ortho Near"].as<float>());
+        camera.setOrthoFar(node["Camera"]["Ortho Far"].as<float>());
 
-        camera.camera.setPerspectiveFov(node["Camera"]["Perspective Fov"].as<float>());
-        camera.camera.setPerspectiveNear(node["Camera"]["Perspective Near"].as<float>());
-        camera.camera.setPerspectiveFar(node["Camera"]["Perspective Far"].as<float>());
+        camera.setPerspectiveFov(node["Camera"]["Perspective Fov"].as<float>());
+        camera.setPerspectiveNear(node["Camera"]["Perspective Near"].as<float>());
+        camera.setPerspectiveFar(node["Camera"]["Perspective Far"].as<float>());
 
         camera.primary = node["Camera"]["Primary"].as<bool>();
     }
@@ -311,9 +311,9 @@ void SceneSerializer::loadChildRecurse(YAML::Node& node, GameObject& parent, con
 
 void SceneSerializer::saveGameObject(GameObject& object, YAML::Node& node)
 {
-    if (object.hasComponent<TransformComponent>())
+    if (object.hasComponent<Transform>())
     {
-        auto tc = object.getComponent<TransformComponent>();
+        auto tc = object.getComponent<Transform>();
         auto transform = node["Transform"];
 
         transform["Translation"].push_back<float>(tc.translation.x);
@@ -332,22 +332,22 @@ void SceneSerializer::saveGameObject(GameObject& object, YAML::Node& node)
         transform["Scale"].SetStyle(YAML::EmitterStyle::Flow);
     }
 
-    if (object.hasComponent<CameraComponent>())
+    if (object.hasComponent<SceneCamera>())
     {
-        auto comp = object.getComponent<CameraComponent>();
+        auto comp = object.getComponent<SceneCamera>();
         auto camera = node["Camera"];
 
-        camera["Projection Type"] = static_cast<uint32_t>(comp.camera.getProjectionType());
+        camera["Projection Type"] = static_cast<uint32_t>(comp.getProjectionType());
 
-        camera["Ortho Size"] = comp.camera.getOrthoSize();
-        camera["Ortho Near"] = comp.camera.getOrthoNear();
-        camera["Ortho Far"] = comp.camera.getOrthoFar();
+        camera["Ortho Size"] = comp.getOrthoSize();
+        camera["Ortho Near"] = comp.getOrthoNear();
+        camera["Ortho Far"] = comp.getOrthoFar();
 
-        camera["Perspective Fov"] = comp.camera.getPerspectiveFov();
-        camera["Perspective Near"] = comp.camera.getPerspectiveNear();
-        camera["Perspective Far"] = comp.camera.getPerspectiveFar();
+        camera["Perspective Fov"] = comp.getPerspectiveFov();
+        camera["Perspective Near"] = comp.getPerspectiveNear();
+        camera["Perspective Far"] = comp.getPerspectiveFar();
 
-        camera["Aspect"] = comp.camera.getAspect();
+        camera["Aspect"] = comp.getAspect();
 
         camera["Primary"] = comp.primary;
     }
@@ -446,9 +446,9 @@ void SceneSerializer::saveChildRecurse(GameObject& parent, YAML::Node& node)
 {
     for (auto& child : parent.getChildren())
     {
-        auto nextNode = node[child.getComponent<TagComponent>().tag];
+        auto nextNode = node[child.getComponent<Tag>().tag];
         saveGameObject(child, nextNode);
     }
 }
 
-}
+}*/

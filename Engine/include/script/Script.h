@@ -5,6 +5,7 @@
 #include <core/Core.h>
 #include <Mono/Assembly.h>
 #include <Mono/Domain.h>
+#include <scene/GameComponent.h>
 
 namespace Engine
 {
@@ -25,6 +26,17 @@ private:
 
 private:
     std::string m_path;
+};
+
+class ScriptInstance : public GameComponent
+{
+public:
+    void setScript(const Reference<Script>& script) { m_script = script; };
+    
+    const Reference<Script> getScript() const { return m_script; }
+
+private:
+    Reference<Script> m_script = nullptr;
 };
 
 }

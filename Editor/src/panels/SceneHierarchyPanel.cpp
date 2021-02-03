@@ -12,6 +12,7 @@
 #include <renderer/Renderer.h>
 #include <renderer/Assets.h>
 #include <util/io/FileSystem.h>
+#include <script/Script.h>
 
 
 namespace Engine
@@ -33,7 +34,7 @@ void SceneHierarchyPanel::recurseTree(GameObject& object)
     ImGui::PushID(&object);
 
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
-    const char* tag = object.getComponent<TagComponent>().tag.c_str();
+    const char* tag = object.getComponent<Tag>().tag.c_str();
     
     bool objectExpanded = ImGui::TreeNodeEx(tag, flags);
 
@@ -48,7 +49,7 @@ void SceneHierarchyPanel::recurseTree(GameObject& object)
         if (ImGui::MenuItem("Create Child"))
         {
             auto child = object.addChild();
-            child->addComponent<TagComponent>("Untitled Child");
+            child->addComponent<Tag>("Untitled Child");
         }
 
         if (ImGui::MenuItem("Delete Game Object"))
@@ -99,15 +100,15 @@ void SceneHierarchyPanel::onImGuiRender()
             if (ImGui::MenuItem("Camera"))
             {
                 auto object = m_context->createGameObject("New Camera");
-                object->addComponent<TransformComponent>();
-                object->addComponent<CameraComponent>();
+                object->addComponent<Transform>();
+                object->addComponent<SceneCamera>();
                 m_selection = object;
             }
 
             if (ImGui::MenuItem("Sprite"))
             {
                 auto object = m_context->createGameObject("New Sprite");
-                object->addComponent<TransformComponent>();
+                object->addComponent<Transform>();
                 object->addComponent<SpriteRendererComponent>();
                 m_selection = object;
             }
@@ -122,7 +123,7 @@ void SceneHierarchyPanel::onImGuiRender()
                 if (ImGui::MenuItem("Empty Mesh"))
                 {
                     auto object = m_context->createGameObject("New Mesh");
-                    object->addComponent<TransformComponent>();
+                    object->addComponent<Transform>();
                     object->addComponent<MeshComponent>();
                     object->addComponent<MeshRendererComponent>();
                     m_selection = object;
@@ -130,7 +131,7 @@ void SceneHierarchyPanel::onImGuiRender()
                 if (ImGui::MenuItem("Cube"))
                 {
                     auto object = m_context->createGameObject("Cube");
-                    object->addComponent<TransformComponent>();
+                    object->addComponent<Transform>();
                     auto& mesh = object->addComponent<MeshComponent>();
                     mesh.mesh = MeshFactory::cubeMesh(1.f);
                     auto& render = object->addComponent<MeshRendererComponent>();
@@ -139,7 +140,7 @@ void SceneHierarchyPanel::onImGuiRender()
                 if (ImGui::MenuItem("Sphere"))
                 {
                     auto object = m_context->createGameObject("Sphere");
-                    object->addComponent<TransformComponent>();
+                    object->addComponent<Transform>();
                     auto& mesh = object->addComponent<MeshComponent>();
                     mesh.mesh = MeshFactory::sphereMesh(1.f, 20, 20);
                     auto& render = object->addComponent<MeshRendererComponent>();
@@ -152,8 +153,8 @@ void SceneHierarchyPanel::onImGuiRender()
             if (ImGui::MenuItem("Directional Light"))
             {
                 auto object = m_context->createGameObject("Directional Light");
-                object->addComponent<TransformComponent>();
-                object->addComponent<DirectionalLightComponent>();
+                object->addComponent<Transform>();
+                object->addComponent<DirectionalLight>();
                 m_selection = object;
             }
 
@@ -171,7 +172,7 @@ void SceneHierarchyPanel::onImGuiRender()
                 Reference<Mesh> mesh = Mesh::load(FileDialog::getSelection(), 0);
 
                 auto object = m_context->createGameObject("Imported Mesh");
-                object->addComponent<TransformComponent>();
+                object->addComponent<Transform>();
                 auto& meshRender = object->addComponent<MeshRendererComponent>();
                 meshRender.material = mesh->material;
 
@@ -224,10 +225,10 @@ void SceneHierarchyPanel::onImGuiRender()
 void SceneHierarchyPanel::drawProperties(GameObject& object)
 {
     char buf[128];
-    strcpy(buf, object.getComponent<TagComponent>().tag.c_str());
+    strcpy(buf, object.getComponent<Tag>().tag.c_str());
     ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
     ImGui::InputText("Name", buf, 128, flags);
-    object.getComponent<TagComponent>().tag = std::string(buf);
+    object.getComponent<Tag>().tag = std::string(buf);
 
     if (ImGui::Button("Add Component"))
     {
@@ -236,21 +237,21 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
 
     if (ImGui::BeginPopup("AddComponent"))
     {
-        ADD_COMPONENT(TransformComponent, "Transform");
+        ADD_COMPONENT(Transform, "Transform");
         ADD_COMPONENT(SpriteRendererComponent, "Sprite Renderer");
-        ADD_COMPONENT(CameraComponent, "Camera");
+        ADD_COMPONENT(SceneCamera, "Camera");
         ADD_COMPONENT(BoxCollider2DComponent, "Box Collider 2D");
         ADD_COMPONENT(MeshComponent, "Mesh");
-        ADD_COMPONENT(SkyLightComponent, "Sky Light");
-        ADD_COMPONENT(DirectionalLightComponent, "Directional Light");
-        ADD_COMPONENT(PointLightComponent, "Point Light");
+        ADD_COMPONENT(SkyLight, "Sky Light");
+        ADD_COMPONENT(DirectionalLight, "Directional Light");
+        ADD_COMPONENT(PointLight, "Point Light");
         ADD_COMPONENT(MeshRendererComponent, "Mesh Renderer");
-        ADD_COMPONENT(CSharpScriptComponent, "Script");
+        ADD_COMPONENT(ScriptInstance, "Script");
 
         ImGui::EndPopup();
     }
 
-    drawComponent<TransformComponent>("Transform", object, [](auto& component)
+    drawComponent<Transform>("Transform", object, [](auto& component)
     {
         ImGui::Columns(2);
 
@@ -279,16 +280,14 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         ImGui::Columns(1);
     });
 
-    drawComponent<CameraComponent>("Camera", object, [](auto& component)
+    drawComponent<SceneCamera>("Camera", object, [](auto& camera)
     {
         ImGui::Columns(2);
 
         ImGui::Text("Primary");
         ImGui::NextColumn();
-        ImGui::Checkbox("##Primary", &component.primary);
+        ImGui::Checkbox("##Primary", &camera.primary);
         ImGui::NextColumn();
-
-        auto& camera = component.camera;
 
         ImGui::Text("Projection");
         ImGui::NextColumn();
@@ -528,53 +527,53 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         ImGui::Columns(1);
     });
 
-    drawComponent<SkyLightComponent>("Sky Light", object, [](auto& component)
+    drawComponent<SkyLight>("Sky Light", object, [](auto& component)
     {
         ImGui::Columns(2);
         ImGui::PushID("SkyLight");
 
         ImGui::Text("Radiance");
         ImGui::NextColumn();
-        ImGui::ColorEdit3("##Radiance", &component.light.radiance.r);
+        ImGui::ColorEdit3("##Radiance", &component.radiance.r);
         ImGui::NextColumn();
 
         ImGui::Text("Intensity");
         ImGui::NextColumn();
-        ImGui::DragFloat("##Intensity", &component.light.intensity, 0.01f, 0.f);
+        ImGui::DragFloat("##Intensity", &component.intensity, 0.01f, 0.f);
         ImGui::PopID();
         ImGui::Columns(1);
     });
 
-    drawComponent<DirectionalLightComponent>("Directional Light", object, [](auto& component)
+    drawComponent<DirectionalLight>("Directional Light", object, [](auto& component)
     {
         ImGui::Columns(2);
         ImGui::PushID("Directionallight");
 
         ImGui::Text("Radiance");
         ImGui::NextColumn();
-        ImGui::ColorEdit3("##Radiance", &component.light.radiance.r);
+        ImGui::ColorEdit3("##Radiance", &component.radiance.r);
         ImGui::NextColumn();
 
         ImGui::Text("Intensity");
         ImGui::NextColumn();
-        ImGui::DragFloat("##Intensity", &component.light.intensity, 0.01f, 0.f);
+        ImGui::DragFloat("##Intensity", &component.intensity, 0.01f, 0.f);
         ImGui::PopID();
         ImGui::Columns(1);
     });
 
-    drawComponent<PointLightComponent>("Point Light", object, [](auto& component)
+    drawComponent<PointLight>("Point Light", object, [](auto& component)
     {
         ImGui::Columns(2);
         ImGui::PushID("PointLight");
 
         ImGui::Text("Radiance");
         ImGui::NextColumn();
-        ImGui::ColorEdit3("##Radiance", &component.light.radiance.r);
+        ImGui::ColorEdit3("##Radiance", &component.radiance.r);
         ImGui::NextColumn();
 
         ImGui::Text("Intensity");
         ImGui::NextColumn();
-        ImGui::DragFloat("##Intensity", &component.light.intensity, 0.01f, 0.f);
+        ImGui::DragFloat("##Intensity", &component.intensity, 0.01f, 0.f);
         ImGui::PopID();
         ImGui::Columns(1);
     });
@@ -625,14 +624,14 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         ImGui::Columns(1);
     });
 
-    drawComponent<CSharpScriptComponent>("C# Script", object, [](auto& component)
+    drawComponent<ScriptInstance>("C# Script", object, [](auto& component)
     {
         ImGui::Columns(2);
 
         ImGui::Text("Filepath");
         ImGui::NextColumn();
 
-        char buf[128];
+        /*char buf[128];
         strcpy(buf, component.filepath.c_str());
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
         ImGui::InputText("##csharpScriptPath", buf, 128, flags);
@@ -652,7 +651,7 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
                     component.filepath = FileDialog::getSelection();
                 }
             }
-        }
+        }*/
 
         ImGui::NextColumn();
         ImGui::Columns(1);

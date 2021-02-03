@@ -6,12 +6,25 @@
 #include <maths/matrix/mat4x4.h>
 #include <maths/math.h>
 #include <maths/matrix/matrix_transform.h>
+#include <scene/GameComponent.h>
 
 namespace Engine
 {
 
-struct Transform
+class Transform : public GameComponent
 {
+public:
+    Transform()
+    {
+        
+    }
+
+    Transform(const math::vec3& translation_, const math::vec3& rotation_, const math::vec3& scale_)
+        : translation(translation_), rotation(rotation_), scale(scale_)
+    {
+
+    }
+
     math::vec3 translation;
     math::vec3 rotation;
     math::vec3 scale = math::vec3(1.f);

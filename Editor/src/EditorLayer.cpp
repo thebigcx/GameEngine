@@ -134,7 +134,7 @@ void EditorLayer::drawMenuBar()
             {
                 Assets::flush();
                 m_scene.reset();
-                m_scene = SceneSerializer::loadScene(FileDialog::getSelection());
+                //m_scene = SceneSerializer::loadScene(FileDialog::getSelection());
                 m_scene->onViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
                 m_sceneHeirarchyPanel.setContext(m_scene.get());
                 m_materialsPanel.setContext(m_scene.get()); // TODO: This is dumb.
@@ -232,10 +232,10 @@ void EditorLayer::onImGuiRender()
         GameObject* object = m_sceneHeirarchyPanel.getSelectedGameObject();
         if (object)
         {
-            if (m_gizmoType != -1 && object->hasComponent<TransformComponent>())
+            if (m_gizmoType != -1 && object->hasComponent<Transform>())
             {
-                auto& tc = object->getComponent<TransformComponent>();
-                math::mat4 transform = tc.getTransform();
+                auto& tc = object->getComponent<Transform>();
+                math::mat4 transform = tc.matrix();
 
                 bool snap = Keyboard::isPressed(Keyboard::Key::LeftControl);
                 float snapValue = 0.5f;

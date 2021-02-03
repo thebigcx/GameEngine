@@ -12,8 +12,6 @@ class EditorCamera;
 
 class Scene
 {
-    friend class SceneSerializer;
-
 private:
     Scene();
 

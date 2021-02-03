@@ -26,6 +26,7 @@ project "Editor"
 		"%{wks.location}/Engine/vendor",
 		"%{wks.location}/Engine/vendor/imgui",
 		"%{wks.location}/Engine/vendor/yaml",
+		"%{wks.location}/Engine/vendor/Mono/include",
 		"/usr/include/mono-2.0" -- TODO: fix this
 	}
 	

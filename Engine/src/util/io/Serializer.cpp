@@ -75,11 +75,11 @@ void Serializer::saveScript(const Reference<Script>& script)
 
 void serializeGameObject(YAML::Node& node, GameObject& object)
 {
-    node["Name"] = object.getComponent<TagComponent>().tag;
+    node["Name"] = object.getComponent<Tag>().tag;
 
-    if (object.hasComponent<TransformComponent>())
+    if (object.hasComponent<Transform>())
     {
-        auto tc = object.getComponent<TransformComponent>();
+        auto tc = object.getComponent<Transform>();
         auto transform = node["Transform"];
 
         transform["Translation"].push_back<float>(tc.translation.x);
@@ -98,22 +98,22 @@ void serializeGameObject(YAML::Node& node, GameObject& object)
         transform["Scale"].SetStyle(YAML::EmitterStyle::Flow);
     }
 
-    if (object.hasComponent<CameraComponent>())
+    if (object.hasComponent<SceneCamera>())
     {
-        auto comp = object.getComponent<CameraComponent>();
+        auto comp = object.getComponent<SceneCamera>();
         auto camera = node["Camera"];
 
-        camera["Projection Type"] = static_cast<uint32_t>(comp.camera.getProjectionType());
+        camera["Projection Type"] = static_cast<uint32_t>(comp.getProjectionType());
 
-        camera["Ortho Size"] = comp.camera.getOrthoSize();
-        camera["Ortho Near"] = comp.camera.getOrthoNear();
-        camera["Ortho Far"] = comp.camera.getOrthoFar();
+        camera["Ortho Size"] = comp.getOrthoSize();
+        camera["Ortho Near"] = comp.getOrthoNear();
+        camera["Ortho Far"] = comp.getOrthoFar();
 
-        camera["Perspective Fov"] = comp.camera.getPerspectiveFov();
-        camera["Perspective Near"] = comp.camera.getPerspectiveNear();
-        camera["Perspective Far"] = comp.camera.getPerspectiveFar();
+        camera["Perspective Fov"] = comp.getPerspectiveFov();
+        camera["Perspective Near"] = comp.getPerspectiveNear();
+        camera["Perspective Far"] = comp.getPerspectiveFar();
 
-        camera["Aspect"] = comp.camera.getAspect();
+        camera["Aspect"] = comp.getAspect();
         camera["Primary"] = comp.primary;
     }
 
@@ -160,45 +160,45 @@ void serializeGameObject(YAML::Node& node, GameObject& object)
         meshRenderer["Material"] = uuid;
     }
 
-    if (object.hasComponent<DirectionalLightComponent>())
+    if (object.hasComponent<DirectionalLight>())
     {
-        auto comp = object.getComponent<DirectionalLightComponent>();
+        auto comp = object.getComponent<DirectionalLight>();
         auto light = node["Directional Light"];
 
-        light["Radiance"][0] = comp.light.radiance.r;
-        light["Radiance"][1] = comp.light.radiance.g;
-        light["Radiance"][2] = comp.light.radiance.b;
+        light["Radiance"][0] = comp.radiance.r;
+        light["Radiance"][1] = comp.radiance.g;
+        light["Radiance"][2] = comp.radiance.b;
 
-        light["Intensity"] = comp.light.intensity;
+        light["Intensity"] = comp.intensity;
     }
 
-    if (object.hasComponent<PointLightComponent>())
+    if (object.hasComponent<PointLight>())
     {
-        auto comp = object.getComponent<PointLightComponent>();
+        auto comp = object.getComponent<PointLight>();
         auto light = node["Point Light"];
 
-        light["Radiance"][0] = comp.light.radiance.r;
-        light["Radiance"][1] = comp.light.radiance.g;
-        light["Radiance"][2] = comp.light.radiance.b;
+        light["Radiance"][0] = comp.radiance.r;
+        light["Radiance"][1] = comp.radiance.g;
+        light["Radiance"][2] = comp.radiance.b;
 
-        light["Intensity"] = comp.light.intensity;
+        light["Intensity"] = comp.intensity;
     }
 
-    if (object.hasComponent<SkyLightComponent>())
+    if (object.hasComponent<SkyLight>())
     {
-        auto comp = object.getComponent<SkyLightComponent>();
+        auto comp = object.getComponent<SkyLight>();
         auto light = node["Sky Light"];
 
-        light["Intensity"] = comp.light.intensity;
+        light["Intensity"] = comp.intensity;
         
-        light["Radiance"][0] = comp.light.radiance.r;
-        light["Radiance"][1] = comp.light.radiance.g;
-        light["Radiance"][2] = comp.light.radiance.b;
+        light["Radiance"][0] = comp.radiance.r;
+        light["Radiance"][1] = comp.radiance.g;
+        light["Radiance"][2] = comp.radiance.b;
     }
 
     for (auto& child : object.getChildren())
     {
-        auto childNode = node["Children"][child.getComponent<TagComponent>().tag];
+        auto childNode = node["Children"][child.getComponent<Tag>().tag];
         serializeGameObject(childNode, child);
     }
 }
@@ -209,7 +209,7 @@ void Serializer::saveScene(const Reference<Scene>& scene, const std::string& pat
 
     for (auto& gameObject : scene->getRootGameObject().getChildren())
     {
-        auto objectNode = root[gameObject.getComponent<TagComponent>().tag];
+        auto objectNode = root[gameObject.getComponent<Tag>().tag];
         serializeGameObject(objectNode, gameObject);
     }
 

@@ -18,13 +18,13 @@ class Mesh;
 class Material;
 class TrueTypeFont;
 class Script;
-
-struct TransformComponent : public GameComponent
+/*
+struct Transform : public GameComponent
 {
-    TransformComponent()
+    Transform()
         : scale(1.f) {}
 
-    TransformComponent(const math::vec3& translation, const math::vec3& rotation, const math::vec3& scale)
+    Transform(const math::vec3& translation, const math::vec3& rotation, const math::vec3& scale)
         : translation(translation), rotation(rotation), scale(scale) {}
 
     math::vec3 translation;
@@ -37,21 +37,21 @@ struct TransformComponent : public GameComponent
         return transform.matrix();
     }
 };
-
-struct TagComponent : public GameComponent
+*/
+struct Tag : public GameComponent
 {
-    TagComponent(const std::string& str)
+    Tag(const std::string& str)
         : tag(str) {}
         
     std::string tag = "";
 };
-
+/*
 struct CameraComponent : public GameComponent
 {
     SceneCamera camera;
     bool primary;
 };
-
+*/
 struct SpriteRendererComponent : public GameComponent
 {
     SpriteRendererComponent()
@@ -73,12 +73,13 @@ struct TextRendererComponent : public GameComponent
     std::string text;
 };
 
-struct NativeScriptComponent : public GameComponent
+class NativeScript : public GameComponent
 {
+public:
     ScriptableObject* instance = nullptr;
 
     ScriptableObject*(*instantiateScript)();
-    void (*destroyScript)(NativeScriptComponent*);
+    void (*destroyScript)(NativeScript*);
 
     template<typename T, typename... Args>
     void bind(Args&&... args)
@@ -88,7 +89,7 @@ struct NativeScriptComponent : public GameComponent
             return static_cast<ScriptableObject*>(new T(std::forward<Args>(args)...));
         };
 
-        destroyScript = [](NativeScriptComponent* component)
+        destroyScript = [](NativeScript* component)
         {
             delete component->instance;
             component->instance = nullptr;
@@ -102,7 +103,7 @@ struct MeshComponent : public GameComponent
     std::string filePath = "";
     uint32_t meshID = 0;
 };
-
+/*
 struct DirectionalLightComponent : public GameComponent
 {
     DirectionalLight light;
@@ -117,21 +118,21 @@ struct PointLightComponent : public GameComponent
 {
     PointLight light;
 };
-
+*/
 struct MeshRendererComponent : public GameComponent
 {
     //std::vector<Reference<Material>> materials;
     Reference<Material> material;
     bool castShadows = true;
 };
-
-struct CSharpScriptComponent : public GameComponent
+/*
+struct Script : public GameComponent
 {
     std::string filepath = "";
     Reference<Script> script;
     bool initialized = false;
 };
-
+*/
 struct RigidBody2DComponent : public GameComponent
 {
     b2Body* body;

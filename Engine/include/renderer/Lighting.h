@@ -7,6 +7,7 @@
 
 #include <core/Logger.h>
 #include <renderer/shader/Shader.h>
+#include <scene/GameComponent.h>
 
 namespace Engine
 {
@@ -44,7 +45,7 @@ private:
     ShadowInfo* m_shadowInfo;
 };
 
-struct PointLight : public BaseLight
+struct PointLight : public BaseLight, public GameComponent
 {
 public:
     PointLight() {}
@@ -56,7 +57,7 @@ public:
     math::vec3 position;
 };
 // TODO: possibly add support for multiple directional lights
-struct DirectionalLight : public BaseLight
+struct DirectionalLight : public BaseLight, public GameComponent
 {
 public:
     DirectionalLight() {}
@@ -67,7 +68,7 @@ public:
     math::vec3 direction;
 };
 // TODO: make spotlight compatible with pbr shading
-struct SpotLight : public BaseLight
+struct SpotLight : public BaseLight, public GameComponent
 {
 public:
     SpotLight() {}
@@ -81,7 +82,7 @@ public:
     float outerCutoff;
 };
 
-struct SkyLight : public BaseLight
+struct SkyLight : public BaseLight, public GameComponent
 {
 public:
     SkyLight() {}

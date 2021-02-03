@@ -1,6 +1,7 @@
 #pragma once
 
 #include <util/Camera.h>
+#include <scene/GameComponent.h>
 
 namespace Engine
 {
@@ -11,7 +12,7 @@ enum class ProjectionType
     Orthographic
 };
 
-class SceneCamera : public Camera
+class SceneCamera : public Camera, public GameComponent
 {
 public:
     SceneCamera();
@@ -49,6 +50,8 @@ public:
     void setPerspectiveFar(float far) { m_perspectiveFar = far; calculateProjection(); }
 
     float getAspect() const { return m_aspect; }
+
+    bool primary = false;
 
 private:
     ProjectionType m_projectionType = ProjectionType::Orthographic;
