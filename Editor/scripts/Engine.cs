@@ -36,15 +36,15 @@ public class Matrix4
 public class NativeBinding
 {
 
-    [MethodImpl(MethodImplOptions.InternalCall)]
+    [MethodImplAttribute(MethodImplOptions.InternalCall)]
     public static extern void getCameraComponent_Native(ulong gameObjectID, out CameraComponent component);
 
-    [MethodImpl(MethodImplOptions.InternalCall)]
+    [MethodImplAttribute(MethodImplOptions.InternalCall)]
     public static extern void getTransformComponent_Native(ulong gameObjectID, out TransformComponent component);
 
 };
 
-public abstract class GameComponent : GameComponent
+public abstract class GameComponent
 {
 
 };
@@ -63,7 +63,7 @@ public class TransformComponent : GameComponent
     public Vector3 scale;
 };
 
-public class CameraComponent
+public class CameraComponent : GameComponent
 {
 
 };
@@ -74,11 +74,11 @@ public abstract class GameObject
     {
         if (typeof(T) == typeof(CameraComponent))
         {
-            return (T)getCameraComponent();
+            return (T)(GameComponent)getCameraComponent();
         }
         else if (typeof(T) == typeof(TransformComponent))
         {
-            return (T)getTransformComponent();
+            return (T)(GameComponent)getTransformComponent();
         }
 
         return null;

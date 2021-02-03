@@ -20,3 +20,6 @@
 [submodule "Engine/vendor/yaml"]
 	path = Engine/vendor/yaml
 	url = https://github.com/thebigcx/yaml-cpp.git
+[submodule "Engine/vendor/Mono"]
+	path = Engine/vendor/Mono
+	url = https://github.com/thebigcx/Mono.git

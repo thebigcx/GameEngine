@@ -32,6 +32,7 @@ project "GameEngine"
         "vendor/imgui",
         "vendor",
         "vendor/box2d/include",
+        "vendor/Mono/include",
         "/usr/include/mono-2.0" -- TODO: fix this
     }
 

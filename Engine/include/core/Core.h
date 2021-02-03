@@ -24,8 +24,13 @@ constexpr Owned<T> createOwned(Args&&... args)
 }
 
 template<typename T>
-using Weak = std::weak_ptr<T>;
+using NonOwning = std::weak_ptr<T>;
 
+template<typename T>
+constexpr NonOwning<T> createNonOwning(const Reference<T>& ref)
+{
+    return NonOwning<T>(ref);
+}
 }
 
 #define ENGINE_ASSERT(check, msg) { if (!(check)) { std::cout << "* Assertion failed! *\n" << "Reason: " << msg << "\n"; } }

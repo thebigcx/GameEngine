@@ -3,8 +3,8 @@
 #include <string>
 
 #include <core/Core.h>
-#include <script/mono/Assembly.h>
-#include <script/mono/Domain.h>
+#include <Mono/Assembly.h>
+#include <Mono/Domain.h>
 
 namespace Engine
 {

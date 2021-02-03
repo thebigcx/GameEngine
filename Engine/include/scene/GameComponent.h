@@ -3,12 +3,15 @@
 namespace Engine
 {
 
+class Transform;
 class GameObject;
 
 class GameComponent
 {
 public:
     virtual ~GameComponent() = default;
+
+    virtual void onTransformChange(const Transform& transform) {}
 
     void setOwner(GameObject* owner)
     {

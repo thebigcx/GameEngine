@@ -36,8 +36,7 @@ public:
 
     GameObject* getPrimaryCameraGameObject();
     
-    template<typename T>
-    void onComponentAdded(GameObject& object, T& component);
+    void onComponentAdded(GameObject& object, GameComponent* component);
 
     void onScenePlay();
 

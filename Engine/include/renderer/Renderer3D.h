@@ -51,8 +51,8 @@ struct Renderer3DData
 class Renderer3D
 {
 public:
-    static void beginScene(PerspectiveCamera& camera);
     static void beginScene(EditorCamera& camera);
+    static void beginScene(PerspectiveCamera& camera);
     static void beginScene(Camera& camera, const math::mat4& transform);
 
     static void submit(const Reference<Mesh>& mesh, const math::mat4& transform); // TODO: meshes shouldn't hold materials (research further)

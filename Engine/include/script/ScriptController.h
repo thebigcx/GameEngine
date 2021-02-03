@@ -5,7 +5,7 @@
 
 #include <core/Core.h>
 #include <script/Script.h>
-#include <script/mono/Mono.h>
+#include <Mono/Type.h>
 
 namespace Engine
 {
@@ -40,15 +40,10 @@ public:
     bool onKeyPressed(KeyPressedEvent& event);
     void onEvent(Event& event);
 
-    std::unordered_map<std::string, Mono::Type> m_engineTypes;
-
 private:
-    Mono::Domain m_domain;
     Mono::Assembly m_assembly;
 
     std::vector<Reference<Script>> m_scripts;
-
-    static inline MonoObject* s_currentBoxed;
 };
 
 }

@@ -26,6 +26,7 @@ project "Sandbox"
         "%{wks.location}/Engine/vendor/maths",
 		"%{wks.location}/Engine/vendor/stb_image/include",
 		"%{wks.location}/Engine/vendor",
+		"%{wks.location}/Engine/vendor/Mono/include",
 		"/usr/include/mono-2.0" -- TODO: fix this
 	}
 	

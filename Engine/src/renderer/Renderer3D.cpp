@@ -52,7 +52,6 @@ void Renderer3D::init()
     };
 
     s_data.shadowMap = Texture2D::create(1024, 1024, SizedTextureFormat::Depth16, false, false);
-    //s_data.shadowMapFramebuffer = Framebuffer::create(s_data.shadowMap, Attachment::Depth);
     s_data.shadowMapFramebuffer = Framebuffer::create(spec);
     s_data.shadowMapFramebuffer->drawBuffer((uint32_t)ColorBuffer::None);
     s_data.shadowMapFramebuffer->readBuffer((uint32_t)ColorBuffer::None);

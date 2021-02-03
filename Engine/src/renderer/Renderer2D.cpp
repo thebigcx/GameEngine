@@ -5,27 +5,20 @@
 #include <maths/matrix/matrix_transform.h>
 #include <maths/matrix/matrix_func.h>
 #include <renderer/RenderCommand.h>
-
-#include <GL/glew.h>
+#include <renderer/Assets.h>
 
 namespace Engine
 {
 
-Renderer2DData Renderer2D::s_data;
-Reference<Mesh> Renderer2D::m_framebufferMesh;
-
 void Renderer2D::init()
 {
-    auto windowSize = Game::getInstance()->getWindow().getSize();
-
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
-    
-    std::unordered_map<std::string, std::string> defines = {
-        { "MAX_TEXTURE_SLOTS", std::to_string(s_data.MAX_TEXTURE_SLOTS) }  
-    };
 
-    s_data.textureShader = Shader::createFromFileWithMacros("Engine/assets/shaders/texture.glsl", defines);
-    s_data.textShader = ShaderFactory::textShader();
+    s_data.textShader = Shader::createFromFile("Engine/assets/shaders/text.glsl");
+    s_data.textureShader = Shader::createFromFile("Engine/assets/shaders/texture.glsl");
+
+    Assets::add<Shader>(Utils::genUUID(), s_data.textShader);
+    Assets::add<Shader>(Utils::genUUID(), s_data.textureShader);
 
     s_data.textMesh = MeshFactory::textMesh(s_data.MAX_GLYPHS);
     s_data.textVertexBase = new GlyphVertex[4 * s_data.MAX_GLYPHS];
@@ -45,8 +38,8 @@ void Renderer2D::init()
     
     uint32_t* indices = new uint32_t[s_data.MAX_INDICES];
 
-    int offset = 0;
-    for (unsigned int i = 0; i < s_data.MAX_SPRITES * 6; i += 6)
+    uint32_t offset = 0;
+    for (uint32_t i = 0; i < s_data.MAX_SPRITES * 6; i += 6)
     {
         indices[i + 0] = offset + 0;
         indices[i + 1] = offset + 1;
@@ -87,17 +80,7 @@ void Renderer2D::shutdown()
     delete[] s_data.textVertexBase;
 }
 
-void Renderer2D::beginScene(OrthographicCamera& camera)
-{
-    s_data.drawCalls = 0;
-
-    s_data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
-    s_data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
-
-    startBatch();
-}
-
-void Renderer2D::beginScene(EditorCamera& camera)
+void Renderer2D::beginScene(Camera& camera)
 {
     s_data.matrixData->setData(math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4), 0);
     s_data.matrixData->setData(math::buffer(camera.getViewMatrix()), sizeof(math::mat4), sizeof(math::mat4));
@@ -153,7 +136,6 @@ void Renderer2D::flushBatch()
     }
 
     RenderCommand::renderIndexed(s_data.mesh.vertexArray, s_data.indexCount);
-    s_data.drawCalls++;
 }
 
 void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color)

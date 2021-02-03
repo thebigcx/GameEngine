@@ -254,24 +254,12 @@ void Scene::onViewportResize(uint32_t width, uint32_t height)
     }
 }
 
-template<>
-void Scene::onComponentAdded<CameraComponent>(GameObject& object, CameraComponent& component)
+void Scene::onComponentAdded(GameObject& object, GameComponent* component)
 {
-    component.camera.setViewportSize(m_viewportWidth, m_viewportHeight); // TODO: better way
+    if (dynamic_cast<CameraComponent*>(component))
+    {
+        static_cast<CameraComponent*>(component)->camera.setViewportSize(m_viewportWidth, m_viewportHeight);
+    }
 }
-
-template<> void Scene::onComponentAdded<TransformComponent>(GameObject& object, TransformComponent& component) {}
-template<> void Scene::onComponentAdded<SpriteRendererComponent>(GameObject& object, SpriteRendererComponent& component) {}
-template<> void Scene::onComponentAdded<NativeScriptComponent>(GameObject& object, NativeScriptComponent& component) {}
-template<> void Scene::onComponentAdded<TagComponent>(GameObject& object, TagComponent& component) {}
-template<> void Scene::onComponentAdded<TextRendererComponent>(GameObject& object, TextRendererComponent& component) {}
-template<> void Scene::onComponentAdded<MeshComponent>(GameObject& object, MeshComponent& component) {}
-template<> void Scene::onComponentAdded<SkyLightComponent>(GameObject& object, SkyLightComponent& component) {}
-template<> void Scene::onComponentAdded<PointLightComponent>(GameObject& object, PointLightComponent& component) {}
-template<> void Scene::onComponentAdded<DirectionalLightComponent>(GameObject& object, DirectionalLightComponent& component) {}
-template<> void Scene::onComponentAdded<MeshRendererComponent>(GameObject& object, MeshRendererComponent& component) {}
-template<> void Scene::onComponentAdded<CSharpScriptComponent>(GameObject& object, CSharpScriptComponent& component) {}
-template<> void Scene::onComponentAdded<BoxCollider2DComponent>(GameObject& object, BoxCollider2DComponent& component) {}
-template<> void Scene::onComponentAdded<RigidBody2DComponent>(GameObject& object, RigidBody2DComponent& component) {}
 
 }

@@ -37,9 +37,6 @@ struct Renderer2DData
     static constexpr uint32_t MAX_INDICES = MAX_SPRITES * 6;
     static constexpr uint32_t MAX_GLYPHS = 512;
 
-    uint64_t drawCalls;
-
-    math::mat4 projectionMatrix;
     Reference<Shader> textureShader;
     Reference<Shader> textShader;
 
@@ -80,9 +77,8 @@ public:
     static void startBatch();
     static void nextBatch();
     static void flushBatch();
-
-    static void beginScene(OrthographicCamera& camera);
-    static void beginScene(EditorCamera& camera);
+    
+    static void beginScene(Camera& camera);
     static void beginScene(Camera& camera, const math::mat4& transform);
 
     static void renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(1));
@@ -103,10 +99,8 @@ public:
     static void renderText(const std::string& text, const Reference<TrueTypeFont>& font, const math::vec2& position, const math::vec2& size, const math::vec4& color = math::vec4(0, 0, 0, 0));
 
 private:
-    static Reference<Mesh> m_framebufferMesh;
-
-    static Renderer2DData s_data;
-    static Statistics s_statistics;
+    static inline Renderer2DData s_data;
+    static inline Statistics s_statistics;
 
     static void init();
     static void shutdown();

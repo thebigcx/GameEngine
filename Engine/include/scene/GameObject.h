@@ -23,14 +23,22 @@ public:
 
     ~GameObject() = default;
 
+    void onTransformChange(const Transform& transform)
+    {
+        for (auto& listener : m_listeners)
+        {
+            listener->onTransformChange(transform);
+        }
+    }
+
     void destroy()
     {
-        _destroy();
+        destroy_();
     }
 
     void removeChild(GameObject* child)
     {
-        child->_destroy();
+        child->destroy_();
     }
 
     GameObject* addChild()
@@ -169,6 +177,8 @@ private:
     std::vector<GameObject> m_children;
     GameObject* m_parent = nullptr;
 
+    std::vector<GameComponent*> m_listeners;
+
     template<typename T>
     void multiComponentCheck(GameObject& object, bool& check)
     {
@@ -180,7 +190,7 @@ private:
         check = object.hasComponent<T>();
     }
 
-    void _destroy()
+    void destroy_()
     {
         for (auto& component : m_components)
         {
@@ -189,7 +199,7 @@ private:
 
         for (auto& child : m_children)
         {
-            child._destroy();
+            child.destroy_();
         }
 
         if (m_parent)

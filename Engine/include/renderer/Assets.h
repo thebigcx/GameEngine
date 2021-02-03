@@ -75,7 +75,7 @@ class AssetCache : public IAssetCache
 public:
     void add(const std::string& key, const Reference<T>& asset);
 
-    Weak<T> get(const std::string& key);
+    NonOwning<T> get(const std::string& key);
 
     void remove(const std::string& key);
 
@@ -108,7 +108,7 @@ void AssetCache<T>::add(const std::string& key, const Reference<T>& asset)
 }
 
 template<typename T>
-Weak<T> AssetCache<T>::get(const std::string& key)
+NonOwning<T> AssetCache<T>::get(const std::string& key)
 {
     if (!exists(key))
     {
@@ -178,7 +178,7 @@ public:
     }
 
     template<typename T>
-    static Weak<T> get(const std::string& key)
+    static NonOwning<T> get(const std::string& key)
     {
         if (!cacheExists<T>())
         {
