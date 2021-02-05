@@ -24,7 +24,48 @@ constexpr Owned<T> createOwned(Args&&... args)
 }
 
 template<typename T>
-using NonOwning = std::weak_ptr<T>;
+class NonOwning
+{
+public:
+    explicit constexpr NonOwning()
+    {
+
+    }
+
+    constexpr NonOwning(const Reference<T>& ref)
+        : m_value(ref) {}
+
+    constexpr NonOwning(const std::weak_ptr<T>& ptr)
+        : m_value(ptr) {}
+
+    inline constexpr bool valid() const
+    {
+        return m_value.lock() != nullptr;
+    }
+
+    inline constexpr Reference<T> operator->()
+    {
+        return m_value.lock();
+    }
+
+    inline constexpr T& operator*()
+    {
+        return *m_value.lock();
+    }
+
+    inline constexpr void operator=(const Reference<T>& other)
+    {
+        m_value = other;
+    }
+
+    inline constexpr operator Reference<T>()
+    {
+        return m_value.lock();
+    }
+
+private:
+    std::weak_ptr<T> m_value;
+};
 
 template<typename T>
 constexpr NonOwning<T> createNonOwning(const Reference<T>& ref)

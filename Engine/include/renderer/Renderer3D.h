@@ -30,8 +30,10 @@ struct Renderer3DData
     Reference<UniformBuffer> matrixData;
 
     Reference<EnvironmentMap> environment;
-    Reference<Shader> environmentShader;
+    NonOwning<Shader> environmentShader;
     Reference<Mesh> skyboxMesh;
+
+    NonOwning<Shader> shadowMapShader;
 
     Reference<Texture2D> shadowMap;
     Reference<Framebuffer> shadowMapFramebuffer;

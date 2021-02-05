@@ -53,14 +53,14 @@ Reference<TextureCube> EnvironmentMap::hdrToCubemap(const std::string& hdrFile)
     // TODO: platform independent and refactor
 
     s_convertShader->bind();
-    s_convertShader->setMatrix4("projection", s_captureProjection);
+    s_convertShader->setMatrix4("uProjection", s_captureProjection);
 
     hdrTexture->bind(0);
     framebuffer->bind();
 
     for (uint32_t i = 0; i < 6; i++)
     {
-        s_convertShader->setMatrix4("view", s_captureViews[i]);
+        s_convertShader->setMatrix4("uView", s_captureViews[i]);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap->getId(), 0); // TODO: IMPORTANT! make platform independent
 
         s_cubeMesh->vertexArray->bind();
@@ -94,13 +94,13 @@ Reference<TextureCube> EnvironmentMap::createIrradianceMap(const Reference<Textu
     RenderCommand::setViewport(0, 0, 32, 32);
 
     s_irradianceShader->bind();
-    s_irradianceShader->setMatrix4("projection", s_captureProjection);
+    s_irradianceShader->setMatrix4("uProjection", s_captureProjection);
     envMap->bind(0);
 
     framebuffer->bind();
     for (uint32_t i = 0; i < 6; i++) // ++i?
     {
-        s_irradianceShader->setMatrix4("view", s_captureViews[i]);
+        s_irradianceShader->setMatrix4("uView", s_captureViews[i]);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap->getId(), 0); // TODO: IMPORTANT! make platform independent
 
         s_cubeMesh->vertexArray->bind();
@@ -126,10 +126,10 @@ Reference<TextureCube> EnvironmentMap::createPrefilterMap(const Reference<Textur
     prefilterMap = TextureCube::create(128, 128, SizedTextureFormat::RGB16F, true, true, true);
 
     if (!s_prefilterShader)
-        s_prefilterShader = Shader::createFromFile("Engine/assets/shaders/prefilter.glsl");
+        s_prefilterShader = Shader::createFromFile("Engine/assets/shaders/EngineIBL_Prefilter.glsl");
 
     s_prefilterShader->bind();
-    s_prefilterShader->setMatrix4("projection", s_captureProjection);
+    s_prefilterShader->setMatrix4("uProjection", s_captureProjection);
 
     envMap->bind(0);
 
@@ -146,11 +146,11 @@ Reference<TextureCube> EnvironmentMap::createPrefilterMap(const Reference<Textur
         RenderCommand::setViewport(0, 0, mipWidth, mipHeight);
 
         float roughness = (float)mip / (float)(mipmapLevels - 1);
-        s_prefilterShader->setFloat("roughness", roughness);
+        s_prefilterShader->setFloat("uRoughness", roughness);
 
         for (unsigned int i = 0; i < 6; ++i)
         {
-            s_prefilterShader->setMatrix4("view", s_captureViews[i]);
+            s_prefilterShader->setMatrix4("uView", s_captureViews[i]);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap->getId(), mip);
 
             s_cubeMesh->vertexArray->bind();
@@ -173,7 +173,7 @@ Reference<Texture2D> EnvironmentMap::createBRDFLUT()
     Reference<Texture2D> brdfLUT;
 
     if (!s_brdfShader)
-        s_brdfShader = Shader::createFromFile("Engine/assets/shaders/brdf.glsl");
+        s_brdfShader = Shader::createFromFile("Engine/assets/shaders/EngineIBL_BRDF.glsl");
 
     brdfLUT = Texture2D::create(512, 512, SizedTextureFormat::RGB16F, true, true);
     brdfLUT->bind();
@@ -197,10 +197,10 @@ Reference<Texture2D> EnvironmentMap::createBRDFLUT()
 void EnvironmentMap::initialise()
 {
     if (!s_convertShader)
-        s_convertShader = Shader::createFromFile("Engine/assets/shaders/equirectangular_to_cubemap.glsl");
+        s_convertShader = Shader::createFromFile("Engine/assets/shaders/EngineIBL_EquirectangularToCubemap.glsl");
 
     if (!s_irradianceShader)
-        s_irradianceShader = Shader::createFromFile("Engine/assets/shaders/irradiance.glsl");
+        s_irradianceShader = Shader::createFromFile("Engine/assets/shaders/EngineIBL_Irradiance.glsl");
 
     s_captureProjection = math::perspective((float)math::radians(90.f), 1.f, 0.1f, 10.f);
     s_captureViews =

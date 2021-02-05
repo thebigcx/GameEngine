@@ -2,7 +2,6 @@
 #include <core/Game.h>
 #include <maths/matrix/matrix_transform.h>
 #include <renderer/RenderCommand.h>
-#include <renderer/shader/ShaderFactory.h>
 #include <renderer/MeshFactory.h>
 #include <renderer/Renderer.h>
 #include <renderer/Assets.h>
@@ -16,33 +15,15 @@ namespace Engine
 void Renderer3D::init()
 {
     math::ivec2 windowSize = Game::getInstance()->getWindow().getSize();
-    
-    auto pbr = Shader::createFromFile("Engine/assets/shaders/pbr.glsl");
-    pbr->name = "PBR";
-    Assets::add<Shader>("pbr", pbr);
 
-    auto instancepbr = Shader::createFromFile("Engine/assets/shaders/instancepbr.glsl");
-    instancepbr->name = "Instanced PBR";
-    Assets::add<Shader>("instancepbr", instancepbr);
-
-    auto hdr = Shader::createFromFile("Engine/assets/shaders/hdr.glsl");
-    hdr->name = "HDR Renderpass";
-    Assets::add<Shader>("hdr", hdr);
-
-    auto outline = Shader::createFromFile("Engine/assets/shaders/outline.glsl");
-    outline->name = "Outline";
-    Assets::add<Shader>("outline", outline);
-
-    auto shadowmap = Shader::createFromFile("Engine/assets/shaders/shadowmap.glsl");
-    shadowmap->name = "Shadow Map";
-    Assets::add<Shader>("shadowmap", shadowmap);
+    s_data.environmentShader = Assets::get<Shader>("EngineIBL_Environment");
+    s_data.shadowMapShader = Assets::get<Shader>("EngineShadow_Map");
 
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 0);
-    s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("pbr").lock());
+    s_data.matrixData->setBlockDeclaration(*Assets::get<Shader>("EnginePBR_Static"));
 
     s_data.skyboxMesh = MeshFactory::skyboxMesh();
     s_data.environment = EnvironmentMap::create("Sandbox/assets/environment.hdr");
-    s_data.environmentShader = Shader::createFromFile("Engine/assets/shaders/environment_map.glsl");
 
     Framebuffer::Specification spec = {
         1024, 1024,
@@ -89,14 +70,14 @@ void Renderer3D::flushBatch()
     for (auto& group : s_data.renderObjects)
     {
         group.first->bind();
-        group.first->shader->setFloat3("cameraPos", s_data.cameraPos);
-        group.first->shader->setMatrix4("lightSpaceMatrix", s_data.lightMatrix);
+        group.first->shader->setFloat3("uCameraPos", s_data.cameraPos);
+        group.first->shader->setMatrix4("uLightSpaceMatrix", s_data.lightMatrix);
 
         setLightingUniforms(group.first->shader);
 
         for (auto& renderObject : group.second)
         {
-            group.first->shader->setMatrix4("transform", renderObject.transform);
+            group.first->shader->setMatrix4("uTransform", renderObject.transform);
             renderObject.mesh->vertexArray->bind();
 
             RenderCommand::renderIndexed(renderObject.mesh->vertexArray);
@@ -115,8 +96,8 @@ void Renderer3D::renderShadows()
     s_data.shadowMapFramebuffer->bind();
     RenderCommand::clear((uint32_t)RendererBufferType::Depth);
 
-    Assets::get<Shader>("shadowmap").lock()->bind();
-    Assets::get<Shader>("shadowmap").lock()->setMatrix4("lightSpaceMatrix", s_data.lightMatrix);
+    s_data.shadowMapShader->bind();
+    s_data.shadowMapShader->setMatrix4("uLightSpaceMatrix", s_data.lightMatrix);
 
     for (auto& group : s_data.renderObjects)
     {
@@ -124,7 +105,7 @@ void Renderer3D::renderShadows()
         {
             renderObject.mesh->vertexArray->bind();
 
-            Assets::get<Shader>("shadowmap").lock()->setMatrix4("transform", renderObject.transform);
+            s_data.shadowMapShader->setMatrix4("uTransform", renderObject.transform);
 
             RenderCommand::renderIndexed(renderObject.mesh->vertexArray);
         }
@@ -150,8 +131,8 @@ void Renderer3D::beginScene(PerspectiveCamera& camera)
 
     s_data.sceneStarted = true;
 
-    s_data.matrixData->setVariable("projection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
-    s_data.matrixData->setVariable("view", math::buffer(camera.getViewMatrix()), sizeof(math::mat4));
+    s_data.matrixData->setVariable("uProjection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
+    s_data.matrixData->setVariable("uView", math::buffer(camera.getViewMatrix()), sizeof(math::mat4));
 
     s_data.cameraPos = camera.getPosition();
 
@@ -167,8 +148,8 @@ void Renderer3D::beginScene(EditorCamera& camera)
 
     s_data.sceneStarted = true;
 
-    s_data.matrixData->setVariable("projection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
-    s_data.matrixData->setVariable("view", math::buffer(camera.getViewMatrix()), sizeof(math::mat4));
+    s_data.matrixData->setVariable("uProjection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
+    s_data.matrixData->setVariable("uView", math::buffer(camera.getViewMatrix()), sizeof(math::mat4));
 
     s_data.cameraPos = camera.getPosition();
 
@@ -184,8 +165,8 @@ void Renderer3D::beginScene(Camera& camera, const math::mat4& transform)
 
     s_data.sceneStarted = true;
 
-    s_data.matrixData->setVariable("projection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
-    s_data.matrixData->setVariable("view", math::buffer(math::inverse<float>(transform)), sizeof(math::mat4));
+    s_data.matrixData->setVariable("uProjection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
+    s_data.matrixData->setVariable("uView", math::buffer(math::inverse<float>(transform)), sizeof(math::mat4));
 
     s_data.cameraPos = transform[3];
 
@@ -203,7 +184,7 @@ void Renderer3D::endScene()
         glDepthFunc(GL_LEQUAL);
         s_data.environmentShader->bind();
         s_data.skyboxMesh->vertexArray->bind();
-        s_data.environment->getEnvMap()->bind();
+        s_data.environment->getIrradiance()->bind();
         RenderCommand::renderIndexed(s_data.skyboxMesh->vertexArray);
         glDepthFunc(GL_LESS);
     }
@@ -272,7 +253,7 @@ void Renderer3D::submit(const Reference<InstancedRenderer>& instance)
         if (mesh->material != lastMaterial)
         {
             mesh->material->bind();
-            mesh->material->shader->setFloat("exposure", Renderer::hdrExposure);
+            mesh->material->shader->setFloat("uExposure", Renderer::hdrExposure);
             
             setLightingUniforms(mesh->material->shader);
 
@@ -336,8 +317,8 @@ void Renderer3D::setLightingUniforms(const Reference<Shader>& shader)
         
     }
 
-    shader->setInt("numPointLights", pointLights);
-    shader->setInt("usingDirectionalLight", directionalLights); // TODO: multiple directional lights
+    shader->setInt("uNumPointLights", pointLights);
+    shader->setInt("uUsingDirectionalLight", directionalLights); // TODO: multiple directional lights
 }
 
 void Renderer3D::removeLight(const BaseLight* light)

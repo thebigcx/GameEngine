@@ -25,9 +25,9 @@ public:
 
     void onTransformChange(const Transform& transform)
     {
-        for (auto& listener : m_listeners)
+        for (auto& component : m_components)
         {
-            listener->onTransformChange(transform);
+            component.second->onTransformChange(transform);
         }
     }
 
@@ -41,7 +41,7 @@ public:
         child->destroy_();
     }
 
-    GameObject* addChild()
+    GameObject* createChild()
     {
         m_children.push_back(GameObject(this));
         return &m_children.back();
@@ -54,10 +54,10 @@ public:
 
     /**
      * Adds a component to the game object. NOTE: When using the return value
-     * as 'auto', make sure to take by reference. i.e. auto& comp = obj->addComponent();
+     * as 'auto', make sure to take by reference. i.e. auto& comp = obj->createComponent();
      */
     template<typename T, typename... Args>
-    T& addComponent(Args&& ...args)
+    T& createComponent(Args&& ...args)
     {
         if (!hasComponent<T>())
         {
@@ -177,7 +177,7 @@ private:
     std::vector<GameObject> m_children;
     GameObject* m_parent = nullptr;
 
-    std::vector<GameComponent*> m_listeners;
+    //std::vector<GameComponent*> m_listeners;
 
     template<typename T>
     void multiComponentCheck(GameObject& object, bool& check)

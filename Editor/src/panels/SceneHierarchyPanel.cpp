@@ -48,8 +48,8 @@ void SceneHierarchyPanel::recurseTree(GameObject& object)
     {
         if (ImGui::MenuItem("Create Child"))
         {
-            auto child = object.addChild();
-            child->addComponent<Tag>("Untitled Child");
+            auto child = object.createChild();
+            child->createComponent<Tag>("Untitled Child");
         }
 
         if (ImGui::MenuItem("Delete Game Object"))
@@ -100,16 +100,16 @@ void SceneHierarchyPanel::onImGuiRender()
             if (ImGui::MenuItem("Camera"))
             {
                 auto object = m_context->createGameObject("New Camera");
-                object->addComponent<Transform>();
-                object->addComponent<SceneCamera>();
+                object->createComponent<Transform>();
+                object->createComponent<SceneCamera>();
                 m_selection = object;
             }
 
             if (ImGui::MenuItem("Sprite"))
             {
                 auto object = m_context->createGameObject("New Sprite");
-                object->addComponent<Transform>();
-                object->addComponent<SpriteRendererComponent>();
+                object->createComponent<Transform>();
+                object->createComponent<SpriteRendererComponent>();
                 m_selection = object;
             }
 
@@ -123,27 +123,27 @@ void SceneHierarchyPanel::onImGuiRender()
                 if (ImGui::MenuItem("Empty Mesh"))
                 {
                     auto object = m_context->createGameObject("New Mesh");
-                    object->addComponent<Transform>();
-                    object->addComponent<MeshComponent>();
-                    object->addComponent<MeshRendererComponent>();
+                    object->createComponent<Transform>();
+                    object->createComponent<MeshComponent>();
+                    object->createComponent<MeshRendererComponent>();
                     m_selection = object;
                 }
                 if (ImGui::MenuItem("Cube"))
                 {
                     auto object = m_context->createGameObject("Cube");
-                    object->addComponent<Transform>();
-                    auto& mesh = object->addComponent<MeshComponent>();
+                    object->createComponent<Transform>();
+                    auto& mesh = object->createComponent<MeshComponent>();
                     mesh.mesh = MeshFactory::cubeMesh(1.f);
-                    auto& render = object->addComponent<MeshRendererComponent>();
+                    auto& render = object->createComponent<MeshRendererComponent>();
                     m_selection = object;
                 }
                 if (ImGui::MenuItem("Sphere"))
                 {
                     auto object = m_context->createGameObject("Sphere");
-                    object->addComponent<Transform>();
-                    auto& mesh = object->addComponent<MeshComponent>();
+                    object->createComponent<Transform>();
+                    auto& mesh = object->createComponent<MeshComponent>();
                     mesh.mesh = MeshFactory::sphereMesh(1.f, 20, 20);
-                    auto& render = object->addComponent<MeshRendererComponent>();
+                    auto& render = object->createComponent<MeshRendererComponent>();
                     m_selection = object;
                 }
 
@@ -153,8 +153,8 @@ void SceneHierarchyPanel::onImGuiRender()
             if (ImGui::MenuItem("Directional Light"))
             {
                 auto object = m_context->createGameObject("Directional Light");
-                object->addComponent<Transform>();
-                object->addComponent<DirectionalLight>();
+                object->createComponent<Transform>();
+                object->createComponent<DirectionalLight>();
                 m_selection = object;
             }
 
@@ -172,11 +172,11 @@ void SceneHierarchyPanel::onImGuiRender()
                 Reference<Mesh> mesh = Mesh::load(FileDialog::getSelection(), 0);
 
                 auto object = m_context->createGameObject("Imported Mesh");
-                object->addComponent<Transform>();
-                auto& meshRender = object->addComponent<MeshRendererComponent>();
+                object->createComponent<Transform>();
+                auto& meshRender = object->createComponent<MeshRendererComponent>();
                 meshRender.material = mesh->material;
 
-                auto& meshComp = object->addComponent<MeshComponent>();
+                auto& meshComp = object->createComponent<MeshComponent>();
                 meshComp.filePath = FileDialog::getSelection();
                 meshComp.mesh = mesh;
                 meshComp.meshID = 0;
@@ -217,7 +217,7 @@ void SceneHierarchyPanel::onImGuiRender()
 #define ADD_COMPONENT(type, str) if (!object.hasComponent<type>())\
                                 {\
                                     if (ImGui::Button(str)) {\
-                                        object.addComponent<type>();\
+                                        object.createComponent<type>();\
                                         ImGui::CloseCurrentPopup();\
                                     }\
                                 }
@@ -259,20 +259,23 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
 
         ImGui::Text("Translation");
         ImGui::NextColumn();
-        math::vec3& translation = component.translation;
+        math::vec3 translation = component.getTranslation();
         ImGui::DragFloat3("##T", &translation.x);
+        component.setTranslation(translation);
         ImGui::NextColumn();
 
         ImGui::Text("Rotation");
         ImGui::NextColumn();
-        math::vec3& rotation = component.rotation;
+        math::vec3 rotation = component.getRotation();
         ImGui::DragFloat3("##R", &rotation.x);
+        component.setRotation(rotation);
         ImGui::NextColumn();
 
         ImGui::Text("Scale");
         ImGui::NextColumn();
-        math::vec3& scale = component.scale;
+        math::vec3 scale = component.getScale();
         ImGui::DragFloat3("##S", &scale.x);
+        component.setScale(scale);
         ImGui::NextColumn();
 
         ImGui::PopID();

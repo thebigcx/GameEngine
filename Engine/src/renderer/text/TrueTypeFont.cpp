@@ -88,12 +88,6 @@ void TrueTypeFont::load(const std::string& path, int characterSize)
         x += g->bitmap.width;
     }
 
-    /*m_texture->setParameter(Texture2D::Parameter::WrapS, Texture2D::Value::ClampToEdge);
-    m_texture->setParameter(Texture2D::Parameter::WrapT, Texture2D::Value::ClampToEdge);
-
-    m_texture->setParameter(Texture2D::Parameter::MinFilter, Texture2D::Value::Nearest);
-    m_texture->setParameter(Texture2D::Parameter::MagFilter, Texture2D::Value::Nearest);*/
-
     FT_Done_Face(face);
     FT_Done_FreeType(library);
 }

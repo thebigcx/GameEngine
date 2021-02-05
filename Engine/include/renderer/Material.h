@@ -41,7 +41,7 @@ public:
 
     math::vec4 albedoColor = math::vec4(1.f);
 
-    Reference<Shader> shader;
+    Reference<Shader> shader = nullptr;
 
     std::string name = "";
     std::string uuid = "";

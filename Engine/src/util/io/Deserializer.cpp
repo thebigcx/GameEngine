@@ -21,12 +21,12 @@ Reference<Material> Deserializer::loadMaterial(const std::string& path)
 
     auto material = Material::create(/* Get shader by UUID */);
 
-    material->albedoMap = Assets::get<Texture2D>(matNode["Textures"]["Albedo"]["uuid"].as<std::string>()).lock();
-    material->normalMap = Assets::get<Texture2D>(matNode["Textures"]["Normal"]["uuid"].as<std::string>()).lock();
-    material->metallicMap = Assets::get<Texture2D>(matNode["Textures"]["Metallic"]["uuid"].as<std::string>()).lock();
-    material->roughnessMap = Assets::get<Texture2D>(matNode["Textures"]["Roughness"]["uuid"].as<std::string>()).lock();
-    material->ambientOcclusionMap = Assets::get<Texture2D>(matNode["Textures"]["Ambient Occlusion"]["uuid"].as<std::string>()).lock();
-    material->emissionMap = Assets::get<Texture2D>(matNode["Textures"]["Emission"]["uuid"].as<std::string>()).lock();
+    material->albedoMap = Assets::get<Texture2D>(matNode["Textures"]["Albedo"]["uuid"].as<std::string>());
+    material->normalMap = Assets::get<Texture2D>(matNode["Textures"]["Normal"]["uuid"].as<std::string>());
+    material->metallicMap = Assets::get<Texture2D>(matNode["Textures"]["Metallic"]["uuid"].as<std::string>());
+    material->roughnessMap = Assets::get<Texture2D>(matNode["Textures"]["Roughness"]["uuid"].as<std::string>());
+    material->ambientOcclusionMap = Assets::get<Texture2D>(matNode["Textures"]["Ambient Occlusion"]["uuid"].as<std::string>());
+    material->emissionMap = Assets::get<Texture2D>(matNode["Textures"]["Emission"]["uuid"].as<std::string>());
 
     return material;
 }

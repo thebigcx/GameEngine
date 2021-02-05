@@ -156,7 +156,7 @@ Reference<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, co
             auto ambientOcclusion = loadMaterialTexture_(aimaterial, aiTextureType_LIGHTMAP, model->directory);
             auto emission = loadMaterialTexture_(aimaterial, aiTextureType_EMISSIVE, model->directory);
 
-            auto material_ = Material::create(Assets::get<Shader>("pbr").lock()); // TODO: material shaders
+            auto material_ = Material::create(Assets::get<Shader>("EnginePBR_Static")); // TODO: material shaders
 
             material->albedoMap = albedo;
             material->normalMap = normal;

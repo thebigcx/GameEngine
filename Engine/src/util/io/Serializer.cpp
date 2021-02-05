@@ -82,19 +82,19 @@ void serializeGameObject(YAML::Node& node, GameObject& object)
         auto tc = object.getComponent<Transform>();
         auto transform = node["Transform"];
 
-        transform["Translation"].push_back<float>(tc.translation.x);
-        transform["Translation"].push_back<float>(tc.translation.y);
-        transform["Translation"].push_back<float>(tc.translation.z);
+        transform["Translation"].push_back<float>(tc.getTranslation().x);
+        transform["Translation"].push_back<float>(tc.getTranslation().y);
+        transform["Translation"].push_back<float>(tc.getTranslation().z);
         transform["Translation"].SetStyle(YAML::EmitterStyle::Flow);
         
-        transform["Rotation"].push_back<float>(tc.rotation.x);
-        transform["Rotation"].push_back<float>(tc.rotation.y);
-        transform["Rotation"].push_back<float>(tc.rotation.z);
+        transform["Rotation"].push_back<float>(tc.getRotation().x);
+        transform["Rotation"].push_back<float>(tc.getRotation().y);
+        transform["Rotation"].push_back<float>(tc.getRotation().z);
         transform["Rotation"].SetStyle(YAML::EmitterStyle::Flow);
 
-        transform["Scale"].push_back<float>(tc.scale.x);
-        transform["Scale"].push_back<float>(tc.scale.y);
-        transform["Scale"].push_back<float>(tc.scale.z);
+        transform["Scale"].push_back<float>(tc.getScale().x);
+        transform["Scale"].push_back<float>(tc.getScale().y);
+        transform["Scale"].push_back<float>(tc.getScale().z);
         transform["Scale"].SetStyle(YAML::EmitterStyle::Flow);
     }
 

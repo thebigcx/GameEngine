@@ -1,8 +1,9 @@
 #include <renderer/Renderer.h>
 #include <renderer/MeshFactory.h>
-#include <renderer/shader/ShaderFactory.h>
+#include <renderer/shader/ShaderLibrary.h>
 #include <core/Game.h>
 #include <events/WindowEvent.h>
+#include <renderer/Assets.h>
 
 namespace Engine
 {
@@ -13,11 +14,12 @@ float Renderer::hdrExposure = 1.f;
 void Renderer::init()
 {
     RenderCommand::init();
+    ShaderLibrary::setupShaders();
     Renderer2D::init();
     Renderer3D::init();
 
     m_data.fboMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
-    m_data.fboShader = ShaderFactory::createShader("hdr");
+    m_data.fboShader = Assets::get<Shader>("EngineHDR_Pass");
     
     math::ivec2 windowSize = Game::getInstance()->getWindow().getSize();
     //m_data.target = Framebuffer::create(windowSize.x, windowSize.y);

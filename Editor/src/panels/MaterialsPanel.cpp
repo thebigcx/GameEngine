@@ -231,11 +231,11 @@ void MaterialsPanel::onImGuiRender()
 
         if (ImGui::Button("Create Material"))
         {
-            auto material = Material::create(Assets::get<Shader>("pbr").lock());
+            auto material = Material::create();
             material->name = "New Material";
             material->uuid = Utils::genUUID();
 
-            Assets::add<Material>(material->uuid, material);
+            Assets::add<Material>(material->name, material);
         }
     }
 
@@ -283,7 +283,7 @@ void MaterialsPanel::onImGuiRender()
                     auto shader = Shader::createFromFile(FileDialog::getSelection());
                     shader->name = name;
                     shader->uuid = Utils::genUUID();
-                    Assets::add<Shader>(shader->uuid, shader);
+                    Assets::add<Shader>(shader->name, shader);
                 }
             }
         }
@@ -338,7 +338,7 @@ void MaterialsPanel::onImGuiRender()
                     Reference<Texture2D> texture = Texture2D::create(FileDialog::getSelection());
                     texture->name = "New Texture";
                     texture->uuid = Utils::genUUID();
-                    Assets::add<Texture2D>(texture->uuid, texture);
+                    Assets::add<Texture2D>(texture->name, texture);
                 }
             }
         }

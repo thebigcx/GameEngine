@@ -16,4 +16,5 @@ Makefile
 Sandbox
 imgui.ini
 
-assets
+Sandbox/assets
+Editor/assets

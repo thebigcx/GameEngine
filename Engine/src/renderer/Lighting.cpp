@@ -1,5 +1,6 @@
 #include <renderer/Lighting.h>
 #include <renderer/Renderer3D.h>
+#include <util/Transform.h>
 
 namespace Engine
 {
@@ -18,24 +19,41 @@ DirectionalLight::DirectionalLight(const math::vec3& radiance, float intensity, 
 
 void DirectionalLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
-    shader->setFloat3("directionalLight.radiance", radiance);
-    shader->setFloat("directionalLight.intensity", intensity);
-    shader->setFloat3("directionalLight.direction", direction);
+    shader->setFloat3("uDirectionalLight.radiance", radiance);
+    shader->setFloat("uDirectionalLight.intensity", intensity);
+    shader->setFloat3("uDirectionalLight.direction", direction);
+}
+
+void DirectionalLight::onTransformChange(const Transform& transform)
+{
+    math::quat rotation = math::quat(math::radians(transform.getRotation()));
+    direction = rotation * math::vec3(0, -1, 0);
 }
 
 void PointLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
     std::string idx = std::to_string(index);
 
-    shader->setFloat3("pointLights[" + idx + "].radiance", radiance);
-    shader->setFloat("pointLights[" + idx + "].intensity", intensity);
-    shader->setFloat3("pointLights[" + idx + "].position", position);
+    shader->setFloat3("uPointLights[" + idx + "].radiance", radiance);
+    shader->setFloat("uPointLights[" + idx + "].intensity", intensity);
+    shader->setFloat3("uPointLights[" + idx + "].position", position);
+}
+
+void PointLight::onTransformChange(const Transform& transform)
+{
+    position = transform.getTranslation();
+    std::cout << math::to_string(position) << "\n";
 }
 
 void SkyLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
-    shader->setFloat3("skyLight.radiance", radiance);
-    shader->setFloat("skyLight.intensity", intensity);
+    shader->setFloat3("uSkyLight.radiance", radiance);
+    shader->setFloat("uSkyLight.intensity", intensity);
+}
+
+void SpotLight::onTransformChange(const Transform& transform)
+{
+
 }
 
 }

@@ -90,7 +90,7 @@ void EditorLayer::onUpdate(float dt)
     // HDR Pass
     m_hdrBuffer->bind();
     RenderCommand::clear(RenderCommand::defaultClearBits());
-    Assets::get<Shader>("hdr").lock()->bind();
+    Assets::get<Shader>("EngineHDR_Pass")->bind();
     glBindTextureUnit(0, m_framebuffer->getColorAttachment()); // TODO: platform independent
     m_framebufferMesh->vertexArray->bind();
     RenderCommand::renderIndexed(m_framebufferMesh->vertexArray);
@@ -254,10 +254,10 @@ void EditorLayer::onImGuiRender()
                     math::vec3 translation, rotation, scale;
                     math::decompose_transform(transform, translation, rotation, scale);
 
-                    math::vec3 deltaRotation = math::degrees(rotation) - tc.rotation;
-                    tc.translation = translation;
-                    tc.rotation += deltaRotation;
-                    tc.scale = scale;
+                    math::vec3 deltaRotation = math::degrees(rotation) - tc.getRotation();
+                    tc.setTranslation(translation);
+                    tc.rotate(deltaRotation);
+                    tc.setScale(scale);
                 }
             }
         }

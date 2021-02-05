@@ -1,7 +1,6 @@
 #include <renderer/Renderer2D.h>
 #include <core/Game.h>
 #include <renderer/MeshFactory.h>
-#include <renderer/shader/ShaderFactory.h>
 #include <maths/matrix/matrix_transform.h>
 #include <maths/matrix/matrix_func.h>
 #include <renderer/RenderCommand.h>
@@ -14,11 +13,11 @@ void Renderer2D::init()
 {
     s_data.matrixData = UniformBuffer::create(sizeof(math::mat4) * 2, 2);
 
-    s_data.textShader = Shader::createFromFile("Engine/assets/shaders/text.glsl");
-    s_data.textureShader = Shader::createFromFile("Engine/assets/shaders/texture.glsl");
+    s_data.textShader = Shader::createFromFile("Engine/assets/shaders/Engine2D_Text.glsl");
+    s_data.textureShader = Shader::createFromFile("Engine/assets/shaders/Engine2D_Texture.glsl");
 
-    Assets::add<Shader>(Utils::genUUID(), s_data.textShader);
-    Assets::add<Shader>(Utils::genUUID(), s_data.textureShader);
+    s_data.textureShader = Assets::get<Shader>("Engine2D_Texture");
+    s_data.textShader = Assets::get<Shader>("Engine2D_Text");
 
     s_data.textMesh = MeshFactory::textMesh(s_data.MAX_GLYPHS);
     s_data.textVertexBase = new GlyphVertex[4 * s_data.MAX_GLYPHS];
@@ -69,7 +68,7 @@ void Renderer2D::init()
     }
 
     s_data.textureShader->bind();
-    s_data.textureShader->setIntArray("textures", samplers, s_data.MAX_TEXTURE_SLOTS);
+    s_data.textureShader->setIntArray("uTextures", samplers, s_data.MAX_TEXTURE_SLOTS);
 
     s_data.textureSlots[0] = Texture2D::createWhiteTexture();
 }
@@ -315,7 +314,7 @@ void Renderer2D::renderText(const std::string& text, const Reference<TrueTypeFon
     s_data.textMesh->vertexBuffer->setData(s_data.textVertexBase, dataSize);
 
     s_data.textShader->bind();
-    s_data.textShader->setFloat4("textColor", color);
+    s_data.textShader->setFloat4("uTextColor", color);
     font->getTextureAtlas()->bind();
 
     RenderCommand::setBlend(true);

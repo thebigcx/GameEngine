@@ -125,7 +125,7 @@ Reference<Scene> SceneSerializer::loadScene(const std::string& path)
         auto node = sceneNode["Materials"][it->first];
 
         auto shader = Assets::get<Shader>(node["Shader"].as<std::string>());
-        Reference<Material> material = Material::create(shader.lock());
+        Reference<Material> material = Material::create(shader);
 
         // Make sure they aren't invalid texture
         if (node["Albedo"].as<std::string>() != "")
@@ -164,12 +164,12 @@ Reference<Scene> SceneSerializer::loadScene(const std::string& path)
 
 void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const Reference<Scene>& scene, const std::string& name)
 {
-    auto object = parent.addChild();
-    object->addComponent<Tag>(name);
+    auto object = parent.createChild();
+    object->createComponent<Tag>(name);
 
     if (node["Transform"])
     {
-        auto& transform = object->addComponent<Transform>();
+        auto& transform = object->createComponent<Transform>();
 
         transform.translation.x = node["Transform"]["Translation"][0].as<float>();
         transform.translation.y = node["Transform"]["Translation"][1].as<float>();
@@ -186,7 +186,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
     if (node["Camera"])
     {
-        auto& camera = object->addComponent<SceneCamera>();
+        auto& camera = object->createComponent<SceneCamera>();
 
         camera.setProjectionType(static_cast<ProjectionType>(node["Camera"]["Projection Type"].as<uint32_t>()));
 
@@ -203,7 +203,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
     if (node["Sprite Renderer"])
     {
-        auto& spriteRenderer = object->addComponent<SpriteRendererComponent>();
+        auto& spriteRenderer = object->createComponent<SpriteRendererComponent>();
 
         spriteRenderer.color.r = node["Sprite Renderer"]["Color"][0].as<float>();
         spriteRenderer.color.g = node["Sprite Renderer"]["Color"][1].as<float>();
@@ -225,7 +225,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
     if (node["Mesh"])
     {
-        auto& mesh = object->addComponent<MeshComponent>();
+        auto& mesh = object->createComponent<MeshComponent>();
 
         mesh.filePath = node["Mesh"]["Mesh"].as<std::string>();
         mesh.meshID = node["Mesh"]["Mesh ID"].as<uint32_t>();
@@ -254,15 +254,15 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
     if (node["Mesh Renderer"])
     {
-        auto& meshRenderer = object->addComponent<MeshRendererComponent>();
+        auto& meshRenderer = object->createComponent<MeshRendererComponent>();
 
         auto mat = node["Mesh Renderer"]["Material"];
-        meshRenderer.material = Assets::get<Material>(mat.as<std::string>()).lock();
+        meshRenderer.material = Assets::get<Material>(mat.as<std::string>());
     }
 
     if (node["Directional Light"])
     {
-        auto& light = object->addComponent<DirectionalLightComponent>();
+        auto& light = object->createComponent<DirectionalLightComponent>();
 
         light.light.radiance.r = node["Directional Light"]["Radiance"][0].as<float>();
         light.light.radiance.g = node["Directional Light"]["Radiance"][1].as<float>();
@@ -273,7 +273,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
     if (node["Sky Light"])
     {
-        auto& light = object->addComponent<SkyLightComponent>();
+        auto& light = object->createComponent<SkyLightComponent>();
 
         light.light.intensity = node["Sky Light"]["Intensity"].as<float>();
 
@@ -284,7 +284,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
 
     if (node["Point Light"])
     {
-        auto& light = object->addComponent<PointLightComponent>();
+        auto& light = object->createComponent<PointLightComponent>();
 
         light.light.radiance.r = node["Point Light"]["Radiance"][0].as<float>();
         light.light.radiance.g = node["Point Light"]["Radiance"][1].as<float>();

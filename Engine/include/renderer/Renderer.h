@@ -15,7 +15,7 @@ struct RendererData
 {
     //Reference<Framebuffer> target;
     Reference<RenderTarget> target;
-    Reference<Shader> fboShader;
+    NonOwning<Shader> fboShader;
     Reference<Mesh> fboMesh;
 };
 

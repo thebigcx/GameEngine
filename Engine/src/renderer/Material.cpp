@@ -25,7 +25,7 @@ void Material::bind() const
     }
     else
     {
-        shader->setFloat3("material.albedoColor", albedoColor);
+        shader->setFloat3("uMaterial.albedoColor", albedoColor);
     }
 
     if (normalMap)
@@ -39,7 +39,7 @@ void Material::bind() const
         metallicMap->bind(2);
         textureFlags |= (1 << 2);
     }
-    shader->setFloat("material.metallicScalar", metallicScalar);
+    shader->setFloat("uMaterial.metallicScalar", metallicScalar);
     
 
     if (roughnessMap)
@@ -47,7 +47,7 @@ void Material::bind() const
         roughnessMap->bind(3);
         textureFlags |= (1 << 3);
     }
-    shader->setFloat("material.roughnessScalar", roughnessScalar);
+    shader->setFloat("uMaterial.roughnessScalar", roughnessScalar);
     
 
     if (ambientOcclusionMap)
@@ -69,7 +69,7 @@ void Material::bind() const
         textureFlags |= (1 << 6);
     }
 
-    shader->setInt("material.textureFlags", textureFlags);
+    shader->setInt("uMaterial.textureFlags", textureFlags);
 }
 
 void Material::unbind() const

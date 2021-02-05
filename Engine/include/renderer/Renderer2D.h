@@ -37,8 +37,8 @@ struct Renderer2DData
     static constexpr uint32_t MAX_INDICES = MAX_SPRITES * 6;
     static constexpr uint32_t MAX_GLYPHS = 512;
 
-    Reference<Shader> textureShader;
-    Reference<Shader> textShader;
+    NonOwning<Shader> textureShader;
+    NonOwning<Shader> textShader;
 
     QuadVertex* vertexBase = nullptr;
     QuadVertex* vertexPointer = nullptr;

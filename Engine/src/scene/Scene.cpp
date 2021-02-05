@@ -22,10 +22,10 @@ Reference<Scene> Scene::create()
 {
     auto scene = Reference<Scene>(new Scene());
     /*auto cam = scene->createGameObject("Main Camera");
-    auto& cameraComp = cam->addComponent<CameraComponent>();
+    auto& cameraComp = cam->createComponent<CameraComponent>();
     cameraComp.primary = true;
     cameraComp.camera.setProjectionType(ProjectionType::Perspective);
-    cam->addComponent<Transform>();*/
+    cam->createComponent<Transform>();*/
 
     return scene;
 }
@@ -120,10 +120,6 @@ void Scene::setLights()
         for (auto& object : directionalLights)
         {
             auto& light = object->getComponent<DirectionalLight>();
-            auto& transform = object->getComponent<Transform>();
-
-            math::quat rotation = math::quat(math::radians(transform.rotation));
-            light.direction = rotation * math::vec3(0, -1, 0); // TODO: use onTransformChange event
 
             Renderer3D::addLight(&light);
         }
@@ -132,9 +128,9 @@ void Scene::setLights()
         for (auto& object : pointLightObjects)
         {
             auto& light = object->getComponent<PointLight>();
-            auto& transform = object->getComponent<Transform>();
+            //auto& transform = object->getComponent<Transform>();
 
-            light.position = transform.translation;
+            //light.position = transform.getTranslation();
 
             Renderer3D::addLight(&light);
         }
@@ -143,8 +139,8 @@ void Scene::setLights()
 
 GameObject* Scene::createGameObject(const std::string& name)
 {
-    auto object = m_rootObject.addChild();
-    object->addComponent<Tag>(name);
+    auto object = m_rootObject.createChild();
+    object->createComponent<Tag>(name);
     return object;
 }
 
