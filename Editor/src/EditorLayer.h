@@ -38,7 +38,7 @@ private:
 private:
     Reference<Scene> m_scene;
     Reference<Framebuffer> m_framebuffer;
-    Reference<Framebuffer> m_hdrBuffer;
+    Reference<Framebuffer> m_finalBuffer;
     Reference<Mesh> m_framebufferMesh;
 
     math::vec2 m_viewportSize;

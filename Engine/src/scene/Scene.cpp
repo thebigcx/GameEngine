@@ -4,6 +4,7 @@
 #include <renderer/Renderer3D.h>
 #include <scene/Components.h>
 #include <script/ScriptController.h>
+#include <util/Timer.h>
 
 namespace Engine
 {
@@ -21,12 +22,6 @@ Scene::~Scene()
 Reference<Scene> Scene::create()
 {
     auto scene = Reference<Scene>(new Scene());
-    /*auto cam = scene->createGameObject("Main Camera");
-    auto& cameraComp = cam->createComponent<CameraComponent>();
-    cameraComp.primary = true;
-    cameraComp.camera.setProjectionType(ProjectionType::Perspective);
-    cam->createComponent<Transform>();*/
-
     return scene;
 }
 
@@ -128,9 +123,6 @@ void Scene::setLights()
         for (auto& object : pointLightObjects)
         {
             auto& light = object->getComponent<PointLight>();
-            //auto& transform = object->getComponent<Transform>();
-
-            //light.position = transform.getTranslation();
 
             Renderer3D::addLight(&light);
         }

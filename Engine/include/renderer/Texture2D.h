@@ -16,6 +16,7 @@ enum class SizedTextureFormat
     Depth24Stencil8,
     Depth16,
     RGB16F,
+    RGBA16F,
     sRGBA8,
     sRGB8,
 
@@ -59,6 +60,7 @@ class Texture2D
 public:
     virtual ~Texture2D() = default;
 
+    static Reference<Texture2D> create(const Reference<Texture2D>& other);
     static Reference<Texture2D> create(const std::string& file, bool clamp = false, bool linear = true, bool isSRGB = true);
     static Reference<Texture2D> create(uint32_t width, uint32_t height, SizedTextureFormat dataFormat = SizedTextureFormat::RGBA8, bool clamp = false, bool linear = true);
     static Reference<Texture2D> createWhiteTexture();

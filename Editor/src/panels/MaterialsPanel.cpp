@@ -67,6 +67,11 @@ void MaterialsPanel::textureSelect(Reference<Texture2D>& texture)
             ImGui::PopID();
         }
 
+        if (ImGui::Selectable("<empty_texture>", texture == nullptr))
+        {
+            texture = nullptr;
+        }
+
         ImGui::EndCombo();
     }
 }
@@ -292,6 +297,8 @@ void MaterialsPanel::onImGuiRender()
     std::string deletedTexture = "";
     if (ImGui::CollapsingHeader("Textures"))
     {
+        std::string oldName = "";
+        std::string newName = "";
         for (auto& texture : Assets::getCache<Texture2D>().getInternalList())
         {
             bool opened = ImGui::TreeNodeEx(texture.second->name.c_str());
@@ -316,12 +323,21 @@ void MaterialsPanel::onImGuiRender()
 
                 if (ImGui::InputText("##Name", buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
                 {
-                    texture.second->name = std::string(buf);
+                    oldName = texture.first;
+                    newName = buf;
                 }
 
                 ImGui::Image(reinterpret_cast<void*>(texture.second->getId()), ImVec2{30, 30}, ImVec2{0, 1}, ImVec2{1, 0});
                 ImGui::TreePop();
             }
+        }
+
+        if (oldName != "")
+        {
+            auto pair = Assets::getCache<Texture2D>().getInternalList().extract(oldName);
+            pair.mapped()->name = newName;
+            pair.key() = newName;
+            Assets::getCache<Texture2D>().getInternalList().insert(std::move(pair));
         }
 
         if (ImGui::Button("Create Texture"))

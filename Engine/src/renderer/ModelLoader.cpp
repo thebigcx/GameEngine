@@ -28,7 +28,7 @@ Reference<Model> ModelLoader::load(const std::string& path)
 
 const aiScene* ModelLoader::setupAssimp_(const std::string& modelPath)
 {
-    const aiScene* scene = m_importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+    const aiScene* scene = m_importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
@@ -156,7 +156,7 @@ Reference<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, co
             auto ambientOcclusion = loadMaterialTexture_(aimaterial, aiTextureType_LIGHTMAP, model->directory);
             auto emission = loadMaterialTexture_(aimaterial, aiTextureType_EMISSIVE, model->directory);
 
-            auto material_ = Material::create(Assets::get<Shader>("EnginePBR_Static")); // TODO: material shaders
+            material = Material::create(Assets::get<Shader>("EnginePBR_Static")); // TODO: material shaders
 
             material->albedoMap = albedo;
             material->normalMap = normal;
@@ -165,7 +165,6 @@ Reference<Mesh> ModelLoader::processMesh_(aiMesh* mesh, const aiScene* scene, co
             material->ambientOcclusionMap = ambientOcclusion;
             material->emissionMap = emission;
 
-            material = material_;
             m_materialsLoaded.emplace(std::pair<int, Reference<Material>>(mesh->mMaterialIndex, material));
         }
     //}

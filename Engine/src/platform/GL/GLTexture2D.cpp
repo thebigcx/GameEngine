@@ -20,6 +20,7 @@ namespace Utils
             case SizedTextureFormat::Depth16: return GL_DEPTH_COMPONENT16;
             case SizedTextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
             case SizedTextureFormat::RGB16F: return GL_RGB16F;
+            case SizedTextureFormat::RGBA16F: return GL_RGBA16F;
             case SizedTextureFormat::sRGB8: return GL_SRGB8;
             case SizedTextureFormat::sRGBA8: return GL_SRGB8_ALPHA8;
         };
@@ -64,6 +65,14 @@ namespace Utils
         }
         return 0;
     }
+}
+
+GLTexture2D::GLTexture2D(const GLTexture2D& other)
+    : m_path(other.m_path), m_clamp(other.m_clamp), m_linear(other.m_linear), m_isSRGB(other.m_isSRGB)
+    , m_id(other.m_id), m_width(other.m_width), m_height(other.m_height), m_internalFormat(other.m_internalFormat)
+    , m_dataFormat(other.m_dataFormat)
+{
+
 }
 
 GLTexture2D::GLTexture2D(const std::string& file, bool clamp, bool linear, bool isSRGB)

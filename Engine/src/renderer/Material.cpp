@@ -16,60 +16,43 @@ void Material::bind() const
         return;
     }
 
-    int32_t textureFlags = 0;
-
     if (albedoMap)
-    {
         albedoMap->bind(0);
-        textureFlags |= (1 << 0);
-    }
-    else
-    {
-        shader->setFloat3("uMaterial.albedoColor", albedoColor);
-    }
+        
+    shader->setFloat3("uMaterial.albedoColor", albedoColor);
+    shader->setFloat("uMaterial.albedoMapToggle", (float)(albedoMap != nullptr));
 
     if (normalMap)
-    {
         normalMap->bind(1);
-        textureFlags |= (1 << 1);
-    }
+    
+    shader->setFloat("uMaterial.normalMapToggle", (float)(normalMap != nullptr));
 
     if (metallicMap)
-    {
         metallicMap->bind(2);
-        textureFlags |= (1 << 2);
-    }
-    shader->setFloat("uMaterial.metallicScalar", metallicScalar);
+    
+    shader->setFloat("uMaterial.metallicMapToggle", (float)(metallicMap != nullptr));
+    shader->setFloat("uMaterial.metallic", metallicScalar);
     
 
     if (roughnessMap)
-    {
         roughnessMap->bind(3);
-        textureFlags |= (1 << 3);
-    }
-    shader->setFloat("uMaterial.roughnessScalar", roughnessScalar);
+    
+    shader->setFloat("uMaterial.roughnessMapToggle", (float)(roughnessMap != nullptr));
+    shader->setFloat("uMaterial.roughness", roughnessScalar);
     
 
     if (ambientOcclusionMap)
-    {
         ambientOcclusionMap->bind(4);
-        textureFlags |= (1 << 4);
-    }
-    
 
+    shader->setFloat("uMaterial.lightmapToggle", (float)(ambientOcclusionMap != nullptr));
+    /*
     if (depthMap)
-    {
-        depthMap->bind(5);
-        textureFlags |= (1 << 5);
-    }
+        depthMap->bind(5);*/
 
     if (emissionMap)
-    {
         emissionMap->bind(6);
-        textureFlags |= (1 << 6);
-    }
 
-    shader->setInt("uMaterial.textureFlags", textureFlags);
+    shader->setFloat("uMaterial.emissionMapToggle", (float)(emissionMap != nullptr));
 }
 
 void Material::unbind() const

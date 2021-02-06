@@ -17,6 +17,8 @@
 #include <core/Keyboard.h>
 #include <events/KeyboardEvent.h>
 #include <util/io/Serializer.h>
+#include <renderer/Renderer.h>
+#include <renderer/PostProcessor.h>
 
 namespace Engine
 {
@@ -35,16 +37,14 @@ void EditorLayer::onAttach()
     spec.width = 1280;
     spec.height = 720;
     spec.attachments = {
-        { Framebuffer::Attachment::Color, Framebuffer::TextureSpecification(SizedTextureFormat::RGBA8) },
+        { Framebuffer::Attachment::Color, Framebuffer::TextureSpecification(SizedTextureFormat::RGBA16F) },
+        { Framebuffer::Attachment::Color, Framebuffer::TextureSpecification(SizedTextureFormat::RGBA16F) },
         { Framebuffer::Attachment::Depth, Framebuffer::TextureSpecification(SizedTextureFormat::Depth) }
     };
 
     m_framebuffer = Framebuffer::create(spec);
     m_viewportSize = math::vec2(1280, 720);
     m_editorCamera = EditorCamera(30.f, 1280.f / 720.f, 0.1f, 100000.f);
-
-    m_hdrBuffer = Framebuffer::create(spec);
-    m_framebufferMesh = MeshFactory::quadMesh(-1, -1, 1, 1);
 
     m_scene = Scene::create();
     
@@ -67,8 +67,9 @@ void EditorLayer::onUpdate(float dt)
     {
         m_editorCamera.setViewportSize(m_viewportSize.x, m_viewportSize.y);
         m_framebuffer->resize(m_viewportSize.x, m_viewportSize.y);
-        m_hdrBuffer->resize(m_viewportSize.x, m_viewportSize.y);
         m_scene->onViewportResize(m_viewportSize.x, m_viewportSize.y);
+
+        PostProcessor::getInstance()->onWindowResize(m_viewportSize.x, m_viewportSize.y);
     }
 
     RenderCommand::setViewport(0, 0, m_viewportSize.x, m_viewportSize.y);
@@ -87,14 +88,8 @@ void EditorLayer::onUpdate(float dt)
 
     m_framebuffer->unbind();
 
-    // HDR Pass
-    m_hdrBuffer->bind();
-    RenderCommand::clear(RenderCommand::defaultClearBits());
-    Assets::get<Shader>("EngineHDR_Pass")->bind();
-    glBindTextureUnit(0, m_framebuffer->getColorAttachment()); // TODO: platform independent
-    m_framebufferMesh->vertexArray->bind();
-    RenderCommand::renderIndexed(m_framebufferMesh->vertexArray);
-    m_hdrBuffer->unbind();
+    m_finalBuffer = PostProcessor::getInstance()->finishHdrAndBloom(m_framebuffer);
+    //m_finalBuffer = PostProcessor::getInstance()->finishHdr(m_framebuffer);
 
     Game::getInstance()->getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
 }
@@ -208,7 +203,7 @@ void EditorLayer::onImGuiRender()
 
     if (!m_playingScene)
     {
-        ImGui::Image(reinterpret_cast<void*>(m_hdrBuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+        ImGui::Image(reinterpret_cast<void*>(m_finalBuffer->getColorAttachment()), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     }
 
     // ImGuizmo

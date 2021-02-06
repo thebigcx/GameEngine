@@ -11,6 +11,11 @@ namespace Engine
 
 Reference<Texture2D> Texture2D::s_whiteTexture = nullptr;
 
+Reference<Texture2D> Texture2D::create(const Reference<Texture2D>& other)
+{
+    return createReference<GLTexture2D>(static_cast<const GLTexture2D&>(*other));
+}
+
 Reference<Texture2D> Texture2D::create(const std::string& file, bool clamp, bool linear, bool isSRGB)
 {
     return createReference<GLTexture2D>(file, clamp, linear, isSRGB);
