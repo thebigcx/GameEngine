@@ -3,7 +3,9 @@
 #include <maths/matrix/matrix_func.h>
 #include <renderer/Renderer3D.h>
 #include <scene/Components.h>
+#include <scene/NativeScript.h>
 #include <script/ScriptController.h>
+#include <scene/SceneCamera.h>
 #include <util/Timer.h>
 
 namespace Engine

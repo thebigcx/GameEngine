@@ -3,8 +3,9 @@
 #include <scene/Scene.h>
 #include <scene/Components.h>
 #include <script/Script.h>
-
-#include <yaml-cpp/yaml.h>
+#include <renderer/Lighting.h>
+#include <util/Transform.h>
+#include <scene/SceneCamera.h>
 
 namespace Engine
 {
@@ -18,17 +19,17 @@ void Serializer::saveMaterial(const Reference<Material>& material, const std::st
     auto matNode = root["Material"];
     
     matNode["Name"] = material->name;
-    matNode["Shader"]["uuid"] = material->shader->uuid;
+    matNode["Shader"]["Name"] = material->shader->name;
 
     {
         auto textureNode = matNode["Textures"];
-        textureNode["Albedo"]["uuid"] = material->albedoMap->uuid;
-        textureNode["Normal"]["uuid"] = material->normalMap->uuid;
-        textureNode["Metallic"]["uuid"] = material->metallicMap->uuid;
-        textureNode["Roughness"]["uuid"] = material->roughnessMap->uuid;
-        textureNode["Ambient Occlusion"]["uuid"] = material->ambientOcclusionMap->uuid;
-        textureNode["Height"]["uuid"] = material->depthMap->uuid;
-        textureNode["Emission"]["uuid"] = material->emissionMap->uuid;
+        textureNode["Albedo"]["Name"] = material->albedoMap->name;
+        textureNode["Normal"]["Name"] = material->normalMap->name;
+        textureNode["Metallic"]["Name"] = material->metallicMap->name;
+        textureNode["Roughness"]["Name"] = material->roughnessMap->name;
+        textureNode["Ambient Occlusion"]["Name"] = material->ambientOcclusionMap->name;
+        textureNode["Height"]["Name"] = material->depthMap->name;
+        textureNode["Emission"]["Name"] = material->emissionMap->name;
     }
 
     std::ofstream metaFile(path + material->name + ".material.meta");
@@ -41,7 +42,7 @@ void Serializer::saveMaterial(const Reference<Material>& material, const std::st
 void Serializer::saveTexture(const Reference<Texture2D>& texture)
 {
     YAML::Node meta;
-    meta["uuid"] = texture->uuid;
+    meta["Name"] = texture->name;
     meta["Texture"]["Clamp"] = texture->isClamped();
     meta["Texture"]["Linear"] = texture->isLinear();
     meta["Texture"]["IsSRGB"] = texture->isSRGB();
@@ -73,7 +74,7 @@ void Serializer::saveScript(const Reference<Script>& script)
     metaFile << meta;
 }
 
-void serializeGameObject(YAML::Node& node, GameObject& object)
+void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
 {
     node["Name"] = object.getComponent<Tag>().tag;
 
@@ -129,7 +130,7 @@ void serializeGameObject(YAML::Node& node, GameObject& object)
         spriteRenderer["Color"].SetStyle(YAML::EmitterStyle::Flow);
 
         if (comp.texture)
-            spriteRenderer["Texture"] = comp.texture->uuid;
+            spriteRenderer["Texture"] = comp.texture->name;
         else
             spriteRenderer["Texture"] = "none";
 
@@ -147,8 +148,8 @@ void serializeGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<MeshComponent>();
         auto mesh = node["Mesh"];
 
-        mesh["Mesh"] = comp.filePath;
-        mesh["Mesh ID"] = comp.meshID;
+        mesh["Mesh"] = comp.mesh->path;
+        mesh["Mesh ID"] = comp.mesh->id;
     }
 
     if (object.hasComponent<MeshRendererComponent>())
@@ -156,8 +157,7 @@ void serializeGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<MeshRendererComponent>();
         auto meshRenderer = node["Mesh Renderer"];
 
-        auto& uuid = comp.material->uuid; // FIXME: null materials
-        meshRenderer["Material"] = uuid;
+        meshRenderer["Material"] = comp.material ? comp.material->name : "";
     }
 
     if (object.hasComponent<DirectionalLight>())
@@ -199,7 +199,7 @@ void serializeGameObject(YAML::Node& node, GameObject& object)
     for (auto& child : object.getChildren())
     {
         auto childNode = node["Children"][child.getComponent<Tag>().tag];
-        serializeGameObject(childNode, child);
+        saveGameObject(childNode, child);
     }
 }
 
@@ -210,7 +210,7 @@ void Serializer::saveScene(const Reference<Scene>& scene, const std::string& pat
     for (auto& gameObject : scene->getRootGameObject().getChildren())
     {
         auto objectNode = root[gameObject.getComponent<Tag>().tag];
-        serializeGameObject(objectNode, gameObject);
+        saveGameObject(objectNode, gameObject);
     }
 
     std::ofstream file(path);

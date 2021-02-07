@@ -16,6 +16,7 @@ void ShaderLibrary::setupShaders()
 
     addShader("Engine/assets/shaders/EnginePBR_Static.glsl", "EnginePBR_Static");
     //addShader("Engine/assets/shaders/EnginePBR_Instanced.glsl", "EnginePBR_Instanced");
+    addShader("Engine/assets/shaders/Engine3D_Basic.glsl", "Engine3D_Basic");
     addShader("Engine/assets/shaders/EngineHDR_Pass.glsl", "EngineHDR_Pass");
     addShader("Engine/assets/shaders/EngineHDR_Bloom_Pass.glsl", "EngineHDR_Bloom_Pass");
     addShader("Engine/assets/shaders/EngineHDR_GaussianBlur.glsl", "EngineHDR_GaussianBlur");

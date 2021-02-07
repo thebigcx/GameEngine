@@ -13,6 +13,7 @@
 #include <renderer/Assets.h>
 #include <util/io/FileSystem.h>
 #include <script/Script.h>
+#include <scene/SceneCamera.h>
 
 
 namespace Engine
@@ -124,7 +125,7 @@ void SceneHierarchyPanel::onImGuiRender()
                 {
                     auto object = m_context->createGameObject("New Mesh");
                     object->createComponent<Transform>();
-                    object->createComponent<MeshComponent>();
+                    object->createComponent<Mesh>();
                     object->createComponent<MeshRendererComponent>();
                     m_selection = object;
                 }
@@ -177,9 +178,7 @@ void SceneHierarchyPanel::onImGuiRender()
                 meshRender.material = mesh->material;
 
                 auto& meshComp = object->createComponent<MeshComponent>();
-                meshComp.filePath = FileDialog::getSelection();
                 meshComp.mesh = mesh;
-                meshComp.meshID = 0;
 
                 m_selection = object;
             }
@@ -240,7 +239,6 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         ADD_COMPONENT(Transform, "Transform");
         ADD_COMPONENT(SpriteRendererComponent, "Sprite Renderer");
         ADD_COMPONENT(SceneCamera, "Camera");
-        ADD_COMPONENT(BoxCollider2DComponent, "Box Collider 2D");
         ADD_COMPONENT(MeshComponent, "Mesh");
         ADD_COMPONENT(SkyLight, "Sky Light");
         ADD_COMPONENT(DirectionalLight, "Directional Light");
@@ -461,29 +459,18 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
         ImGui::Columns(1);
     });
 
-    drawComponent<TextRendererComponent>("Text Renderer", object, [](auto& component)
-    {
-        ImGui::ColorEdit4("Color", &component.color.x);
-        ImGui::Text("Font selection window goes here...");
-
-        char buf[128];
-        ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-        ImGui::InputText("String", buf, 128, flags);
-        component.text = std::string(buf);
-    });
-
     drawComponent<MeshComponent>("Mesh", object, [&object](auto& component)
     {
         ImGui::Columns(2);
 
         char buf[128];
-        if (component.filePath == "")
+        if (!component.mesh)
         {
             strcpy(buf, "<empty_mesh>");
         }
         else
         {
-            strcpy(buf, component.filePath.c_str());
+            strcpy(buf, component.mesh->path.c_str());
         }
 
         ImGui::Text("Filepath");
@@ -500,18 +487,18 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
 
         ImGui::NextColumn();
 
-        ImGui::Text("ID");
+        /*ImGui::Text("ID");
         ImGui::NextColumn();
 
         memset(buf, 0, 128);
-        strcpy(buf, std::to_string(component.meshID).c_str());
+        strcpy(buf, mesh != nullptr ? std::to_string(component.mesh->id).c_str() : 0);
         flags = ImGuiInputTextFlags_EnterReturnsTrue;
         if (ImGui::InputText("##ID", buf, 128, flags))
         {
             int meshID = std::stoi(std::string(buf));
-            component.meshID = meshID;
+            component.mesh->id = meshID;
             component.mesh = Mesh::load(component.filePath, component.meshID);
-        }
+        }*/
 
         if (FileDialog::selectFile(&component, "Choose mesh...", ".obj", ".fbx", ".blend", ".3ds", ".gltf"))
         {
@@ -519,8 +506,8 @@ void SceneHierarchyPanel::drawProperties(GameObject& object)
             {
                 if (FileDialog::madeSelection())
                 {
-                    component.filePath = FileDialog::getSelection();
-                    component.mesh = Mesh::load(component.filePath, component.meshID);
+                    component.mesh = Mesh::load(FileDialog::getSelection(), 0);
+                    component.mesh->path = FileDialog::getSelection();
                 }
             }
         }

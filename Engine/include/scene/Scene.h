@@ -38,10 +38,22 @@ public:
 
     void onScenePlay();
 
+    const std::string& getPath() const
+    {
+        return m_path;
+    }
+
+    void setPath(const std::string& path)
+    {
+        m_path = path;
+    }
+
 private:
     GameObject m_rootObject;
 
     uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
+
+    std::string m_path = "";
 
     void render2DEntities();
     void render3DEntities();

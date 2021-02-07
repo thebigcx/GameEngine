@@ -54,8 +54,7 @@ void EditorLayer::onAttach()
     m_debugPanel.setContext(m_scene.get());
     m_environmentPanel.setContext(m_scene.get());
 
-    m_scenePlayButton = Texture2D::create(FileSystem::getAssetPath("scene_play.png"));
-    m_sceneStopButton = Texture2D::create(FileSystem::getAssetPath("scene_stop.png"));
+    m_sceneToggleButton = Texture2D::create(FileSystem::getAssetPath("scene_toggle.png"));
 }
 
 void EditorLayer::onUpdate(float dt)
@@ -88,8 +87,8 @@ void EditorLayer::onUpdate(float dt)
 
     m_framebuffer->unbind();
 
-    m_finalBuffer = PostProcessor::getInstance()->finishHdrAndBloom(m_framebuffer);
-    //m_finalBuffer = PostProcessor::getInstance()->finishHdr(m_framebuffer);
+    //m_finalBuffer = PostProcessor::getInstance()->finishHdrAndBloom(m_framebuffer);
+    m_finalBuffer = PostProcessor::getInstance()->finishHdr(m_framebuffer);
 
     Game::getInstance()->getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
 }
@@ -107,7 +106,10 @@ void EditorLayer::drawMenuBar()
 
             if (ImGui::MenuItem("Save", "Ctrl+S"))
             {
-                //SceneSerializer::saveScene(m_scene, "");
+                if (m_scene->getPath() != "")
+                {
+                    Serializer::saveScene(m_scene, m_scene->getPath());
+                }
             }
 
             if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
@@ -127,10 +129,10 @@ void EditorLayer::drawMenuBar()
         {
             if (FileDialog::madeSelection())
             {
-                Assets::flush();
                 m_scene.reset();
-                //m_scene = SceneSerializer::loadScene(FileDialog::getSelection());
+                m_scene = Deserializer::loadScene(FileDialog::getSelection());
                 m_scene->onViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+
                 m_sceneHeirarchyPanel.setContext(m_scene.get());
                 m_materialsPanel.setContext(m_scene.get()); // TODO: This is dumb.
                 m_sceneRendererPanel.setContext(m_scene.get());
@@ -146,7 +148,6 @@ void EditorLayer::drawMenuBar()
         {
             if (FileDialog::madeSelection())
             {
-                //SceneSerializer::saveScene(m_scene, FileDialog::getSelection() + std::string("/") + FileDialog::getSaveFileName());
                 Serializer::saveScene(m_scene, FileDialog::getSelection() + "/" + FileDialog::getSaveFileName());
             }
         }
@@ -178,14 +179,9 @@ void EditorLayer::onImGuiRender()
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0, 0});
     ImGui::Begin("Scene Settings", &dockspaceOpen, windowFlags);
 
-    if (ImGui::ImageButton(reinterpret_cast<void*>(m_scenePlayButton->getId()), ImVec2{30, 30}))
+    if (ImGui::ImageButton(reinterpret_cast<void*>(m_sceneToggleButton->getId()), ImVec2{30, 30}))
     {
-        m_playingScene = true;
-    }
-    ImGui::SameLine();
-    if (ImGui::ImageButton(reinterpret_cast<void*>(m_sceneStopButton->getId()), ImVec2{30, 30}))
-    {
-        m_playingScene = false;
+        m_playingScene = !m_playingScene;
     }
 
     ImGui::End();

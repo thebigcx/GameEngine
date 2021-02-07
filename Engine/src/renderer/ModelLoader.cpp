@@ -57,7 +57,10 @@ Reference<Mesh> ModelLoader::loadMesh(const std::string& path, unsigned int id)
 
     aiMesh* mesh = scene->mMeshes[id];
 
-    return processMesh_(mesh, scene, temp);
+    auto mesh_ = processMesh_(mesh, scene, temp);
+    mesh_->path = path;
+    mesh_->id = id;
+    return mesh_;
 }
 
 void ModelLoader::processNode_(aiNode* node, const aiScene* scene, const Reference<Model>& model)

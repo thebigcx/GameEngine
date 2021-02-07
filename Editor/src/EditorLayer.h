@@ -56,8 +56,7 @@ private:
 
     bool m_playingScene = false;
 
-    Reference<Texture2D> m_scenePlayButton;
-    Reference<Texture2D> m_sceneStopButton;
+    Reference<Texture2D> m_sceneToggleButton;
 
     uint32_t m_gizmoType = 0;
 };

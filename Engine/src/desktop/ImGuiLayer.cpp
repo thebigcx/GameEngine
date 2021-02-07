@@ -31,10 +31,6 @@ void ImGuiLayer::onAttach()
 
     ImGui::StyleColorsDark();
 
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowRounding = 0.0f;
-	style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-
     auto& window = Game::getInstance()->getWindow();
 
     ImGui_ImplGlfw_InitForOpenGL(window.getNative(), true);
