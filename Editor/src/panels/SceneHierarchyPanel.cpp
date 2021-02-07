@@ -95,6 +95,7 @@ void SceneHierarchyPanel::onImGuiRender()
             if (ImGui::MenuItem("Empty Game Object"))
             {
                 auto object = m_context->createGameObject("New Game Object");
+                object->createComponent<Transform>();
                 m_selection = object;
             }
 
@@ -197,7 +198,10 @@ void SceneHierarchyPanel::onImGuiRender()
 
         if (m_deletedGameObject)
         {
-            m_deletedGameObject->destroy();
+            if (m_deletedGameObject->getParent() == nullptr)
+                m_context->getRootGameObject().removeChild(m_deletedGameObject);
+            else
+                m_deletedGameObject->getParent()->removeChild(m_deletedGameObject);
         }
     }
 

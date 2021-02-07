@@ -215,7 +215,7 @@ void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::m
 
 void Renderer2D::renderSprite(const Reference<Texture2D>& texture, const math::vec2& position, const math::vec2& size, const math::frect& texRect, float rotation, const math::vec2& origin, math::vec4 color)
 {
-    Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size) };
+    Transform transform = { math::vec3(position), math::vec3(0, 0, rotation), math::vec3(size) }; // TODO: make static method
     renderSprite(texture, transform.matrix(), texRect, color);
 }
 

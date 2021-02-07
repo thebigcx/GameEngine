@@ -4,10 +4,24 @@
 namespace Engine
 {
 
-Transform::Transform(const math::vec3& translation, const math::vec3& rotation, const math::vec3& scale)
-    : m_translation(translation), m_rotation(rotation), m_scale(scale)
+Transform::Transform()
+    : m_worldScale(1)
 {
     
+}
+
+Transform::Transform(const math::vec3& translation, const math::vec3& rotation, const math::vec3& scale)
+    : m_translation(translation), m_rotation(rotation), m_scale(scale)
+    , m_worldScale(1)
+{
+    
+}
+
+void Transform::onTransformChange(const Transform& transform)
+{
+    m_worldTranslation = transform.getTranslation();
+    m_worldRotation = transform.getRotation();
+    m_worldScale = transform.getScale();
 }
 
 void Transform::setTranslation(const math::vec3& translation)
@@ -92,6 +106,13 @@ math::mat4 Transform::matrix() const
     return math::translate(math::mat4(1.f), m_translation)
          * math::to_mat4(math::quat(math::radians(m_rotation)))
          * math::scale(math::mat4(1.f), m_scale);
+}
+
+math::mat4 Transform::worldMatrix() const
+{
+    return math::translate(math::mat4(1.f), m_worldTranslation + m_translation)
+         * math::to_mat4(math::quat(math::radians(m_worldRotation + m_rotation)))
+         * math::scale(math::mat4(1.f), m_worldScale * m_scale);
 }
 
 }

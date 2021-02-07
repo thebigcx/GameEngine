@@ -48,7 +48,7 @@ void Scene::recurseRender2D(GameObject& object)
     if (object.hasComponents<Transform, SpriteRendererComponent>())
     {
         auto& sprite = object.getComponent<SpriteRendererComponent>();
-        auto transform = object.getComponent<Transform>().matrix();
+        auto transform = object.getComponent<Transform>().worldMatrix();
 
         math::frect textureRect = sprite.usingTexRect ? sprite.textureRect : math::frect(0, 0, sprite.texture->getWidth(), sprite.texture->getHeight());
 
@@ -66,7 +66,7 @@ void Scene::recurseRender3D(GameObject& object)
     if (object.hasComponents<MeshComponent, Transform, MeshRendererComponent>())
     {
         auto& mesh = object.getComponent<MeshComponent>().mesh;
-        auto transform = object.getComponent<Transform>().matrix();
+        auto transform = object.getComponent<Transform>().worldMatrix();
         auto& material = object.getComponent<MeshRendererComponent>().material;
 
         if (material && mesh)
@@ -192,7 +192,7 @@ void Scene::onUpdateRuntime(float dt)
             if (object->getComponent<SceneCamera>().primary)
             {
                 camera = &object->getComponent<SceneCamera>();
-                transform = object->getComponent<Transform>().matrix();
+                transform = object->getComponent<Transform>().worldMatrix();
                 break;
             }
         }

@@ -14,12 +14,11 @@ namespace Engine
 class Transform : public GameComponent
 {
 public:
-    Transform()
-    {
-
-    }
-
+    Transform();
     Transform(const math::vec3& translation, const math::vec3& rotation, const math::vec3& scale);
+
+    // Parent transform
+    void onTransformChange(const Transform& transform) override;
 
     void setTranslation(const math::vec3& translation);
     void setTranslation(float x, float y, float z);
@@ -45,12 +44,21 @@ public:
     const math::vec3& getRotation() const { return m_rotation; }
     const math::vec3& getScale() const { return m_scale; }
 
+    const math::vec3& getWorldTranslation() const { return m_worldTranslation; }
+    const math::vec3& getWorldRotation() const { return m_worldRotation; }
+    const math::vec3& getWorldScale() const { return m_worldScale; }
+
     math::mat4 matrix() const;
+    math::mat4 worldMatrix() const;
 
 private:
     math::vec3 m_translation;
     math::vec3 m_rotation;
     math::vec3 m_scale = math::vec3(1.f);
+
+    math::vec3 m_worldTranslation;
+    math::vec3 m_worldRotation;
+    math::vec3 m_worldScale;
 };
 
 }

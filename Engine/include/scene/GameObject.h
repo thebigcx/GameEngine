@@ -8,10 +8,12 @@
 
 #include <scene/GameComponent.h>
 #include <core/Logger.h>
+#include <util/Transform.h>
 
 namespace Engine
 {
 
+// The whole system is based on a hierarchy. A root game object contains children that hold components (and other children).
 class GameObject
 {
 public:
@@ -23,27 +25,50 @@ public:
 
     ~GameObject() = default;
 
-    void onTransformChange(const Transform& transform)
+    GameObject* getParent() const
     {
-        for (auto& component : m_components)
-        {
-            component.second->onTransformChange(transform);
-        }
+        return m_parent;
     }
 
-    void destroy()
+    void onTransformChange(const Transform& transform)
     {
-        destroy_();
+        for (auto& child : m_children)
+        {
+            child.onTransformChange(transform);
+        }
+        /*
+        for (auto& component : m_components)
+        {
+            if (component.first == typeid(Transform) && static_cast<Transform*>(component.second) == &transform)
+            {
+                continue;
+            }
+                
+            component.second->onTransformChange(transform);
+        }*/
+        if (&getComponent<Transform>() != &transform)
+            getComponent<Transform>().onTransformChange(transform);
     }
 
     void removeChild(GameObject* child)
     {
         child->destroy_();
+
+        for (unsigned int i = 0; i < m_children.size(); i++)
+        {
+            if (&m_children[i] == child)
+            {
+                m_children.erase(m_children.begin() + i);
+                break;
+            }
+        }
     }
 
     GameObject* createChild()
     {
-        m_children.push_back(GameObject(this));
+        auto object = GameObject(this);
+        object.createComponent<Transform>();
+        m_children.push_back(object);
         return &m_children.back();
     }
 
@@ -66,19 +91,16 @@ public:
             return *component;
         }
 
-        Logger::getCoreLogger()->error(std::string("Game Object already has component: ") + typeid(T).name());
-        static T fail(std::forward<Args>(args)...);
-        return fail;
+        return getComponent<T>();
     }
 
-    // Component is move'd in (just in case it would otherwise be a heavy copy)
     template<typename T>
     void addExistingComponent(GameComponent* component)
     {
         if (std::is_base_of<GameComponent, T>() && !hasComponent<T>())
         {
             component->setOwner(this);
-            m_components.emplace(std::make_pair(static_cast<std::type_index>(typeid(T)), component));
+            m_components.emplace(std::pair<std::type_index, GameComponent*>(static_cast<std::type_index>(typeid(T)), component));
         }
     }
 
@@ -140,6 +162,7 @@ public:
     {
         if (std::is_base_of<GameComponent, T>())
         {
+            static_cast<T&>(*m_components.at(typeid(T))).setOwner(this); // TODO: why is this necessary?
             return static_cast<T&>(*m_components.at(typeid(T)));
         }
 
@@ -196,12 +219,14 @@ private:
         {
             delete component.second;
         }
+        m_components.clear();
 
         for (auto& child : m_children)
         {
             child.destroy_();
         }
 
+        /*
         if (m_parent)
         {
             for (size_t i = 0; i < m_parent->getChildren().size(); i++)
@@ -215,6 +240,7 @@ private:
         }
 
         m_parent = nullptr;
+        */
     }
 };
 

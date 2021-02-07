@@ -227,6 +227,7 @@ void EditorLayer::onImGuiRender()
             {
                 auto& tc = object->getComponent<Transform>();
                 math::mat4 transform = tc.matrix();
+                math::mat4 worldTransform = tc.worldMatrix();
 
                 bool snap = Keyboard::isPressed(Keyboard::Key::LeftControl);
                 float snapValue = 0.5f;

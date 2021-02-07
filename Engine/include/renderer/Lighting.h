@@ -50,13 +50,11 @@ struct PointLight : public BaseLight, public GameComponent
 public:
     PointLight() {}
     PointLight(const math::vec3& radiance, float intensity, const math::vec3& position_)
-        : BaseLight(radiance, intensity), position(position_) {}
-
-    void onTransformChange(const Transform& transform) override;
+        : BaseLight(radiance, intensity) {}
 
     void setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const override;
 
-    math::vec3 position;
+    //math::vec3 position;
 };
 // TODO: possibly add support for multiple directional lights
 struct DirectionalLight : public BaseLight, public GameComponent
@@ -64,8 +62,6 @@ struct DirectionalLight : public BaseLight, public GameComponent
 public:
     DirectionalLight() {}
     DirectionalLight(const math::vec3& radiance, float intensity, const math::vec3& direction_);
-
-    void onTransformChange(const Transform& transform) override;
 
     void setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const override;
 
@@ -78,12 +74,10 @@ public:
     SpotLight() {}
     SpotLight(const math::vec3& radiance, float intensity, const math::vec3& position_, const math::vec3& direction_,
               float cutoff_, float outerCutoff_)
-        : BaseLight(radiance, intensity), position(position_), direction(direction_), cutoff(cutoff_), outerCutoff(outerCutoff_) {}
-
-    void onTransformChange(const Transform& transform) override;
+        : BaseLight(radiance, intensity), position(position_), cutoff(cutoff_), outerCutoff(outerCutoff_) {}
 
     math::vec3 position;
-    math::vec3 direction;
+    //math::vec3 direction;
     float cutoff;
     float outerCutoff;
 };

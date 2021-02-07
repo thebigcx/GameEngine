@@ -1,6 +1,7 @@
 #include <renderer/Lighting.h>
 #include <renderer/Renderer3D.h>
 #include <util/Transform.h>
+#include <scene/GameObject.h>
 
 namespace Engine
 {
@@ -19,15 +20,12 @@ DirectionalLight::DirectionalLight(const math::vec3& radiance, float intensity, 
 
 void DirectionalLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
+    math::quat rotation = math::quat(math::radians(m_owner->getComponent<Transform>().getRotation()));
+    auto direction = rotation * math::vec3(0, -1, 0);
+
     shader->setFloat3("uDirectionalLight.radiance", radiance);
     shader->setFloat("uDirectionalLight.intensity", intensity);
     shader->setFloat3("uDirectionalLight.direction", direction);
-}
-
-void DirectionalLight::onTransformChange(const Transform& transform)
-{
-    math::quat rotation = math::quat(math::radians(transform.getRotation()));
-    direction = rotation * math::vec3(0, -1, 0);
 }
 
 void PointLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
@@ -36,24 +34,13 @@ void PointLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t ind
 
     shader->setFloat3("uPointLights[" + idx + "].radiance", radiance);
     shader->setFloat("uPointLights[" + idx + "].intensity", intensity);
-    shader->setFloat3("uPointLights[" + idx + "].position", position);
-}
-
-void PointLight::onTransformChange(const Transform& transform)
-{
-    position = transform.getTranslation();
-    std::cout << math::to_string(position) << "\n";
+    shader->setFloat3("uPointLights[" + idx + "].position", m_owner->getComponent<Transform>().getTranslation());
 }
 
 void SkyLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
     shader->setFloat3("uSkyLight.radiance", radiance);
     shader->setFloat("uSkyLight.intensity", intensity);
-}
-
-void SpotLight::onTransformChange(const Transform& transform)
-{
-
 }
 
 }
