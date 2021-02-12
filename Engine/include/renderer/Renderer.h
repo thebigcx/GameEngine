@@ -19,6 +19,8 @@ struct RendererData
     Reference<Mesh> fboMesh;
 };
 
+class WindowResizeEvent;
+
 class Renderer
 {
 public:

@@ -76,26 +76,26 @@ void Serializer::saveScript(const Reference<Script>& script)
 
 void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
 {
-    node["Name"] = object.getComponent<Tag>().tag;
+    node["Name"] = object.getComponent<Tag>()->tag;
 
     if (object.hasComponent<Transform>())
     {
         auto tc = object.getComponent<Transform>();
         auto transform = node["Transform"];
 
-        transform["Translation"].push_back<float>(tc.getTranslation().x);
-        transform["Translation"].push_back<float>(tc.getTranslation().y);
-        transform["Translation"].push_back<float>(tc.getTranslation().z);
+        transform["Translation"].push_back<float>(tc->getTranslation().x);
+        transform["Translation"].push_back<float>(tc->getTranslation().y);
+        transform["Translation"].push_back<float>(tc->getTranslation().z);
         transform["Translation"].SetStyle(YAML::EmitterStyle::Flow);
         
-        transform["Rotation"].push_back<float>(tc.getRotation().x);
-        transform["Rotation"].push_back<float>(tc.getRotation().y);
-        transform["Rotation"].push_back<float>(tc.getRotation().z);
+        transform["Rotation"].push_back<float>(tc->getRotation().x);
+        transform["Rotation"].push_back<float>(tc->getRotation().y);
+        transform["Rotation"].push_back<float>(tc->getRotation().z);
         transform["Rotation"].SetStyle(YAML::EmitterStyle::Flow);
 
-        transform["Scale"].push_back<float>(tc.getScale().x);
-        transform["Scale"].push_back<float>(tc.getScale().y);
-        transform["Scale"].push_back<float>(tc.getScale().z);
+        transform["Scale"].push_back<float>(tc->getScale().x);
+        transform["Scale"].push_back<float>(tc->getScale().y);
+        transform["Scale"].push_back<float>(tc->getScale().z);
         transform["Scale"].SetStyle(YAML::EmitterStyle::Flow);
     }
 
@@ -104,18 +104,18 @@ void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<SceneCamera>();
         auto camera = node["Camera"];
 
-        camera["Projection Type"] = static_cast<uint32_t>(comp.getProjectionType());
+        camera["Projection Type"] = static_cast<uint32_t>(comp->getProjectionType());
 
-        camera["Ortho Size"] = comp.getOrthoSize();
-        camera["Ortho Near"] = comp.getOrthoNear();
-        camera["Ortho Far"] = comp.getOrthoFar();
+        camera["Ortho Size"] = comp->getOrthoSize();
+        camera["Ortho Near"] = comp->getOrthoNear();
+        camera["Ortho Far"] = comp->getOrthoFar();
 
-        camera["Perspective Fov"] = comp.getPerspectiveFov();
-        camera["Perspective Near"] = comp.getPerspectiveNear();
-        camera["Perspective Far"] = comp.getPerspectiveFar();
+        camera["Perspective Fov"] = comp->getPerspectiveFov();
+        camera["Perspective Near"] = comp->getPerspectiveNear();
+        camera["Perspective Far"] = comp->getPerspectiveFar();
 
-        camera["Aspect"] = comp.getAspect();
-        camera["Primary"] = comp.primary;
+        camera["Aspect"] = comp->getAspect();
+        camera["Primary"] = comp->primary;
     }
 
     if (object.hasComponent<SpriteRendererComponent>())
@@ -123,23 +123,23 @@ void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<SpriteRendererComponent>();
         auto spriteRenderer = node["Sprite Renderer"];
 
-        spriteRenderer["Color"].push_back<float>(comp.color.r);
-        spriteRenderer["Color"].push_back<float>(comp.color.g);
-        spriteRenderer["Color"].push_back<float>(comp.color.b);
-        spriteRenderer["Color"].push_back<float>(comp.color.a);
+        spriteRenderer["Color"].push_back<float>(comp->color.r);
+        spriteRenderer["Color"].push_back<float>(comp->color.g);
+        spriteRenderer["Color"].push_back<float>(comp->color.b);
+        spriteRenderer["Color"].push_back<float>(comp->color.a);
         spriteRenderer["Color"].SetStyle(YAML::EmitterStyle::Flow);
 
-        if (comp.texture)
-            spriteRenderer["Texture"] = comp.texture->name;
+        if (comp->texture)
+            spriteRenderer["Texture"] = comp->texture->name;
         else
             spriteRenderer["Texture"] = "none";
 
-        spriteRenderer["Using Texture Rect"] = comp.usingTexRect;
+        spriteRenderer["Using Texture Rect"] = comp->usingTexRect;
 
-        spriteRenderer["Texture Rect"].push_back<float>(comp.textureRect.x);
-        spriteRenderer["Texture Rect"].push_back<float>(comp.textureRect.y);
-        spriteRenderer["Texture Rect"].push_back<float>(comp.textureRect.w);
-        spriteRenderer["Texture Rect"].push_back<float>(comp.textureRect.h);
+        spriteRenderer["Texture Rect"].push_back<float>(comp->textureRect.x);
+        spriteRenderer["Texture Rect"].push_back<float>(comp->textureRect.y);
+        spriteRenderer["Texture Rect"].push_back<float>(comp->textureRect.w);
+        spriteRenderer["Texture Rect"].push_back<float>(comp->textureRect.h);
         spriteRenderer["Texture Rect"].SetStyle(YAML::EmitterStyle::Flow);
     }
 
@@ -148,8 +148,8 @@ void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<MeshComponent>();
         auto mesh = node["Mesh"];
 
-        mesh["Mesh"] = comp.mesh->path;
-        mesh["Mesh ID"] = comp.mesh->id;
+        mesh["Mesh"] = comp->mesh->path;
+        mesh["Mesh ID"] = comp->mesh->id;
     }
 
     if (object.hasComponent<MeshRendererComponent>())
@@ -157,7 +157,7 @@ void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<MeshRendererComponent>();
         auto meshRenderer = node["Mesh Renderer"];
 
-        meshRenderer["Material"] = comp.material ? comp.material->name : "";
+        meshRenderer["Material"] = comp->material ? comp->material->name : "";
     }
 
     if (object.hasComponent<DirectionalLight>())
@@ -165,11 +165,11 @@ void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<DirectionalLight>();
         auto light = node["Directional Light"];
 
-        light["Radiance"][0] = comp.radiance.r;
-        light["Radiance"][1] = comp.radiance.g;
-        light["Radiance"][2] = comp.radiance.b;
+        light["Radiance"][0] = comp->radiance.r;
+        light["Radiance"][1] = comp->radiance.g;
+        light["Radiance"][2] = comp->radiance.b;
 
-        light["Intensity"] = comp.intensity;
+        light["Intensity"] = comp->intensity;
     }
 
     if (object.hasComponent<PointLight>())
@@ -177,11 +177,11 @@ void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<PointLight>();
         auto light = node["Point Light"];
 
-        light["Radiance"][0] = comp.radiance.r;
-        light["Radiance"][1] = comp.radiance.g;
-        light["Radiance"][2] = comp.radiance.b;
+        light["Radiance"][0] = comp->radiance.r;
+        light["Radiance"][1] = comp->radiance.g;
+        light["Radiance"][2] = comp->radiance.b;
 
-        light["Intensity"] = comp.intensity;
+        light["Intensity"] = comp->intensity;
     }
 
     if (object.hasComponent<SkyLight>())
@@ -189,17 +189,17 @@ void Serializer::saveGameObject(YAML::Node& node, GameObject& object)
         auto comp = object.getComponent<SkyLight>();
         auto light = node["Sky Light"];
 
-        light["Intensity"] = comp.intensity;
+        light["Intensity"] = comp->intensity;
         
-        light["Radiance"][0] = comp.radiance.r;
-        light["Radiance"][1] = comp.radiance.g;
-        light["Radiance"][2] = comp.radiance.b;
+        light["Radiance"][0] = comp->radiance.r;
+        light["Radiance"][1] = comp->radiance.g;
+        light["Radiance"][2] = comp->radiance.b;
     }
 
-    for (auto& child : object.getChildren())
+    for (auto child : object.getChildren())
     {
-        auto childNode = node["Children"][child.getComponent<Tag>().tag];
-        saveGameObject(childNode, child);
+        auto childNode = node["Children"][child->getComponent<Tag>()->tag];
+        saveGameObject(childNode, *child);
     }
 }
 
@@ -207,10 +207,10 @@ void Serializer::saveScene(const Reference<Scene>& scene, const std::string& pat
 {
     YAML::Node root;
 
-    for (auto& gameObject : scene->getRootGameObject().getChildren())
+    for (auto gameObject : scene->getRootGameObject().getChildren())
     {
-        auto objectNode = root[gameObject.getComponent<Tag>().tag];
-        saveGameObject(objectNode, gameObject);
+        auto objectNode = root[gameObject->getComponent<Tag>()->tag];
+        saveGameObject(objectNode, *gameObject);
     }
 
     std::ofstream file(path);

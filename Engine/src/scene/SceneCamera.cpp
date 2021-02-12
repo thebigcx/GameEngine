@@ -1,5 +1,6 @@
 #include <scene/SceneCamera.h>
 #include <maths/matrix/matrix_transform.h>
+#include <scene/Scene.h>
 
 namespace Engine
 {
@@ -9,9 +10,19 @@ SceneCamera::SceneCamera()
     calculateProjection();
 }
 
+SceneCamera::~SceneCamera()
+{
+    
+}
+
+void SceneCamera::onSceneSet(const Reference<Scene>& scene)
+{
+    setViewportSize(scene->getViewportSize().x, scene->getViewportSize().y);
+}
+
 void SceneCamera::setOrthographic(float size, float near, float far)
 {
-    m_projectionType = ProjectionType::Orthographic;
+    m_projectionType = Camera::ProjectionType::Orthographic;
 
     m_orthoSize = size;
     m_orthoNear = near;
@@ -22,7 +33,7 @@ void SceneCamera::setOrthographic(float size, float near, float far)
 
 void SceneCamera::setPerspective(float verticalFov, float near, float far)
 {
-    m_projectionType = ProjectionType::Perspective;
+    m_projectionType = Camera::ProjectionType::Perspective;
 
     m_perspectiveFov = verticalFov;
     m_perspectiveNear = near;
@@ -33,7 +44,7 @@ void SceneCamera::setPerspective(float verticalFov, float near, float far)
 
 void SceneCamera::calculateProjection()
 {
-    if (m_projectionType == ProjectionType::Perspective)
+    if (m_projectionType == Camera::ProjectionType::Perspective)
     {
         m_projectionMatrix = math::perspective(m_perspectiveFov, m_aspect, m_perspectiveNear, m_perspectiveFar);
     }

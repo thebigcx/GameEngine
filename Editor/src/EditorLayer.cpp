@@ -87,8 +87,8 @@ void EditorLayer::onUpdate(float dt)
 
     m_framebuffer->unbind();
 
-    //m_finalBuffer = PostProcessor::getInstance()->finishHdrAndBloom(m_framebuffer);
-    m_finalBuffer = PostProcessor::getInstance()->finishHdr(m_framebuffer);
+    m_finalBuffer = PostProcessor::getInstance()->finishHdrAndBloom(m_framebuffer);
+    //m_finalBuffer = PostProcessor::getInstance()->finishHdr(m_framebuffer);
 
     Game::getInstance()->getWindow().setTitle(std::string("Frame time: ") + std::to_string(timer.getMillis()));
 }
@@ -181,6 +181,11 @@ void EditorLayer::onImGuiRender()
 
     if (ImGui::ImageButton(reinterpret_cast<void*>(m_sceneToggleButton->getId()), ImVec2{30, 30}))
     {
+        if (m_playingScene)
+            m_scene->onSceneFinish();
+        else
+            m_scene->onSceneStart();
+            
         m_playingScene = !m_playingScene;
     }
 
@@ -225,9 +230,9 @@ void EditorLayer::onImGuiRender()
         {
             if (m_gizmoType != -1 && object->hasComponent<Transform>())
             {
-                auto& tc = object->getComponent<Transform>();
-                math::mat4 transform = tc.matrix();
-                math::mat4 worldTransform = tc.worldMatrix();
+                auto tc = object->getComponent<Transform>();
+                math::mat4 transform = tc->matrix();
+                math::mat4 worldTransform = tc->worldMatrix();
 
                 bool snap = Keyboard::isPressed(Keyboard::Key::LeftControl);
                 float snapValue = 0.5f;
@@ -246,10 +251,10 @@ void EditorLayer::onImGuiRender()
                     math::vec3 translation, rotation, scale;
                     math::decompose_transform(transform, translation, rotation, scale);
 
-                    math::vec3 deltaRotation = math::degrees(rotation) - tc.getRotation();
-                    tc.setTranslation(translation);
-                    tc.rotate(deltaRotation);
-                    tc.setScale(scale);
+                    math::vec3 deltaRotation = math::degrees(rotation) - tc->getRotation();
+                    tc->setTranslation(translation);
+                    tc->rotate(deltaRotation);
+                    tc->setScale(scale);
                 }
             }
         }

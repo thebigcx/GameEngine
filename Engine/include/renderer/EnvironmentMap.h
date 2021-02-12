@@ -37,7 +37,7 @@ private:
     static inline math::mat4 s_captureProjection;
     static inline std::array<math::mat4, 6> s_captureViews;
 
-    static void initialise();
+    static void initialize();
 
     static Reference<TextureCube> hdrToCubemap(const std::string& hdrFile);
     static Reference<TextureCube> createIrradianceMap(const Reference<TextureCube>& envMap);

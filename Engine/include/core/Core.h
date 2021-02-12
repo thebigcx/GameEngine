@@ -38,6 +38,9 @@ public:
     constexpr NonOwning(const std::weak_ptr<T>& ptr)
         : m_value(ptr) {}
 
+    constexpr NonOwning(std::nullptr_t ptr)
+        : m_value(ptr) {}
+
     inline constexpr bool valid() const
     {
         return m_value.lock() != nullptr;

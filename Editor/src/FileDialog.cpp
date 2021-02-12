@@ -11,8 +11,6 @@
 namespace Engine
 {
 
-FileDialog FileDialog::m_instance;
-
 FileDialog::FileDialog()
     : m_workingPath(std::filesystem::current_path())
 {
@@ -21,39 +19,43 @@ FileDialog::FileDialog()
 
 bool FileDialog::display()
 {
-    if (!m_instance.m_id)
-    {
-        m_instance.m_id = &m_instance;
-    }
-    ImGui::PushID(m_instance.m_id);
+    auto instance = getInstance();
 
-    if (m_instance.m_folderIcon == nullptr)
+    if (!instance->m_id)
     {
-        m_instance.m_folderIcon = Texture2D::create("Editor/assets/folder_icon.png");
-        m_instance.m_fileIcon = Texture2D::create("Editor/assets/file_icon.png");
+        instance->m_id = instance;
+    }
+    ImGui::PushID(instance->m_id);
+
+    if (instance->m_folderIcon == nullptr)
+    {
+        //instance->m_folderIcon = Texture2D::create("Editor/assets/folder_icon.png");
+        //instance->m_fileIcon = Texture2D::create("Editor/assets/file_icon.png");
+        instance->m_folderIcon = Texture2D::create("Editor/assets/transparent.png");
+        instance->m_fileIcon = Texture2D::create("Editor/assets/transparent.png");
     }
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
     bool open = true;
 
-    ImGui::OpenPopup(m_instance.m_title.c_str());
+    ImGui::OpenPopup(instance->m_title.c_str());
 
-    if (ImGui::BeginPopupModal(m_instance.m_title.c_str(), &open, flags))
+    if (ImGui::BeginPopupModal(instance->m_title.c_str(), &open, flags))
     {
         ImGui::Text("Search:");
         ImGui::SameLine();
 
         char buf[128];
 
-        strcpy(buf, m_instance.m_searchQuery.c_str());
+        strcpy(buf, instance->m_searchQuery.c_str());
         ImGui::InputText("", buf, 128);
-        m_instance.m_searchQuery = buf;
+        instance->m_searchQuery = buf;
         
         ImGui::BeginChild("##explorer", ImVec2{ImGui::GetContentRegionAvailWidth(), ImGui::GetWindowSize().y - 130});
 
         try
         {
-            renderDirectory(m_instance.m_workingPath);
+            renderDirectory(instance->m_workingPath);
         }
         catch (std::filesystem::filesystem_error e)
         {
@@ -68,46 +70,46 @@ bool FileDialog::display()
         memset(buf, 0, 128);
 
         
-        if (m_instance.m_type == FileDialogType::Select)
+        if (instance->m_type == FileDialogType::Select)
         {
-            strcpy(buf, m_instance.m_selection.c_str());
+            strcpy(buf, instance->m_selection.c_str());
             ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
         }
-        else if (m_instance.m_type == FileDialogType::Save)
+        else if (instance->m_type == FileDialogType::Save)
         {
-            strcpy(buf, m_instance.m_fileName.c_str());
+            strcpy(buf, instance->m_fileName.c_str());
         }
         ImGui::InputText("File Name:", buf, 128, flags);
 
-        m_instance.m_fileName = std::string(buf);
+        instance->m_fileName = std::string(buf);
 
 
         ImGui::SameLine();
 
         const char* current;
 
-        if (m_instance.m_acceptedFileTypes.size() == 0)
+        if (instance->m_acceptedFileTypes.size() == 0)
         {
             current = "<any>";
         }
-        else if (m_instance.m_acceptedFileTypeSelected >= m_instance.m_acceptedFileTypes.size())
+        else if (instance->m_acceptedFileTypeSelected >= instance->m_acceptedFileTypes.size())
         {
             current = "";
         }
         else
         {
-            current = m_instance.m_acceptedFileTypes[m_instance.m_acceptedFileTypeSelected].c_str();
+            current = instance->m_acceptedFileTypes[instance->m_acceptedFileTypeSelected].c_str();
         }
 
         ImGui::SetNextItemWidth(100);
         if (ImGui::BeginCombo("##acceptedFileFormats", current))
         {
-            for (unsigned int i = 0; i < m_instance.m_acceptedFileTypes.size(); i++)
+            for (unsigned int i = 0; i < instance->m_acceptedFileTypes.size(); i++)
             {
-                bool isSelected = current == m_instance.m_acceptedFileTypes[i];
-                if (ImGui::Selectable(m_instance.m_acceptedFileTypes[i].c_str(), isSelected))
+                bool isSelected = current == instance->m_acceptedFileTypes[i];
+                if (ImGui::Selectable(instance->m_acceptedFileTypes[i].c_str(), isSelected))
                 {
-                    m_instance.m_acceptedFileTypeSelected = i;
+                    instance->m_acceptedFileTypeSelected = i;
                 }
 
                 if (isSelected)
@@ -121,14 +123,14 @@ bool FileDialog::display()
         
         if (ImGui::Button("Cancel"))
         {
-            m_instance.m_madeSelection = false;
-            m_instance.m_isOpen = false;
+            instance->m_madeSelection = false;
+            instance->m_isOpen = false;
         }
         ImGui::SameLine();
         if (ImGui::Button("Ok"))
         {
-            m_instance.m_madeSelection = true;
-            m_instance.m_isOpen = false;
+            instance->m_madeSelection = true;
+            instance->m_isOpen = false;
         }
 
         ImGui::EndPopup();
@@ -136,24 +138,26 @@ bool FileDialog::display()
     
     ImGui::PopID();
 
-    return m_instance.m_isOpen;
+    return instance->m_isOpen;
 }
 
 void FileDialog::renderDirectory(const std::filesystem::path& path)
 {
+    auto instance = getInstance();
+
     bool parentOpened = ImGui::Selectable("##..");
 
     ImGui::SameLine(0, 0);
-    if (m_instance.m_flags & static_cast<uint32_t>(Flags::NoIcons))
+    if (instance->m_flags & static_cast<uint32_t>(Flags::NoIcons))
         ImGui::Text("[Dir]");
     else
-        ImGui::Image(reinterpret_cast<void*>(m_instance.m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::Image(reinterpret_cast<void*>(instance->m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     ImGui::SameLine();
     ImGui::Text("..");
 
     if (parentOpened)
     {
-        m_instance.m_workingPath = m_instance.m_workingPath.parent_path();
+        instance->m_workingPath = instance->m_workingPath.parent_path();
     }
 
     // Directories and files should be seperated
@@ -169,15 +173,15 @@ void FileDialog::renderDirectory(const std::filesystem::path& path)
         else if (std::filesystem::is_regular_file(entry.status()))
         {
             // Check if file fits search query
-            if (m_instance.m_searchQuery != "")
+            if (instance->m_searchQuery != "")
             {
-                if (std::string(entry.path().filename()).substr(0, m_instance.m_searchQuery.size()) == m_instance.m_searchQuery)
+                if (std::string(entry.path().filename()).substr(0, instance->m_searchQuery.size()) == instance->m_searchQuery)
                 {
-                    if (m_instance.m_acceptedFileTypes.size() == 0)
+                    if (instance->m_acceptedFileTypes.size() == 0)
                     {
                         files.push_back(entry);
                     }
-                    else if (m_instance.m_acceptedFileTypes[m_instance.m_acceptedFileTypeSelected] == entry.path().extension())
+                    else if (instance->m_acceptedFileTypes[instance->m_acceptedFileTypeSelected] == entry.path().extension())
                     {
                         files.push_back(entry);
                     }
@@ -185,11 +189,11 @@ void FileDialog::renderDirectory(const std::filesystem::path& path)
             }
             else
             {
-                if (m_instance.m_acceptedFileTypes.size() == 0)
+                if (instance->m_acceptedFileTypes.size() == 0)
                 {
                     files.push_back(entry);
                 }
-                else if (m_instance.m_acceptedFileTypes[m_instance.m_acceptedFileTypeSelected] == entry.path().extension())
+                else if (instance->m_acceptedFileTypes[instance->m_acceptedFileTypeSelected] == entry.path().extension())
                 {
                     files.push_back(entry);
                 }
@@ -215,16 +219,16 @@ void FileDialog::renderDirectory(const std::filesystem::path& path)
         bool opened = ImGui::Selectable((std::string("##") + name).c_str());
 
         ImGui::SameLine(0, 0);
-        if (m_instance.m_flags & static_cast<uint32_t>(Flags::NoIcons))
+        if (instance->m_flags & static_cast<uint32_t>(Flags::NoIcons))
             ImGui::Text("[Dir]");
         else
-            ImGui::Image(reinterpret_cast<void*>(m_instance.m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            ImGui::Image(reinterpret_cast<void*>(instance->m_folderIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::SameLine();
         ImGui::Text(name.c_str());
 
         if (opened)
         {
-            m_instance.m_workingPath = dir.path();
+            instance->m_workingPath = dir.path();
         }
     }
 
@@ -235,29 +239,31 @@ void FileDialog::renderDirectory(const std::filesystem::path& path)
         bool opened = ImGui::Selectable((std::string("##") + name).c_str());
 
         ImGui::SameLine(0, 0);
-        if (m_instance.m_flags & static_cast<uint32_t>(Flags::NoIcons))
+        if (instance->m_flags & static_cast<uint32_t>(Flags::NoIcons))
             ImGui::Text("[File]");
         else
-            ImGui::Image(reinterpret_cast<void*>(m_instance.m_fileIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            ImGui::Image(reinterpret_cast<void*>(instance->m_fileIcon->getId()), ImVec2{ 20, 20 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::SameLine();
         ImGui::Text(name.c_str());
 
         if (opened)
         {
-            m_instance.m_selection = std::filesystem::relative(file);
+            instance->m_selection = std::filesystem::relative(file);
         }
     }
 }
 
 std::string FileDialog::getSelection()
 {
-    if (m_instance.m_type == FileDialogType::Select)
+    auto instance = getInstance();
+
+    if (instance->m_type == FileDialogType::Select)
     {
-        return std::string(m_instance.m_selection.c_str());
+        return std::string(instance->m_selection.c_str());
     }
-    else if (m_instance.m_type == FileDialogType::Save)
+    else if (instance->m_type == FileDialogType::Save)
     {
-        return std::string(m_instance.m_workingPath.c_str());
+        return std::string(instance->m_workingPath.c_str());
     }
 }
 

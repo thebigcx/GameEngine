@@ -50,11 +50,7 @@ GLTextureCube::GLTextureCube(uint32_t width, uint32_t height, SizedTextureFormat
     glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_id);
     glBindTextureUnit(0, m_id);
 
-    for (uint32_t i = 0; i < 6; i++)
-    {
-        //glTexStorage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height); // TODO: fix this
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, Utils::getSizedTextureFormatEnumValue_(internalFormat), width, height, 0, GL_RGB, GL_FLOAT, nullptr);
-    }
+    glTextureStorage2D(m_id, 5, Utils::getSizedTextureFormatEnumValue_(internalFormat), width, height);
 
     if (mipmap)
         glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
@@ -69,6 +65,13 @@ GLTextureCube::GLTextureCube(uint32_t width, uint32_t height, SizedTextureFormat
         glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, linear ? GL_LINEAR : GL_NEAREST);
 
     glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
+}
+
+void GLTextureCube::generateMipmap() const
+{
+    glBindTextureUnit(0, m_id);
+    glGenerateTextureMipmap(m_id);
+    glBindTextureUnit(0, 0);
 }
 
 void GLTextureCube::bind(uint32_t slot) const

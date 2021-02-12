@@ -27,17 +27,17 @@ in Params
 
 layout (binding = 0) uniform samplerCube uEnvironmentMap;
 
-const float PI = 3.141592653589793442384626433832;
+const float PI = 3.14159;
 
 void main()
 {
-    vec3 N = normalize(fsInput.localPos);
+    vec3 normal = normalize(fsInput.localPos);
 
     vec3 irradiance = vec3(0.0);
 
     vec3 up = vec3(0.0, 1.0, 0.0);
-    vec3 right = cross(up, N);
-    up = cross(N, right);
+    vec3 right = cross(up, normal);
+    up = cross(normal, right);
 
     float sampleDelta = 0.025;
     float samples = 0.0;
@@ -47,13 +47,13 @@ void main()
     {
         vec3 tangentSample = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
 
-        vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N; // N? presume normal, could be wrong
+        vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
 
         irradiance += texture(uEnvironmentMap, sampleVec).rgb * cos(theta) * sin(theta);
         samples++;
     }
 
-    irradiance = PI * irradiance * (1.0 / float(samples));
+    irradiance = PI * irradiance * (1.0 / samples);
 
     color = vec4(irradiance, 1.0);
 }

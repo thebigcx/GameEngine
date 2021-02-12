@@ -15,6 +15,7 @@ enum class SizedTextureFormat
     RGB8,
     Depth24Stencil8,
     Depth16,
+    Depth24,
     RGB16F,
     RGBA16F,
     sRGBA8,

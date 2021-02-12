@@ -1,12 +1,25 @@
 #include <audio/AudioSource.h>
 #include <audio/AudioBuffer.h>
+#include <util/Transform.h>
 
 namespace Engine
 {
 
+AudioSource::AudioSource()
+{
+    alGenSources(1, &m_id);
+}
+
 AudioSource::AudioSource(const Reference<AudioBuffer>& buffer)
     : m_buffer(buffer)
 {
+    alGenSources(1, &m_id);
+    alSourcei(m_id, AL_BUFFER, m_buffer->m_id);
+}
+
+AudioSource::AudioSource(const std::string& buffer)
+{
+    m_buffer = AudioBuffer::create(buffer);
     alGenSources(1, &m_id);
     alSourcei(m_id, AL_BUFFER, m_buffer->m_id);
 }
@@ -16,10 +29,24 @@ AudioSource::~AudioSource()
     alDeleteSources(1, &m_id);
 }
 
-Reference<AudioSource> AudioSource::create(const std::string& path)
+void AudioSource::onTransformChange(const Transform& transform)
 {
-    auto buffer = AudioBuffer::create(path);
-    return Reference<AudioSource>(new AudioSource(buffer));
+    math::vec3 position = transform.getTranslation();
+    alSourcefv(m_id, AL_POSITION, &position.x);
+}
+
+void AudioSource::setBuffer(const Reference<AudioBuffer>& buffer)
+{
+    m_buffer.reset();
+    m_buffer = buffer;
+    alSourcei(m_id, AL_BUFFER, m_buffer->m_id);
+}
+
+void AudioSource::setBuffer(const std::string& buffer)
+{
+    m_buffer.reset();
+    m_buffer = AudioBuffer::create(buffer); // TODO: fix this
+    alSourcei(m_id, AL_BUFFER, m_buffer->m_id);
 }
 
 void AudioSource::play()
@@ -67,7 +94,7 @@ void AudioSource::setPitch(float pitch)
     m_pitch = pitch;
     alSourcef(m_id, AL_PITCH, pitch);
 }
-
+/*
 void AudioSource::setPosition(const math::vec3& position)
 {
     m_position = position;
@@ -91,7 +118,7 @@ void AudioSource::setVelocity(float x, float y, float z)
     m_velocity = { x, y, z };
     alSource3f(m_id, AL_VELOCITY, x, y, z);
 }
-
+*/
 AudioSource::State AudioSource::getState() const
 {
     ALenum state;

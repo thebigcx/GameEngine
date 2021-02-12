@@ -18,6 +18,7 @@ namespace Utils
             case SizedTextureFormat::RGBA8: return GL_RGBA8;
             case SizedTextureFormat::RGB8: return GL_RGB8;
             case SizedTextureFormat::Depth16: return GL_DEPTH_COMPONENT16;
+            case SizedTextureFormat::Depth24: return GL_DEPTH_COMPONENT24;
             case SizedTextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
             case SizedTextureFormat::RGB16F: return GL_RGB16F;
             case SizedTextureFormat::RGBA16F: return GL_RGBA16F;
@@ -79,7 +80,7 @@ GLTexture2D::GLTexture2D(const std::string& file, bool clamp, bool linear, bool 
     : m_path(file), m_clamp(clamp), m_linear(linear), m_isSRGB(isSRGB)
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
-    bind();
+    glBindTextureUnit(0, m_id);
 
     auto image = Image::create(file, true);
 
@@ -131,7 +132,7 @@ GLTexture2D::GLTexture2D(const std::string& file, bool clamp, bool linear, bool 
         Logger::getCoreLogger()->error("Image is corrupted or contains unknown formatted data!");
     }
 
-    unbind();
+    glBindTextureUnit(0, 0);
 }
 
 GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, SizedTextureFormat dataFormat, bool clamp, bool linear)
@@ -140,7 +141,7 @@ GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, SizedTextureFormat dat
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
 
-    bind();
+    glBindTextureUnit(0, m_id);
 
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
     glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
@@ -148,6 +149,8 @@ GLTexture2D::GLTexture2D(uint32_t width, uint32_t height, SizedTextureFormat dat
     glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, linear ? GL_LINEAR : GL_NEAREST);
 
     glTextureStorage2D(m_id, 1, Utils::getSizedTextureFormatEnumValue_(dataFormat), width, height);
+
+    glBindTextureUnit(0, 0);
 }
 
 GLTexture2D::~GLTexture2D()
@@ -157,11 +160,9 @@ GLTexture2D::~GLTexture2D()
 
 void GLTexture2D::setData(uint32_t xoffset, uint32_t yoffset, uint32_t width, uint32_t height, const void* data, TextureFormat dataFormat, DataType type)
 {
-    bind();
-
+    glBindTextureUnit(0, m_id);
     glTextureSubImage2D(m_id, 0, xoffset, yoffset, width, height, Utils::getTextureFormatEnumValue_(dataFormat), Utils::getDataTypeEnumValue_(type), data);
-    
-    unbind();
+    glBindTextureUnit(0, 0);
 }
 
 void GLTexture2D::bind(uint32_t slot) const

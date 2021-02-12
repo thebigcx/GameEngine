@@ -122,23 +122,6 @@ void Renderer3D::nextBatch()
     startBatch();
 }
 
-void Renderer3D::beginScene(PerspectiveCamera& camera)
-{
-    if (s_data.sceneStarted)
-    {
-        Logger::getCoreLogger()->error("beginScene() must be called before endScene()!");
-    }
-
-    s_data.sceneStarted = true;
-
-    s_data.matrixData->setVariable("uProjection", math::buffer(camera.getProjectionMatrix()), sizeof(math::mat4));
-    s_data.matrixData->setVariable("uView", math::buffer(camera.getViewMatrix()), sizeof(math::mat4));
-
-    s_data.cameraPos = camera.getPosition();
-
-    startBatch();
-}
-
 void Renderer3D::beginScene(EditorCamera& camera)
 {
     if (s_data.sceneStarted)

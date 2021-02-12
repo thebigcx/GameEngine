@@ -13,7 +13,7 @@ public:
     virtual ~ScriptableObject() = default;
 
     template<typename T>
-    T& getComponent()
+    T* getComponent()
     {
         return m_gameObject->getComponent<T>();
     }

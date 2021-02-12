@@ -39,15 +39,18 @@ Game::~Game()
 
 void Game::shutdown()
 {
+    for (auto& layer : m_layers)
+    {
+        layer->onDetach();
+        delete layer;
+    }
+    m_layers.clear();
+
     finalize();
     ScriptController::getInstance()->finalize();
     PhysicsController2D::getInstance()->finalize();
     AudioController::getInstance()->finalize();
 
-    for (auto& layer : m_layers)
-    {
-        layer->onDetach();
-    }
     m_window->close();
     Renderer::shutdown();
 

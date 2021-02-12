@@ -12,6 +12,8 @@ public:
     GLTextureCube(const std::string* files, bool clamp, bool linear, bool mipmap);
     GLTextureCube(uint32_t width, uint32_t height, SizedTextureFormat internalFormat, bool clamp, bool linear, bool mipmap);
 
+    void generateMipmap() const override;
+
     void bind(uint32_t slot = 0) const override;
     void unbind(uint32_t slot = 0) const override;
 

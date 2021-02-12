@@ -10,7 +10,7 @@ namespace Engine
 
 EnvironmentMap::EnvironmentMap(const std::string& hdrFile)
 {
-    this->initialise();
+    this->initialize();
 
     m_envMap = EnvironmentMap::hdrToCubemap(hdrFile);
     m_irradianceMap = EnvironmentMap::createIrradianceMap(m_envMap);
@@ -50,6 +50,8 @@ Reference<TextureCube> EnvironmentMap::hdrToCubemap(const std::string& hdrFile)
     RenderCommand::setViewport(0, 0, 512, 512);
     Reference<Renderbuffer> renderbuffer = Renderbuffer::create(512, 512, GL_DEPTH_COMPONENT24);
     framebuffer->attachRenderbuffer(*renderbuffer, Framebuffer::Attachment::Depth);
+    //Reference<Texture2D> texture = Texture2D::create(512, 512, SizedTextureFormat::Depth24);
+    //framebuffer->attachTexture(*texture, Framebuffer::Attachment::Depth);
     // TODO: platform independent and refactor
 
     s_convertShader->bind();
@@ -69,9 +71,8 @@ Reference<TextureCube> EnvironmentMap::hdrToCubemap(const std::string& hdrFile)
     }
 
     framebuffer->unbind();
-
-    cubemap->bind();// TODO: platform independent    
-    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+ 
+    cubemap->generateMipmap();
 
     return cubemap;
 }
@@ -91,6 +92,8 @@ Reference<TextureCube> EnvironmentMap::createIrradianceMap(const Reference<Textu
     framebuffer->bind();
     Reference<Renderbuffer> renderbuffer = Renderbuffer::create(32, 32, GL_DEPTH_COMPONENT24);
     framebuffer->attachRenderbuffer(*renderbuffer, Framebuffer::Attachment::Depth);
+    //Reference<Texture2D> texture = Texture2D::create(32, 32, SizedTextureFormat::Depth24);
+    //framebuffer->attachTexture(*texture, Framebuffer::Attachment::Depth);
     RenderCommand::setViewport(0, 0, 32, 32);
 
     s_irradianceShader->bind();
@@ -142,7 +145,9 @@ Reference<TextureCube> EnvironmentMap::createPrefilterMap(const Reference<Textur
         unsigned int mipWidth = 128 * std::pow(0.5, mip);
         unsigned int mipHeight = 128 * std::pow(0.5, mip);
 
-        Reference<Renderbuffer> renderbuffer = Renderbuffer::create(mipWidth, mipHeight, GL_DEPTH_COMPONENT24);
+        //Reference<Renderbuffer> renderbuffer = Renderbuffer::create(mipWidth, mipHeight, GL_DEPTH_COMPONENT24);
+        //framebuffer->attachRenderbuffer(*renderbuffer, Framebuffer::Attachment::Depth);
+        //Reference<Texture2D> texture = Texture2D::create(mipWidth, mipHeight, SizedTextureFormat::Depth24);
         RenderCommand::setViewport(0, 0, mipWidth, mipHeight);
 
         float roughness = (float)mip / (float)(mipmapLevels - 1);
@@ -180,7 +185,7 @@ Reference<Texture2D> EnvironmentMap::createBRDFLUT()
 
     Reference<Framebuffer> framebuffer = Framebuffer::create();
     framebuffer->bind();
-    Reference<Renderbuffer> renderbuffer = Renderbuffer::create(512, 512, GL_DEPTH_COMPONENT24);
+    //Reference<Renderbuffer> renderbuffer = Renderbuffer::create(512, 512, GL_DEPTH_COMPONENT24);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUT->getId(), 0);
 
     RenderCommand::setViewport(0, 0, 512, 512);
@@ -194,7 +199,7 @@ Reference<Texture2D> EnvironmentMap::createBRDFLUT()
     return brdfLUT;
 }
 
-void EnvironmentMap::initialise()
+void EnvironmentMap::initialize()
 {
     if (!s_convertShader)
         s_convertShader = Shader::createFromFile("Engine/assets/shaders/EngineIBL_EquirectangularToCubemap.glsl");

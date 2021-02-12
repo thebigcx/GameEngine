@@ -20,7 +20,10 @@ class FileDialog // TODO: separate select/save file dialogs into inherited class
 {
 private:
     FileDialog();
-    ~FileDialog() = default;
+    ~FileDialog()
+    {
+
+    }
 
 public:
     enum class Flags
@@ -38,62 +41,70 @@ public:
     template<typename... Args>
     static bool selectFile(const void* id, const std::string& title = "Choose file", Args... args)
     {
-        m_instance.m_flags = 0;
-        if (m_instance.m_id != id)
+        auto instance = getInstance();
+
+        instance->m_flags = 0;
+        if (instance->m_id != id)
         {
             return false;
         }
-        m_instance.m_title = title;
-        m_instance.m_acceptedFileTypes = { args... };
-        m_instance.m_type = FileDialogType::Select;
+        instance->m_title = title;
+        instance->m_acceptedFileTypes = { args... };
+        instance->m_type = FileDialogType::Select;
 
-        return m_instance.m_isOpen;
+        return instance->m_isOpen;
     }
 
     template<typename... Args>
     static bool selectFile(const void* id, uint32_t flags, const std::string& title = "Choose file", Args... args)
     {
-        m_instance.m_flags = flags;
-        if (m_instance.m_id != id)
+        auto instance = getInstance();
+
+        instance->m_flags = flags;
+        if (instance->m_id != id)
         {
             return false;
         }
-        m_instance.m_title = title;
-        m_instance.m_acceptedFileTypes = { args... };
-        m_instance.m_type = FileDialogType::Select;
+        instance->m_title = title;
+        instance->m_acceptedFileTypes = { args... };
+        instance->m_type = FileDialogType::Select;
 
-        return m_instance.m_isOpen;
+        return instance->m_isOpen;
     }
 
     template<typename... Args>
     static bool saveFile(const void* id, const std::string& title = "Save file", Args... args)
     {
-        if (m_instance.m_id != id)
+        auto instance = getInstance();
+
+        if (instance->m_id != id)
         {
             return false;
         }
-        m_instance.m_title = title;
-        m_instance.m_acceptedFileTypes = { args... };
-        m_instance.m_type = FileDialogType::Save;
+        instance->m_title = title;
+        instance->m_acceptedFileTypes = { args... };
+        instance->m_type = FileDialogType::Save;
 
-        return m_instance.m_isOpen;
+        return instance->m_isOpen;
     }
 
     static bool madeSelection()
     {
-        return m_instance.m_madeSelection;
+        return getInstance()->m_madeSelection;
     }
 
     static void open(const void* id)
     {
-        // Reset states
-        m_instance.m_id = id;
+        auto instance = getInstance();
 
-        m_instance.m_madeSelection = false;
-        m_instance.m_selection = "";
-        m_instance.m_isOpen = true;
-        m_instance.m_workingPath = std::filesystem::current_path();
-        m_instance.m_flags = 0;
+        // Reset states
+        instance->m_id = id;
+
+        instance->m_madeSelection = false;
+        instance->m_selection = "";
+        instance->m_isOpen = true;
+        instance->m_workingPath = std::filesystem::current_path();
+        instance->m_flags = 0;
     }
 
     static std::string getFilename()
@@ -103,11 +114,14 @@ public:
 
     static std::string getSaveFileName()
     {
-        return m_instance.m_fileName;
+        return getInstance()->m_fileName;
     }
 
-private:
-    static FileDialog m_instance;
+    static FileDialog* getInstance()
+    {
+        static FileDialog dialog;
+        return &dialog;
+    }
 
 private:
     std::filesystem::path m_workingPath;

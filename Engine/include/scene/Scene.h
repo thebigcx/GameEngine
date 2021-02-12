@@ -4,6 +4,7 @@
 
 #include <core/Core.h>
 #include <scene/GameObject.h>
+#include <maths/math.h>
 
 namespace Engine
 {
@@ -19,6 +20,8 @@ public:
     ~Scene();
 
     static Reference<Scene> create();
+
+    math::vec2 getViewportSize() const { return { m_viewportWidth, m_viewportHeight }; }
     
     void onUpdateEditor(float dt, EditorCamera& camera);
     void onUpdateRuntime(float dt);
@@ -32,11 +35,14 @@ public:
         return m_rootObject;
     }
 
+    // Returns singleton components/objects
+    // TODO: SingletonComponent inherit GameComponent. Scene::getPrimarySingletonComponent<T>()
     GameObject* getPrimaryCameraGameObject();
-    
-    void onComponentAdded(GameObject& object, GameComponent* component);
+    GameObject* getPhysicsWorld2D();
+    // TODO: root object is available to add components to. such as physics world 2d.
 
-    void onScenePlay();
+    void onSceneStart();
+    void onSceneFinish();
 
     const std::string& getPath() const
     {
@@ -58,8 +64,8 @@ private:
     void render2DEntities();
     void render3DEntities();
 
-    void recurseRender3D(GameObject& object);
-    void recurseRender2D(GameObject& object);
+    void recurseRender3D(GameObject* object);
+    void recurseRender2D(GameObject* object);
 
     void setLights();
 };

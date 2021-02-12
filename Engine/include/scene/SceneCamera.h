@@ -6,23 +6,20 @@
 namespace Engine
 {
 
-enum class ProjectionType
-{
-    Perspective,
-    Orthographic
-};
-
 class SceneCamera : public Camera, public GameComponent
 {
 public:
     SceneCamera();
+    ~SceneCamera();
 
-    inline constexpr const ProjectionType& getProjectionType() const noexcept
+    void onSceneSet(const Reference<Scene>& scene) override;
+
+    inline constexpr const Camera::ProjectionType& getProjectionType() const noexcept
     {
         return m_projectionType;
     }
 
-    inline void setProjectionType(ProjectionType type)
+    inline void setProjectionType(Camera::ProjectionType type)
     {
         m_projectionType = type;
         calculateProjection();
@@ -54,7 +51,7 @@ public:
     bool primary = false;
 
 private:
-    ProjectionType m_projectionType = ProjectionType::Orthographic;
+    Camera::ProjectionType m_projectionType = Camera::ProjectionType::Orthographic;
 
     float m_orthoSize = 10.f;
     float m_orthoNear = -1.f;

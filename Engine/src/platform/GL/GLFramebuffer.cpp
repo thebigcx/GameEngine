@@ -94,6 +94,8 @@ void GLFramebuffer::attachTexture(const Texture2D& texture, Attachment attachmen
 
     texture.bind();
     glFramebufferTexture2D(GL_FRAMEBUFFER, getAttachmentEnumValue_(attachment), target, texture.getId(), 0);
+    m_width = texture.getWidth();
+    m_height = texture.getHeight();
 
     unbind();
 }

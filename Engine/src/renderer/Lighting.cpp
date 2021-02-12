@@ -20,7 +20,7 @@ DirectionalLight::DirectionalLight(const math::vec3& radiance, float intensity, 
 
 void DirectionalLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const
 {
-    math::quat rotation = math::quat(math::radians(m_owner->getComponent<Transform>().getRotation()));
+    math::quat rotation = math::quat(math::radians(m_owner->getComponent<Transform>()->getRotation()));
     auto direction = rotation * math::vec3(0, -1, 0);
 
     shader->setFloat3("uDirectionalLight.radiance", radiance);
@@ -34,7 +34,7 @@ void PointLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t ind
 
     shader->setFloat3("uPointLights[" + idx + "].radiance", radiance);
     shader->setFloat("uPointLights[" + idx + "].intensity", intensity);
-    shader->setFloat3("uPointLights[" + idx + "].position", m_owner->getComponent<Transform>().getTranslation());
+    shader->setFloat3("uPointLights[" + idx + "].position", m_owner->getComponent<Transform>()->getTranslation());
 }
 
 void SkyLight::setShaderUniforms(const Reference<Shader>& shader, uint32_t index) const

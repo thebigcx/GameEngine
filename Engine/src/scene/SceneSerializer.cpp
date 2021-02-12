@@ -188,7 +188,7 @@ void SceneSerializer::loadGameObject(YAML::Node& node, GameObject& parent, const
     {
         auto& camera = object->createComponent<SceneCamera>();
 
-        camera.setProjectionType(static_cast<ProjectionType>(node["Camera"]["Projection Type"].as<uint32_t>()));
+        camera.setProjectionType(static_cast<Camera::ProjectionType>(node["Camera"]["Projection Type"].as<uint32_t>()));
 
         camera.setOrthoSize(node["Camera"]["Ortho Size"].as<float>());
         camera.setOrthoNear(node["Camera"]["Ortho Near"].as<float>());
